@@ -27,6 +27,8 @@ jobs:
       uses: actions/setup-ruby@v1
       with:
         ruby-version: 2.6
+    - name: Bundle install
+      run: bundle install
     - name: Run rubocop
       run: rubocop
     - name: Build and test with Rake
