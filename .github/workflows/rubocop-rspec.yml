@@ -2,12 +2,17 @@ name: Rails CI
 
 on: [push, pull_request]
 
+env:
+  POSTGRES_PASSWORD: mysecretpassword
+
 jobs:
   build:
     runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres:latest
+        env:
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -21,7 +26,7 @@ jobs:
     - name: Set up Ruby 2.6
       uses: actions/setup-ruby@v1
       with:
-        ruby-version: 2.7
+        ruby-version: 2.6
     - name: Bundle install
       run: bundle install
     - name: Run rubocop
