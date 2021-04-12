@@ -2,17 +2,12 @@ name: Rails CI
 
 on: [push, pull_request]
 
-env:
-  POSTGRES_PASSWORD: mysecretpassword
-
 jobs:
   build:
     runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres:latest
-        env:
-          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
