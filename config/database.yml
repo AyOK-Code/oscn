@@ -23,7 +23,7 @@ default: &default
 
 development:
   <<: *default
-  database: backend_template_development
+  database: oscn_development
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -57,7 +57,8 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: backend_template_test
+  database: oscn_test
+  password: mysecretpassword
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -80,6 +81,6 @@ test:
 #
 production:
   <<: *default
-  database: backend_template_production
-  username: backend_template
+  database: oscn_production
+  username: oscn
   password: <%= ENV['BACKEND_TEMPLATE_DATABASE_PASSWORD'] %>
