@@ -6,4 +6,8 @@ RSpec.describe CaseType, type: :model do
     it { should validate_presence_of(:abbreviation) }
     it { should validate_presence_of(:oscn_id) }
   end
+
+  context 'associations' do
+    it { should have_many(:cases).dependent(:destroy) }
+  end
 end
