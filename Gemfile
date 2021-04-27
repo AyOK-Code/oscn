@@ -1,15 +1,18 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.7.2'
+ruby '2.7.3'
 
+gem 'awesome_print'
 gem 'aws-sdk-s3', '~> 1'
 gem 'bcrypt', '~> 3.1.7'
 gem 'bootsnap', '>= 1.4.2', require: false
+gem 'httparty'
 gem 'image_processing', '~> 1.2'
 gem 'jbuilder', '~> 2.7'
 gem 'jwt'
 gem 'kaminari'
+gem 'oscn_scraper', path: '~/code/oscn_scraper'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'progress_bar'
 gem 'puma', '~> 4.1'
