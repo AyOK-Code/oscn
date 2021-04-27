@@ -8,8 +8,10 @@ class CreateCases < ActiveRecord::Migration[6.0]
       t.date :filed_on
       t.date :closed_on
       t.text :html
+      t.datetime :scraped_at
 
       t.timestamps
     end
+    add_index :cases, :oscn_id, unique: true
   end
 end
