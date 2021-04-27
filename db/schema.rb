@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_13_013602) do
+ActiveRecord::Schema.define(version: 2021_04_13_015337) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,22 @@ ActiveRecord::Schema.define(version: 2021_04_13_013602) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "cases", force: :cascade do |t|
+    t.integer "oscn_id"
+    t.bigint "county_id", null: false
+    t.bigint "case_type_id", null: false
+    t.string "case_number"
+    t.date "filed_on"
+    t.date "closed_on"
+    t.text "html"
+    t.datetime "scraped_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["case_type_id"], name: "index_cases_on_case_type_id"
+    t.index ["county_id"], name: "index_cases_on_county_id"
+    t.index ["oscn_id"], name: "index_cases_on_oscn_id", unique: true
+  end
+
   create_table "counties", force: :cascade do |t|
     t.string "name", null: false
     t.string "fips_code", null: false
@@ -30,4 +46,6 @@ ActiveRecord::Schema.define(version: 2021_04_13_013602) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "cases", "case_types"
+  add_foreign_key "cases", "counties"
 end

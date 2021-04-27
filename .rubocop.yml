@@ -13,3 +13,5 @@ Style/FrozenStringLiteralComment:
   Enabled: false
 Style/MutableConstant:
   Enabled: false
+Metrics/BlockLength:
+  Max: 50
