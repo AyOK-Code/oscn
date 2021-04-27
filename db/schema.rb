@@ -31,10 +31,12 @@ ActiveRecord::Schema.define(version: 2021_04_13_015337) do
     t.date "filed_on"
     t.date "closed_on"
     t.text "html"
+    t.datetime "scraped_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["case_type_id"], name: "index_cases_on_case_type_id"
     t.index ["county_id"], name: "index_cases_on_county_id"
+    t.index ["oscn_id"], name: "index_cases_on_oscn_id", unique: true
   end
 
   create_table "counties", force: :cascade do |t|

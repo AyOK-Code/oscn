@@ -46,6 +46,9 @@ RSpec.configure do |config|
   config.after(:each) do
     DatabaseCleaner.clean
   end
+
+  # Configure FactoryBot
+  config.include FactoryBot::Syntax::Methods
 end
 
 # Configure Shoula matchers
