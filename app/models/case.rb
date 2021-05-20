@@ -6,4 +6,5 @@ class Case < ApplicationRecord
 
   scope :without_html, -> { where(html: nil) }
   scope :with_html, -> { where.not(html: nil) }
+  scope :valid, -> { where.not("case_number LIKE '%-0'") }
 end
