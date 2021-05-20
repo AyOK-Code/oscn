@@ -10,6 +10,8 @@ RSpec.describe Case, type: :model do
   context 'associations' do
     it { should belong_to(:county) }
     it { should belong_to(:case_type) }
+    it { should have_many(:case_parties).dependent(:destroy) }
+    it { should have_many(:parties).through(:case_parties) }
   end
 
   context 'scopes' do
@@ -28,6 +30,12 @@ RSpec.describe Case, type: :model do
         without_html = create(:case)
         expect(described_class.without_html).to include without_html
         expect(described_class.without_html).to_not include with_html
+      end
+    end
+
+    describe '#valid' do
+      it 'returns' do
+        skip
       end
     end
   end
