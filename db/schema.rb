@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_19_142702) do
+ActiveRecord::Schema.define(version: 2021_05_20_183709) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "case_parties", force: :cascade do |t|
+    t.bigint "case_id", null: false
+    t.bigint "party_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["case_id", "party_id"], name: "index_case_parties_on_case_id_and_party_id", unique: true
+    t.index ["case_id"], name: "index_case_parties_on_case_id"
+    t.index ["party_id"], name: "index_case_parties_on_party_id"
+  end
 
   create_table "case_types", force: :cascade do |t|
     t.integer "oscn_id", null: false
@@ -46,12 +56,25 @@ ActiveRecord::Schema.define(version: 2021_05_19_142702) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "parties", force: :cascade do |t|
+    t.integer "oscn_id"
+    t.string "full_name"
+    t.bigint "party_type_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["oscn_id"], name: "index_parties_on_oscn_id", unique: true
+    t.index ["party_type_id"], name: "index_parties_on_party_type_id"
+  end
+
   create_table "party_types", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "case_parties", "cases"
+  add_foreign_key "case_parties", "parties"
   add_foreign_key "cases", "case_types"
   add_foreign_key "cases", "counties"
+  add_foreign_key "parties", "party_types"
 end
