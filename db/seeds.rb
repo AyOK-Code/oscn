@@ -166,7 +166,11 @@ counties.each do |county|
   County.find_or_create_by!(county)
 end
 
-party_types = ['ALIAS/ALSO KNOWN AS', 'ARRESTING AGENCY', 'ARRESTING OFFICER', 'ATTORNEY', 'Administrator', 'Alias Defendant', 'Attorney', 'Defendant', 'Executor', 'Plaintiff']
+party_types = [
+  'ALIAS/ALSO KNOWN AS', 'ARRESTING AGENCY', 'ARRESTING OFFICER',
+  'ATTORNEY', 'Administrator', 'Alias Defendant', 'Attorney',
+  'Defendant', 'Executor', 'Plaintiff'
+]
 
 party_types.each do |party_type|
   PartyType.find_or_create_by!(name: party_type.downcase)
