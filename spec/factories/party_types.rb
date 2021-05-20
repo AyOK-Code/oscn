@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :party_type do
-    name { "MyString" }
+    name { 'MyString' }
   end
 end
