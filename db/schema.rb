@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_20_183709) do
+ActiveRecord::Schema.define(version: 2021_05_24_213501) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,16 @@ ActiveRecord::Schema.define(version: 2021_05_20_183709) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "judges", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "courthouse"
+    t.string "judge_type", null: false
+    t.bigint "county_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["county_id"], name: "index_judges_on_county_id"
+  end
+
   create_table "parties", force: :cascade do |t|
     t.integer "oscn_id"
     t.string "full_name"
@@ -76,5 +86,6 @@ ActiveRecord::Schema.define(version: 2021_05_20_183709) do
   add_foreign_key "case_parties", "parties"
   add_foreign_key "cases", "case_types"
   add_foreign_key "cases", "counties"
+  add_foreign_key "judges", "counties"
   add_foreign_key "parties", "party_types"
 end

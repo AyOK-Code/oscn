@@ -19,16 +19,16 @@ namespace :parse do
 
   desc 'Run x cases to check for error'
   task :dry_run do
-    party_types = []
+    event_types = []
     cases = Case.valid.with_html.first(40000)
     bar = ProgressBar.new(cases.count)
 
     cases.each do |c|
       parsed_html = Nokogiri::HTML(c.html)
       data = OscnScraper::Parsers::BaseParser.new(parsed_html).build_object
-      party_types = party_types.uniq + data[:parties].map { |c| c[:party_type] }.uniq
+      event_types = event_types.uniq + data[:events].map { |c| c[:event_type] }.uniq
       bar.increment!
     end
-    ap party_types.sort.uniq
+    ap event_types.sort.uniq
   end
 end
