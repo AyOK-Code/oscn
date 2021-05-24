@@ -11,9 +11,11 @@ class CaseImporter
   end
 
   def perform
-    parties_json = data[:parties]
-    parties_json.each do |party_data|
-      save_parties(party_data)
+    ActiveRecord::Base.transaction do
+      parties_json = data[:parties]
+      parties_json.each do |party_data|
+        save_parties(party_data)
+      end
     end
   end
 
@@ -26,26 +28,32 @@ class CaseImporter
     if parties[oscn_id]
       save_existing_party_to_case(oscn_id)
     else
-      create_and_save_party_to_case(oscn_id)
+      create_and_save_party_to_case(oscn_id, party_data)
     end
   end
 
-  def save_existing_party_to_case
+  def save_existing_party_to_case(oscn_id)
     party_id = parties[oscn_id]
     create_case_party(@case.id, party_id)
   end
 
-  def create_and_save_party_to_case(oscn_id)
-    party = Party.create!(
-      oscn_id: oscn_id,
-      full_name: party_data[:name],
-      party_type_id: party_type_id(party_data)
-    )
+  def create_and_save_party_to_case(oscn_id, party_data)
+    begin
+      party = Party.create!(
+        oscn_id: oscn_id,
+        full_name: party_data[:name],
+        party_type_id: party_type_id(party_data)
+      )
+    rescue StandardError
+      puts "Case: #{@case.case_number} resulted in an error when creating the party"
+    end
     create_case_party(@case.id, party.id)
   end
 
   def create_case_party(case_id, party_id)
-    CaseParty.find_or_create_by(case_id: case_id, party_id: party_id)
+    CaseParty.find_or_create_by!(case_id: case_id, party_id: party_id)
+  rescue StandardError
+    puts "Case: #{@case.case_number} resulted in an error when creating case party relationship"
   end
 
   def parse_id(link)

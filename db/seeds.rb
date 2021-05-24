@@ -169,7 +169,7 @@ end
 party_types = [
   'ALIAS/ALSO KNOWN AS', 'ARRESTING AGENCY', 'ARRESTING OFFICER',
   'ATTORNEY', 'Administrator', 'Alias Defendant', 'Attorney',
-  'Defendant', 'Executor', 'Plaintiff'
+  'Defendant', 'Executor', 'Plaintiff', 'Juvenile'
 ]
 
 party_types.each do |party_type|
