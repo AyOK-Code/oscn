@@ -14,7 +14,7 @@ namespace :save do
     associate_judges = data.xpath('//h3[contains(text(), "Associate District Judges")]/following-sibling::*')
     special_judges = data.xpath('//h3[contains(text(), "Special Judges")]/following-sibling::*')
 
-    district_judges.css('.judge').each do |j|
+    district_judges.css('.judges').first.css('.judge').each do |j|
       name = j.css('.judgeName').text.squish
       courthouse = j.css('.address').children&.first&.text
       Judge.find_or_create_by!(
@@ -22,7 +22,7 @@ namespace :save do
       )
     end
 
-    associate_judges.css('.judge').each do |j|
+    associate_judges.css('.judges').first.css('.judge').each do |j|
       name = j.css('.judgeName').text.squish
       courthouse = j.css('.address').children&.first&.text
       Judge.find_or_create_by!(
@@ -30,7 +30,7 @@ namespace :save do
       )
     end
 
-    associate_judges.css('.judge').each do |j|
+    special_judges.css('.judges').first.css('.judge').each do |j|
       name = j.css('.judgeName').text.squish
       courthouse = j.css('.address').children&.first&.text
       Judge.find_or_create_by!(

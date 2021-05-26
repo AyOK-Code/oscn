@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_24_213501) do
+ActiveRecord::Schema.define(version: 2021_05_24_215256) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,25 @@ ActiveRecord::Schema.define(version: 2021_05_24_213501) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "counts", force: :cascade do |t|
+    t.bigint "case_id", null: false
+    t.bigint "party_id", null: false
+    t.date "offense_on"
+    t.string "as_filed"
+    t.string "filed_statute_violation"
+    t.string "disposition"
+    t.date "disposition_on"
+    t.string "disposed_statute_violation"
+    t.bigint "plea_id"
+    t.bigint "verdict_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["case_id"], name: "index_counts_on_case_id"
+    t.index ["party_id"], name: "index_counts_on_party_id"
+    t.index ["plea_id"], name: "index_counts_on_plea_id"
+    t.index ["verdict_id"], name: "index_counts_on_verdict_id"
+  end
+
   create_table "judges", force: :cascade do |t|
     t.string "name", null: false
     t.string "courthouse"
@@ -82,10 +101,26 @@ ActiveRecord::Schema.define(version: 2021_05_24_213501) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "pleas", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "verdicts", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   add_foreign_key "case_parties", "cases"
   add_foreign_key "case_parties", "parties"
   add_foreign_key "cases", "case_types"
   add_foreign_key "cases", "counties"
+  add_foreign_key "counts", "cases"
+  add_foreign_key "counts", "parties"
+  add_foreign_key "counts", "pleas"
+  add_foreign_key "counts", "verdicts"
   add_foreign_key "judges", "counties"
   add_foreign_key "parties", "party_types"
 end

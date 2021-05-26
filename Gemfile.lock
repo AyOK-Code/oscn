@@ -264,6 +264,9 @@ GEM
       activesupport (>= 4.2.0)
       rack (>= 1.1)
       rubocop (>= 0.90.0, < 2.0)
+    rubocop-rspec (2.3.0)
+      rubocop (~> 1.0)
+      rubocop-ast (>= 1.1.0)
     ruby-graphviz (1.2.5)
       rexml
     ruby-limiter (1.1.0)
@@ -350,6 +353,7 @@ DEPENDENCIES
   rspec-rails
   rubocop (~> 1.12)
   rubocop-rails (~> 2.9)
+  rubocop-rspec
   ruby-limiter
   scenic
   shoulda-matchers

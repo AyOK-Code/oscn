@@ -12,6 +12,7 @@ RSpec.describe Case, type: :model do
     it { should belong_to(:case_type) }
     it { should have_many(:case_parties).dependent(:destroy) }
     it { should have_many(:parties).through(:case_parties) }
+    it { should have_many(:counts).dependent(:destroy) }
   end
 
   context 'scopes' do
