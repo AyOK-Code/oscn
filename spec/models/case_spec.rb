@@ -13,6 +13,7 @@ RSpec.describe Case, type: :model do
     it { should have_many(:case_parties).dependent(:destroy) }
     it { should have_many(:parties).through(:case_parties) }
     it { should have_many(:counts).dependent(:destroy) }
+    it { should have_many(:events).dependent(:destroy) }
   end
 
   context 'scopes' do

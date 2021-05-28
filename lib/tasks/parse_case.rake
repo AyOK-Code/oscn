@@ -14,7 +14,7 @@ namespace :parse do
     parsed_html = Nokogiri::HTML(c.html)
     parser = OscnScraper::Parsers::BaseParser.new(parsed_html)
     data = parser.build_object
-    ap data[:counts]
+    ap data[:events]
   end
 
   desc 'Run x cases to check for error'
@@ -31,41 +31,4 @@ namespace :parse do
     end
     ap verdicts.uniq
   end
-
-  # PLEAS
-  # [ 0] "Guilty Plea",
-  # [ 1] "Deferred/Accelerated Guilty",
-  # [ 2] "Dismissed- Request of the State",
-  # [ 3] "Dismissed with Costs",
-  # [ 4] nil,
-  # [ 5] "Nolo Contendere Plea",
-  # [ 6] "Other",
-  # [ 7] "Bond Forfeited",
-  # [ 8] "Dismissed by Court",
-  # [ 9] "State Declined to File Charges",
-  # [10] "Judge",
-  # [11] "Jury Trial",
-  # [12] "Transferred/ Case Filed",
-  # [13] "Dismissed- Prosecution Witness Failed to Appear",
-  # [14] "Deferred/ Expunge Denied",
-  # [15] "Alford Plea"
-
-  # VERDICTS
-  # [
-  #     [ 0] "DEFERRED",
-  #     [ 1] "CONVICTION",
-  #     [ 2] "DISMISSED",
-  #     [ 3] nil,
-  #     [ 4] "DISMISSED WITH COSTS",
-  #     [ 5] "BOND FORFEITURE",
-  #     [ 6] "",
-  #     [ 7] "Program Successful",
-  #     [ 8] "Program Unsuccessful",
-  #     [ 9] "TRANSFER",
-  #     [10] "ACQUITTED",
-  #     [11] "DEFERRED DELINQUENT",
-  #     [12] "CLOSED JUVENILE DUE TO NEW FILING"
-  # ]
-
-
 end

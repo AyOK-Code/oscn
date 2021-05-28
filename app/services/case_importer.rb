@@ -22,12 +22,35 @@ class CaseImporter
       counts_json.each do |count_data|
         save_counts(count_data)
       end
+      events_json = data[:events]
+      events_json.each do |event_data|
+        save_events(event_data)
+      end
     end
   end
 
   private
 
-  attr_accessor :data, :party_types, :case, :parties, :pleas, :verdicts
+  attr_accessor :data, :party_types, :case, :parties, :pleas, :verdicts, :skipped
+
+  def save_events(event_data)
+    e = find_event(event_data)
+    e.docket = event_data[:docket]
+    e.event_type = event_data[:event_type]
+    begin
+      e.save!
+    rescue
+      byebug
+    end
+  end
+
+  def find_event(event_data)
+    Event.find_or_initialize_by({
+      case_id: @case.id,
+      event_at: event_data[:date],
+      party_id: party_id(event_data[:party_name].squish)
+    })
+  end
 
   def save_parties(party_data)
     oscn_id = parse_id(party_data[:link])
@@ -53,7 +76,11 @@ class CaseImporter
                           plea_id: find_or_create_plea(count_data[:plea]&.downcase),
                           verdict_id: find_or_create_verdict(count_data[:verdict]&.downcase)
                         })
-    c.save!
+    begin
+      c.save!
+    rescue
+      puts "#{@case.case_number} skipped"
+    end
   end
 
   def find_count(count_data)
