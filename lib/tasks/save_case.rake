@@ -1,7 +1,7 @@
 namespace :save do
   desc 'Scrape cases data'
   task :case do
-    cases = Case.valid.without_parties.felonies
+    cases = Case.valid
     bar = ProgressBar.new(cases.count)
 
     cases.each do |c|
