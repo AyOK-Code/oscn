@@ -26,6 +26,11 @@ class CaseImporter
       events_json.each do |event_data|
         save_events(event_data)
       end
+      attorneys_json = data[:attorneys]
+      attorneys_json.each do |attorney_data|
+        ap attorney_data
+        save_attorneys(attorney_data)
+      end
     end
   end
 
@@ -33,23 +38,37 @@ class CaseImporter
 
   attr_accessor :data, :party_types, :case, :parties, :pleas, :verdicts, :skipped
 
+  def save_attorneys(attorney_data)
+    c = Counsel.find_or_initialize_by(name: attorney_data[:name].downcase)
+    c.assign_attributes({
+                          address: attorney_data[:address],
+                          bar_number: attorney_data[:bar_number]&.to_i
+                        })
+    if c.save
+      CounselParty.find_or_create_by({ case_id: @case.id, counsel_id: c.id,
+                                       party_id: party_id(attorney_data[:represented_parties].squish) })
+    else
+      byebug
+    end
+  end
+
   def save_events(event_data)
     e = find_event(event_data)
     e.docket = event_data[:docket]
     e.event_type = event_data[:event_type]
     begin
       e.save!
-    rescue
+    rescue StandardError
       byebug
     end
   end
 
   def find_event(event_data)
     Event.find_or_initialize_by({
-      case_id: @case.id,
-      event_at: event_data[:date],
-      party_id: party_id(event_data[:party_name].squish)
-    })
+                                  case_id: @case.id,
+                                  event_at: event_data[:date],
+                                  party_id: party_id(event_data[:party_name].squish)
+                                })
   end
 
   def save_parties(party_data)
@@ -78,8 +97,8 @@ class CaseImporter
                         })
     begin
       c.save!
-    rescue
-      puts "#{@case.case_number} skipped"
+    rescue StandardError
+      puts "#{@case.case_number} counts skipped"
     end
   end
 
