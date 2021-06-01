@@ -5,6 +5,8 @@ class Case < ApplicationRecord
   has_many :parties, through: :case_parties
   has_many :counts, dependent: :destroy
   has_many :events, dependent: :destroy
+  has_many :counsel_parties, dependent: :destroy
+  has_many :counsels, through: :counsel_parties
 
   validates :oscn_id, :case_number, :filed_on, presence: true
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_26_184214) do
+ActiveRecord::Schema.define(version: 2021_06_01_165911) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,25 @@ ActiveRecord::Schema.define(version: 2021_05_26_184214) do
     t.index ["case_type_id"], name: "index_cases_on_case_type_id"
     t.index ["county_id"], name: "index_cases_on_county_id"
     t.index ["oscn_id"], name: "index_cases_on_oscn_id", unique: true
+  end
+
+  create_table "counsel_parties", force: :cascade do |t|
+    t.bigint "case_id", null: false
+    t.bigint "party_id", null: false
+    t.bigint "counsel_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["case_id"], name: "index_counsel_parties_on_case_id"
+    t.index ["counsel_id"], name: "index_counsel_parties_on_counsel_id"
+    t.index ["party_id"], name: "index_counsel_parties_on_party_id"
+  end
+
+  create_table "counsels", force: :cascade do |t|
+    t.string "name"
+    t.string "address"
+    t.integer "bar_number"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "counties", force: :cascade do |t|
@@ -129,6 +148,9 @@ ActiveRecord::Schema.define(version: 2021_05_26_184214) do
   add_foreign_key "case_parties", "parties"
   add_foreign_key "cases", "case_types"
   add_foreign_key "cases", "counties"
+  add_foreign_key "counsel_parties", "cases"
+  add_foreign_key "counsel_parties", "counsels"
+  add_foreign_key "counsel_parties", "parties"
   add_foreign_key "counts", "cases"
   add_foreign_key "counts", "parties"
   add_foreign_key "counts", "pleas"
