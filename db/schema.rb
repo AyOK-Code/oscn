@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_01_165911) do
+ActiveRecord::Schema.define(version: 2021_06_03_035135) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 2021_06_01_165911) do
     t.datetime "scraped_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.jsonb "logs"
     t.index ["case_type_id"], name: "index_cases_on_case_type_id"
     t.index ["county_id"], name: "index_cases_on_county_id"
     t.index ["oscn_id"], name: "index_cases_on_oscn_id", unique: true
@@ -92,6 +93,24 @@ ActiveRecord::Schema.define(version: 2021_06_01_165911) do
     t.index ["party_id"], name: "index_counts_on_party_id"
     t.index ["plea_id"], name: "index_counts_on_plea_id"
     t.index ["verdict_id"], name: "index_counts_on_verdict_id"
+  end
+
+  create_table "docket_event_types", force: :cascade do |t|
+    t.string "code"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "docket_events", force: :cascade do |t|
+    t.bigint "case_id", null: false
+    t.date "event_on"
+    t.bigint "docket_event_type_id", null: false
+    t.text "description"
+    t.decimal "amount"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["case_id"], name: "index_docket_events_on_case_id"
+    t.index ["docket_event_type_id"], name: "index_docket_events_on_docket_event_type_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -155,6 +174,8 @@ ActiveRecord::Schema.define(version: 2021_06_01_165911) do
   add_foreign_key "counts", "parties"
   add_foreign_key "counts", "pleas"
   add_foreign_key "counts", "verdicts"
+  add_foreign_key "docket_events", "cases"
+  add_foreign_key "docket_events", "docket_event_types"
   add_foreign_key "events", "cases"
   add_foreign_key "events", "parties"
   add_foreign_key "judges", "counties"
