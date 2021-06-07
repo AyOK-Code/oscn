@@ -29,4 +29,28 @@ namespace :parse do
     end
     ap events.uniq
   end
+
+  desc 'Get case changes'
+  task :changes do
+    scraper = OscnScraper::BaseScraper.new
+    request = scraper.events_scheduled('Oklahoma', 31, '06/01/2021') # 31 = CF
+    parsed_html = Nokogiri::HTML(request.body)
+    search = OscnScraper::Search.new
+    data = OscnScraper::Parsers::CaseChanges.new(parsed_html).parse
+
+    bar = ProgressBar.new(data.count)
+
+    data.each do |case_number|
+      c = Case.find_by(case_number: case_number)
+      if c.nil?
+        puts "Case not found in database: #{case_number}"
+        bar.increment!
+      else
+        puts "Pulling case: #{c.case_number} for #{c.county.name}"
+        html = search.fetch_case_by_number(c.county.name, c.case_number)
+        c.update(html: html, scraped_at: Time.current)
+        bar.increment!
+      end
+    end
+  end
 end

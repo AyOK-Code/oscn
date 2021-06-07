@@ -1,0 +1,2 @@
+class DocketEventType < ApplicationRecord
+end

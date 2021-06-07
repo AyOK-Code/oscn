@@ -1,0 +1,4 @@
+class DocketEvent < ApplicationRecord
+  belongs_to :case
+  belongs_to :docket_event_type
+end

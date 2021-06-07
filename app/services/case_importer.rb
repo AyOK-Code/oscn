@@ -10,6 +10,8 @@ class CaseImporter
     @party_types = PartyType.pluck(:name, :id).to_h
     @pleas = Plea.pluck(:name, :id).to_h
     @verdicts = Verdict.pluck(:name, :id).to_h
+    @docket_event_types = DocketEventType.pluck(:code, :id).to_h
+    @logs = Hash.new
   end
 
   def perform
@@ -28,27 +30,45 @@ class CaseImporter
       end
       attorneys_json = data[:attorneys]
       attorneys_json.each do |attorney_data|
-        ap attorney_data
         save_attorneys(attorney_data)
       end
+      docket_events_json = data[:docket_events]
+      docket_events_json.each do |docket_event|
+        save_docket_event(docket_event)
+      end
+      save_logs
     end
   end
 
   private
 
-  attr_accessor :data, :party_types, :case, :parties, :pleas, :verdicts, :skipped
+  attr_accessor :data, :party_types, :case, :parties, :pleas, :verdicts, :skipped, :logs, :docket_event_types
+
+  def save_logs
+    if logs.present?
+      @case.update(logs: logs)
+    else
+      @case.update(logs: nil)
+    end
+  end
 
   def save_attorneys(attorney_data)
-    c = Counsel.find_or_initialize_by(name: attorney_data[:name].downcase)
+    if attorney_data[:bar_number].present?
+      c = Counsel.find_or_initialize_by(bar_number: attorney_data[:bar_number]&.to_i)
+    else
+      c = Counsel.find_or_initialize_by(name: attorney_data[:name].downcase)
+    end
+
     c.assign_attributes({
+                          name: attorney_data[:name].downcase,
                           address: attorney_data[:address],
                           bar_number: attorney_data[:bar_number]&.to_i
                         })
     if c.save
-      CounselParty.find_or_create_by({ case_id: @case.id, counsel_id: c.id,
-                                       party_id: party_id(attorney_data[:represented_parties].squish) })
+      data = { case_id: @case.id, counsel_id: c.id, party_id: party_id(attorney_data[:represented_parties].squish) }
+      CounselParty.find_or_create_by(data)
     else
-      byebug
+      create_log('counsel', "#{@case.case_number} resulted in an error when creating the counsel", attorney_data)
     end
   end
 
@@ -59,7 +79,7 @@ class CaseImporter
     begin
       e.save!
     rescue StandardError
-      byebug
+      create_log('events', "#{@case.case_number} resulted in an error when creating the event", event_data)
     end
   end
 
@@ -98,8 +118,26 @@ class CaseImporter
     begin
       c.save!
     rescue StandardError
-      puts "#{@case.case_number} counts skipped"
+      create_log('counts', "#{@case.case_number} skipped count due to missing party.", count_data)
     end
+  end
+
+  def save_docket_event(docket_event_data)
+    de = DocketEvent.find_or_initialize_by(case_id: @case.id, event_on: docket_event_data[:date], docket_event_type_id: find_or_create_docket_event_type(docket_event_data[:code]))
+    de.assign_attributes({
+      description: docket_event_data[:description],
+      amount: currency_to_number(docket_event_data[:amount])
+      })
+
+      de.save
+  end
+
+  def currency_to_number currency
+   currency.to_s.gsub(/[$,]/,'').to_f
+  end
+
+  def create_log(table, message, data)
+    logs["#{table}"] = { message: message, data: data }
   end
 
   def find_count(count_data)
@@ -114,6 +152,15 @@ class CaseImporter
   def party_id(party_name)
     parties = @case.parties.pluck(:full_name, :id).map { |a| [a[0].squish, a[1]] }.to_h
     parties[party_name]
+  end
+
+  def find_or_create_docket_event_type(docket_event_type)
+    docket_event_type_id = docket_event_types[docket_event_type]
+    return nil if docket_event_type.nil?
+
+    return docket_event_type_id if docket_event_type_id
+
+    new_docket_event_type = DocketEventType.create(code: docket_event_type)
   end
 
   def find_or_create_plea(plea)
@@ -142,15 +189,16 @@ class CaseImporter
         party_type_id: find_or_create_party_type(party_data[:party_type].downcase)
       )
     rescue StandardError
-      puts "Case: #{@case.case_number} resulted in an error when creating the party"
+      create_log('parties', "#{@case.case_number} resulted in an error when creating the party", party_data)
     end
     create_case_party(@case.id, party.id)
   end
 
   def create_case_party(case_id, party_id)
-    CaseParty.find_or_create_by!(case_id: case_id, party_id: party_id)
+    data = {case_id: case_id, party_id: party_id}
+    CaseParty.find_or_create_by!(data)
   rescue StandardError
-    puts "Case: #{@case.case_number} resulted in an error when creating case party relationship"
+    create_log('case_parties', "#{@case.case_number} resulted in an error when creating case party relationship", data)
   end
 
   def parse_id(link)
