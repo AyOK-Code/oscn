@@ -14,6 +14,10 @@ class CaseImporter
     @logs = Hash.new
   end
 
+  def self.perform(case_object)
+    self.new(case_object).perform
+  end
+
   def perform
     ActiveRecord::Base.transaction do
       parties_json = data[:parties]
@@ -126,7 +130,8 @@ class CaseImporter
     de = DocketEvent.find_or_initialize_by(case_id: @case.id, event_on: docket_event_data[:date], docket_event_type_id: find_or_create_docket_event_type(docket_event_data[:code]))
     de.assign_attributes({
       description: docket_event_data[:description],
-      amount: currency_to_number(docket_event_data[:amount])
+      amount: currency_to_number(docket_event_data[:amount]),
+      party_id: party_id(docket_event_data[:party])
       })
 
       de.save
