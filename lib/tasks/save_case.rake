@@ -5,7 +5,7 @@ namespace :save do
     bar = ProgressBar.new(cases.count)
 
     cases.each do |c|
-      CaseImporter.new(c).perform
+      CaseImporter.perform(c)
       bar.increment!
     end
   end
