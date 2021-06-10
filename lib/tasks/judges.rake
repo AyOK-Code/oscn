@@ -3,6 +3,9 @@ require 'open-uri'
 namespace :save do
   desc 'Pull judges for a county'
   task :judges, [:county_name] do |_t, args|
+    # TODO: Move to judges importer
+    # TODO: What happens if judge is not found
+    # TODO: Refresh Rate?
     county_name = args.county_name
     puts "Pulling in judges for #{county_name}"
     county_id = County.find_by(name: county_name).id

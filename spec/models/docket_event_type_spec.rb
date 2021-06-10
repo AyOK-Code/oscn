@@ -1,5 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe DocketEventType, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+describe DocketEventType, type: :model do
+  context 'associations' do
+    it { should have_many(:docket_events).dependent(:destroy) }
+  end
 end

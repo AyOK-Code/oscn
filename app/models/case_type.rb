@@ -1,5 +1,5 @@
 class CaseType < ApplicationRecord
   validates :name, :oscn_id, :abbreviation, presence: true
 
-  has_many :cases, dependent: :destroy
+  has_many :court_cases, dependent: :destroy
 end

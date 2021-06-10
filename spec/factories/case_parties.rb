@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :case_party do
-    association :case
+    association :court_case
     party
   end
 end

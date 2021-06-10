@@ -1,4 +1,4 @@
 class CaseParty < ApplicationRecord
-  belongs_to :case
+  belongs_to :court_case
   belongs_to :party
 end
