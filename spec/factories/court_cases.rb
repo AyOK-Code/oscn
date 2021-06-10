@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :case do
+  factory :court_case do
     sequence(:oscn_id)
     county
     case_type

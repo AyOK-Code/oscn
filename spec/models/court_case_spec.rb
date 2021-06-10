@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Case, type: :model do
+RSpec.describe CourtCase, type: :model do
   context 'validations' do
     it { should validate_presence_of(:oscn_id) }
     it { should validate_presence_of(:case_number) }
@@ -21,8 +21,8 @@ RSpec.describe Case, type: :model do
   context 'scopes' do
     describe '#with_html' do
       it 'only returns cases that have html' do
-        with_html = create(:case, :with_html)
-        without_html = create(:case)
+        with_html = create(:court_case, :with_html)
+        without_html = create(:court_case)
         expect(described_class.with_html).to include with_html
         expect(described_class.with_html).to_not include without_html
       end
@@ -30,8 +30,8 @@ RSpec.describe Case, type: :model do
 
     describe '#without_html' do
       it 'only returns cases that do not have html saved' do
-        with_html = create(:case, :with_html)
-        without_html = create(:case)
+        with_html = create(:court_case, :with_html)
+        without_html = create(:court_case)
         expect(described_class.without_html).to include without_html
         expect(described_class.without_html).to_not include with_html
       end

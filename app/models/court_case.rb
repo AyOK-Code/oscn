@@ -1,4 +1,4 @@
-class Case < ApplicationRecord
+class CourtCase < ApplicationRecord
   belongs_to :county
   belongs_to :case_type
   has_many :case_parties, dependent: :destroy

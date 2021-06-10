@@ -2,9 +2,9 @@ require 'uri'
 
 namespace :scrape do
   desc "Scrape cases data"
-  task :cases, [:year] do |_t, args|
+  task :court_cases, [:year] do |_t, args|
     # TODO: Change to import task
-    # TODO: Move to gem configuration
+    # TODO: Move to configuration
     CASE_TYPES = ['CF','CM','TR','TRI','AM','CPC','DTR']
 
     year = args.year.to_i
@@ -30,7 +30,7 @@ namespace :scrape do
         if case_types[case_type].blank?
           next
         else
-          c = Case.find_or_initialize_by(oscn_id: oscn_id)
+          c = CourtCase.find_or_initialize_by(oscn_id: oscn_id)
           c.county_id = counties[county]
           c.case_type_id = case_types[case_type]
           c.case_number = row.text

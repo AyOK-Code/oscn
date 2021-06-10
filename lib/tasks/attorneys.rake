@@ -8,7 +8,7 @@ namespace :save do
 
     states.each do |state|
       puts "Importing data for #{state}"
-      AttorneyImporter.perform(state)
+      AttorneyScraper.perform(state)
     end
   end
 end

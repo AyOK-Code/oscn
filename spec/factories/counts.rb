@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :count do
-    association :case
+    court_case
     party
     offense_on { '2021-05-24' }
     as_filed { 'MyString' }

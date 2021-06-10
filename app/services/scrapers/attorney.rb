@@ -1,4 +1,5 @@
-class AttorneyImporter
+# Pulls accurate data from the OK Bar Association
+class Attorney
   attr_accessor :base_url, :state_abreviation
 
   def initialize(state_abreviation = 'OK')
