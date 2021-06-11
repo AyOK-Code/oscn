@@ -7,7 +7,7 @@ namespace :parse do
   # TODO: Remove
   task :court_cases do
     court_case_id = CourtCase.with_html.where("case_number LIKE '%CF%'").pluck(:id).sample
-    c = CourtCase.find(case_id)
+    c = CourtCase.find(court_case_id)
 
     puts "Parsing data for: #{c.case_number}"
     parsed_html = Nokogiri::HTML(c.html)

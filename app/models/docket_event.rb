@@ -4,4 +4,6 @@ class DocketEvent < ApplicationRecord
   belongs_to :party, optional: true
 
   validates :event_on, :description, presence: true
+
+  scope :for_code, ->(code) { joins(:docket_event_type).where(docket_event_types: { code: code }) }
 end

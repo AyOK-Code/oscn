@@ -5,4 +5,8 @@ class Party < ApplicationRecord
   has_many :counsel_parties, dependent: :destroy
   has_many :counsels, through: :counsel_parties
   has_many :docket_events, dependent: :destroy
+
+  # TODO: Add unique constraint on oscn_id
+  # TODO: Validate presence of oscn_id
+  # TODO: Validate presence of party_type?
 end
