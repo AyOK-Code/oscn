@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_10_163355) do
+ActiveRecord::Schema.define(version: 2021_06_11_142917) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "case_htmls", force: :cascade do |t|
+    t.bigint "court_case_id", null: false
+    t.datetime "scraped_at"
+    t.text "html"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["court_case_id"], name: "index_case_htmls_on_court_case_id"
+  end
 
   create_table "case_parties", force: :cascade do |t|
     t.bigint "court_case_id", null: false
@@ -58,6 +67,7 @@ ActiveRecord::Schema.define(version: 2021_06_10_163355) do
     t.string "member_type"
     t.string "member_status"
     t.date "admit_date"
+    t.boolean "ok_bar", default: false, null: false
   end
 
   create_table "counties", force: :cascade do |t|
@@ -93,8 +103,6 @@ ActiveRecord::Schema.define(version: 2021_06_10_163355) do
     t.string "case_number"
     t.date "filed_on"
     t.date "closed_on"
-    t.text "html"
-    t.datetime "scraped_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.jsonb "logs"
@@ -126,7 +134,7 @@ ActiveRecord::Schema.define(version: 2021_06_10_163355) do
   create_table "events", force: :cascade do |t|
     t.bigint "court_case_id", null: false
     t.bigint "party_id"
-    t.date "event_at", null: false
+    t.datetime "event_at", null: false
     t.string "event_type", null: false
     t.string "docket"
     t.datetime "created_at", precision: 6, null: false
@@ -173,6 +181,7 @@ ActiveRecord::Schema.define(version: 2021_06_10_163355) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "case_htmls", "court_cases"
   add_foreign_key "case_parties", "court_cases"
   add_foreign_key "case_parties", "parties"
   add_foreign_key "counsel_parties", "counsels"

@@ -7,6 +7,7 @@ gem 'awesome_print'
 gem 'aws-sdk-s3', '~> 1'
 gem 'bcrypt', '~> 3.1.7'
 gem 'bootsnap', '>= 1.4.2', require: false
+gem 'fuzzy_match'
 gem 'httparty'
 gem 'image_processing', '~> 1.2'
 gem 'jbuilder', '~> 2.7'
