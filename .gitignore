@@ -28,3 +28,8 @@
 
 # Ignore Database Backup
 oscn.tar
+
+# Ignore Data Files
+/lib/data/*
+
+.DS_Store
