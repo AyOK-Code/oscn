@@ -1,7 +1,7 @@
 module Importers
   # Imports Attorney information from JSON
   class Attorney
-    attr_accessor :attorney_object, :court_case, :logs
+    attr_accessor :attorney_object, :court_case, :logs, :party_matcher
 
     def initialize(attorney_object, court_case, logs)
       @attorney_object = attorney_object
@@ -29,9 +29,8 @@ module Importers
 
       if bar_number.present?
         c = Counsel.find_or_initialize_by(bar_number: bar_number)
-
       else
-        Counsel.find_or_initialize_by(name: name)
+        c = Counsel.find_or_initialize_by(name: name)
       end
 
       c.assign_attributes({

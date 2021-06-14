@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_11_142917) do
+ActiveRecord::Schema.define(version: 2021_06_14_194917) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -153,6 +153,17 @@ ActiveRecord::Schema.define(version: 2021_06_11_142917) do
     t.index ["county_id"], name: "index_judges_on_county_id"
   end
 
+  create_table "oklahoma_statutes", force: :cascade do |t|
+    t.string "code"
+    t.string "ten_digit"
+    t.string "severity"
+    t.text "description"
+    t.date "effective_on"
+    t.string "update_status"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "parties", force: :cascade do |t|
     t.integer "oscn_id"
     t.string "full_name"
@@ -181,6 +192,17 @@ ActiveRecord::Schema.define(version: 2021_06_11_142917) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "warrants", force: :cascade do |t|
+    t.bigint "docket_event_id", null: false
+    t.bigint "judge_id"
+    t.integer "bond"
+    t.string "comment"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["docket_event_id"], name: "index_warrants_on_docket_event_id"
+    t.index ["judge_id"], name: "index_warrants_on_judge_id"
+  end
+
   add_foreign_key "case_htmls", "court_cases"
   add_foreign_key "case_parties", "court_cases"
   add_foreign_key "case_parties", "parties"
@@ -200,4 +222,6 @@ ActiveRecord::Schema.define(version: 2021_06_11_142917) do
   add_foreign_key "events", "parties"
   add_foreign_key "judges", "counties"
   add_foreign_key "parties", "party_types"
+  add_foreign_key "warrants", "docket_events"
+  add_foreign_key "warrants", "judges"
 end
