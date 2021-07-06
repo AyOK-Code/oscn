@@ -6,7 +6,6 @@ namespace :save do
 
     warrant_events.each do |warrant_event|
       # TODO: What to do with judges who do not exist (create?)
-      # TODO: Log cases where the warrent event is not parsible
       bar.increment!
       Importers::DocketEvents::Warrant.perform(warrant_event)
     end

@@ -10,8 +10,8 @@ namespace :save do
     puts "Pulling in judges for #{county_name}"
     county_id = County.find_by(name: county_name).id
     judges_url = "https://www.oscn.net/courts/#{county_name.downcase}"
-    html = URI.open(judges_url)
-    data = Nokogiri::HTML(html.read)
+    html = URI.parse(judges_url).open
+    data = Nokogiri::HTML(html.body)
 
     district_judges = data.xpath('//h3[contains(text(), "District Judges")]/following-sibling::*')
     associate_judges = data.xpath('//h3[contains(text(), "Associate District Judges")]/following-sibling::*')

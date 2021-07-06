@@ -7,7 +7,7 @@ module Importers
       @court_case = court_case
       @events_json = events_json
       @logs = logs
-      @party_matcher = PartyMatcher.new(court_case)
+      @party_matcher = Matchers::Party.new(court_case)
     end
 
     def self.perform(events_json, court_case, logs)
@@ -27,7 +27,7 @@ module Importers
       begin
         e.save!
       rescue StandardError
-        create_log('events', "#{court_case.case_number} resulted in an error when creating the event", event_data)
+        logs.create_log('events', "#{court_case.case_number} resulted in an error when creating the event", event_data)
       end
     end
 

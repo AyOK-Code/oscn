@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :party do
-    oscn_id { Faker::Number.unique.number(10) }
+    sequence(:oscn_id)
     full_name { Faker::Name.name }
     party_type
   end

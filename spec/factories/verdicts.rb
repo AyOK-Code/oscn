@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :verdict do
-    name { 'MyString' }
+    name { Faker::Lorem.word }
   end
 end

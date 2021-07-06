@@ -1,3 +1,4 @@
 class PartyType < ApplicationRecord
-  validates :name, presence: true
+  has_many :parties, dependent: :destroy
+  validates :name, presence: true, uniqueness: true
 end

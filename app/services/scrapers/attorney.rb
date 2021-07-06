@@ -1,5 +1,6 @@
 module Scrapers
   # Pulls accurate data from the OK Bar Association
+  # TODO: Figure out refresh schedule
   class Attorney
     attr_accessor :base_url, :state_abreviation
 
@@ -15,8 +16,8 @@ module Scrapers
     def perform
       url = "pagenum=1&sort%5B5%5D=desc&filter_11=#{state_abreviation}&mode=all"
 
-      html = URI.open("#{base_url}#{url}")
-      parsed_data = Nokogiri::HTML(html.read)
+      html = URI.parse("#{base_url}#{url}").open
+      parsed_data = Nokogiri::HTML(html.body)
       pages = (1..page_count(parsed_data)).to_a
       bar = ProgressBar.new(pages.count)
       pages.each do |page_number|
@@ -27,8 +28,9 @@ module Scrapers
     end
 
     def process_data(page_number)
-      html = URI.open("#{base_url}pagenum=#{page_number}&sort%5B5%5D=desc&filter_11=#{state_abreviation}&mode=all")
-      parsed_data = Nokogiri::HTML(html.read)
+      url = "#{base_url}pagenum=#{page_number}&sort%5B5%5D=desc&filter_11=#{state_abreviation}&mode=all"
+      html = URI.parse(url).open
+      parsed_data = Nokogiri::HTML(html.body)
       table_rows = parsed_data.css('tbody tr')
       table_rows.each do |row|
         save_attorney(row)

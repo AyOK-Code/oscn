@@ -18,11 +18,13 @@ module Importers
 
     def perform
       ActiveRecord::Base.transaction do
+        court_case.update(closed_on: data[:closed_on])
         ::Importers::Party.perform(data[:parties], court_case, logs)
-        ::Importers::Judge.perform(data[:judge], court_case, logs)
+        # ::Importers::Judge.perform(data[:judge], court_case, logs)
         ::Importers::Count.perform(data[:counts], court_case, logs)
         ::Importers::Event.perform(data[:events], court_case, logs)
         ::Importers::Attorney.perform(data[:attorneys], court_case, logs)
+        # binding.pry
         ::Importers::DocketEvent.perform(data[:docket_events], court_case, logs)
         logs.update_logs
       end
