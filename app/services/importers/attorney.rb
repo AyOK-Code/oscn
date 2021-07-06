@@ -7,7 +7,7 @@ module Importers
       @attorney_object = attorney_object
       @court_case = court_case
       @logs = logs
-      @party_matcher = PartyMatcher.new(court_case)
+      @party_matcher = Matchers::Party.new(court_case)
     end
 
     def self.perform(attorney_data, court_case, logs)
@@ -47,7 +47,7 @@ module Importers
         }
         CounselParty.find_or_create_by(data)
       else
-        create_log('counsel', "#{court_case.case_number} resulted in an error when creating the counsel", attorney_data)
+        logs.create_log('counsel', "#{court_case.case_number} resulted in an error when creating the counsel", attorney_data)
       end
     end
   end

@@ -5,8 +5,12 @@ class Party < ApplicationRecord
   has_many :counsel_parties, dependent: :destroy
   has_many :counsels, through: :counsel_parties
   has_many :docket_events, dependent: :destroy
+  has_many :addresses, class_name: 'PartyAddress', dependent: :destroy
 
-  # TODO: Add unique constraint on oscn_id
-  # TODO: Validate presence of oscn_id
-  # TODO: Validate presence of party_type?
+  validates :oscn_id, presence: true
+  validates :oscn_id, uniqueness: { case_sensitive: true }
+  validates :birth_month, inclusion: 1..12, allow_nil: true
+  validates :birth_year, inclusion: 1800..DateTime.current.year, allow_nil: true
+
+  scope :without_birthday, -> { where(birth_month: nil) } # TODO: Validate presence of party_type?
 end

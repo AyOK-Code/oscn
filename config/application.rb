@@ -21,7 +21,6 @@ Bundler.require(*Rails.groups)
 
 module BackendTemplate
   class Application < Rails::Application
-    # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 
     # Settings in config/environments/* take precedence over those specified here.

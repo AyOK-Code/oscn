@@ -1,6 +1,6 @@
 module Importers
   class Party
-    attr_reader :parties_json, :party_type, :parties
+    attr_reader :parties_json, :parties, :party_types
     attr_accessor :court_case, :logs
 
     def initialize(parties_json, court_case, logs)
@@ -51,13 +51,13 @@ module Importers
 
     def create_and_save_party_to_case(oscn_id, party_data)
       begin
-        party = Party.create(
+        party = ::Party.create(
           oscn_id: oscn_id,
           full_name: party_data[:name],
           party_type_id: find_or_create_party_type(party_data[:party_type].downcase)
         )
       rescue StandardError
-        create_log('parties', "#{court_case.case_number} resulted in an error when creating the party", party_data)
+        logs.create_log('parties', "#{court_case.case_number} resulted in an error when creating the party", party_data)
       end
       create_case_party(court_case.id, party.id)
     end
@@ -66,8 +66,8 @@ module Importers
       data = { court_case_id: court_case_id, party_id: party_id }
       CaseParty.find_or_create_by!(data)
     rescue StandardError
-      create_log('case_parties', "#{court_case.case_number} resulted in an error when creating case party relationship",
-                 data)
+      logs.create_log('case_parties', "#{court_case.case_number} resulted in an error when creating case party relationship",
+                      data)
     end
   end
 end

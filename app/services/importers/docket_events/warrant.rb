@@ -21,13 +21,13 @@ module Importers
         raise StandardError if docket_event.docket_event_type.code != 'WAI$'
 
         w = ::Warrant.find_or_initialize_by(docket_event_id: docket_event.id)
-        w.judge_id = get_judge_id
-        w.bond = get_bond
-        w.comment = get_comment
+        w.judge_id = fetch_judge_id
+        w.bond = fetch_bond
+        w.comment = fetch_comment
         begin
           w.save!
         rescue
-          create_log('warrants', 'Error saving the warrant', desc)
+          logs.create_log('warrants', 'Error saving the warrant', desc)
         end
 
         logs.update_logs
@@ -37,18 +37,18 @@ module Importers
         docket_event.description
       end
 
-      def get_comment
+      def fetch_comment
         desc&.split('COMMENT:')[1]
       end
 
-      def get_bond
+      def fetch_bond
         desc = docket_event.description
-        money = desc.scan /$?[0-9]{1,3}(?:,?[0-9]{3})*\.[0-9]{2}/
+        money = desc.scan(/$?[0-9]{1,3}(?:,?[0-9]{3})*\.[0-9]{2}/)
         m = Monetize.parse(money.first)
         m.dollars&.to_i
       end
 
-      def get_judge_id
+      def fetch_judge_id
         begin
           judge_string = desc&.split('JUDGE:')[1]&.split('-')[0]
           judge = matcher.find(judge_string, threshold: 0.8)

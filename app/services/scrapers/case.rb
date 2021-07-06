@@ -1,45 +1,37 @@
-module Scraper
+# Scraper
+module Scrapers
+  # Handles which cases to update first
   class Case
-    def initialize
-      scraper = OscnScraper::Search.new
-      date = Date.current
-      rescued = 0
+    attr_reader :limit
+
+    def initialize(weekday_limit: 10_000)
+      @limit = 1000
     end
 
     def self.perform
       new.perform
     end
 
-    def new_cases
-      # TODO: get cases that were filed in the past 7 days to ensure they are in the database
-    end
-
-    def high_priority_cases
-      # TODO: Get cases that have been on the docket in past 7 days
-    end
-
-    def mid_priority_cases
-      # TODO: Get open cases
-    end
-
-    def low_priority_cases
-      # TODO: Closed cases that have not been scraped in a while
-    end
-
     def perform
-      cases.without_html.each_with_index do |c, _i|
-        county = c.county.name
-        number = c.case_number
-        puts "Pulling case: #{number} for #{county}"
-        html = scraper.fetch_case_by_number(county, number)
-        c.update(html: html, scraped_at: Time.current)
+      # TODO: How to make sure that if a day is missed, it gets captured later?
+      # TODO: Capture results and send via email or slack message
+      Importers::NewCases.perform(Date.today)
+      Scrapers::HighPriority.perform(days_ago: 1)
+      Scrapers::MediumPriority.perform
+      Scrapers::LowPriority.perform
+      update_cases
+    end
+
+    private
+
+    def update_cases
+      recently_updated = ::CourtCase.last_scraped(12.hours.ago)
+      bar = ProgressBar.new(recently_updated.count)
+      puts "Updating information for #{recently_updated.count} cases"
+      recently_updated.each do |c|
+        Importers::CourtCase.perform(c)
         bar.increment!
-      rescue Net::OpenTimeout, Errno::ETIMEDOUT
-        rescued += 1
-        sleep 10
-        next
       end
-      ap rescued
     end
   end
 end

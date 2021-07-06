@@ -1,0 +1,24 @@
+module Scrapers
+  # Lowest priority for update
+  class LowPriority
+    attr_accessor :cases
+
+    def initialize(days_ago: 90, limit: 2500)
+      @cases = CourtCase.closed.older_than(days_ago.days.ago).limit(limit)
+    end
+
+    def self.perform(days_ago: 90, limit: 2500)
+      new(days_ago: days_ago, limit: limit).perform
+    end
+
+    def perform
+      puts "Pulling #{cases.count} low priority cases"
+      bar = ProgressBar.new(cases.count)
+
+      cases.each do |c|
+        Importers::CaseHtml.perform(c.case_number)
+        bar.increment!
+      end
+    end
+  end
+end

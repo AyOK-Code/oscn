@@ -4,7 +4,7 @@ module Importers
     attr_reader :judge_name
 
     def initialize(judge_name, court_case, logs)
-      @judge_name = judge_name
+      @judge_matcher = Matchers::Judge.new(judge_name)
     end
 
     def self.perform(judge_name, court_case, logs)
@@ -12,6 +12,7 @@ module Importers
     end
 
     def perform
+      judge_matcher.judge_id
       # TODO: Fuzzy search for judge name
       # TODO: If judge does not exist, create one
       # TODO: Log if judge is not active

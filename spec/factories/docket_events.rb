@@ -1,9 +1,11 @@
 FactoryBot.define do
   factory :docket_event do
     court_case
-    event_on { "2021-06-02" }
+    event_on { Faker::Time.between(from: DateTime.now - 100, to: DateTime.now) }
     docket_event_type
-    description { "MyText" }
-    amount { 1 }
+    description { Faker::Lorem.paragraph }
+
+    # TODO: Trait for warrant
+    # TODO: Trait for any docket event type that has unique data extraction
   end
 end

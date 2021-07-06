@@ -1,8 +1,7 @@
 FactoryBot.define do
   factory :judge do
-    name { 'MyString' }
-    courthouse { 'MyString' }
-    judge_type { 'MyString' }
-    county { nil }
+    name { Faker::Name.full_name }
+    judge_type { ['Special', 'Inactive', 'District'].sample }
+    county
   end
 end

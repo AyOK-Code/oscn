@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :warrant do
-    docket_events { nil }
-    judges { nil }
-    bond { 1 }
-    comment { "MyString" }
+    docket_event
+    judge
+    bond { Faker::Number.number(digits: rand(3..5)) }
+    comment { Faker::Lorem.paragraph }
   end
 end

@@ -4,9 +4,6 @@ namespace :scrape do
   desc "Scrape cases data"
   task :court_cases, [:year] do |_t, args|
     # TODO: Change to import task
-    # TODO: Move to configuration
-    CASE_TYPES = ['CF','CM','TR','TRI','AM','CPC','DTR']
-
     year = args.year.to_i
     scraper = OscnScraper::BaseScraper.new
     dates = (Date.new(year, 1, 1)..Date.new(year, 12, 31)).to_a
@@ -38,7 +35,6 @@ namespace :scrape do
           c.save!
         end
       end
-      bar.increment!
     end
   end
 end

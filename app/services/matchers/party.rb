@@ -1,6 +1,6 @@
-module Importers
+module Matchers
   # Finds the correct party
-  class PartyMatcher
+  class Party
     attr_reader :court_case
 
     def initialize(court_case)

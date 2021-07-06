@@ -1,9 +1,9 @@
 require 'uri'
 require 'oscn_scraper'
 
-namespace :scrape do
+namespace :nightly do
   desc "Scrape cases data"
-  task :case_html do
-    Scraper::Case.perform
+  task :update do
+    Scrapers::Case.perform
   end
 end

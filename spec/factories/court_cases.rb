@@ -4,10 +4,26 @@ FactoryBot.define do
     county
     case_type
     case_number { "CF-2020-#{Faker::Number.between(from: 1, to: 1000)}" }
-    filed_on { Faker::Date.between(from: 2.years.ago, to: Date.today) }
+    filed_on { Faker::Date.between(from: 2.years.ago, to: Date.current) }
+
+    trait :invalid do
+      case_number { 'CF-2020-0' }
+    end
 
     trait :with_html do
-      html { '<div></div>' }
+      after(:create) { |court_case| create(:case_html, court_case: court_case) }
+    end
+
+    trait :with_docket_event do
+      after(:create) { |court_case| create(:docket_event, court_case: court_case) }
+    end
+
+    trait :active do
+      closed_on { nil }
+    end
+
+    trait :inactive do
+      closed_on { Faker::Date.between(from: 2.years.ago, to: Date.current) }
     end
   end
 end
