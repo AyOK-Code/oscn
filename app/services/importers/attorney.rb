@@ -47,7 +47,7 @@ module Importers
         }
         CounselParty.find_or_create_by(data)
       else
-        logs.create_log('counsel', "#{court_case.case_number} resulted in an error when creating the counsel", attorney_data)
+        logs.create_log('counsel', "#{court_case.case_number}: error when creating the counsel", attorney_data)
       end
     end
   end

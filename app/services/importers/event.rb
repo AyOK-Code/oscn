@@ -27,7 +27,7 @@ module Importers
       begin
         e.save!
       rescue StandardError
-        logs.create_log('events', "#{court_case.case_number} resulted in an error when creating the event", event_data)
+        logs.create_log('events', "#{court_case.case_number}: error when creating the event", event_data)
       end
     end
 
