@@ -2,12 +2,6 @@
 module Scrapers
   # Handles which cases to update first
   class Case
-    attr_reader :limit
-
-    def initialize(weekday_limit: 10_000)
-      @limit = 1000
-    end
-
     def self.perform
       new.perform
     end
@@ -15,7 +9,7 @@ module Scrapers
     def perform
       # TODO: How to make sure that if a day is missed, it gets captured later?
       # TODO: Capture results and send via email or slack message
-      Importers::NewCases.perform(Date.today)
+      Scrapers::NewCases.perform(Date.today)
       Scrapers::HighPriority.perform(days_ago: 1)
       Scrapers::MediumPriority.perform
       Scrapers::LowPriority.perform

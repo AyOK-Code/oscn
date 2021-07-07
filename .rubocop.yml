@@ -18,3 +18,5 @@ Style/MutableConstant:
   Enabled: false
 Style/WordArray:
   Enabled: False
+Metrics/MethodLength:
+  Max: 15
