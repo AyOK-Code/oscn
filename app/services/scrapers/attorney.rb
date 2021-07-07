@@ -38,19 +38,59 @@ module Scrapers
     end
 
     def save_attorney(row)
-      c = Counsel.find_or_initialize_by(bar_number: row.css('#gv-field-6-9').text.to_i)
-      c.assign_attributes({
-                            first_name: row.css('#gv-field-6-1').text,
-                            middle_name: row.css('#gv-field-6-2').text,
-                            last_name: row.css('#gv-field-6-3').text,
-                            city: row.css('#gv-field-6-4').text,
-                            state: row.css('#gv-field-6-11').text,
-                            member_type: row.css('#gv-field-6-5').text,
-                            member_status: row.css('#gv-field-6-6').text,
-                            admit_date: Date.strptime(row.css('#gv-field-6-8').text, '%m/%d/%Y'),
-                            ok_bar: true
-                          })
+      c = Counsel.find_or_initialize_by(bar_number: bar_number(row))
+      c.assign_attributes(extract_data(row))
       c.save
+    end
+
+    def extract_data(row)
+      {
+        first_name: first_name(row),
+        middle_name: middle_name(row),
+        last_name: last_name(row),
+        city: city(row),
+        state: state(row),
+        member_type: member_type(row),
+        member_status: member_status(row),
+        admit_date: admit_date(row),
+        ok_bar: true
+      }
+    end
+
+    def first_name(row)
+      row.css('#gv-field-6-1').text
+    end
+
+    def middle_name(row)
+      row.css('#gv-field-6-2').text
+    end
+
+    def last_name(row)
+      row.css('#gv-field-6-3').text
+    end
+
+    def city(row)
+      row.css('#gv-field-6-4').text
+    end
+
+    def state(row)
+      row.css('#gv-field-6-11').text
+    end
+
+    def member_type(row)
+      row.css('#gv-field-6-5').text
+    end
+
+    def member_status(row)
+      row.css('#gv-field-6-6').text
+    end
+
+    def admit_date(row)
+      Date.strptime(row.css('#gv-field-6-8').text, '%m/%d/%Y')
+    end
+
+    def bar_number(row)
+      row.css('#gv-field-6-9').text.to_i
     end
 
     def page_count(parsed_data)

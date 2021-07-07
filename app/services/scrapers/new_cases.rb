@@ -1,4 +1,4 @@
-module Importers
+module Scrapers
   class NewCases
     attr_reader :case_types, :counties, :date
     attr_accessor :scraper
@@ -38,6 +38,7 @@ module Importers
 
         c.save!
       end
+      sleep 2
     end
   end
 end

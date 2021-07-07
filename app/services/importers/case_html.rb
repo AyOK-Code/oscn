@@ -17,6 +17,7 @@ module Importers
 
       html = search.fetch_case_by_number(court_case.county.name, case_number)
       save_html(court_case, html)
+      sleep 2
     end
 
     private
