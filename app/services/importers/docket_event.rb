@@ -18,33 +18,30 @@ module Importers
 
     def perform
       expected_events = docket_event_json.count
-      docket_event_json.each do |docket_event|
-        save_docket_event(docket_event)
+      docket_event_json.each_with_index do |docket_event, index|
+        save_docket_event(docket_event, index)
       end
       docket_events = @court_case.docket_events.count
-      if docket_events != expected_events
-        logs.create_log('docket_events', 'DocketEventCountError', 'The number of docket events created for the case does not match the expected number.')
-      end
+
+      logs.create_log('docket_events', 'DocketEventCountError', 'The number of docket events created for the case does not match the expected number.') if docket_events != expected_events
     end
 
-    def save_docket_event(docket_event_data)
+    def save_docket_event(docket_event_data, index)
       event_type_id = find_or_create_docket_event_type(docket_event_data[:code])
       party_id = party_matcher.party_id_from_name(docket_event_data[:party])
 
       docket_event = ::DocketEvent.find_or_initialize_by(
         court_case_id: court_case.id,
         event_on: docket_event_data[:date],
+        row_index: index,
         docket_event_type_id: event_type_id,
         count: docket_event_data[:count].blank? ? nil : docket_event_data[:count],
         party_id: party_id,
         description: docket_event_data[:description],
-        amount: currency_to_number(docket_event_data[:amount]),
+        amount: currency_to_number(docket_event_data[:amount])
       )
       if docket_event.docket_event_type.code == 'ACCOUNT'
-        docket_event.assign_attributes({
-          adjustment: calculate_adjustment(docket_event_data),
-          payment: calculate_payment(docket_event_data)
-        })
+        docket_event = Importers::DocketEvents::Fee.perform(docket_event, docket_event_data, court_case.case_number)
       end
       docket_event.save!
     end
@@ -61,31 +58,6 @@ module Importers
 
     def currency_to_number(currency)
       currency.to_s.gsub(/[$,]/, '').to_f
-    end
-
-    def calculate_payment(docket_event_data)
-      regex = /PAID:\s*?\$\s*?((\d|,)+\.\d+)/
-      payment = regex.match(docket_event_data[:description])
-      return if payment.nil?
-
-      payment = payment[1]&.to_f
-      payment
-    end
-
-    def calculate_adjustment(docket_event_data)
-      return if docket_event_data[:description].exclude? ('ADJUSTING ENTRY')
-      data = docket_event_data[:description].split(court_case.case_number)
-      adjustment = 0.to_f
-      money_regex = /(-|\$)?(\d|,)+\.\d{2}/
-
-      data.each do |string|
-        money = money_regex.match(string)
-        next if money.nil?
-
-        m = Monetize.parse(money[0])
-        adjustment += m.dollars&.to_f
-      end
-      adjustment
     end
   end
 end
