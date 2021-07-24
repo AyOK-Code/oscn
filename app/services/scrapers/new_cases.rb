@@ -7,7 +7,7 @@ module Scrapers
       @case_types = CaseType.where(abbreviation: CASE_TYPES).pluck(:abbreviation, :id).to_h
       @counties = County.pluck(:name, :id).to_h
       @date = date
-      @scraper = OscnScraper::BaseScraper.new
+      @scraper = OscnScraper::Requestor::Report.new({county: 'Oklahoma', date: date})
     end
 
     def self.perform(date)
@@ -15,7 +15,7 @@ module Scrapers
     end
 
     def perform
-      html = scraper.fetch_daily_filings(date)
+      html = scraper.fetch_daily_filings
       data = Nokogiri::HTML(html.body)
       puts "Pulling cases from #{date.strftime('%m/%d/%Y')}"
 

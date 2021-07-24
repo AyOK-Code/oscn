@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_07_174739) do
+ActiveRecord::Schema.define(version: 2021_07_23_153343) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -116,14 +116,6 @@ ActiveRecord::Schema.define(version: 2021_07_07_174739) do
     t.index ["oscn_id"], name: "index_court_cases_on_oscn_id", unique: true
   end
 
-  create_table "docket_event_fees", force: :cascade do |t|
-    t.bigint "docket_event_id", null: false
-    t.decimal "amount", default: "0.0", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["docket_event_id"], name: "index_docket_event_fees_on_docket_event_id"
-  end
-
   create_table "docket_event_types", force: :cascade do |t|
     t.string "code"
     t.datetime "created_at", precision: 6, null: false
@@ -150,6 +142,7 @@ ActiveRecord::Schema.define(version: 2021_07_07_174739) do
     t.index ["docket_event_type_id"], name: "index_docket_events_on_docket_event_type_id"
     t.index ["party_id"], name: "index_docket_events_on_party_id"
     t.index ["payment"], name: "index_docket_events_on_payment"
+    t.index ["row_index", "court_case_id"], name: "index_docket_events_on_row_index_and_court_case_id", unique: true
   end
 
   create_table "events", force: :cascade do |t|
@@ -196,6 +189,7 @@ ActiveRecord::Schema.define(version: 2021_07_07_174739) do
     t.string "last_name"
     t.integer "birth_month"
     t.integer "birth_year"
+    t.string "suffix"
     t.index ["oscn_id"], name: "index_parties_on_oscn_id", unique: true
     t.index ["party_type_id"], name: "index_parties_on_party_type_id"
   end
@@ -258,7 +252,6 @@ ActiveRecord::Schema.define(version: 2021_07_07_174739) do
   add_foreign_key "court_cases", "case_types"
   add_foreign_key "court_cases", "counties"
   add_foreign_key "court_cases", "judges", column: "current_judge_id"
-  add_foreign_key "docket_event_fees", "docket_events"
   add_foreign_key "docket_events", "court_cases"
   add_foreign_key "docket_events", "docket_event_types"
   add_foreign_key "docket_events", "parties"

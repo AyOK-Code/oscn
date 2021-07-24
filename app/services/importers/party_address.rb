@@ -9,15 +9,15 @@ module Importers
       @party = party_object
     end
 
-    def self.perform(parsed_html)
+    def self.perform(row, party)
       new(row, party).perform
     end
 
-    def perform(row, party)
+    def perform
       address_columns = row.children.css('td')
-      next if address_columns.count == 1 # No records found
+      return if address_columns.count == 1 # No records found
 
-      next if address_columns[3].text.blank? # Skip if no address information found
+      return if address_columns[3].text.blank? # Skip if no address information found
 
       begin
         address_string = address_columns[3].text.split(',')
@@ -34,7 +34,7 @@ module Importers
         # TODO: Create log on the Parties table
       end
 
-      PartyAddress.find_or_create_by(address)
+      ::PartyAddress.find_or_create_by(address)
     end
   end
 end

@@ -24,7 +24,6 @@ module Importers
         ::Importers::Count.perform(data[:counts], court_case, logs)
         ::Importers::Event.perform(data[:events], court_case, logs)
         ::Importers::Attorney.perform(data[:attorneys], court_case, logs)
-        # binding.pry
         ::Importers::DocketEvent.perform(data[:docket_events], court_case, logs)
         logs.update_logs
       end

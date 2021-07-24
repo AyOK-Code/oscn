@@ -40,10 +40,13 @@ module Importers
         description: docket_event_data[:description],
         amount: currency_to_number(docket_event_data[:amount])
       )
+      docket_event.save!
       if docket_event.docket_event_type.code == 'ACCOUNT'
         docket_event = Importers::DocketEvents::Fee.perform(docket_event, docket_event_data, court_case.case_number)
       end
-      docket_event.save!
+      if docket_event.docket_event_type.code === 'WAI$'
+        docket_event = Importers::DocketEvents::Warrant.perform(docket_event)
+      end
     end
 
     def find_or_create_docket_event_type(docket_event_type)
