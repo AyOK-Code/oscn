@@ -4,28 +4,27 @@ module Importers
     attr_accessor :results, :parties
 
     def initialize
-      @parties = ::Party.without_birthday.sample
+      @parties = ::Party.without_birthday
     end
 
     def self.perform
       new.perform
     end
 
-    def fetch_data
-      begin
-        data = OscnScraper::Party.fetch_party('Oklahoma', party.oscn_id)
-      rescue StandardError
-        # TODO: Log error to parties log
-      end
-    end
+    def fetch_data; end
 
     # TODO: Refactor class
     def perform
       bar = ProgressBar.new(parties.count)
       parties.each do |party|
         bar.increment!
-        data = fetch_data
-        parsed_html = Nokogiri::HTML(data.body)
+        begin
+          data = OscnScraper::Importers::Party.fetch_party('Oklahoma', party.oscn_id)
+          parsed_html = Nokogiri::HTML(data.body)
+        rescue StandardError
+          next
+          # TODO: Log error to parties log
+        end
         personal_columns = personal_html(parsed_html)
 
         string = personal_columns[2]&.text&.split('/')
@@ -40,17 +39,18 @@ module Importers
 
         address_row.each_with_index do |row, index|
           next if index.zero? # Skip header
+
           PartyAddress.perform(row, party)
         end
       end
+    end
 
-      def personal_html(parsed_html)
-        parsed_html.css('.personal tr td')
-      end
+    def personal_html(parsed_html)
+      parsed_html.css('.personal tr td')
+    end
 
-      def address_html(parsed_html)
-        parsed_html.css('.addresses tr')
-      end
+    def address_html(parsed_html)
+      parsed_html.css('.addresses tr')
     end
   end
 end

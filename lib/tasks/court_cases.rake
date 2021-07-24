@@ -5,15 +5,14 @@ namespace :scrape do
   task :court_cases, [:year] do |_t, args|
     # TODO: Change to import task
     year = args.year.to_i
-    scraper = OscnScraper::BaseScraper.new
+    scraper = OscnScraper::Requestor::Report.new({county: 'Oklahoma', date: date})
     dates = (Date.new(year, 1, 1)..Date.new(year, 12, 31)).to_a
     case_types = CaseType.where(abbreviation: CASE_TYPES).pluck(:abbreviation, :id).to_h
     counties = County.pluck(:name, :id).to_h
     bar = ProgressBar.new(dates.count)
 
-
     dates.each do |date|
-      html = scraper.fetch_daily_filings(date)
+      html = scraper.fetch_daily_filings
       data = Nokogiri::HTML(html.body)
       puts "Pulling cases from #{date.strftime('%m/%d/%Y')}"
 

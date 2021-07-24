@@ -1,11 +1,10 @@
 module Scrapers
   # Returns cases on the docket for the past X days
   class RecentCases
-    attr_reader :days_ago, :case_types, :scraper, :case_changes
+    attr_reader :days_ago, :case_types, :case_changes
     attr_accessor :recent_cases
 
     def initialize(days_ago: 7)
-      @scraper = OscnScraper::BaseScraper.new
       @case_changes = OscnScraper::Parsers::CaseChanges
       @case_types = CaseType.active
       @recent_cases = []
@@ -26,7 +25,9 @@ module Scrapers
 
     def fetch_docket_for_date(date)
       case_types.each do |case_type_oscn_id|
-        request = scraper.events_scheduled('Oklahoma', case_type_oscn_id, date)
+        # TODO: Pull out county to configuration
+        scraper = OscnScraper::Requestor::Report.new({county: 'Oklahoma', case_type_id: case_type_oscn_id, date: date})
+        request = scraper.events_scheduled
         data = case_changes.new(Nokogiri::HTML.parse(request.body)).parse
         next if data.empty?
 
