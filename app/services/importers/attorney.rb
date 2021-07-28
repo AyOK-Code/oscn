@@ -27,11 +27,11 @@ module Importers
       bar_number = attorney_data[:bar_number]&.to_i
       name = attorney_data[:name].downcase
 
-      if bar_number.present?
-        c = Counsel.find_or_initialize_by(bar_number: bar_number)
-      else
-        c = Counsel.find_or_initialize_by(name: name)
-      end
+      c = if bar_number.present?
+            Counsel.find_or_initialize_by(bar_number: bar_number)
+          else
+            Counsel.find_or_initialize_by(name: name)
+          end
 
       c.assign_attributes({
                             name: name,
@@ -39,13 +39,15 @@ module Importers
                             bar_number: bar_number
                           })
       if c.save
-        party_name = attorney_data[:represented_parties].squish
-        data = {
-          court_case_id: court_case.id,
-          counsel_id: c.id,
-          party_id: party_matcher.party_id_from_name(party_name)
-        }
-        CounselParty.find_or_create_by(data)
+        party_name = attorney_data[:represented_parties].each do |party|
+          party.squish
+          data = {
+            court_case_id: court_case.id,
+            counsel_id: c.id,
+            party_id: party_matcher.party_id_from_name(party_name)
+          }
+          CounselParty.find_or_create_by(data)
+        end
       else
         logs.create_log('counsel', "#{court_case.case_number}: error when creating the counsel", attorney_data)
       end

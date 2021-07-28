@@ -19,19 +19,19 @@ module Importers
                                          adjustment: calculate_adjustment(data),
                                          payment: calculate_payment(data)
                                        })
-        docket_event
+        docket_event.save
       end
 
       def calculate_payment(docket_event_data)
         regex = /PAID:\s*?\$\s*?((\d|,)+\.\d+)/
         payment = regex.match(docket_event_data[:description])
-        return if payment.nil?
+        return 0 if payment.nil?
 
         payment[1]&.to_f
       end
 
       def calculate_adjustment(docket_event_data)
-        return if docket_event_data[:description].exclude?('ADJUSTING ENTRY')
+        return 0 if docket_event_data[:description].exclude?('ADJUSTING ENTRY')
 
         data = docket_event_data[:description].split(case_number)
         adjustment = 0.to_f

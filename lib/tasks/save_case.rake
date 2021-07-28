@@ -1,6 +1,6 @@
 namespace :save do
   desc 'Scrape court_cases data'
-  task :court_cases do
+  task court_cases: [:environment] do
     court_cases = CourtCase.valid.without_docket_events.with_html
     bar = ProgressBar.new(court_cases.count)
 
@@ -16,7 +16,7 @@ namespace :save do
 
     court_cases.each do |c|
       c.build_case_html unless c.case_html
-      case_search = OscnScraper::Requestor::Case.new({county: c.county.name, number: c.case_number})
+      case_search = OscnScraper::Requestor::Case.new({ county: c.county.name, number: c.case_number })
       sleep 1
       request = case_search.fetch_case_by_number
       c.case_html.update({

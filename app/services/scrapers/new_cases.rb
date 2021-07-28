@@ -4,7 +4,7 @@ module Scrapers
     attr_accessor :scraper
 
     def initialize(date)
-      @case_types = CaseType.where(abbreviation: CASE_TYPES).pluck(:abbreviation, :id).to_h
+      @case_types = CaseType.oscn_id_mapping
       @counties = County.pluck(:name, :id).to_h
       @date = date
       @scraper = OscnScraper::Requestor::Report.new({county: 'Oklahoma', date: date})
