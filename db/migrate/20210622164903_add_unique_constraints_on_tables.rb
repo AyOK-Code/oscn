@@ -5,6 +5,5 @@ class AddUniqueConstraintsOnTables < ActiveRecord::Migration[6.0]
     add_index :verdicts, :name, unique: true
     add_index :counsels, :bar_number, where: 'bar_number IS NOT NULL', unique: true
     add_index :party_types, :name, unique: true
-    add_index :parties, :oscn_id, unique: true
   end
 end

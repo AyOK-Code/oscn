@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_23_153343) do
+ActiveRecord::Schema.define(version: 2021_07_27_201719) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -133,8 +133,8 @@ ActiveRecord::Schema.define(version: 2021_07_23_153343) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "party_id"
     t.integer "count"
-    t.decimal "payment", default: "0.0"
-    t.decimal "adjustment", default: "0.0"
+    t.decimal "payment", default: "0.0", null: false
+    t.decimal "adjustment", default: "0.0", null: false
     t.integer "row_index", null: false
     t.index ["adjustment"], name: "index_docket_events_on_adjustment"
     t.index ["amount"], name: "index_docket_events_on_amount", where: "(amount <> (0)::numeric)"
@@ -260,22 +260,8 @@ ActiveRecord::Schema.define(version: 2021_07_23_153343) do
   add_foreign_key "judges", "counties"
   add_foreign_key "parties", "party_types"
   add_foreign_key "party_addresses", "parties"
-  add_foreign_key "warrants", "docket_events"
   add_foreign_key "warrants", "judges"
 
-  create_view "case_stats", sql_definition: <<-SQL
-      SELECT court_cases.id,
-      (court_cases.closed_on - court_cases.filed_on) AS length_of_case_in_days,
-      ( SELECT count(*) AS count
-             FROM counts
-            WHERE (court_cases.id = counts.court_case_id)) AS counts_count,
-      ( SELECT count(*) AS count
-             FROM ((case_parties
-               JOIN parties ON ((case_parties.party_id = parties.id)))
-               JOIN party_types ON ((parties.party_type_id = party_types.id)))
-            WHERE ((court_cases.id = case_parties.court_case_id) AND ((party_types.name)::text = 'defendant'::text))) AS defendant_count
-     FROM court_cases;
-  SQL
   create_view "payments", sql_definition: <<-SQL
       SELECT court_cases.id AS court_case_id,
       docket_events.party_id,
@@ -289,5 +275,42 @@ ActiveRecord::Schema.define(version: 2021_07_23_153343) do
        JOIN party_types ON ((parties.party_type_id = party_types.id)))
     WHERE ((party_types.name)::text = 'defendant'::text)
     GROUP BY docket_events.party_id, court_cases.id;
+  SQL
+  create_view "case_stats", sql_definition: <<-SQL
+      SELECT court_cases.id,
+      (court_cases.closed_on - court_cases.filed_on) AS length_of_case_in_days,
+      ( SELECT count(*) AS count
+             FROM counts
+            WHERE (court_cases.id = counts.court_case_id)) AS counts_count,
+      ( SELECT count(*) AS count
+             FROM ((case_parties
+               JOIN parties ON ((case_parties.party_id = parties.id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+            WHERE ((court_cases.id = case_parties.court_case_id) AND ((party_types.name)::text = 'defendant'::text))) AS defendant_count,
+          CASE
+              WHEN (( SELECT count(*) AS count
+                 FROM docket_events
+                WHERE (docket_events.court_case_id = court_cases.id)) > 0) THEN true
+              ELSE false
+          END AS is_tax_intercepted
+     FROM court_cases;
+  SQL
+  create_view "report_fines_and_fees", sql_definition: <<-SQL
+      SELECT court_cases.case_number,
+      case_types.id AS case_type_id,
+      case_types.abbreviation AS case_type_abbreviation,
+      case_types.name AS case_type,
+      docket_events.event_on,
+      docket_event_types.id AS docket_event_types_id,
+      docket_event_types.code,
+      docket_events.description,
+      docket_events.amount,
+      docket_events.payment,
+      docket_events.adjustment
+     FROM (((docket_events
+       JOIN docket_event_types ON ((docket_event_types.id = docket_events.docket_event_type_id)))
+       JOIN court_cases ON ((court_cases.id = docket_events.court_case_id)))
+       JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
+    WHERE ((docket_events.amount <> (0)::numeric) OR (docket_events.adjustment <> (0)::numeric) OR (docket_events.payment <> (0)::numeric));
   SQL
 end

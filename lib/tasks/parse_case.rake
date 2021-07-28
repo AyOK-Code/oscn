@@ -10,7 +10,7 @@ namespace :parse do
     c = CourtCase.find(court_case_id)
 
     puts "Parsing data for: #{c.case_number}"
-    parsed_html = Nokogiri::HTML(c.html)
+    parsed_html = Nokogiri::HTML(c.html.body)
     parser = OscnScraper::Parsers::BaseParser.new(parsed_html)
     data = parser.build_object
     ap data[:docket_events]
