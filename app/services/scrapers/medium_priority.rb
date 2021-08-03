@@ -3,7 +3,7 @@ module Scrapers
   class MediumPriority
     attr_accessor :cases, :days_ago
 
-    def initialize(days_ago: 14, limit: 7500)
+    def initialize(days_ago: 14, limit: 2500)
       @days_ago = days_ago
       @cases = CourtCase.active.older_than(14.days.ago).limit(limit)
     end

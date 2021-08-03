@@ -4,17 +4,17 @@ module Importers
     attr_accessor :court_case, :party_matcher, :logs
     attr_reader :counts_json, :pleas, :verdicts
 
-    def initialize(counts_json, court_case, logs)
+    def initialize(counts_json, court_case, pleas, verdicts, logs)
       @counts_json = counts_json
       @court_case = court_case
-      @pleas = Plea.pluck(:name, :id).to_h
-      @verdicts = Verdict.pluck(:name, :id).to_h
+      @pleas = pleas || Plea.pluck(:name, :id).to_h
+      @verdicts = verdicts || Verdict.pluck(:name, :id).to_h
       @party_matcher = Matchers::Party.new(court_case)
       @logs = logs
     end
 
-    def self.perform(counts_json, court_case, logs)
-      new(counts_json, court_case, logs).perform
+    def self.perform(counts_json, court_case, pleas, verdicts, logs)
+      new(counts_json, court_case, pleas, verdicts, logs).perform
     end
 
     def perform

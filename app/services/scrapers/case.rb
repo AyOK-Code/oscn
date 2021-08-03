@@ -14,6 +14,7 @@ module Scrapers
       Scrapers::MediumPriority.perform
       Scrapers::LowPriority.perform
       update_cases
+      refresh_materialized_views
     end
 
     private
@@ -26,6 +27,10 @@ module Scrapers
         Importers::CourtCase.perform(c)
         bar.increment!
       end
+    end
+
+    def refresh_materialized_views
+      CreateReportFinesAndFees.refresh
     end
   end
 end
