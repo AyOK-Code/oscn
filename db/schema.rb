@@ -295,15 +295,11 @@ ActiveRecord::Schema.define(version: 2021_07_27_201719) do
           END AS is_tax_intercepted
      FROM court_cases;
   SQL
-  create_view "report_fines_and_fees", sql_definition: <<-SQL
-      SELECT court_cases.case_number,
+  create_view "report_fines_and_fees", materialized: true, sql_definition: <<-SQL
+      SELECT court_cases.id AS court_case_id,
       case_types.id AS case_type_id,
-      case_types.abbreviation AS case_type_abbreviation,
-      case_types.name AS case_type,
-      docket_events.event_on,
       docket_event_types.id AS docket_event_types_id,
-      docket_event_types.code,
-      docket_events.description,
+      docket_events.event_on,
       docket_events.amount,
       docket_events.payment,
       docket_events.adjustment
@@ -313,4 +309,9 @@ ActiveRecord::Schema.define(version: 2021_07_27_201719) do
        JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
     WHERE ((docket_events.amount <> (0)::numeric) OR (docket_events.adjustment <> (0)::numeric) OR (docket_events.payment <> (0)::numeric));
   SQL
+  add_index "report_fines_and_fees", ["case_type_id"], name: "index_report_fines_and_fees_on_case_type_id"
+  add_index "report_fines_and_fees", ["court_case_id"], name: "index_report_fines_and_fees_on_court_case_id"
+  add_index "report_fines_and_fees", ["docket_event_types_id"], name: "index_report_fines_and_fees_on_docket_event_types_id"
+  add_index "report_fines_and_fees", ["event_on"], name: "index_report_fines_and_fees_on_event_on"
+
 end
