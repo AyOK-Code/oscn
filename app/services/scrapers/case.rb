@@ -17,14 +17,16 @@ module Scrapers
       refresh_materialized_views
     end
 
-    private
-
     def update_cases
-      recently_updated = ::CourtCase.with_html.last_scraped(12.hours.ago)
+      recently_updated = ::CourtCase.with_html.last_scraped(36.hours.ago)
       bar = ProgressBar.new(recently_updated.count)
+      docket_event_types = DocketEventType.pluck(:code, :id).to_h
+      pleas = Plea.pluck(:name, :id).to_h
+      verdicts = Verdict.pluck(:name, :id).to_h
       puts "Updating information for #{recently_updated.count} cases"
+
       recently_updated.each do |c|
-        Importers::CourtCase.perform(c)
+        Importers::CourtCase.perform(c, docket_event_types, pleas, verdicts)
         bar.increment!
       end
     end
