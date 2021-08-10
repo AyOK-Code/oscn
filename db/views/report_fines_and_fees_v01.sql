@@ -1,15 +1,12 @@
 SELECT
-	court_cases.case_number,
+	court_cases.id as court_case_id,
 	case_types.id as case_type_id,
-	case_types.abbreviation as case_type_abbreviation,
-	case_types.name as case_type,
-	event_on,
 	docket_event_types.id as docket_event_types_id,
-	docket_event_types.code,
-	docket_events.description,
+	event_on,
 	amount,
 	payment,
-	adjustment
+	adjustment,
+	(CASE WHEN (SELECT COUNT(*) FROM docket_events JOIN docket_event_types on docket_events.docket_event_type_id = docket_event_types.id where docket_events.court_case_id = court_cases.id AND docket_event_types.code = 'CTRS') > 0 THEN true ELSE false END) AS is_tax_intercepted
 FROM
 	docket_events
 	JOIN docket_event_types ON docket_event_types.id = docket_events.docket_event_type_id

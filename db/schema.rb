@@ -283,24 +283,28 @@ ActiveRecord::Schema.define(version: 2021_08_10_205726) do
           END AS is_tax_intercepted
      FROM court_cases;
   SQL
-  create_view "report_fines_and_fees", sql_definition: <<-SQL
-      SELECT court_cases.case_number,
+  create_view "report_fines_and_fees", materialized: true, sql_definition: <<-SQL
+      SELECT court_cases.id AS court_case_id,
       case_types.id AS case_type_id,
-      case_types.abbreviation AS case_type_abbreviation,
-      case_types.name AS case_type,
-      docket_events.event_on,
       docket_event_types.id AS docket_event_types_id,
-      docket_event_types.code,
-      docket_events.description,
+      docket_events.event_on,
       docket_events.amount,
       docket_events.payment,
-      docket_events.adjustment
+      docket_events.adjustment,
+          CASE
+              WHEN (( SELECT count(*) AS count
+                 FROM (docket_events docket_events_1
+                   JOIN docket_event_types docket_event_types_1 ON ((docket_events_1.docket_event_type_id = docket_event_types_1.id)))
+                WHERE ((docket_events_1.court_case_id = court_cases.id) AND ((docket_event_types_1.code)::text = 'CTRS'::text))) > 0) THEN true
+              ELSE false
+          END AS is_tax_intercepted
      FROM (((docket_events
        JOIN docket_event_types ON ((docket_event_types.id = docket_events.docket_event_type_id)))
        JOIN court_cases ON ((court_cases.id = docket_events.court_case_id)))
        JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
     WHERE ((docket_events.amount <> (0)::numeric) OR (docket_events.adjustment <> (0)::numeric) OR (docket_events.payment <> (0)::numeric));
   SQL
+
   create_view "report_warrants", materialized: true, sql_definition: <<-SQL
       SELECT docket_events.court_case_id,
       docket_events.party_id,
@@ -342,4 +346,9 @@ ActiveRecord::Schema.define(version: 2021_08_10_205726) do
        JOIN court_cases ON ((court_cases.id = docket_events.court_case_id)))
     WHERE (((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'RETWA'::character varying, 'RETBW'::character varying, 'BWIFAP'::character varying, 'CTDFTA'::character varying, 'CTBWFTA'::character varying, 'BWIFA'::character varying, 'BWR'::character varying, 'MOD&O'::character varying, 'O'::character varying, 'WICF'::character varying, 'BWIAR'::character varying, 'OTHERNoFees'::character varying, 'BWIAA'::character varying, 'BFMO'::character varying, 'BWIFC'::character varying, 'BWIFAR'::character varying])::text[])) AND (docket_events.description ~~ '%WARRANT%'::text));
   SQL
+
+  add_index "report_fines_and_fees", ["case_type_id"], name: "index_report_fines_and_fees_on_case_type_id"
+  add_index "report_fines_and_fees", ["court_case_id"], name: "index_report_fines_and_fees_on_court_case_id"
+  add_index "report_fines_and_fees", ["docket_event_types_id"], name: "index_report_fines_and_fees_on_docket_event_types_id"
+  add_index "report_fines_and_fees", ["event_on"], name: "index_report_fines_and_fees_on_event_on"
 end

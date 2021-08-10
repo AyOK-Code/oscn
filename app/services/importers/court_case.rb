@@ -12,8 +12,8 @@ module Importers
       @logs = ::Importers::Logger.new(court_case)
     end
 
-    def self.perform(case_object)
-      new(case_object).perform
+    def self.perform(case_number)
+      new(case_number).perform
     end
 
     def perform
