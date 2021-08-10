@@ -18,7 +18,7 @@ module Scrapers
       puts "#{cases.count} are high priority for update"
 
       cases.each do |case_number|
-        Importers::CaseHtml.perform(case_number)
+        CourtCaseWorker.perform_async(case_number)
         bar.increment!
       end
     end

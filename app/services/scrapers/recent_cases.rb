@@ -4,7 +4,7 @@ module Scrapers
     attr_reader :days_ago, :case_types, :case_changes, :court_cases
     attr_accessor :recent_cases
 
-    def initialize(days_ago: 7)
+    def initialize(days_ago)
       @case_changes = OscnScraper::Parsers::CaseChanges
       @court_cases = CourtCase.pluck(:case_number, :oscn_id).to_h
       @case_types = CaseType.active
@@ -13,7 +13,7 @@ module Scrapers
     end
 
     def self.perform(days_ago: 7)
-      new(days_ago: days_ago).perform
+      new(days_ago).perform
     end
 
     def perform
@@ -32,7 +32,7 @@ module Scrapers
         data = case_changes.new(Nokogiri::HTML.parse(request.body)).parse
 
         data.each do |link|
-          Importers::NewCourtCase.new(link, date).perform if court_cases[link.text].nil?
+          Importers::NewCourtCase.new(link).perform if court_cases[link.text].nil?
         end
         next if data.empty?
 

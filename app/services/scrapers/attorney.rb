@@ -23,7 +23,6 @@ module Scrapers
       pages.each do |page_number|
         process_data(page_number)
         bar.increment!
-        sleep 10
       end
     end
 

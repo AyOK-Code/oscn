@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_27_201719) do
+ActiveRecord::Schema.define(version: 2021_08_10_205726) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -133,8 +133,8 @@ ActiveRecord::Schema.define(version: 2021_07_27_201719) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "party_id"
     t.integer "count"
-    t.decimal "payment", default: "0.0", null: false
-    t.decimal "adjustment", default: "0.0", null: false
+    t.decimal "payment", default: "0.0"
+    t.decimal "adjustment", default: "0.0"
     t.integer "row_index", null: false
     t.index ["adjustment"], name: "index_docket_events_on_adjustment"
     t.index ["amount"], name: "index_docket_events_on_amount", where: "(amount <> (0)::numeric)"
@@ -228,17 +228,6 @@ ActiveRecord::Schema.define(version: 2021_07_27_201719) do
     t.index ["name"], name: "index_verdicts_on_name", unique: true
   end
 
-  create_table "warrants", force: :cascade do |t|
-    t.bigint "docket_event_id", null: false
-    t.bigint "judge_id"
-    t.integer "bond"
-    t.string "comment"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["docket_event_id"], name: "index_warrants_on_docket_event_id"
-    t.index ["judge_id"], name: "index_warrants_on_judge_id"
-  end
-
   add_foreign_key "case_htmls", "court_cases"
   add_foreign_key "case_parties", "court_cases"
   add_foreign_key "case_parties", "parties"
@@ -260,7 +249,6 @@ ActiveRecord::Schema.define(version: 2021_07_27_201719) do
   add_foreign_key "judges", "counties"
   add_foreign_key "parties", "party_types"
   add_foreign_key "party_addresses", "parties"
-  add_foreign_key "warrants", "judges"
 
   create_view "payments", sql_definition: <<-SQL
       SELECT court_cases.id AS court_case_id,
@@ -312,5 +300,46 @@ ActiveRecord::Schema.define(version: 2021_07_27_201719) do
        JOIN court_cases ON ((court_cases.id = docket_events.court_case_id)))
        JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
     WHERE ((docket_events.amount <> (0)::numeric) OR (docket_events.adjustment <> (0)::numeric) OR (docket_events.payment <> (0)::numeric));
+  SQL
+  create_view "report_warrants", materialized: true, sql_definition: <<-SQL
+      SELECT docket_events.court_case_id,
+      docket_events.party_id,
+      docket_events.event_on,
+      docket_event_types.code,
+          CASE docket_event_types.code
+              WHEN 'WICF'::text THEN 'Warrant Intercept'::text
+              WHEN 'WAI$'::text THEN 'Warrant of Arrest Issued'::text
+              WHEN 'CTDFTA'::text THEN 'Defendant Failed to Appear'::text
+              WHEN 'BWIFAP'::text THEN 'Bench Warrant Issued: Failed to Appear and Pay'::text
+              WHEN 'BWIFA'::text THEN 'Bench Warrant Issued: Failed to Appear'::text
+              WHEN 'BWIFC'::text THEN 'Bench Warrant Issued: Failure to Comply'::text
+              WHEN 'RETWA'::text THEN 'Warrant Returned'::text
+              WHEN 'RETBW'::text THEN 'Warrant Returned'::text
+              WHEN 'BWR'::text THEN 'Bench Warrant Recalled'::text
+              WHEN 'BWIAR'::text THEN 'Bench Warrant Issued on Application to Revoke'::text
+              WHEN 'O'::text THEN 'Order Recalling Bench Warrant'::text
+              WHEN 'CTBWFTA'::text THEN 'Defendant Failed to Appear for Arraignment'::text
+              WHEN 'MOD&O'::text THEN 'Motion to Dismiss and Recall Warrant'::text
+              WHEN 'BWIAA'::text THEN 'Bench Warrant Issued on Application to Accelerate'::text
+              WHEN 'OTHERNoFees'::text THEN 'Cost Warrant Release on Personal Recognizance Agreement'::text
+              ELSE NULL::text
+          END AS shortdescription,
+          CASE
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['CTBWFTA'::character varying, 'BWIFA'::character varying, 'BWIFAP'::character varying, 'CTDFTA'::character varying])::text[])) THEN true
+              ELSE false
+          END AS is_failure_to_appear,
+          CASE
+              WHEN ((docket_event_types.code)::text = 'BWIFAP'::text) THEN true
+              ELSE false
+          END AS is_failure_to_pay,
+      ((( SELECT (regexp_matches(docket_events.description, '[0-9]{1,3}(?:,?[0-9]{3})*\.[0-9]{2}'::text))[1] AS regexp_matches))::money)::numeric AS bond_amount,
+      ( SELECT (regexp_matches((( SELECT regexp_matches(docket_events.description, 'WARRANT RETURNED \d{1,2}/\d{1,2}/\d{4}'::text) AS regexp_matches))[1], '\d{1,2}/\d{1,2}/\d{4}'::text))[1] AS regexp_matches) AS warrant_returned_on,
+      ( SELECT (regexp_matches((( SELECT regexp_matches(docket_events.description, 'WARRANT ISSUED ON \d{1,2}/\d{1,2}/\d{4}'::text) AS regexp_matches))[1], '\d{1,2}/\d{1,2}/\d{4}'::text))[1] AS regexp_matches) AS warrant_issued_on,
+      ( SELECT (regexp_matches((( SELECT regexp_matches(docket_events.description, 'WARRANT RECALLED \d{1,2}/\d{1,2}/\d{4}'::text) AS regexp_matches))[1], '\d{1,2}/\d{1,2}/\d{4}'::text))[1] AS regexp_matches) AS warrant_recalled_on,
+      docket_events.description
+     FROM ((docket_events
+       JOIN docket_event_types ON ((docket_event_types.id = docket_events.docket_event_type_id)))
+       JOIN court_cases ON ((court_cases.id = docket_events.court_case_id)))
+    WHERE (((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'RETWA'::character varying, 'RETBW'::character varying, 'BWIFAP'::character varying, 'CTDFTA'::character varying, 'CTBWFTA'::character varying, 'BWIFA'::character varying, 'BWR'::character varying, 'MOD&O'::character varying, 'O'::character varying, 'WICF'::character varying, 'BWIAR'::character varying, 'OTHERNoFees'::character varying, 'BWIAA'::character varying, 'BFMO'::character varying, 'BWIFC'::character varying, 'BWIFAR'::character varying])::text[])) AND (docket_events.description ~~ '%WARRANT%'::text));
   SQL
 end

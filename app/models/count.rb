@@ -4,5 +4,5 @@ class Count < ApplicationRecord
   belongs_to :plea, optional: true
   belongs_to :verdict, optional: true
 
-  # TODO: Validate offense_on, filed_statute_violation
+  validates :filed_statute_violation, presence: true
 end

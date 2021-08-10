@@ -4,13 +4,12 @@ module Importers
     attr_reader :case_number, :uri, :params, :date
     attr_accessor :counties, :case_types
 
-    def initialize(link, date)
+    def initialize(link)
       @case_number = link.text
       @case_types = CaseType.oscn_id_mapping
       @counties = County.pluck(:name, :id).to_h
       @uri = URI(link['href'])
       @params = CGI.parse(uri.query)
-      @date = date
     end
 
     # TODO: Refactor this plz
@@ -24,8 +23,7 @@ module Importers
       c.assign_attributes(
         county_id: counties[county],
         case_type_id: case_types[case_type],
-        case_number: case_number,
-        filed_on: date
+        case_number: case_number
       )
       c.save!
     end

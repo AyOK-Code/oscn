@@ -1,5 +1,5 @@
 class CaseHtml < ApplicationRecord
   belongs_to :court_case
 
-  # TODO: validate presence of html, scraped_at
+  validates :html, :scraped_at, presence: true
 end

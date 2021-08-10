@@ -35,3 +35,6 @@ oscn.tar
 .DS_Store
 erd.pdf
 sample.dump
+
+# Ignore redis file
+*.rdb
