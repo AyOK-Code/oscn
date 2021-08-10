@@ -7,4 +7,8 @@ RSpec.describe Count, type: :model do
     it { should belong_to(:plea).optional }
     it { should belong_to(:verdict).optional }
   end
+
+  context 'validations' do
+    it { should validate_presence_of(:filed_statute_violation) }
+  end
 end

@@ -5,7 +5,6 @@ FactoryBot.define do
     docket_event_type
     description { Faker::Lorem.paragraph }
 
-    # TODO: Trait for warrant
     # TODO: Trait for any docket event type that has unique data extraction
   end
 end

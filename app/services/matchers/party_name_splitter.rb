@@ -20,8 +20,6 @@ module Matchers
         update_three_name(split_name)
       when 2
         update_two_name(split_name)
-      else
-        break
       end
     end
 

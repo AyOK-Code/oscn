@@ -1,5 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe CaseHtml, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  context 'associations' do
+    it { should belong_to(:court_case) }
+  end
+
+  context 'validations' do
+    it { should validate_presence_of(:html, :scraped_at) }
+  end
 end

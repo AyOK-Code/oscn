@@ -3,7 +3,7 @@ module Scrapers
   class LowPriority
     attr_accessor :cases
 
-    def initialize(days_ago: 90, limit: 2500)
+    def initialize(days_ago: 90, limit: 1000)
       @cases = CourtCase.closed.older_than(days_ago.days.ago).limit(limit)
     end
 
@@ -16,7 +16,7 @@ module Scrapers
       bar = ProgressBar.new(cases.count)
 
       cases.each do |c|
-        Importers::CaseHtml.perform(c.case_number)
+        CourtCaseWorker.perform_async(c.case_number)
         bar.increment!
       end
     end

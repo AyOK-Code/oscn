@@ -1,7 +1,7 @@
 namespace :save do
   desc 'Scrape court_cases data'
   task court_cases: [:environment] do
-    court_cases = CourtCase.valid.without_docket_events.with_html
+    court_cases = CourtCase.valid.with_html.last_scraped(19.days.ago)
     bar = ProgressBar.new(court_cases.count)
 
     court_cases.each do |c|
@@ -11,7 +11,7 @@ namespace :save do
   end
 
   task :case_html do
-    court_cases = CourtCase.without_html
+    court_cases = CourtCase.valid.where(case_number: 'CF-2018-2360')
     bar = ProgressBar.new(court_cases.count)
 
     court_cases.each do |c|
@@ -23,6 +23,20 @@ namespace :save do
                            scraped_at: DateTime.current,
                            html: request.body
                          })
+      bar.increment!
+    end
+  end
+
+  task :purge_errors do
+    court_cases = CourtCase.with_html
+    bar = ProgressBar.new(court_cases.count)
+
+    court_cases.each do |c|
+      data = Nokogiri::HTML.parse(c.case_html.html)
+      errors = data.css('.errorMessage')
+      if errors.count > 0
+        c.case_html.destroy
+      end
       bar.increment!
     end
   end

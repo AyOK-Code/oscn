@@ -22,9 +22,6 @@ module Importers
         court_case = ::CourtCase.find_by(case_number: case_number)
       end
       save_html(court_case, html)
-
-      # TODO: Swap for limiter
-      sleep 2
     end
 
     private
