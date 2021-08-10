@@ -12,6 +12,11 @@ module Scrapers
       Scrapers::HighPriority.perform(days_ago: 3)
       Scrapers::MediumPriority.perform
       Scrapers::LowPriority.perform
+      refresh_materialized_views
+    end
+
+    def refresh_materialized_views
+      CreateReportFinesAndFees.refresh
     end
   end
 end

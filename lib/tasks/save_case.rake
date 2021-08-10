@@ -3,9 +3,12 @@ namespace :save do
   task court_cases: [:environment] do
     court_cases = CourtCase.valid.with_html.last_scraped(19.days.ago)
     bar = ProgressBar.new(court_cases.count)
+    docket_event_types = DocketEventType.pluck(:code, :id).to_h
+    pleas = Plea.pluck(:name, :id).to_h
+    verdicts = Verdict.pluck(:name, :id).to_h
 
     court_cases.each do |c|
-      Importers::CourtCase.perform(c)
+      Importers::CourtCase.perform(c, docket_event_types, pleas, verdicts)
       bar.increment!
     end
   end
