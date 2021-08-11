@@ -4,16 +4,16 @@ module Importers
     attr_accessor :logs, :court_case, :party_matcher
     attr_reader :docket_event_json, :docket_event_types
 
-    def initialize(docket_event_json, court_case, docket_event_types, logs)
+    def initialize(docket_event_json, court_case, logs)
       @docket_event_json = docket_event_json
       @court_case = court_case
       @logs = logs
-      @docket_event_types = docket_event_types || DocketEventType.pluck(:code, :id).to_h
+      @docket_event_types = DocketEventType.pluck(:code, :id).to_h
       @party_matcher = Matchers::Party.new(court_case)
     end
 
-    def self.perform(docket_event_json, court_case, docket_event_types, logs)
-      new(docket_event_json, court_case, docket_event_types, logs).perform
+    def self.perform(docket_event_json, court_case, logs)
+      new(docket_event_json, court_case, logs).perform
     end
 
     def perform
