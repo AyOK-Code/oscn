@@ -1,20 +1,20 @@
 module Importers
   # Imports Count data from parsed json
   class Count
-    attr_accessor :court_case, :party_matcher, :logs
-    attr_reader :counts_json, :pleas, :verdicts
+    attr_accessor :court_case, :party_matcher, :logs, :pleas, :verdicts
+    attr_reader :counts_json
 
-    def initialize(counts_json, court_case, pleas, verdicts, logs)
+    def initialize(counts_json, court_case, logs)
       @counts_json = counts_json
       @court_case = court_case
-      @pleas = pleas || Plea.pluck(:name, :id).to_h
-      @verdicts = verdicts || Verdict.pluck(:name, :id).to_h
+      @pleas = Plea.pluck(:name, :id).to_h
+      @verdicts = Verdict.pluck(:name, :id).to_h
       @party_matcher = Matchers::Party.new(court_case)
       @logs = logs
     end
 
-    def self.perform(counts_json, court_case, pleas, verdicts, logs)
-      new(counts_json, court_case, pleas, verdicts, logs).perform
+    def self.perform(counts_json, court_case, logs)
+      new(counts_json, court_case, logs).perform
     end
 
     def perform

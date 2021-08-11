@@ -38,3 +38,6 @@ sample.dump
 
 # Ignore redis file
 *.rdb
+
+# Ignore .env
+.env

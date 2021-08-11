@@ -1,4 +1,5 @@
 require 'uri'
+
 module Importers
   # Takes the data from the OscnScraper and imports it into the database
   class CourtCase

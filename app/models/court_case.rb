@@ -11,7 +11,7 @@ class CourtCase < ApplicationRecord
   has_many :docket_events, dependent: :destroy
   has_one :case_html, dependent: :destroy
 
-  validates :oscn_id, :case_number, :filed_on, presence: true
+  validates :oscn_id, :case_number, presence: true
   validates :oscn_id, uniqueness: true
 
   scope :without_html, -> { left_outer_joins(:case_html).where(case_htmls: { html: nil }) }
