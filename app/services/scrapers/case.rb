@@ -9,7 +9,7 @@ module Scrapers
     def perform
       # TODO: Capture results and send via email or slack message
       Scrapers::NewCases.perform(days_ago: 7)
-      Scrapers::HighPriority.perform(days_ago: 1)
+      Scrapers::HighPriority.perform(days_ago: 7)
       Scrapers::MediumPriority.perform
       Scrapers::LowPriority.perform
     end

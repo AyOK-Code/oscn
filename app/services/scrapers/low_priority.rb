@@ -3,7 +3,7 @@ module Scrapers
   class LowPriority
     attr_accessor :cases
 
-    def initialize(days_ago: 90, limit: 2500)
+    def initialize(days_ago: 90, limit: 7500)
       @cases = CourtCase.closed.older_than(days_ago.days.ago).limit(limit)
     end
 

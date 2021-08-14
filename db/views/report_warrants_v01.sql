@@ -34,13 +34,34 @@ SELECT
 		'Bench Warrant Issued on Application to Accelerate'
 	WHEN 'OTHERNoFees' THEN
 		'Cost Warrant Release on Personal Recognizance Agreement'
+	-- Start here
+	WHEN 'BWICA' THEN
+		'Bench Warrant Issued Cause'
+	WHEN 'BWIFAA' THEN
+		'Bench Warrant Issued Failure To Appear-Application to Accelerate'
+	WHEN 'BWIFP' THEN
+		'Bench Warrant Issued Failed To Pay'
+	WHEN 'BWIMW' THEN
+		'Bench Warrant For Material Witness'
+	WHEN 'BWIR8' THEN
+		'Bench Warrant Issued-Rule 8'
+	WHEN 'BWIS' THEN
+		'Bench Warrant Issued-Service By Sheriff-No Money'
+	WHEN 'BWIS$' THEN
+		'Bench Warrant Issued-Service By Sheriff'
+	WHEN 'WAI' THEN
+		'Warrant of Arrest Issued-No Money'
+	WHEN 'WAIMV' THEN
+		'Warrant of Arrest Issued-Material Warrant'
+	WHEN 'BWIFAR' THEN
+		'Bench Warrrant Issued - Failure to Appear - Application to Revoke'
 	END AS ShortDescription,
-	CASE WHEN docket_event_types.code IN('CTBWFTA', 'BWIFA', 'BWIFAP', 'CTDFTA') THEN
+	CASE WHEN docket_event_types.code IN('CTBWFTA', 'BWIFA', 'BWIFAP', 'CTDFTA', 'BWIFAA', 'BWIFAR') THEN
 		TRUE
 	ELSE
 		FALSE
 	END AS is_failure_to_appear,
-	CASE WHEN docket_event_types.code IN('BWIFAP') THEN
+	CASE WHEN docket_event_types.code IN('BWIFAP', 'BWIFP') THEN
 		TRUE
 	ELSE
 		FALSE
@@ -69,5 +90,5 @@ SELECT
 				JOIN docket_event_types ON docket_event_types.id = docket_events.docket_event_type_id
 				JOIN court_cases ON court_cases.id = docket_events.court_case_id
 			WHERE
-				docket_event_types.code IN('WAI$', 'RETWA', 'RETBW', 'BWIFAP', 'CTDFTA', 'CTBWFTA', 'BWIFA', 'BWR', 'MOD&O', 'O', 'WICF', 'BWIAR', 'OTHERNoFees', 'BWIAA', 'BFMO', 'BWIFC', 'BWIFAR')
+				docket_event_types.code IN('WAI$', 'RETWA', 'RETBW', 'BWIFAP', 'CTDFTA', 'CTBWFTA', 'BWIFA', 'BWR', 'MOD&O', 'O', 'WICF', 'BWIAR', 'OTHERNoFees', 'BWIAA', 'BWIFC', 'BWIFAR', 'BWICA', 'BWIFAA', 'BWIFP', 'BWIMW', 'BWIR8', 'BWIS', 'BWIS$', 'WAI', 'WAIMV')
 				AND docket_events.description LIKE '%WARRANT%'

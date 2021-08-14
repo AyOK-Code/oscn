@@ -4,7 +4,7 @@ module Importers
     attr_accessor :results, :parties
 
     def initialize
-      @parties = ::Party.without_birthday
+      @parties = ::Party.joins(case_parties: :court_case).where(court_cases: { filed_on: Date.new(2020,7,1)..Date.new(2021,7,1) }).without_birthday.defendant
     end
 
     def self.perform
@@ -13,17 +13,16 @@ module Importers
 
     def fetch_data; end
 
-    # TODO: Refactor class
+    # TODO: Refactor method
     def perform
       bar = ProgressBar.new(parties.count)
       parties.each do |party|
         bar.increment!
         begin
-          data = OscnScraper::Importers::Party.fetch_party('Oklahoma', party.oscn_id)
+          data = OscnScraper::Requestor::Party.fetch_party('oklahoma', party.oscn_id)
           parsed_html = Nokogiri::HTML(data.body)
         rescue StandardError
           next
-          # TODO: Log error to parties log
         end
         personal_columns = personal_html(parsed_html)
 

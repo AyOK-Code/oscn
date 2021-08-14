@@ -56,17 +56,12 @@ namespace :save do
     end
   end
 
-  task :one_off, [:case_number] do |_t, args|
-    case_search = OscnScraper::Requestor::Case.new({county: c.county.name, number: c.case_number})
-    c = CourtCase.find_by(case_number: args.case_number)
-    puts "Scraping HTML for #{args.case_number}"
-
-    html = case_search.fetch_case_by_number
-    c.build_case_html unless c.case_html
-    c.case_html.update({
-                         html: html.body, scraped_at: DateTime.current
-                       })
-
-    Importers::CourtCase.perform(c)
+  task :update_year do
+    cases = CourtCase.where(filed_on: Date.new(2020,7,1)..Date.new(2021,7,1)).where("case_number LIKE 'C%'")
+    bar = ProgressBar.new(cases.count)
+    cases.each do |c|
+      bar.increment!
+      CourtCaseWorker.perform_async(c.case_number)
+    end
   end
 end
