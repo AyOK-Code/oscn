@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :case_type do
-    oscn_id { 1 }
+    sequence(:oscn_id)
     name { Faker::Lorem.word }
     abbreviation { Faker::Name.initials }
   end

@@ -9,9 +9,14 @@ AllCops:
     - 'config/**/*'
     - 'db/schema.rb'
     - 'db/migrate/*'
+    - 'spec/models/**/*'
+Metrics/BlockLength:
+  Max: 50
 Style/FrozenStringLiteralComment:
   Enabled: false
 Style/MutableConstant:
   Enabled: false
-Metrics/BlockLength:
-  Max: 50
+Style/WordArray:
+  Enabled: False
+Metrics/MethodLength:
+  Max: 15
