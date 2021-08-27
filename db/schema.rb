@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_20_135821) do
+ActiveRecord::Schema.define(version: 2021_08_10_205726) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -133,13 +133,16 @@ ActiveRecord::Schema.define(version: 2021_07_20_135821) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "party_id"
     t.integer "count"
-    t.decimal "payment", default: "0.0"
-    t.decimal "adjustment", default: "0.0"
+    t.decimal "payment", default: "0.0", null: false
+    t.decimal "adjustment", default: "0.0", null: false
     t.integer "row_index", null: false
+    t.index ["adjustment"], name: "index_docket_events_on_adjustment"
     t.index ["amount"], name: "index_docket_events_on_amount", where: "(amount <> (0)::numeric)"
     t.index ["court_case_id"], name: "index_docket_events_on_court_case_id"
     t.index ["docket_event_type_id"], name: "index_docket_events_on_docket_event_type_id"
     t.index ["party_id"], name: "index_docket_events_on_party_id"
+    t.index ["payment"], name: "index_docket_events_on_payment"
+    t.index ["row_index", "court_case_id"], name: "index_docket_events_on_row_index_and_court_case_id", unique: true
   end
 
   create_table "events", force: :cascade do |t|
@@ -271,7 +274,132 @@ ActiveRecord::Schema.define(version: 2021_07_20_135821) do
              FROM ((case_parties
                JOIN parties ON ((case_parties.party_id = parties.id)))
                JOIN party_types ON ((parties.party_type_id = party_types.id)))
-            WHERE ((court_cases.id = case_parties.court_case_id) AND ((party_types.name)::text = 'defendant'::text))) AS defendant_count
+            WHERE ((court_cases.id = case_parties.court_case_id) AND ((party_types.name)::text = 'defendant'::text))) AS defendant_count,
+          CASE
+              WHEN (( SELECT count(*) AS count
+                 FROM docket_events
+                WHERE (docket_events.court_case_id = court_cases.id)) > 0) THEN true
+              ELSE false
+          END AS is_tax_intercepted
      FROM court_cases;
+  SQL
+  create_view "report_fines_and_fees", materialized: true, sql_definition: <<-SQL
+      SELECT court_cases.id AS court_case_id,
+      case_types.id AS case_type_id,
+      docket_event_types.id AS docket_event_types_id,
+      docket_events.event_on,
+      docket_events.amount,
+      docket_events.payment,
+      docket_events.adjustment,
+          CASE
+              WHEN (( SELECT count(*) AS count
+                 FROM (docket_events docket_events_1
+                   JOIN docket_event_types docket_event_types_1 ON ((docket_events_1.docket_event_type_id = docket_event_types_1.id)))
+                WHERE ((docket_events_1.court_case_id = court_cases.id) AND ((docket_event_types_1.code)::text = 'CTRS'::text))) > 0) THEN true
+              ELSE false
+          END AS is_tax_intercepted
+     FROM (((docket_events
+       JOIN docket_event_types ON ((docket_event_types.id = docket_events.docket_event_type_id)))
+       JOIN court_cases ON ((court_cases.id = docket_events.court_case_id)))
+       JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
+    WHERE ((docket_events.amount <> (0)::numeric) OR (docket_events.adjustment <> (0)::numeric) OR (docket_events.payment <> (0)::numeric));
+  SQL
+  add_index "report_fines_and_fees", ["case_type_id"], name: "index_report_fines_and_fees_on_case_type_id"
+  add_index "report_fines_and_fees", ["court_case_id"], name: "index_report_fines_and_fees_on_court_case_id"
+  add_index "report_fines_and_fees", ["docket_event_types_id"], name: "index_report_fines_and_fees_on_docket_event_types_id"
+  add_index "report_fines_and_fees", ["event_on"], name: "index_report_fines_and_fees_on_event_on"
+
+  create_view "report_warrants", materialized: true, sql_definition: <<-SQL
+      SELECT docket_events.court_case_id,
+      docket_events.party_id,
+      docket_events.event_on,
+      docket_event_types.code,
+          CASE docket_event_types.code
+              WHEN 'WICF'::text THEN 'Warrant Intercept'::text
+              WHEN 'WAI$'::text THEN 'Warrant of Arrest Issued'::text
+              WHEN 'CTDFTA'::text THEN 'Defendant Failed to Appear'::text
+              WHEN 'BWIFAP'::text THEN 'Bench Warrant Issued - Failed to Appear and Pay'::text
+              WHEN 'BWIFA'::text THEN 'Bench Warrant Issued - Failed to Appear'::text
+              WHEN 'BWIFC'::text THEN 'Bench Warrant Issued - Failure to Comply'::text
+              WHEN 'RETWA'::text THEN 'Warrant Returned'::text
+              WHEN 'RETBW'::text THEN 'Warrant Returned'::text
+              WHEN 'BWR'::text THEN 'Bench Warrant Recalled'::text
+              WHEN 'BWIAR'::text THEN 'Bench Warrant Issued on Application to Revoke'::text
+              WHEN 'O'::text THEN 'Order Recalling Bench Warrant'::text
+              WHEN 'CTBWFTA'::text THEN 'Defendant Failed to Appear for Arraignment'::text
+              WHEN 'MOD&O'::text THEN 'Motion to Dismiss and Recall Warrant'::text
+              WHEN 'BWIAA'::text THEN 'Bench Warrant Issued on Application to Accelerate'::text
+              WHEN 'OTHERNoFees'::text THEN 'Cost Warrant Release on Personal Recognizance Agreement'::text
+              WHEN 'BWICA'::text THEN 'Bench Warrant Issued Cause'::text
+              WHEN 'BWIFAR'::text THEN 'Bench Warrant Issued - Failure to Appear - Application to Revoke'::text
+              WHEN 'BWIFAA'::text THEN 'Bench Warrant Issued Failure To Appear-Application to Accelerate'::text
+              WHEN 'BWIFP'::text THEN 'Bench Warrant Issued Failed To Pay'::text
+              WHEN 'BWIMW'::text THEN 'Bench Warrant For Material Witness'::text
+              WHEN 'BWIR8'::text THEN 'Bench Warrant Issued - Rule 8'::text
+              WHEN 'BWIS'::text THEN 'Bench Warrant Issued - Service By Sheriff - No Money'::text
+              WHEN 'BWIS$'::text THEN 'Bench Warrant Issued - Service By Sheriff'::text
+              WHEN 'WAI'::text THEN 'Warrant of Arrest Issued - No Money'::text
+              WHEN 'WAIMV'::text THEN 'Warrant of Arrest Issued - Material Warrant'::text
+              WHEN 'WAIMW'::text THEN 'Warrant of Arrest Issued - Material Witness'::text
+              WHEN 'BWIFAR'::text THEN 'Bench Warrrant Issued - Failure to Appear - Application to Revoke'::text
+              ELSE NULL::text
+          END AS shortdescription,
+          CASE
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['CTBWFTA'::character varying, 'BWIFA'::character varying, 'BWIFAP'::character varying, 'CTDFTA'::character varying, 'BWIFAA'::character varying, 'BWIFAR'::character varying])::text[])) THEN true
+              ELSE false
+          END AS is_failure_to_appear,
+          CASE
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIFAP'::character varying, 'BWIFP'::character varying, 'BWIFAR'::character varying])::text[])) THEN true
+              ELSE false
+          END AS is_failure_to_pay,
+          CASE
+              WHEN ((docket_event_types.code)::text = 'BWIFC'::text) THEN true
+              ELSE false
+          END AS is_failure_to_comply,
+          CASE
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAA'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying])::text[])) THEN true
+              ELSE false
+          END AS is_bench_warrant_issued,
+          CASE
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['WAI'::character varying, 'WAI$'::character varying])::text[])) THEN true
+              ELSE false
+          END AS is_arrest_warrant_issued,
+          CASE
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIAA'::character varying, 'BWIFAA'::character varying])::text[])) THEN true
+              ELSE false
+          END AS is_application_to_accelerate,
+          CASE
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIFAR'::character varying, 'BWIAR'::character varying])::text[])) THEN true
+              ELSE false
+          END AS is_application_to_revoke,
+          CASE
+              WHEN ((docket_event_types.code)::text = 'BWICA'::text) THEN true
+              ELSE false
+          END AS is_cause,
+          CASE
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIMW'::character varying, 'WAIMW'::character varying])::text[])) THEN true
+              ELSE false
+          END AS is_material_witness,
+          CASE
+              WHEN ((docket_event_types.code)::text = 'WAIMV'::text) THEN true
+              ELSE false
+          END AS is_material_warrant,
+          CASE
+              WHEN ((docket_event_types.code)::text = 'BWIR8'::text) THEN true
+              ELSE false
+          END AS is_material_rule_8,
+          CASE
+              WHEN ((docket_event_types.code)::text = 'BWIS$'::text) THEN true
+              ELSE false
+          END AS is_service_by_sheriff,
+      ((( SELECT (regexp_matches(docket_events.description, '[0-9]{1,3}(?:,?[0-9]{3})*\.[0-9]{2}'::text))[1] AS regexp_matches))::money)::numeric AS bond_amount,
+      ( SELECT (regexp_matches((( SELECT regexp_matches(docket_events.description, 'WARRANT RETURNED \d{1,2}/\d{1,2}/\d{4}'::text) AS regexp_matches))[1], '\d{1,2}/\d{1,2}/\d{4}'::text))[1] AS regexp_matches) AS warrant_returned_on,
+      ( SELECT (regexp_matches((( SELECT regexp_matches(docket_events.description, 'WARRANT ISSUED ON \d{1,2}/\d{1,2}/\d{4}'::text) AS regexp_matches))[1], '\d{1,2}/\d{1,2}/\d{4}'::text))[1] AS regexp_matches) AS warrant_issued_on,
+      ( SELECT (regexp_matches((( SELECT regexp_matches(docket_events.description, 'WARRANT RECALLED \d{1,2}/\d{1,2}/\d{4}'::text) AS regexp_matches))[1], '\d{1,2}/\d{1,2}/\d{4}'::text))[1] AS regexp_matches) AS warrant_recalled_on,
+      docket_events.description
+     FROM ((docket_events
+       JOIN docket_event_types ON ((docket_event_types.id = docket_events.docket_event_type_id)))
+       JOIN court_cases ON ((court_cases.id = docket_events.court_case_id)))
+    WHERE (((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'RETWA'::character varying, 'RETBW'::character varying, 'BWIFAP'::character varying, 'CTDFTA'::character varying, 'CTBWFTA'::character varying, 'BWIFA'::character varying, 'BWR'::character varying, 'MOD&O'::character varying, 'O'::character varying, 'WICF'::character varying, 'BWIAR'::character varying, 'OTHERNoFees'::character varying, 'BWIAA'::character varying, 'BWIFC'::character varying, 'BWIFAR'::character varying, 'BWICA'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying])::text[])) AND (docket_events.description ~~ '%WARRANT%'::text));
   SQL
 end
