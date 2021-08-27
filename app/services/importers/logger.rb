@@ -17,7 +17,7 @@ module Importers
     end
 
     def create_log(table, message, data)
-      logs["#{table}"] = { message: message, data: data }
+      logs[table.to_s] = { message: message, data: data }
     end
   end
 end

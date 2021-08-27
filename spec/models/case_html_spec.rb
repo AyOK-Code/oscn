@@ -6,6 +6,7 @@ RSpec.describe CaseHtml, type: :model do
   end
 
   context 'validations' do
-    it { should validate_presence_of(:html, :scraped_at) }
+    it { should validate_presence_of(:html) }
+    it { should validate_presence_of(:scraped_at) }
   end
 end

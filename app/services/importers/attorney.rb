@@ -24,14 +24,9 @@ module Importers
     # TODO: Log when name does not seem to match the OK Bar name for that bar number
     # TODO: Address not working
     def save_attorneys(attorney_data)
-      bar_number = attorney_data[:bar_number]&.to_i
       name = attorney_data[:name].downcase
-
-      c = if bar_number.present?
-            Counsel.find_or_initialize_by(bar_number: bar_number)
-          else
-            Counsel.find_or_initialize_by(name: name)
-          end
+      bar_number = attorney_data[:bar_number]&.to_i
+      c = find_by_bar_or_name(bar_number, name)
 
       c.assign_attributes({
                             name: name,
@@ -39,17 +34,28 @@ module Importers
                             bar_number: bar_number
                           })
       if c.save
-        party_name = attorney_data[:represented_parties].each do |party|
-          party.squish
-          data = {
-            court_case_id: court_case.id,
-            counsel_id: c.id,
-            party_id: party_matcher.party_id_from_name(party_name)
-          }
-          CounselParty.find_or_create_by(data)
-        end
+        save_counsel_party(attorney_data, c)
       else
         logs.create_log('counsel', "#{court_case.case_number}: error when creating the counsel", attorney_data)
+      end
+    end
+
+    def find_by_bar_or_name(bar_number, name)
+      if bar_number.present?
+        Counsel.find_or_initialize_by(bar_number: bar_number)
+      else
+        Counsel.find_or_initialize_by(name: name)
+      end
+    end
+
+    def save_counsel_party(attorney_data, counsel)
+      attorney_data[:represented_parties].each do |party|
+        data = {
+          court_case_id: court_case.id,
+          counsel_id: counsel.id,
+          party_id: party_matcher.party_id_from_name(party.squish)
+        }
+        CounselParty.find_or_create_by(data)
       end
     end
   end

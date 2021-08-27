@@ -17,7 +17,6 @@ RSpec.describe CourtCase, type: :model do
   context 'validations' do
     it { should validate_presence_of(:oscn_id) }
     it { should validate_presence_of(:case_number) }
-    it { should validate_presence_of(:filed_on) }
     subject { FactoryBot.build(:court_case) }
     it { should validate_uniqueness_of(:oscn_id) }
   end

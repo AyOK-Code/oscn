@@ -17,7 +17,7 @@ namespace :import do
         os.effective_on = Date.strptime(row[4], '%Y/%m/%d') unless row[4].nil?
         os.save!
       rescue
-        byebug
+        puts 'Failure'
       end
     end
   end

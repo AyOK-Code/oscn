@@ -34,23 +34,27 @@ module Importers
 
     def save_counts(count_data)
       c = find_count(count_data)
-      plea_id = find_or_create_plea(count_data[:plea]&.downcase)
-      verdict_id = find_or_create_verdict(count_data[:verdict]&.downcase)
 
-      c.assign_attributes({
-                            filed_statute_violation: count_data[:filed_statute_violation],
-                            disposition: count_data[:disposition],
-                            disposition_on: count_data[:disposition_on],
-                            disposed_statute_violation: count_data[:disposed_statute_violation],
-                            charge: count_data[:charge],
-                            plea_id: plea_id,
-                            verdict_id: verdict_id
-                          })
+      c.assign_attributes(count_attributes(count_data))
       begin
         c.save!
       rescue StandardError
         logs.create_log('counts', "#{court_case.case_number} skipped count due to missing party.", count_data)
       end
+    end
+
+    def count_attributes(count_data)
+      plea_id = find_or_create_plea(count_data[:plea]&.downcase)
+      verdict_id = find_or_create_verdict(count_data[:verdict]&.downcase)
+      {
+        filed_statute_violation: count_data[:filed_statute_violation],
+        disposition: count_data[:disposition],
+        disposition_on: count_data[:disposition_on],
+        disposed_statute_violation: count_data[:disposed_statute_violation],
+        charge: count_data[:charge],
+        plea_id: plea_id,
+        verdict_id: verdict_id
+      }
     end
 
     def find_or_create_plea(plea)

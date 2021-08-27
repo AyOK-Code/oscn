@@ -3,7 +3,7 @@ module Importers
   class Judge
     attr_reader :judge_name
 
-    def initialize(judge_name, court_case, logs)
+    def initialize(judge_name, _court_case, _logs)
       @judge_matcher = Matchers::Judge.new(judge_name)
     end
 
