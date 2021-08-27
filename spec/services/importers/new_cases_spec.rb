@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Importers::NewCases do
+RSpec.describe Importers::NewCourtCase do
   describe '#perform' do
     it 'add specs' do
       skip

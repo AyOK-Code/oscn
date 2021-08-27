@@ -12,13 +12,7 @@ module Importers
       @params = CGI.parse(uri.query)
     end
 
-    # TODO: Refactor this plz
     def perform
-      puts "Pulling case #{case_number}"
-      oscn_id = params['casemasterid'].first.to_i
-      county = params['db'].first
-      case_type = case_number.split('-').first
-
       c = ::CourtCase.find_or_initialize_by(oscn_id: oscn_id)
       c.assign_attributes(
         county_id: counties[county],
@@ -26,6 +20,20 @@ module Importers
         case_number: case_number
       )
       c.save!
+    end
+
+    private
+
+    def oscn_id
+      params['casemasterid'].first.to_i
+    end
+
+    def county
+      params['db'].first
+    end
+
+    def case_type
+      case_number.split('-').first
     end
   end
 end

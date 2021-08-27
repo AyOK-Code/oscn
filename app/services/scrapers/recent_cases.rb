@@ -26,20 +26,32 @@ module Scrapers
 
     def fetch_docket_for_date(date)
       case_types.each do |case_type_oscn_id|
-        # TODO: Pull out county to configuration
-        scraper = OscnScraper::Requestor::Report.new({ county: 'Oklahoma', case_type_id: case_type_oscn_id, date: date })
-        request = scraper.events_scheduled
-        data = case_changes.new(Nokogiri::HTML.parse(request.body)).parse
-
-        data.each do |link|
-          Importers::NewCourtCase.new(link).perform if court_cases[link.text].nil?
-        end
-        next if data.empty?
-
-        case_numbers = data.map(&:text)
+        case_numbers = scrape_recent_cases(date, case_type_oscn_id)
         recent_cases << case_numbers
       end
       recent_cases
+    end
+
+    def scrape_recent_cases(date, case_type_oscn_id)
+      # TODO: Pull out county to configuration
+      data = fetch_data(date, case_type_oscn_id)
+
+      data.each do |link|
+        Importers::NewCourtCase.new(link).perform if court_cases[link.text].nil?
+      end
+      next if data.empty?
+
+      data.map(&:text)
+    end
+
+    def fetch_data(date, case_type_oscn_id)
+      scraper = OscnScraper::Requestor::Report.new({
+                                                     county: 'Oklahoma',
+                                                     case_type_id: case_type_oscn_id,
+                                                     date: date
+                                                   })
+      request = scraper.events_scheduled
+      case_changes.new(Nokogiri::HTML.parse(request.body)).parse
     end
 
     def date_range

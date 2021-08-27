@@ -1,4 +1,5 @@
 module Scrapers
+  # Pulls in new cases from OSCN daily filings report
   class NewCases
     attr_reader :case_types, :counties, :days_ago
 
@@ -20,25 +21,44 @@ module Scrapers
         puts "Pulling cases from #{date.strftime('%m/%d/%Y')}"
 
         data.css('tr a').each do |row|
-          uri = URI(row['href'])
-          params = CGI.parse(uri.query)
-          case_number = row.text
-          oscn_id = params['casemasterID'].first.to_i
-          county = params['db'].first
-          case_type = case_number.split('-').first
-          next if case_types[case_type].blank?
-
-          c = ::CourtCase.find_or_initialize_by(oscn_id: oscn_id)
-          c.assign_attributes(
-            county_id: counties[county],
-            case_type_id: case_types[case_type],
-            case_number: row.text,
-            filed_on: date
-          )
-
-          c.save!
+          save_case(row)
         end
       end
+    end
+
+    def save_case(row)
+      # TODO: Extract service that takes link and pulls out the params
+      params = extract_params(row['href'])
+      case_number = row.text
+      case_type_id = case_types[case_type(case_number)]
+      next if case_type_id.blank?
+
+      c = ::CourtCase.find_or_initialize_by(oscn_id: oscn_id)
+      c.assign_attributes(
+        county_id: counties[county(params)],
+        case_type_id: case_type_id,
+        case_number: case_number,
+        filed_on: date
+      )
+
+      c.save!
+    end
+
+    def extract_params(link)
+      uri = URI(link)
+      CGI.parse(uri.query)
+    end
+
+    def oscn_id(params)
+      params['casemasterID'].first.to_i
+    end
+
+    def county(params)
+      params['db'].first
+    end
+
+    def case_type(case_number)
+      case_number.split('-').first
     end
 
     def date_range

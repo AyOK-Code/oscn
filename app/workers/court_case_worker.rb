@@ -1,5 +1,6 @@
 require 'importers/court_case'
-
+# Worker that scrapes the Case information and updates the database
+# Ex: https://www.oscn.net/dockets/GetCaseInformation.aspx?db=tulsa&number=CF-2018-1016
 class CourtCaseWorker
   include Sidekiq::Worker
   include Sidekiq::Throttled::Worker

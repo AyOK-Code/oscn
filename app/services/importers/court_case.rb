@@ -18,17 +18,46 @@ module Importers
     end
 
     def perform
-      return if parsed_html.css('.errorMessage').count > 0
+      return if parsed_html.css('.errorMessage').count.positive?
+
       ActiveRecord::Base.transaction do
-        court_case.update(filed_on: data[:filed_on], closed_on: data[:closed_on])
-        ::Importers::Party.perform(data[:parties], court_case, logs)
-        # ::Importers::Judge.perform(data[:judge], court_case, logs)
-        ::Importers::Count.perform(data[:counts], court_case, logs)
-        ::Importers::Event.perform(data[:events], court_case, logs)
-        ::Importers::Attorney.perform(data[:attorneys], court_case, logs)
-        ::Importers::DocketEvent.perform(data[:docket_events], court_case, logs)
+        save_case
+        save_parties
+        save_judges
+        save_attorneys
+        save_counts
+        save_events
+        save_docket_events
         logs.update_logs
       end
+    end
+
+    def save_case
+      court_case.update(filed_on: data[:filed_on], closed_on: data[:closed_on])
+    end
+
+    def save_parties
+      ::Importers::Party.perform(data[:parties], court_case, logs)
+    end
+
+    def save_counts
+      ::Importers::Count.perform(data[:counts], court_case, logs)
+    end
+
+    def save_judges
+      # ::Importers::Judge.perform(data[:judge], court_case, logs)
+    end
+
+    def save_events
+      ::Importers::Event.perform(data[:events], court_case, logs)
+    end
+
+    def save_attorneys
+      ::Importers::Attorney.perform(data[:attorneys], court_case, logs)
+    end
+
+    def save_docket_events
+      ::Importers::DocketEvent.perform(data[:docket_events], court_case, logs)
     end
   end
 end

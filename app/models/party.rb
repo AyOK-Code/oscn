@@ -1,4 +1,3 @@
-
 class Party < ApplicationRecord
   belongs_to :party_type
   has_many :case_parties, dependent: :destroy
@@ -14,5 +13,5 @@ class Party < ApplicationRecord
   validates :birth_year, inclusion: 1800..DateTime.current.year, allow_nil: true
 
   scope :without_birthday, -> { where(birth_month: nil) } # TODO: Validate presence of party_type?
-  scope :defendant, -> { joins(:party_type).where(party_types: { name: 'defendant'})}
+  scope :defendant, -> { joins(:party_type).where(party_types: { name: 'defendant' }) }
 end

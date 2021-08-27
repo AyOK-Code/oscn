@@ -11,24 +11,21 @@ module Importers
       new(oscn_id).perform
     end
 
-    # TODO: Refactor method
+    # TODO: Move data parsing to the Gem side
     def perform
-      begin
-        data = OscnScraper::Requestor::Party.fetch_party('oklahoma', party.oscn_id)
-        parsed_html = Nokogiri::HTML(data.body)
-      rescue StandardError
-        puts 'Error occurred'
-        return
-      end
+      data = OscnScraper::Requestor::Party.fetch_party('oklahoma', party.oscn_id)
+      parsed_html = Nokogiri::HTML(data.body)
       personal_columns = personal_html(parsed_html)
 
       string = personal_columns[2]&.text&.split('/')
       return if string.blank?
 
-      month = string[0]
-      year = string[1]
-      party.update(birth_month: month.to_i, birth_year: year.to_i)
+      party.update(birth_month: month, birth_year: year)
 
+      save_addresses(parsed_html)
+    end
+
+    def save_addresses(parsed_html)
       address_row = address_html(parsed_html)
       return if address_row.count < 2
 
@@ -37,6 +34,14 @@ module Importers
 
         PartyAddress.perform(row, party)
       end
+    end
+
+    def month(string)
+      string[0].to_i
+    end
+
+    def year(string)
+      string[1].to_i
     end
 
     def personal_html(parsed_html)
