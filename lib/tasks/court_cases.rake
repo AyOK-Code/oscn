@@ -2,16 +2,16 @@ require 'uri'
 
 namespace :scrape do
   desc "Scrape cases data"
-  task :court_cases, [:year] do |_t, args|
+  task :court_cases, [:year] => [:environment] do |_t, args|
     # TODO: Change to import task
     year = args.year.to_i
-    scraper = OscnScraper::Requestor::Report.new({county: 'Oklahoma', date: date})
     dates = (Date.new(year, 1, 1)..Date.new(year, 12, 31)).to_a
     case_types = CaseType.oscn_id_mapping
     counties = County.pluck(:name, :id).to_h
     bar = ProgressBar.new(dates.count)
 
     dates.each do |date|
+      scraper = OscnScraper::Requestor::Report.new({county: 'Oklahoma', date: date})
       html = scraper.fetch_daily_filings
       data = Nokogiri::HTML(html.body)
       puts "Pulling cases from #{date.strftime('%m/%d/%Y')}"

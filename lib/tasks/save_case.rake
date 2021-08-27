@@ -56,7 +56,7 @@ namespace :save do
     end
   end
 
-  task :update_year do
+  task update_year: [:environment] do
     cases = CourtCase.where(filed_on: Date.new(2020,7,1)..Date.new(2021,7,1)).where("case_number LIKE 'C%'")
     bar = ProgressBar.new(cases.count)
     cases.each do |c|
