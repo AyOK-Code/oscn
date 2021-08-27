@@ -8,6 +8,6 @@ RSpec.describe CaseType, type: :model do
   end
 
   context 'associations' do
-    it { should have_many(:cases).dependent(:destroy) }
+    it { should have_many(:court_cases).dependent(:destroy) }
   end
 end

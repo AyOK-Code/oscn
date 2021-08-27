@@ -25,3 +25,19 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+# Ignore Database Backup
+oscn.tar
+
+# Ignore Data Files
+/lib/data/*
+
+.DS_Store
+erd.pdf
+sample.dump
+
+# Ignore redis file
+*.rdb
+
+# Ignore .env
+.env
