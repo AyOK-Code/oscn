@@ -25,6 +25,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: Set up Ruby Version
       uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.7'
     - name: Bundle install
       run: bundle install
     - name: Run rubocop
