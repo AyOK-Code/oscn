@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/9bTulsa/oscn_scraper
-  revision: 344b5ed00a0b1fc5697303c177105d79934ade7d
+  revision: 21bb768d0c9d9f074de92ad20d0a6e4f283acfbc
   branch: main
   specs:
     oscn_scraper (0.1.1)
