@@ -21,19 +21,19 @@ module Scrapers
         puts "Pulling cases from #{date.strftime('%m/%d/%Y')}"
 
         data.css('tr a').each do |row|
-          save_case(row)
+          save_case(row, date)
         end
       end
     end
 
-    def save_case(row)
+    def save_case(row, date)
       # TODO: Extract service that takes link and pulls out the params
       params = extract_params(row['href'])
       case_number = row.text
       case_type_id = case_types[case_type(case_number)]
-      next if case_type_id.blank?
+      return if case_type_id.blank?
 
-      c = ::CourtCase.find_or_initialize_by(oscn_id: oscn_id)
+      c = ::CourtCase.find_or_initialize_by(oscn_id: oscn_id(params))
       c.assign_attributes(
         county_id: counties[county(params)],
         case_type_id: case_type_id,
