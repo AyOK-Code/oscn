@@ -44,7 +44,6 @@ module Importers
 
     def find_or_create_party_type(party_type)
       party_type_id = party_types[party_type]
-      split_party_name if party_type == 'defendant'
       return party_type_id if party_type_id
 
       new_party_type = PartyType.create(name: party_type)
@@ -70,10 +69,6 @@ module Importers
     rescue StandardError
       logs.create_log('case_parties', "#{court_case.case_number}: error when creating case party relationship",
                       data)
-    end
-
-    def split_party_name
-      Matchers::PartyNameSplitter
     end
   end
 end
