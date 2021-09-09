@@ -39,7 +39,7 @@ module Scrapers
       data.each do |link|
         Importers::NewCourtCase.new(link).perform if court_cases[link.text].nil?
       end
-      next if data.empty?
+      return if data.empty?
 
       data.map(&:text)
     end
