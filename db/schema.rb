@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_10_205726) do
+ActiveRecord::Schema.define(version: 2021_09_09_195419) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -136,12 +136,12 @@ ActiveRecord::Schema.define(version: 2021_08_10_205726) do
     t.decimal "payment", default: "0.0", null: false
     t.decimal "adjustment", default: "0.0", null: false
     t.integer "row_index", null: false
-    t.index ["adjustment"], name: "index_docket_events_on_adjustment"
+    t.index ["adjustment"], name: "index_docket_events_on_adjustment", where: "(adjustment <> (0)::numeric)"
     t.index ["amount"], name: "index_docket_events_on_amount", where: "(amount <> (0)::numeric)"
     t.index ["court_case_id"], name: "index_docket_events_on_court_case_id"
     t.index ["docket_event_type_id"], name: "index_docket_events_on_docket_event_type_id"
     t.index ["party_id"], name: "index_docket_events_on_party_id"
-    t.index ["payment"], name: "index_docket_events_on_payment"
+    t.index ["payment"], name: "index_docket_events_on_payment", where: "(payment <> (0)::numeric)"
     t.index ["row_index", "court_case_id"], name: "index_docket_events_on_row_index_and_court_case_id", unique: true
   end
 
@@ -149,7 +149,7 @@ ActiveRecord::Schema.define(version: 2021_08_10_205726) do
     t.bigint "court_case_id", null: false
     t.bigint "party_id"
     t.datetime "event_at", null: false
-    t.string "event_type", null: false
+    t.string "event_type"
     t.string "docket"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -228,6 +228,17 @@ ActiveRecord::Schema.define(version: 2021_08_10_205726) do
     t.index ["name"], name: "index_verdicts_on_name", unique: true
   end
 
+  create_table "warrants", force: :cascade do |t|
+    t.bigint "docket_event_id", null: false
+    t.bigint "judge_id"
+    t.integer "bond"
+    t.string "comment"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["docket_event_id"], name: "index_warrants_on_docket_event_id"
+    t.index ["judge_id"], name: "index_warrants_on_judge_id"
+  end
+
   add_foreign_key "case_htmls", "court_cases"
   add_foreign_key "case_parties", "court_cases"
   add_foreign_key "case_parties", "parties"
@@ -249,6 +260,8 @@ ActiveRecord::Schema.define(version: 2021_08_10_205726) do
   add_foreign_key "judges", "counties"
   add_foreign_key "parties", "party_types"
   add_foreign_key "party_addresses", "parties"
+  add_foreign_key "warrants", "docket_events"
+  add_foreign_key "warrants", "judges"
 
   create_view "payments", sql_definition: <<-SQL
       SELECT court_cases.id AS court_case_id,
@@ -311,6 +324,8 @@ ActiveRecord::Schema.define(version: 2021_08_10_205726) do
 
   create_view "report_warrants", materialized: true, sql_definition: <<-SQL
       SELECT docket_events.court_case_id,
+      case_types.name,
+      case_types.abbreviation,
       docket_events.party_id,
       docket_events.event_on,
       docket_event_types.code,
@@ -324,17 +339,17 @@ ActiveRecord::Schema.define(version: 2021_08_10_205726) do
               WHEN 'RETWA'::text THEN 'Warrant Returned'::text
               WHEN 'RETBW'::text THEN 'Warrant Returned'::text
               WHEN 'BWR'::text THEN 'Bench Warrant Recalled'::text
-              WHEN 'BWIAR'::text THEN 'Bench Warrant Issued on Application to Revoke'::text
+              WHEN 'BWIAR'::text THEN 'Bench Warrant Issued - Application to Revoke'::text
               WHEN 'O'::text THEN 'Order Recalling Bench Warrant'::text
               WHEN 'CTBWFTA'::text THEN 'Defendant Failed to Appear for Arraignment'::text
               WHEN 'MOD&O'::text THEN 'Motion to Dismiss and Recall Warrant'::text
-              WHEN 'BWIAA'::text THEN 'Bench Warrant Issued on Application to Accelerate'::text
+              WHEN 'BWIAA'::text THEN 'Bench Warrant Issued - Application to Accelerate'::text
               WHEN 'OTHERNoFees'::text THEN 'Cost Warrant Release on Personal Recognizance Agreement'::text
-              WHEN 'BWICA'::text THEN 'Bench Warrant Issued Cause'::text
+              WHEN 'BWICA'::text THEN 'Bench Warrant Issued - Cause'::text
               WHEN 'BWIFAR'::text THEN 'Bench Warrant Issued - Failure to Appear - Application to Revoke'::text
-              WHEN 'BWIFAA'::text THEN 'Bench Warrant Issued Failure To Appear-Application to Accelerate'::text
-              WHEN 'BWIFP'::text THEN 'Bench Warrant Issued Failed To Pay'::text
-              WHEN 'BWIMW'::text THEN 'Bench Warrant For Material Witness'::text
+              WHEN 'BWIFAA'::text THEN 'Bench Warrant Issued - Failure To Appear-Application to Accelerate'::text
+              WHEN 'BWIFP'::text THEN 'Bench Warrant Issued - Failed To Pay'::text
+              WHEN 'BWIMW'::text THEN 'Bench Warrant Issued - Material Witness'::text
               WHEN 'BWIR8'::text THEN 'Bench Warrant Issued - Rule 8'::text
               WHEN 'BWIS'::text THEN 'Bench Warrant Issued - Service By Sheriff - No Money'::text
               WHEN 'BWIS$'::text THEN 'Bench Warrant Issued - Service By Sheriff'::text
@@ -345,11 +360,11 @@ ActiveRecord::Schema.define(version: 2021_08_10_205726) do
               ELSE NULL::text
           END AS shortdescription,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['CTBWFTA'::character varying, 'BWIFA'::character varying, 'BWIFAP'::character varying, 'CTDFTA'::character varying, 'BWIFAA'::character varying, 'BWIFAR'::character varying])::text[])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIFA'::character varying, 'BWIFAP'::character varying, 'BWIFAA'::character varying, 'BWIFAR'::character varying])::text[])) THEN true
               ELSE false
           END AS is_failure_to_appear,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIFAP'::character varying, 'BWIFP'::character varying, 'BWIFAR'::character varying])::text[])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIFAP'::character varying, 'BWIFP'::character varying])::text[])) THEN true
               ELSE false
           END AS is_failure_to_pay,
           CASE
@@ -357,7 +372,7 @@ ActiveRecord::Schema.define(version: 2021_08_10_205726) do
               ELSE false
           END AS is_failure_to_comply,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAA'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying])::text[])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAA'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying])::text[])) THEN true
               ELSE false
           END AS is_bench_warrant_issued,
           CASE
@@ -389,17 +404,22 @@ ActiveRecord::Schema.define(version: 2021_08_10_205726) do
               ELSE false
           END AS is_material_rule_8,
           CASE
-              WHEN ((docket_event_types.code)::text = 'BWIS$'::text) THEN true
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIS$'::character varying, 'BWIS'::character varying])::text[])) THEN true
               ELSE false
           END AS is_service_by_sheriff,
+          CASE
+              WHEN (docket_events.description ~~ '%CLEARED%'::text) THEN true
+              ELSE false
+          END AS is_cleared,
       ((( SELECT (regexp_matches(docket_events.description, '[0-9]{1,3}(?:,?[0-9]{3})*\.[0-9]{2}'::text))[1] AS regexp_matches))::money)::numeric AS bond_amount,
       ( SELECT (regexp_matches((( SELECT regexp_matches(docket_events.description, 'WARRANT RETURNED \d{1,2}/\d{1,2}/\d{4}'::text) AS regexp_matches))[1], '\d{1,2}/\d{1,2}/\d{4}'::text))[1] AS regexp_matches) AS warrant_returned_on,
       ( SELECT (regexp_matches((( SELECT regexp_matches(docket_events.description, 'WARRANT ISSUED ON \d{1,2}/\d{1,2}/\d{4}'::text) AS regexp_matches))[1], '\d{1,2}/\d{1,2}/\d{4}'::text))[1] AS regexp_matches) AS warrant_issued_on,
       ( SELECT (regexp_matches((( SELECT regexp_matches(docket_events.description, 'WARRANT RECALLED \d{1,2}/\d{1,2}/\d{4}'::text) AS regexp_matches))[1], '\d{1,2}/\d{1,2}/\d{4}'::text))[1] AS regexp_matches) AS warrant_recalled_on,
       docket_events.description
-     FROM ((docket_events
+     FROM (((docket_events
        JOIN docket_event_types ON ((docket_event_types.id = docket_events.docket_event_type_id)))
        JOIN court_cases ON ((court_cases.id = docket_events.court_case_id)))
+       JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
     WHERE (((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'RETWA'::character varying, 'RETBW'::character varying, 'BWIFAP'::character varying, 'CTDFTA'::character varying, 'CTBWFTA'::character varying, 'BWIFA'::character varying, 'BWR'::character varying, 'MOD&O'::character varying, 'O'::character varying, 'WICF'::character varying, 'BWIAR'::character varying, 'OTHERNoFees'::character varying, 'BWIAA'::character varying, 'BWIFC'::character varying, 'BWIFAR'::character varying, 'BWICA'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying])::text[])) AND (docket_events.description ~~ '%WARRANT%'::text));
   SQL
 end
