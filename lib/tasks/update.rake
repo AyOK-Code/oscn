@@ -11,6 +11,7 @@ namespace :update do
   task refresh_views: [:environment] do
     ReportWarrants.refresh
     ReportFinesAndFees.refresh
+    ReportArrestingAgency.refresh
   end
 
   desc 'Split out name into first, last, middle, etc.'
