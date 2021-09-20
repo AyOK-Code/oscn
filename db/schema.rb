@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_09_195419) do
+ActiveRecord::Schema.define(version: 2021_09_20_181802) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -178,6 +178,12 @@ ActiveRecord::Schema.define(version: 2021_09_09_195419) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "parent_parties", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "parties", force: :cascade do |t|
     t.integer "oscn_id"
     t.string "full_name"
@@ -190,7 +196,9 @@ ActiveRecord::Schema.define(version: 2021_09_09_195419) do
     t.integer "birth_month"
     t.integer "birth_year"
     t.string "suffix"
+    t.bigint "parent_party_id"
     t.index ["oscn_id"], name: "index_parties_on_oscn_id", unique: true
+    t.index ["parent_party_id"], name: "index_parties_on_parent_party_id"
     t.index ["party_type_id"], name: "index_parties_on_party_type_id"
   end
 
@@ -219,6 +227,13 @@ ActiveRecord::Schema.define(version: 2021_09_09_195419) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name"], name: "index_pleas_on_name", unique: true
+  end
+
+  create_table "titles", force: :cascade do |t|
+    t.string "code"
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "verdicts", force: :cascade do |t|
@@ -258,6 +273,7 @@ ActiveRecord::Schema.define(version: 2021_09_09_195419) do
   add_foreign_key "events", "court_cases"
   add_foreign_key "events", "parties"
   add_foreign_key "judges", "counties"
+  add_foreign_key "parties", "parent_parties"
   add_foreign_key "parties", "party_types"
   add_foreign_key "party_addresses", "parties"
   add_foreign_key "warrants", "docket_events"
@@ -422,4 +438,25 @@ ActiveRecord::Schema.define(version: 2021_09_09_195419) do
        JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
     WHERE (((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'RETWA'::character varying, 'RETBW'::character varying, 'BWIFAP'::character varying, 'CTDFTA'::character varying, 'CTBWFTA'::character varying, 'BWIFA'::character varying, 'BWR'::character varying, 'MOD&O'::character varying, 'O'::character varying, 'WICF'::character varying, 'BWIAR'::character varying, 'OTHERNoFees'::character varying, 'BWIAA'::character varying, 'BWIFC'::character varying, 'BWIFAR'::character varying, 'BWICA'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying])::text[])) AND (docket_events.description ~~ '%WARRANT%'::text));
   SQL
+  create_view "report_arresting_agencies", materialized: true, sql_definition: <<-SQL
+      SELECT court_cases.id AS court_case_id,
+      parent_parties.id AS arresting_agency_id,
+      parent_parties.name AS arresting_agency,
+      case_types.abbreviation AS case_type,
+      court_cases.filed_on,
+      counts.as_filed AS charges_as_filed,
+      (regexp_matches(split_part((counts.filed_statute_violation)::text, 'O.S.'::text, 1), '[0-9]{2}[A-Z]?'::text))[1] AS title_code
+     FROM ((((((parties
+       JOIN party_types ON ((parties.party_type_id = party_types.id)))
+       LEFT JOIN case_parties ON ((parties.id = case_parties.party_id)))
+       LEFT JOIN court_cases ON ((case_parties.court_case_id = court_cases.id)))
+       LEFT JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
+       LEFT JOIN counts ON ((counts.court_case_id = court_cases.id)))
+       LEFT JOIN parent_parties ON ((parties.parent_party_id = parent_parties.id)))
+    WHERE ((party_types.name)::text = 'arresting agency'::text);
+  SQL
+  add_index "report_arresting_agencies", ["arresting_agency_id"], name: "index_report_arresting_agencies_on_arresting_agency_id"
+  add_index "report_arresting_agencies", ["filed_on"], name: "index_report_arresting_agencies_on_filed_on"
+  add_index "report_arresting_agencies", ["title_code"], name: "index_report_arresting_agencies_on_title_code"
+
 end
