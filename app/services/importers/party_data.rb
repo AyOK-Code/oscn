@@ -20,7 +20,7 @@ module Importers
       string = personal_columns[2]&.text&.split('/')
       return if string.blank?
 
-      party.update(birth_month: month, birth_year: year)
+      party.update(birth_month: month(string), birth_year: year(string))
 
       save_addresses(parsed_html)
     end
