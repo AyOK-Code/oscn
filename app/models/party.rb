@@ -1,5 +1,6 @@
 class Party < ApplicationRecord
   belongs_to :party_type
+  belongs_to :parent_party, optional: true
   has_many :case_parties, dependent: :destroy
   has_many :court_cases, through: :case_parties
   has_many :counsel_parties, dependent: :destroy
