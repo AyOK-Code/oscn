@@ -1,6 +1,6 @@
 namespace :import do
   desc "Import Oklahoma List Statutes"
-  task :agency_mapping do
+  task agency_mapping: :environment do
     file = File.open('lib/agencies_mapped.csv').read
     data = CSV.parse(file, headers: true)
 
