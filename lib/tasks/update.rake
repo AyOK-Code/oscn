@@ -35,4 +35,16 @@ namespace :update do
       PartyWorker.perform_async(p.oscn_id)
     end
   end
+
+  desc 'Assign parents'
+  task assign_parent_parties: [:environment] do
+    parties = Party.arresting_agency.without_parent
+    parties.each do |p|
+      party_with_parent = Party.with_parent.find_by(full_name: p.full_name)
+      if party_with_parent.present?
+        puts "#{p.full_name} mapped to #{party_with_parent.first.parent_party.name}"
+        p.update(party_parent_id: party_with_parent.party_parent_id)
+      end
+    end
+  end
 end
