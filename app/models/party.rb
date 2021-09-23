@@ -16,6 +16,6 @@ class Party < ApplicationRecord
   scope :without_birthday, -> { where(birth_month: nil) } # TODO: Validate presence of party_type?
   scope :without_parent, -> { where(parent_party_id: nil) }
   scope :with_parent, -> { where.not(parent_party_id: nil) }
-  scope :arresting_agency, -> { joins(:party_type).where(party_types: {name: 'arresting_agency'}) }
+  scope :arresting_agency, -> { joins(:party_type).where(party_types: { name: 'arresting_agency' }) }
   scope :defendant, -> { joins(:party_type).where(party_types: { name: 'defendant' }) }
 end
