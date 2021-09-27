@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_23_205935) do
+ActiveRecord::Schema.define(version: 2021_09_23_212430) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -133,8 +133,8 @@ ActiveRecord::Schema.define(version: 2021_09_23_205935) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "party_id"
     t.integer "count"
-    t.decimal "payment", default: "0.0", null: false
-    t.decimal "adjustment", default: "0.0", null: false
+    t.decimal "payment", default: "0.0"
+    t.decimal "adjustment", default: "0.0"
     t.integer "row_index", null: false
     t.index ["adjustment"], name: "index_docket_events_on_adjustment"
     t.index ["amount"], name: "index_docket_events_on_amount", where: "(amount <> (0)::numeric)"
@@ -243,6 +243,17 @@ ActiveRecord::Schema.define(version: 2021_09_23_205935) do
     t.index ["name"], name: "index_verdicts_on_name", unique: true
   end
 
+  create_table "warrants", force: :cascade do |t|
+    t.bigint "docket_event_id", null: false
+    t.bigint "judge_id"
+    t.integer "bond"
+    t.string "comment"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["docket_event_id"], name: "index_warrants_on_docket_event_id"
+    t.index ["judge_id"], name: "index_warrants_on_judge_id"
+  end
+
   add_foreign_key "case_htmls", "court_cases"
   add_foreign_key "case_parties", "court_cases"
   add_foreign_key "case_parties", "parties"
@@ -265,6 +276,8 @@ ActiveRecord::Schema.define(version: 2021_09_23_205935) do
   add_foreign_key "parties", "parent_parties"
   add_foreign_key "parties", "party_types"
   add_foreign_key "party_addresses", "parties"
+  add_foreign_key "warrants", "docket_events"
+  add_foreign_key "warrants", "judges"
 
   create_view "payments", sql_definition: <<-SQL
       SELECT court_cases.id AS court_case_id,
@@ -299,53 +312,6 @@ ActiveRecord::Schema.define(version: 2021_09_23_205935) do
           END AS is_tax_intercepted
      FROM court_cases;
   SQL
-  create_view "report_fines_and_fees", materialized: true, sql_definition: <<-SQL
-      SELECT court_cases.id AS court_case_id,
-      case_types.id AS case_type_id,
-      docket_event_types.id AS docket_event_types_id,
-      docket_events.event_on,
-      docket_events.amount,
-      docket_events.payment,
-      docket_events.adjustment,
-          CASE
-              WHEN (( SELECT count(*) AS count
-                 FROM (docket_events docket_events_1
-                   JOIN docket_event_types docket_event_types_1 ON ((docket_events_1.docket_event_type_id = docket_event_types_1.id)))
-                WHERE ((docket_events_1.court_case_id = court_cases.id) AND ((docket_event_types_1.code)::text = 'CTRS'::text))) > 0) THEN true
-              ELSE false
-          END AS is_tax_intercepted
-     FROM (((docket_events
-       JOIN docket_event_types ON ((docket_event_types.id = docket_events.docket_event_type_id)))
-       JOIN court_cases ON ((court_cases.id = docket_events.court_case_id)))
-       JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
-    WHERE ((docket_events.amount <> (0)::numeric) OR (docket_events.adjustment <> (0)::numeric) OR (docket_events.payment <> (0)::numeric));
-  SQL
-  add_index "report_fines_and_fees", ["case_type_id"], name: "index_report_fines_and_fees_on_case_type_id"
-  add_index "report_fines_and_fees", ["court_case_id"], name: "index_report_fines_and_fees_on_court_case_id"
-  add_index "report_fines_and_fees", ["docket_event_types_id"], name: "index_report_fines_and_fees_on_docket_event_types_id"
-  add_index "report_fines_and_fees", ["event_on"], name: "index_report_fines_and_fees_on_event_on"
-
-  create_view "report_arresting_agencies", materialized: true, sql_definition: <<-SQL
-      SELECT court_cases.id AS court_case_id,
-      parent_parties.id AS arresting_agency_id,
-      parent_parties.name AS arresting_agency,
-      case_types.abbreviation AS case_type,
-      court_cases.filed_on,
-      counts.as_filed AS charges_as_filed,
-      (regexp_matches(split_part((counts.filed_statute_violation)::text, 'O.S.'::text, 1), '[0-9]{2}[A-Z]?'::text))[1] AS title_code
-     FROM ((((((parties
-       JOIN party_types ON ((parties.party_type_id = party_types.id)))
-       LEFT JOIN case_parties ON ((parties.id = case_parties.party_id)))
-       LEFT JOIN court_cases ON ((case_parties.court_case_id = court_cases.id)))
-       LEFT JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
-       LEFT JOIN counts ON ((counts.court_case_id = court_cases.id)))
-       LEFT JOIN parent_parties ON ((parties.parent_party_id = parent_parties.id)))
-    WHERE ((party_types.name)::text = 'arresting agency'::text);
-  SQL
-  add_index "report_arresting_agencies", ["arresting_agency_id"], name: "index_report_arresting_agencies_on_arresting_agency_id"
-  add_index "report_arresting_agencies", ["filed_on"], name: "index_report_arresting_agencies_on_filed_on"
-  add_index "report_arresting_agencies", ["title_code"], name: "index_report_arresting_agencies_on_title_code"
-
   create_view "report_warrants", materialized: true, sql_definition: <<-SQL
       SELECT docket_events.id,
       docket_events.court_case_id,
@@ -354,14 +320,29 @@ ActiveRecord::Schema.define(version: 2021_09_23_205935) do
       docket_events.party_id,
       docket_events.event_on,
       docket_event_types.code,
-      ( SELECT parent_parties.name
-             FROM ((((case_parties
-               JOIN parties ON ((case_parties.party_id = parties.id)))
-               JOIN parent_parties ON ((parties.parent_party_id = parent_parties.id)))
-               JOIN party_types ON ((parties.party_type_id = party_types.id)))
-               JOIN court_cases court_cases_1 ON ((court_cases_1.id = case_parties.court_case_id)))
-            WHERE (((party_types.name)::text = 'arresting agency'::text) AND (court_cases_1.id = docket_events.court_case_id))
-           LIMIT 1) AS arresting_agency,
+          CASE
+              WHEN (( SELECT count(*) AS count
+                 FROM ((((case_parties
+                   JOIN parties ON ((case_parties.party_id = parties.id)))
+                   JOIN parent_parties ON ((parties.parent_party_id = parent_parties.id)))
+                   JOIN party_types ON ((parties.party_type_id = party_types.id)))
+                   JOIN court_cases court_cases_1 ON ((court_cases_1.id = case_parties.court_case_id)))
+                WHERE (((party_types.name)::text = 'arresting agency'::text) AND (court_cases_1.id = docket_events.court_case_id))) = 1) THEN ( SELECT parent_parties.name
+                 FROM ((((case_parties
+                   JOIN parties ON ((case_parties.party_id = parties.id)))
+                   JOIN parent_parties ON ((parties.parent_party_id = parent_parties.id)))
+                   JOIN party_types ON ((parties.party_type_id = party_types.id)))
+                   JOIN court_cases court_cases_1 ON ((court_cases_1.id = case_parties.court_case_id)))
+                WHERE (((party_types.name)::text = 'arresting agency'::text) AND (court_cases_1.id = docket_events.court_case_id)))
+              WHEN (( SELECT count(*) AS count
+                 FROM ((((case_parties
+                   JOIN parties ON ((case_parties.party_id = parties.id)))
+                   JOIN parent_parties ON ((parties.parent_party_id = parent_parties.id)))
+                   JOIN party_types ON ((parties.party_type_id = party_types.id)))
+                   JOIN court_cases court_cases_1 ON ((court_cases_1.id = case_parties.court_case_id)))
+                WHERE (((party_types.name)::text = 'arresting agency'::text) AND (court_cases_1.id = docket_events.court_case_id))) > 1) THEN 'MULTIPLE ARRESTING AGENCIES'::character varying
+              ELSE 'NOT PROVIDED'::character varying
+          END AS arresting_agency,
           CASE docket_event_types.code
               WHEN 'WAI$'::text THEN 'Warrant of Arrest Issued'::text
               WHEN 'BWIFAP'::text THEN 'Bench Warrant Issued - Failed to Appear and Pay'::text
@@ -381,6 +362,8 @@ ActiveRecord::Schema.define(version: 2021_09_23_205935) do
               WHEN 'WAIMV'::text THEN 'Warrant of Arrest Issued - Material Warrant'::text
               WHEN 'WAIMW'::text THEN 'Warrant of Arrest Issued - Material Witness'::text
               WHEN 'BWIFAR'::text THEN 'Bench Warrrant Issued - Failure to Appear - Application to Revoke'::text
+              WHEN 'RETBW'::text THEN 'Warrant Returned'::text
+              WHEN 'RETWA'::text THEN 'Warrant Returned'::text
               ELSE NULL::text
           END AS shortdescription,
           CASE
@@ -444,6 +427,30 @@ ActiveRecord::Schema.define(version: 2021_09_23_205935) do
        JOIN docket_event_types ON ((docket_event_types.id = docket_events.docket_event_type_id)))
        JOIN court_cases ON ((court_cases.id = docket_events.court_case_id)))
        JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
-    WHERE (((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWIFC'::character varying, 'BWIFAR'::character varying, 'BWICA'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying])::text[])) AND (docket_events.description ~~ '%WARRANT%'::text));
+    WHERE (((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWIFC'::character varying, 'BWIFAR'::character varying, 'BWICA'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'RETBW'::character varying, 'RETWA'::character varying])::text[])) AND (docket_events.description ~~ '%WARRANT%'::text));
   SQL
+  create_view "report_arresting_agencies", materialized: true, sql_definition: <<-SQL
+      SELECT court_cases.id AS court_case_id,
+      parent_parties.id AS arresting_agency_id,
+          CASE
+              WHEN (parent_parties.name IS NULL) THEN 'NOT PROVIDED'::character varying
+              ELSE parent_parties.name
+          END AS arresting_agency,
+      case_types.abbreviation AS case_type,
+      court_cases.filed_on,
+      counts.as_filed AS charges_as_filed,
+      (regexp_matches(split_part((counts.filed_statute_violation)::text, 'O.S.'::text, 1), '[0-9]{2}[A-Z]?'::text))[1] AS title_code
+     FROM ((((((parties
+       JOIN party_types ON ((parties.party_type_id = party_types.id)))
+       LEFT JOIN case_parties ON ((parties.id = case_parties.party_id)))
+       LEFT JOIN court_cases ON ((case_parties.court_case_id = court_cases.id)))
+       LEFT JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
+       LEFT JOIN counts ON ((counts.court_case_id = court_cases.id)))
+       LEFT JOIN parent_parties ON ((parties.parent_party_id = parent_parties.id)))
+    WHERE ((party_types.name)::text = 'arresting agency'::text);
+  SQL
+  add_index "report_arresting_agencies", ["arresting_agency_id"], name: "index_report_arresting_agencies_on_arresting_agency_id"
+  add_index "report_arresting_agencies", ["filed_on"], name: "index_report_arresting_agencies_on_filed_on"
+  add_index "report_arresting_agencies", ["title_code"], name: "index_report_arresting_agencies_on_title_code"
+
 end

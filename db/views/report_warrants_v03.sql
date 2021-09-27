@@ -6,14 +6,47 @@ SELECT
 	docket_events.party_id,
 	docket_events.event_on,
 	docket_event_types.code,
-	(SELECT parent_parties.name from case_parties
-		JOIN parties on case_parties.party_id = parties.id
-		JOIN parent_parties on parties.parent_party_id = parent_parties.id
-		JOIN party_types on parties.party_type_id = party_types.id
-		JOIN court_cases on court_cases.id = case_parties.court_case_id
-		WHERE party_types.name = 'arresting agency' AND
-		court_cases.id = docket_events.court_case_id LIMIT 1) as arresting_agency,
-	CASE docket_event_types.code
+	(
+		CASE WHEN (
+			SELECT
+				COUNT(*)
+			FROM
+				case_parties
+				JOIN parties ON case_parties.party_id = parties.id
+				JOIN parent_parties ON parties.parent_party_id = parent_parties.id
+				JOIN party_types ON parties.party_type_id = party_types.id
+				JOIN court_cases ON court_cases.id = case_parties.court_case_id
+			WHERE
+				party_types.name = 'arresting agency'
+				AND court_cases.id = docket_events.court_case_id) = 1 THEN
+			(
+				SELECT
+					parent_parties.name
+				FROM
+					case_parties
+					JOIN parties ON case_parties.party_id = parties.id
+					JOIN parent_parties ON parties.parent_party_id = parent_parties.id
+					JOIN party_types ON parties.party_type_id = party_types.id
+					JOIN court_cases ON court_cases.id = case_parties.court_case_id
+				WHERE
+					party_types.name = 'arresting agency'
+					AND court_cases.id = docket_events.court_case_id)
+		WHEN (
+			SELECT
+				COUNT(*)
+			FROM
+				case_parties
+				JOIN parties ON case_parties.party_id = parties.id
+				JOIN parent_parties ON parties.parent_party_id = parent_parties.id
+				JOIN party_types ON parties.party_type_id = party_types.id
+				JOIN court_cases ON court_cases.id = case_parties.court_case_id
+			WHERE
+				party_types.name = 'arresting agency'
+				AND court_cases.id = docket_events.court_case_id) > 1 THEN
+			'MULTIPLE ARRESTING AGENCIES'
+		ELSE
+			'NOT PROVIDED'
+		END) AS arresting_agency, CASE docket_event_types.code
 	WHEN 'WAI$' THEN
 		'Warrant of Arrest Issued'
 	WHEN 'BWIFAP' THEN
@@ -50,92 +83,82 @@ SELECT
 		'Warrant of Arrest Issued - Material Witness'
 	WHEN 'BWIFAR' THEN
 		'Bench Warrrant Issued - Failure to Appear - Application to Revoke'
-	END AS ShortDescription,
-	CASE WHEN docket_event_types.code IN('BWIFA', 'BWIFAP', 'BWIFAA', 'BWIFAR') THEN
+	WHEN 'RETBW' THEN
+		'Warrant Returned'
+	WHEN 'RETWA' THEN
+		'Warrant Returned'
+	END AS ShortDescription, CASE WHEN docket_event_types.code IN('BWIFA', 'BWIFAP', 'BWIFAA', 'BWIFAR') THEN
 		TRUE
 	ELSE
 		FALSE
-	END AS is_failure_to_appear,
-	CASE WHEN docket_event_types.code IN('BWIFAP', 'BWIFP') THEN
+	END AS is_failure_to_appear, CASE WHEN docket_event_types.code IN('BWIFAP', 'BWIFP') THEN
 		TRUE
 	ELSE
 		FALSE
-	END AS is_failure_to_pay,
-	CASE WHEN docket_event_types.code IN('BWIFC') THEN
+	END AS is_failure_to_pay, CASE WHEN docket_event_types.code IN('BWIFC') THEN
 		TRUE
 	ELSE
 		FALSE
-	END AS is_failure_to_comply,
-	CASE WHEN docket_event_types.code IN('BWIFAP','BWIFA','BWIFC', 'BWIAA','BWIAR','BWICA','BWIFAR', 'BWIFAA', 'BWIR8', 'BWIS', 'BWIS$', 'BWIFP', 'BWIMW') THEN
+	END AS is_failure_to_comply, CASE WHEN docket_event_types.code IN('BWIFAP', 'BWIFA', 'BWIFC', 'BWIAA', 'BWIAR', 'BWICA', 'BWIFAR', 'BWIFAA', 'BWIR8', 'BWIS', 'BWIS$', 'BWIFP', 'BWIMW') THEN
 		TRUE
 	ELSE
 		FALSE
-	END AS is_bench_warrant_issued,
-	CASE WHEN docket_event_types.code IN('WAI', 'WAI$') THEN
+	END AS is_bench_warrant_issued, CASE WHEN docket_event_types.code IN('WAI', 'WAI$') THEN
 		TRUE
 	ELSE
 		FALSE
-	END as is_arrest_warrant_issued,
-	CASE WHEN docket_event_types.code IN('BWIAA', 'BWIFAA') THEN
+	END AS is_arrest_warrant_issued, CASE WHEN docket_event_types.code IN('BWIAA', 'BWIFAA') THEN
 		TRUE
 	ELSE
 		FALSE
-	END as is_application_to_accelerate,
-	CASE WHEN docket_event_types.code IN('BWIFAR', 'BWIAR') THEN
+	END AS is_application_to_accelerate, CASE WHEN docket_event_types.code IN('BWIFAR', 'BWIAR') THEN
 		TRUE
 	ELSE
 		FALSE
-	END as is_application_to_revoke,
-	CASE WHEN docket_event_types.code IN('BWICA') THEN
+	END AS is_application_to_revoke, CASE WHEN docket_event_types.code IN('BWICA') THEN
 		TRUE
 	ELSE
 		FALSE
-	END as is_cause,
-	CASE WHEN docket_event_types.code IN('BWIMW', 'WAIMW') THEN
+	END AS is_cause, CASE WHEN docket_event_types.code IN('BWIMW', 'WAIMW') THEN
 		TRUE
 	ELSE
 		FALSE
-	END as is_material_witness,
-	CASE WHEN docket_event_types.code IN('WAIMV') THEN
+	END AS is_material_witness, CASE WHEN docket_event_types.code IN('WAIMV') THEN
 		TRUE
 	ELSE
 		FALSE
-	END as is_material_warrant,
-	CASE WHEN docket_event_types.code IN('BWIR8') THEN
+	END AS is_material_warrant, CASE WHEN docket_event_types.code IN('BWIR8') THEN
 		TRUE
 	ELSE
 		FALSE
-	END as is_material_rule_8,
-	CASE WHEN docket_event_types.code IN('BWIS$', 'BWIS') THEN
+	END AS is_material_rule_8, CASE WHEN docket_event_types.code IN('BWIS$', 'BWIS') THEN
 		TRUE
 	ELSE
 		FALSE
-	END as is_service_by_sheriff,
-	CASE WHEN docket_events.description LIKE '%CLEARED%' THEN true ELSE false END as is_cleared,
-	CAST(CAST((
+	END AS is_service_by_sheriff, CASE WHEN docket_events.description LIKE '%CLEARED%' THEN
+		TRUE
+	ELSE
+		FALSE
+	END AS is_cleared, CAST(CAST((
 			SELECT
-				(REGEXP_MATCHES(docket_events.description, '[0-9]{1,3}(?:,?[0-9]{3})*\.[0-9]{2}')) [1]) AS money) AS decimal) AS bond_amount,
-	(
+				(REGEXP_MATCHES(docket_events.description, '[0-9]{1,3}(?:,?[0-9]{3})*\.[0-9]{2}')) [1]) AS money) AS decimal) AS bond_amount, (
 		SELECT
 			(REGEXP_MATCHES(((
 					SELECT
-						(REGEXP_MATCHES(docket_events.description, 'WARRANT RETURNED \d{1,2}/\d{1,2}/\d{4}'))) [1]), '\d{1,2}/\d{1,2}/\d{4}')) [1]) AS warrant_returned_on,
-		(
+						(REGEXP_MATCHES(docket_events.description, 'WARRANT RETURNED \d{1,2}/\d{1,2}/\d{4}'))) [1]), '\d{1,2}/\d{1,2}/\d{4}')) [1]) AS warrant_returned_on, (
 			SELECT
 				(REGEXP_MATCHES(((
 						SELECT
-							(REGEXP_MATCHES(docket_events.description, 'WARRANT ISSUED ON \d{1,2}/\d{1,2}/\d{4}'))) [1]), '\d{1,2}/\d{1,2}/\d{4}')) [1]) AS warrant_issued_on,
-			(
+							(REGEXP_MATCHES(docket_events.description, 'WARRANT ISSUED ON \d{1,2}/\d{1,2}/\d{4}'))) [1]), '\d{1,2}/\d{1,2}/\d{4}')) [1]) AS warrant_issued_on, (
 				SELECT
 					(REGEXP_MATCHES(((
 							SELECT
-								(REGEXP_MATCHES(docket_events.description, 'WARRANT RECALLED \d{1,2}/\d{1,2}/\d{4}'))) [1]), '\d{1,2}/\d{1,2}/\d{4}')) [1]) AS warrant_recalled_on,
-				description
+								(REGEXP_MATCHES(docket_events.description, 'WARRANT RECALLED \d{1,2}/\d{1,2}/\d{4}'))) [1]), '\d{1,2}/\d{1,2}/\d{4}')) [1]) AS warrant_recalled_on, description
 			FROM
 				docket_events
 				JOIN docket_event_types ON docket_event_types.id = docket_events.docket_event_type_id
 				JOIN court_cases ON court_cases.id = docket_events.court_case_id
 				JOIN case_types ON court_cases.case_type_id = case_types.id
 			WHERE
-				docket_event_types.code IN('WAI$', 'BWIFAP', 'BWIFA', 'BWIAR', 'BWIAA', 'BWIFC', 'BWIFAR', 'BWICA', 'BWIFAA', 'BWIFP', 'BWIMW', 'BWIR8', 'BWIS', 'BWIS$', 'WAI', 'WAIMV', 'WAIMW')
+				docket_event_types.code IN('WAI$', 'BWIFAP', 'BWIFA', 'BWIAR', 'BWIAA', 'BWIFC', 'BWIFAR', 'BWICA', 'BWIFAA', 'BWIFP', 'BWIMW', 'BWIR8', 'BWIS', 'BWIS$', 'WAI', 'WAIMV', 'WAIMW', 'RETBW', 'RETWA')
 				AND docket_events.description LIKE '%WARRANT%'
