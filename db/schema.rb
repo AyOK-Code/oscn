@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_23_212430) do
+ActiveRecord::Schema.define(version: 2021_09_30_181255) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -452,5 +452,37 @@ ActiveRecord::Schema.define(version: 2021_09_23_212430) do
   add_index "report_arresting_agencies", ["arresting_agency_id"], name: "index_report_arresting_agencies_on_arresting_agency_id"
   add_index "report_arresting_agencies", ["filed_on"], name: "index_report_arresting_agencies_on_filed_on"
   add_index "report_arresting_agencies", ["title_code"], name: "index_report_arresting_agencies_on_title_code"
+
+  create_view "report_searchable_cases", materialized: true, sql_definition: <<-SQL
+      SELECT court_cases.case_number,
+      court_cases.filed_on,
+      parties.full_name,
+      parties.first_name,
+      parties.last_name,
+      parties.birth_month,
+      parties.birth_year,
+      counts.offense_on AS date_of_offense,
+      counts.as_filed AS count_as_filed,
+      counts.charge AS count_as_disposed,
+          CASE
+              WHEN (( SELECT count(*) AS count
+                 FROM (docket_events
+                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
+                WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'BWIFAR'::character varying])::text[])))) > 0) THEN 'Yes'::text
+              ELSE 'No'::text
+          END AS warrant_on_case,
+      pleas.name AS plea,
+      verdicts.name AS verdict,
+      (regexp_matches(split_part((counts.filed_statute_violation)::text, 'O.S.'::text, 1), '[0-9]{2}[A-Z]?'::text))[1] AS title_code
+     FROM ((((counts
+       JOIN court_cases ON ((counts.court_case_id = court_cases.id)))
+       JOIN parties ON ((parties.id = counts.party_id)))
+       JOIN pleas ON ((pleas.id = counts.plea_id)))
+       JOIN verdicts ON ((verdicts.id = counts.verdict_id)));
+  SQL
+  add_index "report_searchable_cases", ["case_number"], name: "index_report_searchable_cases_on_case_number"
+  add_index "report_searchable_cases", ["filed_on"], name: "index_report_searchable_cases_on_filed_on"
+  add_index "report_searchable_cases", ["first_name"], name: "index_report_searchable_cases_on_first_name"
+  add_index "report_searchable_cases", ["last_name"], name: "index_report_searchable_cases_on_last_name"
 
 end
