@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_30_181255) do
+ActiveRecord::Schema.define(version: 2021_10_01_151706) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -293,25 +293,6 @@ ActiveRecord::Schema.define(version: 2021_09_30_181255) do
     WHERE ((party_types.name)::text = 'defendant'::text)
     GROUP BY docket_events.party_id, court_cases.id;
   SQL
-  create_view "case_stats", sql_definition: <<-SQL
-      SELECT court_cases.id,
-      (court_cases.closed_on - court_cases.filed_on) AS length_of_case_in_days,
-      ( SELECT count(*) AS count
-             FROM counts
-            WHERE (court_cases.id = counts.court_case_id)) AS counts_count,
-      ( SELECT count(*) AS count
-             FROM ((case_parties
-               JOIN parties ON ((case_parties.party_id = parties.id)))
-               JOIN party_types ON ((parties.party_type_id = party_types.id)))
-            WHERE ((court_cases.id = case_parties.court_case_id) AND ((party_types.name)::text = 'defendant'::text))) AS defendant_count,
-          CASE
-              WHEN (( SELECT count(*) AS count
-                 FROM docket_events
-                WHERE (docket_events.court_case_id = court_cases.id)) > 0) THEN true
-              ELSE false
-          END AS is_tax_intercepted
-     FROM court_cases;
-  SQL
   create_view "report_warrants", materialized: true, sql_definition: <<-SQL
       SELECT docket_events.id,
       docket_events.court_case_id,
@@ -484,5 +465,71 @@ ActiveRecord::Schema.define(version: 2021_09_30_181255) do
   add_index "report_searchable_cases", ["filed_on"], name: "index_report_searchable_cases_on_filed_on"
   add_index "report_searchable_cases", ["first_name"], name: "index_report_searchable_cases_on_first_name"
   add_index "report_searchable_cases", ["last_name"], name: "index_report_searchable_cases_on_last_name"
+
+  create_view "case_stats", materialized: true, sql_definition: <<-SQL
+      SELECT court_cases.id AS court_case_id,
+      (court_cases.closed_on - court_cases.filed_on) AS length_of_case_in_days,
+      ( SELECT count(*) AS count
+             FROM counts
+            WHERE (court_cases.id = counts.court_case_id)) AS counts_count,
+      ( SELECT count(*) AS count
+             FROM ((case_parties
+               JOIN parties ON ((case_parties.party_id = parties.id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+            WHERE ((court_cases.id = case_parties.court_case_id) AND ((party_types.name)::text = 'defendant'::text))) AS defendant_count,
+          CASE
+              WHEN (( SELECT count(*) AS count
+                 FROM docket_events
+                WHERE (docket_events.court_case_id = court_cases.id)) > 0) THEN true
+              ELSE false
+          END AS is_tax_intercepted,
+      ( SELECT count(*) AS count
+             FROM (docket_events
+               JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
+            WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'BWIFAR'::character varying])::text[])))) AS warrants_count
+     FROM court_cases;
+  SQL
+  add_index "case_stats", ["court_case_id"], name: "index_case_stats_on_court_case_id"
+
+  create_view "party_stats", materialized: true, sql_definition: <<-SQL
+      SELECT parties.id AS party_id,
+      ( SELECT count(*) AS count
+             FROM case_parties
+            WHERE (case_parties.party_id = parties.id)) AS cases_count,
+      ( SELECT count(*) AS count
+             FROM ((case_parties
+               JOIN court_cases ON ((case_parties.court_case_id = court_cases.id)))
+               JOIN case_types ON ((case_types.id = court_cases.case_type_id)))
+            WHERE ((case_parties.party_id = parties.id) AND ((case_types.abbreviation)::text = 'CF'::text))) AS cf_count,
+      ( SELECT count(*) AS count
+             FROM ((case_parties
+               JOIN court_cases ON ((case_parties.court_case_id = court_cases.id)))
+               JOIN case_types ON ((case_types.id = court_cases.case_type_id)))
+            WHERE ((case_parties.party_id = parties.id) AND ((case_types.abbreviation)::text = 'CM'::text))) AS cm_count,
+      ( SELECT count(*) AS count
+             FROM (docket_events
+               JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
+            WHERE ((docket_events.party_id = parties.id) AND ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'BWIFAR'::character varying])::text[])))) AS warrants_count,
+      ( SELECT sum(docket_events.amount) AS sum
+             FROM docket_events
+            WHERE (docket_events.party_id = parties.id)) AS total_fined,
+      ( SELECT sum(docket_events.payment) AS sum
+             FROM docket_events
+            WHERE (docket_events.party_id = parties.id)) AS total_paid,
+      ( SELECT sum(docket_events.adjustment) AS sum
+             FROM docket_events
+            WHERE (docket_events.party_id = parties.id)) AS total_adjusted,
+      ((( SELECT sum(docket_events.amount) AS sum
+             FROM docket_events
+            WHERE (docket_events.party_id = parties.id)) - ( SELECT sum(docket_events.payment) AS sum
+             FROM docket_events
+            WHERE (docket_events.party_id = parties.id))) - ( SELECT sum(docket_events.adjustment) AS sum
+             FROM docket_events
+            WHERE (docket_events.party_id = parties.id))) AS account_balance
+     FROM (parties
+       JOIN party_types ON ((parties.party_type_id = party_types.id)))
+    WHERE ((party_types.name)::text = 'defendant'::text);
+  SQL
+  add_index "party_stats", ["party_id"], name: "index_party_stats_on_party_id"
 
 end
