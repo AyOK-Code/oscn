@@ -7,11 +7,14 @@ namespace :update do
     Scrapers::Case.perform
   end
 
-  desc "Refresh the materialized views for the database"
+  desc 'Refresh the materialized views for the database'
   task refresh_views: [:environment] do
     ReportWarrants.refresh
     ReportFinesAndFees.refresh
     ReportArrestingAgency.refresh
+    ReportSearchableCase.refresh
+    PartyStat.refresh
+    CaseStat.refresh
   end
 
   desc 'Split out name into first, last, middle, etc.'
