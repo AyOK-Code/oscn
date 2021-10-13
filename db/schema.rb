@@ -133,8 +133,8 @@ ActiveRecord::Schema.define(version: 2021_10_07_212811) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "party_id"
     t.integer "count"
-    t.decimal "payment", default: "0.0"
-    t.decimal "adjustment", default: "0.0"
+    t.decimal "payment", default: "0.0", null: false
+    t.decimal "adjustment", default: "0.0", null: false
     t.integer "row_index", null: false
     t.index ["adjustment"], name: "index_docket_events_on_adjustment"
     t.index ["amount"], name: "index_docket_events_on_amount", where: "(amount <> (0)::numeric)"
@@ -243,17 +243,6 @@ ActiveRecord::Schema.define(version: 2021_10_07_212811) do
     t.index ["name"], name: "index_verdicts_on_name", unique: true
   end
 
-  create_table "warrants", force: :cascade do |t|
-    t.bigint "docket_event_id", null: false
-    t.bigint "judge_id"
-    t.integer "bond"
-    t.string "comment"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["docket_event_id"], name: "index_warrants_on_docket_event_id"
-    t.index ["judge_id"], name: "index_warrants_on_judge_id"
-  end
-
   add_foreign_key "case_htmls", "court_cases"
   add_foreign_key "case_parties", "court_cases"
   add_foreign_key "case_parties", "parties"
@@ -276,8 +265,6 @@ ActiveRecord::Schema.define(version: 2021_10_07_212811) do
   add_foreign_key "parties", "parent_parties"
   add_foreign_key "parties", "party_types"
   add_foreign_key "party_addresses", "parties"
-  add_foreign_key "warrants", "docket_events"
-  add_foreign_key "warrants", "judges"
 
   create_view "payments", sql_definition: <<-SQL
       SELECT court_cases.id AS court_case_id,
@@ -471,7 +458,7 @@ ActiveRecord::Schema.define(version: 2021_10_07_212811) do
               ELSE NULL::text
           END AS shortdescription,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIFA'::character varying, 'BWIFAP'::character varying, 'BWIFAA'::character varying, 'BWIFAR'::character varying])::text[])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIFAR'::character varying])::text[])) THEN true
               ELSE false
           END AS is_failure_to_appear,
           CASE

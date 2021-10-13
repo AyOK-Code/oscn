@@ -85,7 +85,7 @@ SELECT
 		'Warrant Returned'
 	WHEN 'RETWA' THEN
 		'Warrant Returned'
-	END AS ShortDescription, CASE WHEN docket_event_types.code IN('BWIFA', 'BWIFAP', 'BWIFAA', 'BWIFAR') THEN
+	END AS ShortDescription, CASE WHEN docket_event_types.code IN('BWIFA', 'BWIFAA', 'BWIFAR') THEN
 		TRUE
 	ELSE
 		FALSE
