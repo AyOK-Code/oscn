@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.7.3'
+ruby '2.7.2'
 
 gem 'awesome_print'
 gem 'aws-sdk-s3', '~> 1'
@@ -20,7 +20,7 @@ gem 'progress_bar'
 gem 'puma', '~> 4.1'
 gem 'pundit'
 gem 'rack-cors'
-gem 'rails'
+gem 'rails', '~> 6.0.3'
 gem 'redis', '~> 4.0'
 gem 'ruby-limiter'
 gem 'scenic'
