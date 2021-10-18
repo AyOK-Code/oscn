@@ -9,5 +9,9 @@ FactoryBot.define do
     trait :warrant_issued do
       code { DocketEventType::WARRANT_CODES.sample }
     end
+
+    trait :return_warrant do
+      code { 'RETWA' }
+    end
   end
 end
