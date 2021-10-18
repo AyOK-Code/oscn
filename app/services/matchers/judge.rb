@@ -4,11 +4,11 @@ module Matchers
     attr_accessor :fz, :name, :judges_hash, :county_id
 
     # TODO: Make County dynamic
-    def initialize(name)
+    def initialize(county_id, name)
       @judges_hash = ::Judge.pluck(:name, :id).to_h
       @name = name
       @fz = FuzzyMatch.new(::Judge.pluck(:name))
-      @county_id = County.find_by(name: 'Oklahoma').id
+      @county_id = county_id
     end
 
     def judge_id
