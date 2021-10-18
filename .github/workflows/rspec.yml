@@ -1,4 +1,4 @@
-name: Rails CI
+name: Run RSpec
 
 on: [push]
 
@@ -29,8 +29,6 @@ jobs:
         bundler-cache: true
     - name: Bundle install
       run: bundle install
-    - name: Run rubocop
-      run: bundle exec rubocop .
     - name: Build and test with Rake
       env:
         PGHOST: 127.0.0.1
