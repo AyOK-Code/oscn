@@ -1,4 +1,4 @@
-class CreateReportFinesAndFees < ActiveRecord::Migration[6.1]
+class CreateReportFinesAndFees < ActiveRecord::Migration[6.0]
   def change
     add_index :docket_events, :payment, where: "payment != 0"
     add_index :docket_events, :adjustment, where: "adjustment != 0"

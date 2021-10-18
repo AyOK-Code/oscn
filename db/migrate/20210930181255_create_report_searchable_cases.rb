@@ -1,4 +1,4 @@
-class CreateReportSearchableCases < ActiveRecord::Migration[6.1]
+class CreateReportSearchableCases < ActiveRecord::Migration[6.0]
   def change
     create_view :report_searchable_cases, materialized: true
     add_index :report_searchable_cases, :filed_on
