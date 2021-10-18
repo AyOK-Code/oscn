@@ -1,4 +1,4 @@
-class AddSuffixToParties < ActiveRecord::Migration[6.1]
+class AddSuffixToParties < ActiveRecord::Migration[6.0]
   def change
     add_column :parties, :suffix, :string
   end

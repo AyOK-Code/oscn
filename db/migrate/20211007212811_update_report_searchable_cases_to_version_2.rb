@@ -1,4 +1,4 @@
-class UpdateReportSearchableCasesToVersion2 < ActiveRecord::Migration[6.1]
+class UpdateReportSearchableCasesToVersion2 < ActiveRecord::Migration[6.0]
   def change
     # index first to make generating view faster
     add_index :report_warrants, [:party_id, :code]
