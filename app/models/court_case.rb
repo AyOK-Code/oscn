@@ -13,7 +13,7 @@ class CourtCase < ApplicationRecord
   has_one :case_html, dependent: :destroy
 
   validates :oscn_id, :case_number, presence: true
-  validates :oscn_id, uniqueness: true
+  validates :oscn_id, uniqueness: { scope: :county_id }
 
   scope :without_html, -> { left_outer_joins(:case_html).where(case_htmls: { html: nil }) }
   scope :with_html, -> { joins(:case_html).where.not(case_htmls: { html: nil }) }
@@ -25,6 +25,7 @@ class CourtCase < ApplicationRecord
   scope :older_than, ->(date) { joins(:case_html).where('case_htmls.scraped_at < ?', date) }
   # TODO: Make scope more dynamic to search for different errors
   scope :with_error, -> { where('logs @> ?', { docket_events: { message: 'DocketEventCountError' } }.to_json) }
+  scope :for_county_name, ->(name) { joins(:county).where(counties: { name: name }) }
 
   def html
     case_html.html

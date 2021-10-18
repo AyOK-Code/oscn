@@ -1,19 +1,20 @@
 module Scrapers
   # Returns cases on the docket for the past X days
   class RecentCases
-    attr_reader :days_ago, :case_types, :case_changes, :court_cases
+    attr_reader :days_ago, :case_types, :case_changes, :court_cases, :county
     attr_accessor :recent_cases
 
-    def initialize(days_ago)
+    def initialize(county, days_ago)
       @case_changes = OscnScraper::Parsers::CaseChanges
+      @county = county
       @court_cases = CourtCase.pluck(:case_number, :oscn_id).to_h
       @case_types = CaseType.active
       @recent_cases = []
       @days_ago = days_ago
     end
 
-    def self.perform(days_ago: 7)
-      new(days_ago).perform
+    def self.perform(county, days_ago: 7)
+      new(county, days_ago).perform
     end
 
     def perform
@@ -34,7 +35,7 @@ module Scrapers
 
     def scrape_recent_cases(date, case_type_oscn_id)
       # TODO: Pull out county to configuration
-      data = fetch_data(date, case_type_oscn_id)
+      data = fetch_data(county, date, case_type_oscn_id)
 
       data.each do |link|
         Importers::NewCourtCase.new(link).perform if court_cases[link.text].nil?
@@ -44,9 +45,9 @@ module Scrapers
       data.map(&:text)
     end
 
-    def fetch_data(date, case_type_oscn_id)
+    def fetch_data(county, date, case_type_oscn_id)
       scraper = OscnScraper::Requestor::Report.new({
-                                                     county: 'Oklahoma',
+                                                     county: county,
                                                      case_type_id: case_type_oscn_id,
                                                      date: date
                                                    })
