@@ -1,6 +1,6 @@
-name: Rails CI
+name: Run RSpec
 
-on: [push, pull_request]
+on: [push]
 
 env:
   POSTGRES_PASSWORD: mysecretpassword
@@ -23,14 +23,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Ruby Version
-      uses: actions/setup-ruby@v1
-        with:
-          bundler-cache: true
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.7.2
+        bundler-cache: true
     - name: Bundle install
       run: bundle install
-    - name: Run rubocop
-      run: rubocop
     - name: Build and test with Rake
       env:
         PGHOST: 127.0.0.1

@@ -25,5 +25,13 @@ FactoryBot.define do
     trait :inactive do
       closed_on { Faker::Date.between(from: 2.years.ago, to: Date.current) }
     end
+
+    trait :felony do
+      case_type { CaseType.find_by(abbreviation: 'CF') || create(:case_type, :felony) }
+    end
+
+    trait :misdemeanor do
+      case_type { CaseType.find_by(abbreviation: 'CM') || create(:case_type, :misdemeanor) }
+    end
   end
 end

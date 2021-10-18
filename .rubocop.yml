@@ -12,6 +12,8 @@ AllCops:
     - 'spec/models/**/*'
 Metrics/BlockLength:
   Max: 50
+Style/Documentation:
+  Enabled: false
 Style/FrozenStringLiteralComment:
   Enabled: false
 Style/MutableConstant:
