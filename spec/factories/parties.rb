@@ -11,5 +11,26 @@ FactoryBot.define do
     trait :plantiff do
       party_type { create(:party_type, :plantiff) }
     end
+
+    trait :with_case do
+      after(:create) do |party|
+        court = create(:court_case)
+        create(:case_party, court_case: court, party: party)
+      end
+    end
+
+    trait :with_felony_case do
+      after(:create) do |party|
+        court = create(:court_case, :felony)
+        create(:case_party, court_case: court, party: party)
+      end
+    end
+
+    trait :with_misdemeanor_case do
+      after(:create) do |party|
+        court = create(:court_case, :misdemeanor)
+        create(:case_party, court_case: court, party: party)
+      end
+    end
   end
 end

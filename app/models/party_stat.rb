@@ -1,5 +1,5 @@
 # Database view that feeds a PowerBI report
-class PartyStat
+class PartyStat < ApplicationRecord
   belongs_to :party
 
   def self.refresh
