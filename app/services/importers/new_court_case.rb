@@ -13,9 +13,8 @@ module Importers
     end
 
     def perform
-      c = ::CourtCase.find_or_initialize_by(oscn_id: oscn_id)
+      c = ::CourtCase.find_or_initialize_by(oscn_id: oscn_id, county_id: counties[county])
       c.assign_attributes(
-        county_id: counties[county],
         case_type_id: case_types[case_type],
         case_number: case_number
       )
