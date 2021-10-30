@@ -4,7 +4,7 @@ module Importers
     attr_reader :judge_name
 
     def initialize(judge_name, _court_case, _logs)
-      @judge_matcher = Matchers::Judge.new(judge_name)
+      @judge_matcher = Matchers::Judge.new(court_case.county_id, judge_name)
     end
 
     def self.perform(judge_name, court_case, logs)

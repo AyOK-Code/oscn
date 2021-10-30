@@ -7,8 +7,8 @@ class CourtCaseWorker
   sidekiq_options retry: 5
   sidekiq_throttle_as :oscn
 
-  def perform(case_number)
-    ::Importers::CaseHtml.perform(case_number)
-    ::Importers::CourtCase.perform(case_number)
+  def perform(county, case_number)
+    ::Importers::CaseHtml.perform(county, case_number)
+    ::Importers::CourtCase.perform(county, case_number)
   end
 end

@@ -1,21 +1,22 @@
 module Scrapers
   # Pulls in new cases from OSCN daily filings report
   class NewCases
-    attr_reader :case_types, :counties, :days_ago
+    attr_reader :case_types, :counties, :county, :days_ago
 
-    def initialize(days_ago)
+    def initialize(county, days_ago: 7)
       @case_types = CaseType.oscn_id_mapping
       @counties = County.pluck(:name, :id).to_h
+      @county = county
       @days_ago = days_ago
     end
 
-    def self.perform(days_ago: 7)
-      new(days_ago).perform
+    def self.perform(county, days_ago: 7)
+      new(county, days_ago: days_ago).perform
     end
 
     def perform
       date_range.each do |date|
-        scraper = OscnScraper::Requestor::Report.new({ county: 'Oklahoma', date: date })
+        scraper = OscnScraper::Requestor::Report.new({ county: county, date: date })
         html = scraper.fetch_daily_filings
         data = Nokogiri::HTML(html.body)
         puts "Pulling cases from #{date.strftime('%m/%d/%Y')}"
@@ -33,9 +34,8 @@ module Scrapers
       case_type_id = case_types[case_type(case_number)]
       return if case_type_id.blank?
 
-      c = ::CourtCase.find_or_initialize_by(oscn_id: oscn_id(params))
+      c = ::CourtCase.find_or_initialize_by(oscn_id: oscn_id(params), county_id: counties[county_mapping(params)])
       c.assign_attributes(
-        county_id: counties[county(params)],
         case_type_id: case_type_id,
         case_number: case_number,
         filed_on: date
@@ -53,7 +53,7 @@ module Scrapers
       params['casemasterID'].first.to_i
     end
 
-    def county(params)
+    def county_mapping(params)
       params['db'].first
     end
 

@@ -2,15 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# This file is the source Rails uses to define your schema when running `bin/rails
-# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
+# This file is the source Rails uses to define your schema when running `rails
+# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
 # be faster and is potentially less error prone than running all of your
 # migrations from scratch. Old migrations may fail to apply correctly if those
 # migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_14_144038) do
+ActiveRecord::Schema.define(version: 2021_10_18_184136) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -111,9 +111,9 @@ ActiveRecord::Schema.define(version: 2021_10_14_144038) do
     t.jsonb "logs"
     t.bigint "current_judge_id"
     t.index ["case_type_id"], name: "index_court_cases_on_case_type_id"
+    t.index ["county_id", "oscn_id"], name: "index_court_cases_on_county_id_and_oscn_id", unique: true
     t.index ["county_id"], name: "index_court_cases_on_county_id"
     t.index ["current_judge_id"], name: "index_court_cases_on_current_judge_id"
-    t.index ["oscn_id"], name: "index_court_cases_on_oscn_id", unique: true
   end
 
   create_table "docket_event_types", force: :cascade do |t|
@@ -280,6 +280,32 @@ ActiveRecord::Schema.define(version: 2021_10_14_144038) do
     WHERE ((party_types.name)::text = 'defendant'::text)
     GROUP BY docket_events.party_id, court_cases.id;
   SQL
+  create_view "report_fines_and_fees", materialized: true, sql_definition: <<-SQL
+      SELECT court_cases.id AS court_case_id,
+      case_types.id AS case_type_id,
+      docket_event_types.id AS docket_event_types_id,
+      docket_events.event_on,
+      docket_events.amount,
+      docket_events.payment,
+      docket_events.adjustment,
+          CASE
+              WHEN (( SELECT count(*) AS count
+                 FROM (docket_events docket_events_1
+                   JOIN docket_event_types docket_event_types_1 ON ((docket_events_1.docket_event_type_id = docket_event_types_1.id)))
+                WHERE ((docket_events_1.court_case_id = court_cases.id) AND ((docket_event_types_1.code)::text = 'CTRS'::text))) > 0) THEN true
+              ELSE false
+          END AS is_tax_intercepted
+     FROM (((docket_events
+       JOIN docket_event_types ON ((docket_event_types.id = docket_events.docket_event_type_id)))
+       JOIN court_cases ON ((court_cases.id = docket_events.court_case_id)))
+       JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
+    WHERE ((docket_events.amount <> (0)::numeric) OR (docket_events.adjustment <> (0)::numeric) OR (docket_events.payment <> (0)::numeric));
+  SQL
+  add_index "report_fines_and_fees", ["case_type_id"], name: "index_report_fines_and_fees_on_case_type_id"
+  add_index "report_fines_and_fees", ["court_case_id"], name: "index_report_fines_and_fees_on_court_case_id"
+  add_index "report_fines_and_fees", ["docket_event_types_id"], name: "index_report_fines_and_fees_on_docket_event_types_id"
+  add_index "report_fines_and_fees", ["event_on"], name: "index_report_fines_and_fees_on_event_on"
+
   create_view "report_arresting_agencies", materialized: true, sql_definition: <<-SQL
       SELECT court_cases.id AS court_case_id,
       court_cases.case_number,
