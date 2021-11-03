@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_18_184136) do
+ActiveRecord::Schema.define(version: 2021_11_03_155308) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -93,6 +93,8 @@ ActiveRecord::Schema.define(version: 2021_10_18_184136) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "charge"
+    t.string "filed_statute_code"
+    t.string "disposed_statute_code"
     t.index ["court_case_id"], name: "index_counts_on_court_case_id"
     t.index ["party_id"], name: "index_counts_on_party_id"
     t.index ["plea_id"], name: "index_counts_on_plea_id"
@@ -121,6 +123,7 @@ ActiveRecord::Schema.define(version: 2021_10_18_184136) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["code"], name: "index_docket_event_types_on_code", unique: true
+    t.index ["id", "code"], name: "index_docket_event_types_on_id_and_code"
   end
 
   create_table "docket_events", force: :cascade do |t|
