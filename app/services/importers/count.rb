@@ -48,9 +48,11 @@ module Importers
       verdict_id = find_or_create_verdict(count_data[:verdict]&.downcase)
       {
         filed_statute_violation: count_data[:filed_statute_violation],
+        filed_statute_code: count_data[:filed_statute_code],
         disposition: count_data[:disposition],
         disposition_on: count_data[:disposition_on],
         disposed_statute_violation: count_data[:disposed_statute_violation],
+        disposed_statute_code: count_data[:disposed_statute_code],
         charge: count_data[:charge],
         plea_id: plea_id,
         verdict_id: verdict_id

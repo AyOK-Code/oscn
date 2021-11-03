@@ -22,14 +22,14 @@ module Importers
       return if parsed_html.css('.errorMessage').count.positive?
 
       ActiveRecord::Base.transaction do
-        save_case
-        save_parties
-        save_judges
-        save_attorneys
+        # save_case
+        # save_parties
+        # save_judges
+        # save_attorneys
         save_counts
-        save_events
-        save_docket_events
-        logs.update_logs
+        # save_events
+        # save_docket_events
+        # logs.update_logs
       end
     end
 
