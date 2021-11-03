@@ -11,6 +11,7 @@ class CourtCase < ApplicationRecord
   has_many :counsels, through: :counsel_parties
   has_many :docket_events, dependent: :destroy
   has_one :case_html, dependent: :destroy
+  has_one :case_stat
 
   validates :oscn_id, :case_number, presence: true
   validates :oscn_id, uniqueness: { scope: :county_id }
