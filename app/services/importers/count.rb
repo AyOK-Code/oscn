@@ -35,8 +35,8 @@ module Importers
 
     def save_counts(count_data)
       c = find_count(count_data)
-
       c.assign_attributes(count_attributes(count_data))
+
       begin
         c.save!
       rescue StandardError
@@ -48,7 +48,7 @@ module Importers
       plea_id = find_or_create_plea(count_data[:plea]&.downcase)
       verdict_id = find_or_create_verdict(count_data[:verdict]&.downcase)
       filed_statute_code_id = find_or_create_count_code(count_data[:filed_statute_code]&.squish)
-      disposed_statute_code_id = find_or_create_count_code(count_data[:filed_statute_code]&.squish)
+      disposed_statute_code_id = find_or_create_count_code(count_data[:disposed_statute_code]&.squish)
 
       {
         filed_statute_violation: count_data[:filed_statute_violation],
