@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :count_code do
-    code { 'MyString' }
-    description { 'MyString' }
+    code { Faker::Name.unique.initials }
+    description { Faker::Lorem.sentence }
   end
 end
