@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_03_155308) do
+ActiveRecord::Schema.define(version: 2021_11_08_214735) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,6 +72,14 @@ ActiveRecord::Schema.define(version: 2021_11_03_155308) do
     t.index ["bar_number"], name: "index_counsels_on_bar_number", unique: true, where: "(bar_number IS NOT NULL)"
   end
 
+  create_table "count_codes", force: :cascade do |t|
+    t.string "code", null: false
+    t.string "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["code"], name: "index_count_codes_on_code", unique: true
+  end
+
   create_table "counties", force: :cascade do |t|
     t.string "name", null: false
     t.string "fips_code", null: false
@@ -93,9 +101,11 @@ ActiveRecord::Schema.define(version: 2021_11_03_155308) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "charge"
-    t.string "filed_statute_code"
-    t.string "disposed_statute_code"
+    t.bigint "filed_statute_code_id"
+    t.bigint "disposed_statute_code_id"
     t.index ["court_case_id"], name: "index_counts_on_court_case_id"
+    t.index ["disposed_statute_code_id"], name: "index_counts_on_disposed_statute_code_id"
+    t.index ["filed_statute_code_id"], name: "index_counts_on_filed_statute_code_id"
     t.index ["party_id"], name: "index_counts_on_party_id"
     t.index ["plea_id"], name: "index_counts_on_plea_id"
     t.index ["verdict_id"], name: "index_counts_on_verdict_id"
@@ -252,6 +262,8 @@ ActiveRecord::Schema.define(version: 2021_11_03_155308) do
   add_foreign_key "counsel_parties", "counsels"
   add_foreign_key "counsel_parties", "court_cases"
   add_foreign_key "counsel_parties", "parties"
+  add_foreign_key "counts", "count_codes", column: "disposed_statute_code_id"
+  add_foreign_key "counts", "count_codes", column: "filed_statute_code_id"
   add_foreign_key "counts", "court_cases"
   add_foreign_key "counts", "parties"
   add_foreign_key "counts", "pleas"

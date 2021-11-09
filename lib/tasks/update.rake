@@ -50,4 +50,17 @@ namespace :update do
       end
     end
   end
+
+  desc 'Create count codes from stored htmls data'
+  task count_code: [:environment] do
+    cases = CourtCase.where(id: Count.where(filed_statute_code_id: nil).pluck(:court_case_id))
+    bar = ProgressBar.new(cases.count)
+
+    cases.each do |c|
+      bar.increment!
+      next if c.case_html.nil? || c.county.name != 'Oklahoma'
+
+      Importers::CourtCase.new('Oklahoma', c.case_number).perform
+    end
+  end
 end

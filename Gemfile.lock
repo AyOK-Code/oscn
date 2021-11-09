@@ -1,14 +1,16 @@
 GIT
   remote: https://github.com/AyOK-Code/oscn_scraper
-  revision: 028f1dc91d8ca9a8ba40a5ebe9dba36d78c0a963
-  ref: 028f1dc
+  revision: d5e98aecc3a8fe222bcb066d9a948e1fb62172b6
+  ref: d5e98ae
   specs:
     oscn_scraper (0.1.1)
       activesupport (>= 5.0.0)
       bundler (~> 2.0)
+      byebug (~> 11.1.3)
       httparty (~> 0.17)
       nokogiri (~> 1.11)
       rake (~> 10.0)
+      simplecov (~> 0.21.2)
       yard (~> 0.9.26)
 
 GEM
@@ -94,6 +96,7 @@ GEM
     bullet (6.1.5)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
+    byebug (11.1.3)
     choice (0.2.0)
     coderay (1.1.3)
     concurrent-ruby (1.1.9)
