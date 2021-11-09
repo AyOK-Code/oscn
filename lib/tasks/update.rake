@@ -53,7 +53,7 @@ namespace :update do
 
   desc 'Create count codes from stored htmls data'
   task count_code: [:environment] do
-    cases = CourtCase.where(id: Count.where(filed_statute_code: nil).pluck(:court_case_id))
+    cases = CourtCase.where(id: Count.where(filed_statute_code_id: nil).pluck(:court_case_id))
     bar = ProgressBar.new(cases.count)
 
     cases.each do |c|
