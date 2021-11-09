@@ -1,7 +1,7 @@
 module Importers
   # Imports Count data from parsed json
   class Count
-    attr_accessor :court_case, :party_matcher, :logs, :pleas, :verdicts
+    attr_accessor :court_case, :party_matcher, :logs, :pleas, :verdicts, :count_codes
     attr_reader :counts_json
 
     def initialize(counts_json, court_case, logs)
@@ -9,6 +9,7 @@ module Importers
       @court_case = court_case
       @pleas = Plea.pluck(:name, :id).to_h
       @verdicts = Verdict.pluck(:name, :id).to_h
+      @count_codes = CountCode.pluck(:code, :id).to_h
       @party_matcher = Matchers::Party.new(court_case)
       @logs = logs
     end
@@ -34,8 +35,8 @@ module Importers
 
     def save_counts(count_data)
       c = find_count(count_data)
-
       c.assign_attributes(count_attributes(count_data))
+
       begin
         c.save!
       rescue StandardError
@@ -46,11 +47,16 @@ module Importers
     def count_attributes(count_data)
       plea_id = find_or_create_plea(count_data[:plea]&.downcase)
       verdict_id = find_or_create_verdict(count_data[:verdict]&.downcase)
+      filed_statute_code_id = find_or_create_count_code(count_data[:filed_statute_code]&.squish)
+      disposed_statute_code_id = find_or_create_count_code(count_data[:disposed_statute_code]&.squish)
+
       {
         filed_statute_violation: count_data[:filed_statute_violation],
+        filed_statute_code_id: filed_statute_code_id,
         disposition: count_data[:disposition],
         disposition_on: count_data[:disposition_on],
         disposed_statute_violation: count_data[:disposed_statute_violation],
+        disposed_statute_code_id: disposed_statute_code_id,
         charge: count_data[:charge],
         plea_id: plea_id,
         verdict_id: verdict_id
@@ -73,6 +79,17 @@ module Importers
 
       new_verdict = Verdict.create(name: verdict)
       new_verdict.id
+    end
+
+    def find_or_create_count_code(code)
+      count_code_id = count_codes[code]
+      return nil if code.nil?
+
+      return count_code_id if count_code_id
+
+      new_count_code = CountCode.create(code: code)
+      @count_codes = CountCode.pluck(:code, :id).to_h
+      new_count_code.id
     end
   end
 end
