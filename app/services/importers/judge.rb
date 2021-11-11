@@ -25,7 +25,7 @@ module Importers
       return judge_id if judge_id
 
       new_judge = ::Judge.create(name: judge_name, county_id: court_case.county_id)
-      new_judge.id
+      court_case.update(current_judge_id: new_judge.id)
     end
   end
 end

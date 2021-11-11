@@ -2,7 +2,7 @@
 class CourtCase < ApplicationRecord
   belongs_to :county
   belongs_to :case_type
-  belongs_to :current_judge, class_name: 'Judge', foreign_key: 'current_judge_id', optional: true
+  belongs_to :current_judge, class_name: 'Judge', optional: true
   has_many :case_parties, dependent: :destroy
   has_many :parties, through: :case_parties
   has_many :counts, dependent: :destroy
