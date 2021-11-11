@@ -1,2 +1,2 @@
-# TODO: Move to ENV variable or config setting
-CASE_TYPES = ['CF','CM','TR','TRI','AM','CPC','DTR']
+# Define constant from ENV variable
+CASE_TYPES = ENV.fetch(CASE_TYPES_ABBREVIATION, 'CF,CM,TR,TRI,AM,CPC,DTR').split(',')
