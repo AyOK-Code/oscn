@@ -19,6 +19,7 @@ class CourtCase < ApplicationRecord
   scope :without_html, -> { left_outer_joins(:case_html).where(case_htmls: { html: nil }) }
   scope :with_html, -> { joins(:case_html).where.not(case_htmls: { html: nil }) }
   scope :without_docket_events, -> { left_outer_joins(:docket_events).where(docket_events: { id: nil }) }
+  scope :with_docket_events, -> { left_outer_joins(:docket_events).where.not(docket_events: { id: nil }) }
   scope :valid, -> { where.not("case_number LIKE '%-0'") }
   scope :active, -> { where(closed_on: nil) }
   scope :closed, -> { where.not(closed_on: nil) }
