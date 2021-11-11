@@ -67,7 +67,7 @@ namespace :update do
   desc 'Test scraper parsing and importing'
   task sample: [:environment] do
     sample_ids = CourtCase.ids.sample(10)
-    court_cases = CourtCase.where(id: 184473)
+    court_cases = CourtCase.where(id: sample_ids)
     bar = ProgressBar.new(court_cases.count)
 
     court_cases.each do |c|
