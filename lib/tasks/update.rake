@@ -63,4 +63,17 @@ namespace :update do
       Importers::CourtCase.new('Oklahoma', c.case_number).perform
     end
   end
+
+  desc 'Test scraper parsing and importing'
+  task sample: [:environment] do
+    sample_ids = CourtCase.ids.sample(10)
+    court_cases = CourtCase.where(id: sample_ids)
+    bar = ProgressBar.new(court_cases.count)
+
+    court_cases.each do |c|
+      bar.increment!
+      Importers::CaseHtml.perform(c.county.name, c.case_number)
+      Importers::CourtCase.perform(c.county.name, c.case_number)
+    end
+  end
 end

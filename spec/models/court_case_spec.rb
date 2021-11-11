@@ -4,7 +4,7 @@ RSpec.describe CourtCase, type: :model do
   context 'associations' do
     it { should belong_to(:county) }
     it { should belong_to(:case_type) }
-    it { should belong_to(:current_judge).class_name('Judge').with_foreign_key('current_judge_id').optional }
+    it { should belong_to(:current_judge).class_name('Judge').optional }
     it { should have_many(:case_parties).dependent(:destroy) }
     it { should have_many(:parties).through(:case_parties) }
     it { should have_many(:counts).dependent(:destroy) }
