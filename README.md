@@ -1,65 +1,62 @@
-# Backend Template
+# README
 
-Contains default packages for a backend rails api only application
+Rails API only backend for scraping and creating a Postgres database of OSCN data.
 
-### Versions
+## Getting started
 
-Rails 6.0.3.6
-Ruby 2.6.6
+TODO:
 
-### Gems Included
+### Configurations
 
-**All Environments**
+You can configure the following ENV variables:
 
-[AWS SDK S3](https://github.com/aws/aws-sdk-ruby) - Connecting to S3 buckets
+#### COUNTIES
 
-[JWT](https://github.com/jwt/ruby-jwt) - For handling tokens
+Comma separated string of the county names. The application uses the several of the DISTRICT COURT REPORTS to determine what cases to update and what new cases have been filed. Therefore, only the following counties are available:
 
-[Kaminari](https://github.com/kaminari/kaminari) - Pagination for API endpoints
+Adair,Canadian,Cleveland,Comanche,Ellis,Garfield,Logan,Oklahoma,Payne,Pushmataha,Roger Mills,Rogers,Tulsa
 
-[Progress Bar](https://github.com/paul/progress_bar) - Monitor progress from console
+**Example**
 
-[Pundit](https://github.com/varvet/pundit) - Authorization
+```
+COUNTIES=Tulsa,Oklahoma
+```
 
-[Rack Cors](https://github.com/cyu/rack-cors) - Handling cross origin requests
+#### CASE_TYPES_ABBREVIATION
 
-[Ruby Limiter](https://github.com/Shopify/limiter) - Throttle API requests
+Comma separated string of Case type abbreviations:
 
-[Scenic](https://github.com/scenic-views/scenic) - Versioned database views
+**Example**
 
-[Sidekiq](https://github.com/mperham/sidekiq) - Background jobs
+```
+CASE_TYPES_ABBREVIATION=CF,CM,TR,TRI,AM,CPC,DTR # default
+```
 
-[Sidekiq Throttled](https://github.com/sensortower/sidekiq-throttled) - Throttle requests in background jobs
+#### OSCN_THROTTLE
 
-[Slack Ruby Client](https://github.com/slack-ruby/slack-ruby-client) - Send information to slack
+Number of requests to send to OSCN per minute
 
+```
+OSCN_THROTTLE=120
+```
 
+#### OSCN_CONCURRENCY=10 # default
 
-**Dev/Test**
-
-
-
-[Bullet](https://github.com/flyerhzm/bullet) - N+1 query detection
-
-[FactoryBot](https://github.com/thoughtbot/factory_bot) - Fixture replacement
-
-[Faker](https://github.com/faker-ruby/faker) - Generate fake random data for tests
-
-[Rails ERD](https://github.com/voormedia/rails-erd) - Build ERD from schema file quickly
-
-[Rspec](https://github.com/rspec/rspec-rails) - Testing framework
-
-[Rubocop](https://github.com/rubocop/rubocop-rails) - Keep the files formatted pretty
-
-[Shoulda Matchers](https://github.com/thoughtbot/shoulda-matchers) - Helpful [matchers](https://thoughtbot.com/upcase/test-driven-rails-resources/shoulda_matchers.pdf) for specs
-
-[SimpleCov](https://github.com/simplecov-ruby/simplecov) - Coverage report
+Number of [threads to run concurrently](https://github.com/mperham/sidekiq/wiki/Advanced-Options#concurrency)
 
 
+```
+OSCN_CONCURRENCY=120 # default
+```
 
+#### TODO ENVs
 
-### Start from this Project
+MAX_REQUESTS, MEDIUM_PRIORITY, LOW_PRIORITY, DAYS_AGO, DAYS_AHEAD
 
-1. Fork the repo
-2. Change the name to the new project name
-3. Start Coding
+### Scraping Methodology
+
+High Priority Cases - Any case that has appear on the docket in the past 7 days will be scraped nightly
+
+Medium Priority Cases - Any open case (`closed_on` = `nil`). Scrapes the oldest first.
+
+Low Priority Cases - Closed cases that likely will not be updated as often.
