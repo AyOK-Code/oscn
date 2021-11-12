@@ -28,7 +28,7 @@ module Scrapers
     end
 
     def save_case(row, date)
-      # TODO: Extract service that takes link and pulls out the params
+      # TODO: Extract service that takes link and pulls out the params to gem
       params = extract_params(row['href'])
       case_number = row.text
       case_type_id = case_types[case_type(case_number)]
