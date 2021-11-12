@@ -1,10 +1,10 @@
 # README
 
-Rails API only backend for scraping and creating a Postgres database of OSCN data.
+Rails API only backend for scraping and creating a Postgres database of OSCN data. Leverages the [oscn_scraper gem](https://github.com/AyOK-Code/oscn_scraper) to scrape data and return as json.
 
 ## Getting started
 
-TODO:
+TODO - Create sample .env file, Instructions for booting up
 
 ### Configurations
 
