@@ -21,7 +21,7 @@ namespace :update do
   task party_name: [:environment] do
     parties = Party.defendant.where(first_name: nil)
     bar = ProgressBar.new(parties.count)
-
+    # TODO: Move to party importer task
     parties.each do |p|
       bar.increment!
       Matchers::PartyNameSplitter.new(p, p.full_name).perform
@@ -30,6 +30,8 @@ namespace :update do
 
   desc 'Save party detail information'
   task party_detail: [:environment] do
+    # TODO: Refine party scraping so that parties
+    # with missing birthdays don't get scraped every night
     parties = Party.defendant.without_birthday
     bar = ProgressBar.new(parties.count)
 
