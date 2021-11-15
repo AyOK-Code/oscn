@@ -26,8 +26,8 @@ module Scrapers
     end
 
     def fetch_case_list
-      missing_html_cases = CourtCase.for_county_name(county_name).without_html.pluck(:case_number)
-      recent_cases = Scrapers::RecentCases.perform(county_name, days_ago: days_ago, days_forward: days_forward)
+      missing_html_cases = CourtCase.for_county_name(county.name).without_html.pluck(:case_number)
+      recent_cases = Scrapers::RecentCases.perform(county.name, days_ago: days_ago, days_forward: days_forward)
       (missing_html_cases + recent_cases).flatten.uniq
     end
   end
