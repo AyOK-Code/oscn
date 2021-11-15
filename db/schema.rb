@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_11_154410) do
+ActiveRecord::Schema.define(version: 2021_11_12_221956) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -149,6 +149,7 @@ ActiveRecord::Schema.define(version: 2021_11_11_154410) do
     t.decimal "payment", default: "0.0", null: false
     t.decimal "adjustment", default: "0.0", null: false
     t.integer "row_index", null: false
+    t.boolean "is_otc_payment", default: false, null: false
     t.index ["adjustment"], name: "index_docket_events_on_adjustment"
     t.index ["amount"], name: "index_docket_events_on_amount", where: "(amount <> (0)::numeric)"
     t.index ["court_case_id"], name: "index_docket_events_on_court_case_id"

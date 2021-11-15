@@ -66,16 +66,16 @@ namespace :update do
     end
   end
 
-  desc 'Test scraper parsing and importing'
-  task sample: [:environment] do
-    sample_ids = CourtCase.ids.sample(10)
-    court_cases = CourtCase.where(id: sample_ids)
+  desc 'Update full database from stored html'
+  task database: [:environment] do
+    court_cases = CourtCase.all
     bar = ProgressBar.new(court_cases.count)
 
     court_cases.each do |c|
       bar.increment!
-      Importers::CaseHtml.perform(c.county.name, c.case_number)
-      Importers::CourtCase.perform(c.county.name, c.case_number)
+      next if c.case_html.nil?
+
+      CourtCaseWorker.perform_async(c.county.name, c.case_number, false)
     end
   end
 end
