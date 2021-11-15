@@ -65,14 +65,15 @@ namespace :update do
   end
 
   desc 'Update full database from stored html'
-  task data_from_html: [:environment] do
+  task database: [:environment] do
     court_cases = CourtCase.all
     bar = ProgressBar.new(court_cases.count)
 
     court_cases.each do |c|
       bar.increment!
       next if c.case_html.nil?
-      CourtCaseWorker.perform_async(c.county.name, c.case_number, scrape_case: false)
+
+      CourtCaseWorker.perform_async(c.county.name, c.case_number, false)
     end
   end
 end
