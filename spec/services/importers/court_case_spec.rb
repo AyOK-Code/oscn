@@ -10,7 +10,7 @@ RSpec.describe Importers::CourtCase do
       create(:case_html, court_case: court_case, html: html)
 
       # Run importer
-      described_class.new('Tulsa', 'CF-2018-1016').perform
+      described_class.new(county.id, 'CF-2018-1016').perform
       court_case = CourtCase.find(court_case.id) # Pull updated object
 
       expect(court_case.parties.count).to eq 3
