@@ -16,7 +16,7 @@ module Scrapers
       bar = ProgressBar.new(cases.count)
 
       cases.each do |c|
-        CourtCaseWorker.perform_async(c.county.name, c.case_number)
+        CourtCaseWorker.perform_async({ county: c.county.name, case_number: c.case_number, scrape_case: true })
         bar.increment!
       end
     end

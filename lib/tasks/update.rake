@@ -68,14 +68,14 @@ namespace :update do
 
   desc 'Update full database from stored html'
   task database: [:environment] do
-    court_cases = CourtCase.joins(:county, :case_html).pluck('counties.name', :case_number, 'case_htmls.id')
+    court_cases = CourtCase.joins(:case_html).pluck('county_id', :case_number, 'case_htmls.id')
     bar = ProgressBar.new(court_cases.count)
 
     court_cases.each do |c|
       bar.increment!
       next if c[2].nil?
 
-      CourtCaseWorker.perform_async(c[0], c[1], false)
+      CourtCaseWorker.perform_in(20.minutes, { county_id: c[0], case_number: c[1], scrape_case: false })
     end
   end
 end

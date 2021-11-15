@@ -6,16 +6,15 @@ module Importers
     attr_accessor :logs, :court_case, :parsed_html
     attr_reader :data
 
-    def initialize(county, case_number)
-      @counties = County.pluck(:name, :id).to_h
-      @court_case = ::CourtCase.find_by(county_id: @counties[county], case_number: case_number)
+    def initialize(county_id, case_number)
+      @court_case = ::CourtCase.find_by(county_id: county_id, case_number: case_number)
       @parsed_html = Nokogiri::HTML(court_case.case_html.html)
       @data = OscnScraper::Parsers::BaseParser.new(@parsed_html).build_object
       @logs = ::Importers::Logger.new(court_case)
     end
 
-    def self.perform(county, case_number)
-      new(county, case_number).perform
+    def self.perform(county_id, case_number)
+      new(county_id, case_number).perform
     end
 
     def perform
