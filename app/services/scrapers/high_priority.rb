@@ -20,7 +20,7 @@ module Scrapers
       puts "#{cases.count} are high priority for update"
 
       cases.each do |case_number|
-        CourtCaseWorker.perform_async({ county_id: county_id, case_number: case_number, scrape_case: true })
+        CourtCaseWorker.perform_async({ county_id: @county.id, case_number: case_number, scrape_case: true })
         bar.increment!
       end
     end
