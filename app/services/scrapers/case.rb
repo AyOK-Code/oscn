@@ -9,8 +9,8 @@ module Scrapers
     def perform
       # TODO: Capture results and send via email or slack message
       counties.each do |county|
-        Scrapers::NewCases.perform(county, days_ago: 7)
-        Scrapers::HighPriority.perform(county, days_ago: 7, days_forward: 7)
+        Scrapers::NewCases.perform(county, days_ago: days_ago)
+        Scrapers::HighPriority.perform(county, days_ago: days_ago, days_forward: days_forward)
       end
 
       Scrapers::MediumPriority.perform
@@ -19,6 +19,14 @@ module Scrapers
 
     def counties
       ENV['COUNTIES'].split(',') # TODO: Change to ENV variable
+    end
+
+    def days_ago
+      ENV.fetch('DAYS_AGO', 7).to_i
+    end
+
+    def days_forward
+      ENV.fetch('DAYS_FORWARD', 7).to_i
     end
   end
 end

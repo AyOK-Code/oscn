@@ -7,7 +7,7 @@ module Scrapers
       @cases = CourtCase.closed.older_than(days_ago.days.ago).limit(limit)
     end
 
-    def self.perform(days_ago: 90, limit: 2500)
+    def self.perform(days_ago: 90, limit: 7500)
       new(days_ago: days_ago, limit: limit).perform
     end
 
@@ -16,7 +16,9 @@ module Scrapers
       bar = ProgressBar.new(cases.count)
 
       cases.each do |c|
-        CourtCaseWorker.perform_async({ county_id: c.county_id, case_number: c.case_number, scrape_case: true })
+        CourtCaseWorker
+          .set(queue: :low)
+          .perform_async({ county_id: c.county_id, case_number: c.case_number, scrape_case: true })
         bar.increment!
       end
     end
