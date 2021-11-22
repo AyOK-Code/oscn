@@ -17,10 +17,12 @@ module Scrapers
       cases = fetch_case_list
 
       bar = ProgressBar.new(cases.count)
-      puts "#{cases.count} are high priority for update"
+      puts "#{cases.count} are high priority for update for #{county.name} county"
 
       cases.each do |case_number|
-        CourtCaseWorker.perform_async({ county_id: @county.id, case_number: case_number, scrape_case: true })
+        CourtCaseWorker
+          .set(queue: :high)
+          .perform_async({ county_id: @county.id, case_number: case_number, scrape_case: true })
         bar.increment!
       end
     end

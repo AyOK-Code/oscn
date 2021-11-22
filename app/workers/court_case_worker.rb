@@ -4,7 +4,7 @@ require 'importers/court_case'
 class CourtCaseWorker
   include Sidekiq::Worker
   include Sidekiq::Throttled::Worker
-  sidekiq_options retry: 5
+  sidekiq_options retry: 5, queue: :medium
   sidekiq_throttle_as :oscn
 
   def perform(args)
