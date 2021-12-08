@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/AyOK-Code/oscn_scraper
-  revision: d5e98aecc3a8fe222bcb066d9a948e1fb62172b6
-  ref: d5e98ae
+  revision: 5f78542cd94689aea4f920dfc1fdd9c98658eeb8
+  branch: main
   specs:
     oscn_scraper (0.1.1)
       activesupport (>= 5.0.0)
@@ -352,10 +352,12 @@ GEM
       thread_safe (~> 0.1)
     unicode-display_width (2.1.0)
     uniform_notifier (1.14.2)
+    webrick (1.7.0)
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    yard (0.9.26)
+    yard (0.9.27)
+      webrick (~> 1.7.0)
     zeitwerk (2.4.2)
 
 PLATFORMS
