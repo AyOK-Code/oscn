@@ -28,13 +28,14 @@ module Importers
 
     def create_party_address(address_columns)
       string = address_string(address_columns)
+
       address = {
         party_id: party.id,
         record_on: record_on(address_columns[0]),
         status: address_columns[1].text,
         city: string[0],
-        state: string[1].split[0],
-        zip: zip,
+        state: state(string),
+        zip: zip(string),
         address_type: address_columns[2].text
       }
       ::PartyAddress.find_or_create_by(address)
@@ -50,6 +51,10 @@ module Importers
 
     def address_string(columns)
       columns[3].text.split(',')
+    end
+
+    def state(state_html)
+      state_html[1].split[0]
     end
   end
 end
