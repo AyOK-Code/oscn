@@ -15,19 +15,20 @@ namespace :warrants do
 
     cases = CSV.parse(resp.body.read, headers: true)
     county = County.find_by(name: 'Oklahoma')
+    court_cases = county.court_cases.pluck(:case_number, :id).to_h
     bar = ProgressBar.new(cases.count)
 
     cases.each do |c|
       bar.increment!
-      court_case = CourtCase.find_by(county_id: county.id, case_number: c['Case #'])
-      next if court_case.nil?
+      case_id = court_cases[c['Case #']]
+      next if case_id.nil?
 
       CourtCaseWorker
         .set(queue: :default)
         .perform_async({ county_id: county.id, case_number: c['Case #'], scrape_case: true })
 
-      court_case.parties.each do |p|
-        PartyWorker.perform_in(1.hour, p.oscn_id)
+      CaseParty.where(court_case_id: case_id).each do |cp|
+        PartyWorker.perform_in(1.hour, cp.party.oscn_id)
       end
     end
   end
@@ -45,6 +46,7 @@ namespace :warrants do
     resp = s3.get_object(bucket: ENV['BUCKETEER_BUCKET_NAME'], key: filepath)
     county = County.find_by(name: 'Oklahoma')
     temp = Tempfile.new('warrants_complete.csv')
+    court_cases = county.court_cases.pluck(:case_number, :id).to_h
 
     current = Time.now.utc.to_date.year
 
@@ -54,17 +56,18 @@ namespace :warrants do
 
       warrants.each do |warrant|
         bar.increment!
-        court_case = CourtCase.find_by(county_id: county.id, case_number: warrant['Case #'])
+        case_id = court_cases[warrant['Case #']]
 
-        if court_case.present?
-          party_map = court_case.parties.pluck(:full_name, :oscn_id).map { |a| [a[0].squish, a[1]] }.to_h
-          party = Party.find_by(oscn_id: party_map[warrant['Party']])
-          address = party&.addresses&.current&.first
-          age = party.birth_year.present? ? current - party.birth_year : nil
-        else
+        if case_id.nil?
           party = nil
           address = nil
           age = nil
+        else
+          court_case = CourtCase.find(case_id)
+          party_map = court_case.parties.pluck(:full_name, :oscn_id).map { |a| [a[0].squish, a[1]] }.to_h
+          party = Party.find_by(oscn_id: party_map[warrant['Party']])
+          address = party&.addresses&.current&.first
+          age = party&.birth_year.present? ? current - party&.birth_year : nil
         end
 
         warrant << { oscn_id: party&.oscn_id }
