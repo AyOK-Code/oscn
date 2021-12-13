@@ -59,15 +59,15 @@ namespace :warrants do
         case_id = court_cases[warrant['Case #']]
 
         if case_id.nil?
-          court_case = CourtCase.find(id: case_id)
-          party_map = court_case.parties.pluck(:full_name, :oscn_id).map { |a| [a[0].squish, a[1]] }.to_h
-          party = Party.find_by(oscn_id: party_map[warrant['Party']])
-          address = party&.addresses&.current&.first
-          age = party.birth_year.present? ? current - party.birth_year : nil
-        else
           party = nil
           address = nil
           age = nil
+        else
+          court_case = CourtCase.find(case_id)
+          party_map = court_case.parties.pluck(:full_name, :oscn_id).map { |a| [a[0].squish, a[1]] }.to_h
+          party = Party.find_by(oscn_id: party_map[warrant['Party']])
+          address = party&.addresses&.current&.first
+          age = party&.birth_year.present? ? current - party&.birth_year : nil
         end
 
         warrant << { oscn_id: party&.oscn_id }
