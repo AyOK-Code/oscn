@@ -15,19 +15,20 @@ namespace :warrants do
 
     cases = CSV.parse(resp.body.read, headers: true)
     county = County.find_by(name: 'Oklahoma')
+    court_cases = county.court_cases.pluck(:case_number, :id).to_h
     bar = ProgressBar.new(cases.count)
 
     cases.each do |c|
       bar.increment!
-      court_case = CourtCase.find_by(county_id: county.id, case_number: c['Case #'])
-      next if court_case.nil?
+      case_id = court_cases[c['Case #']]
+      next if case_id.nil?
 
       CourtCaseWorker
         .set(queue: :default)
         .perform_async({ county_id: county.id, case_number: c['Case #'], scrape_case: true })
 
-      court_case.parties.each do |p|
-        PartyWorker.perform_in(1.hour, p.oscn_id)
+      CaseParty.where(court_case_id: case_id).each do |cp|
+        PartyWorker.perform_in(1.hour, cp.party.oscn_id)
       end
     end
   end
