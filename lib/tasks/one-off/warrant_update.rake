@@ -53,6 +53,9 @@ namespace :warrants do
     CSV.open(temp, 'w') do |temp_csv|
       warrants = CSV.parse(resp.body.read, headers: true)
       bar = ProgressBar.new(warrants.count)
+      count_headers = (1..30).to_a.map { |e| ["count_#{e}_status", "count_#{e}_as_disposed", "count_#{e}_description"] }.flatten
+
+      temp_csv << (['warrant_number', 'case_number', 'party', 'bond_amount', 'hold', 'date_issued', 'judge', 'warrant_type', 'party_id', 'birth_month', 'birth_year', 'age', 'zip'] + count_headers).flatten
 
       warrants.each do |warrant|
         bar.increment!
@@ -68,6 +71,7 @@ namespace :warrants do
           party = Party.find_by(oscn_id: party_map[warrant['Party']])
           address = party&.addresses&.current&.first
           age = party&.birth_year.present? ? current - party&.birth_year : nil
+          counts = court_case.counts.where(party_id: party&.id)
         end
 
         warrant << { oscn_id: party&.oscn_id }
@@ -75,6 +79,14 @@ namespace :warrants do
         warrant << { birth_year: party&.birth_year }
         warrant << { age: age }
         warrant << { zip: address&.zip }
+
+        if counts.present?
+          counts.each_with_index do |count, i|
+            warrant << { "count_#{i + 1}_status": count&.verdict&.name }
+            warrant << { "count_#{i + 1}_as_disposed": count.charge }
+            warrant << { "count_#{i + 1}_description": count.disposition }
+          end
+        end
 
         temp_csv << warrant
       end
