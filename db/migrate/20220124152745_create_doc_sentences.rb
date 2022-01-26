@@ -2,6 +2,7 @@ class CreateDocSentences < ActiveRecord::Migration[6.0]
   def change
     create_table :doc_sentences do |t|
       t.references :doc_profile, null: false, foreign_key: true
+      t.references :doc_offense_code, foreign_key: true
       t.string :statute_code
       t.string :sentencing_county
       t.date :js_date

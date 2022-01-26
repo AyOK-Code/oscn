@@ -5,7 +5,6 @@ module Importers
 
       def initialize
         @filename = 'lib/data/Vendor_Profile_Extract_Text.dat'
-        # @filename = 'spec/fixtures/importers/doc/Vendor_Profile_Sample_Text.dat'
       end
 
       def perform
@@ -43,5 +42,3 @@ module Importers
     end
   end
 end
-
-# Importers::Doc::Profile.new.perform
