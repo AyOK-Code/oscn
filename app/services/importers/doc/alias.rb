@@ -1,18 +1,17 @@
 module Importers
   module Doc
-    class Sentence
+    class Alias
       attr_accessor :filename
 
       def initialize
-        @filename = 'lib/data/Vendor_sentence_Extract_Text.dat'
+        @filename = 'lib/data/Vendor_Alias_Extract_Text.dat'
       end
 
       def perform
-        fields = [11,40,40,9,40,12,14]
+        fields = [11,30,30,30,5]
         field_pattern = "A#{fields.join('A')}"
         bar = ProgressBar.new(File.read(filename).scan(/\n/).length)
         doc_mapping = ::Doc::Profile.pluck(:doc_number, :id).to_h
-        sentence_mapping = ::Doc::OffenseCode.pluck(:statute_code, :id).to_h
         missing = []
 
         File.foreach(filename) do |line|
@@ -25,16 +24,14 @@ module Importers
             next
           end
 
-          sentence = ::Doc::Sentence.find_or_initialize_by(
-            doc_profile_id: doc_mapping[row[0].to_i],
-            statute_code: row[1],
-            sentencing_county: row[2],
-            js_date: row[3].present? ? Date.parse(row[3]) : '',
-            crf_number: row[4],
-            incarcerated_term_in_years: row[5],
-            probation_term_in_years: row[6]
+          doc_alias = ::Doc::Alias.find_or_initialize_by(
+            doc_profile_id: doc_mapping[data[0].to_i],
+            last_name: data[1],
+            first_name: data[2],
+            middle_name: data[3],
+            suffix: data[4]
           )
-          sentence.save!
+          doc_alias.save!
         end
       end
     end

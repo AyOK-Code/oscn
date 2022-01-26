@@ -141,9 +141,9 @@ ActiveRecord::Schema.define(version: 2022_01_24_152745) do
   end
 
   create_table "doc_offense_codes", force: :cascade do |t|
-    t.string "statute_code"
-    t.string "description"
-    t.boolean "is_violent"
+    t.string "statute_code", null: false
+    t.string "description", null: false
+    t.boolean "is_violent", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -171,6 +171,7 @@ ActiveRecord::Schema.define(version: 2022_01_24_152745) do
 
   create_table "doc_sentences", force: :cascade do |t|
     t.bigint "doc_profile_id", null: false
+    t.bigint "doc_offense_code_id"
     t.string "statute_code"
     t.string "sentencing_county"
     t.date "js_date"
@@ -179,6 +180,7 @@ ActiveRecord::Schema.define(version: 2022_01_24_152745) do
     t.decimal "probation_term_in_years"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["doc_offense_code_id"], name: "index_doc_sentences_on_doc_offense_code_id"
     t.index ["doc_profile_id"], name: "index_doc_sentences_on_doc_profile_id"
   end
 
@@ -337,6 +339,7 @@ ActiveRecord::Schema.define(version: 2022_01_24_152745) do
   add_foreign_key "court_cases", "counties"
   add_foreign_key "court_cases", "judges", column: "current_judge_id"
   add_foreign_key "doc_aliases", "doc_profiles"
+  add_foreign_key "doc_sentences", "doc_offense_codes"
   add_foreign_key "doc_sentences", "doc_profiles"
   add_foreign_key "docket_events", "court_cases"
   add_foreign_key "docket_events", "docket_event_types"
