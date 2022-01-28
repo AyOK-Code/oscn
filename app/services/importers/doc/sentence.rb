@@ -1,41 +1,55 @@
 module Importers
   module Doc
     class Sentence
-      attr_accessor :filename
+      attr_accessor :filename, :fields, :field_pattern, :bar, :doc_mapping, :sentence_mapping
 
       def initialize
         @filename = 'lib/data/Vendor_sentence_Extract_Text.dat'
+        @fields = [11, 40, 40, 9, 40, 12, 14]
+        @field_pattern = "A#{fields.join('A')}"
+        @bar = ProgressBar.new(File.read(filename).scan(/\n/).length)
+        @doc_mapping = ::Doc::Profile.pluck(:doc_number, :id).to_h
+        @sentence_mapping = ::Doc::OffenseCode.pluck(:statute_code, :id).to_h
       end
 
       def perform
-        fields = [11,40,40,9,40,12,14]
-        field_pattern = "A#{fields.join('A')}"
-        bar = ProgressBar.new(File.read(filename).scan(/\n/).length)
-        doc_mapping = ::Doc::Profile.pluck(:doc_number, :id).to_h
-        sentence_mapping = ::Doc::OffenseCode.pluck(:statute_code, :id).to_h
-        missing = []
-
         File.foreach(filename) do |line|
           bar.increment!
-          row = line.unpack(field_pattern)
-          data = row.map { |f| f.squish }
-          profile_id = doc_mapping[row[0].to_i]
-          if profile_id.blank?
-            missing << [row]
-            next
-          end
-
-          sentence = ::Doc::Sentence.find_or_initialize_by(
-            doc_profile_id: doc_mapping[row[0].to_i],
-            statute_code: row[1],
-            sentencing_county: row[2],
-            js_date: row[3].present? ? Date.parse(row[3]) : '',
-            crf_number: row[4],
-            incarcerated_term_in_years: row[5],
-            probation_term_in_years: row[6]
-          )
-          sentence.save!
+          data = line.unpack(field_pattern).map(&:squish)
+          find_and_save_sentence(data)
         end
+      end
+
+      private
+
+      def find_and_save_sentence(data)
+        profile_id = doc_mapping[row[0].to_i]
+        next if profile_id.blank?
+
+        sentence = find_sentence(data)
+        save_sentence(sentence, data)
+      end
+
+      def find_sentence(data)
+        ::Doc::Sentence.find_or_initialize_by(
+          doc_profile_id: doc_mapping[data[0].to_i],
+          sentencing_county: data[2],
+          js_date: data[3].present? ? Date.parse(data[3]) : ''
+        )
+      end
+
+      def save_sentence(sentence, data)
+        sentence.save!(
+          {
+            crf_number: data[4],
+            statute_code: data[1],
+            incarcerated_term_in_years: data[5],
+            probation_term_in_years: data[6],
+            is_death_sentence: data[5].to_i == 9999,
+            is_life_sentence: data[5].to_i == 8888,
+            is_life_no_parole_sentence: data[5].to_i == 7777
+          }
+        )
       end
     end
   end

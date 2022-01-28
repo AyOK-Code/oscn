@@ -178,6 +178,9 @@ ActiveRecord::Schema.define(version: 2022_01_24_152745) do
     t.string "crf_number"
     t.decimal "incarcerated_term_in_years"
     t.decimal "probation_term_in_years"
+    t.boolean "is_death_sentence", default: false, null: false
+    t.boolean "is_life_sentence", default: false, null: false
+    t.boolean "is_life_no_parole_sentence", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["doc_offense_code_id"], name: "index_doc_sentences_on_doc_offense_code_id"
