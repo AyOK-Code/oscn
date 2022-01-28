@@ -32,7 +32,7 @@ module Importers
 
       address_row.each_with_index do |row, index|
         next if index.zero? # Skip header
-        
+
         PartyAddress.perform(row, party)
       end
     end

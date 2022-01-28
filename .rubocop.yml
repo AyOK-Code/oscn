@@ -21,6 +21,13 @@ Style/MutableConstant:
 Style/SymbolArray:
   Enabled: false
 Style/WordArray:
-  Enabled: False
+  Enabled: false
 Metrics/MethodLength:
-  Max: 15
+  Max: 25
+Style/ClassAndModuleChildren:
+  Exclude:
+    - 'app/models/**/*'
+Style/CaseEquality:
+  AllowOnConstant: true
+Metrics/AbcSize:
+  Enabled: false
