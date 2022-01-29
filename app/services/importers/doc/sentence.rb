@@ -4,7 +4,7 @@ module Importers
       attr_accessor :filename, :fields, :field_pattern, :bar, :doc_mapping, :sentence_mapping
 
       def initialize
-        @filename = 'lib/data/Vendor_sentence_Extract_Text.dat'
+        @filename = Bucket.new.get_object('Vendor_sentence_Extract_Text.dat')
         @fields = [11, 40, 40, 9, 40, 12, 14]
         @field_pattern = "A#{fields.join('A')}"
         @bar = ProgressBar.new(File.read(filename).scan(/\n/).length)
@@ -27,7 +27,7 @@ module Importers
         next if profile_id.blank?
 
         sentence = find_sentence(data)
-        save_sentence(sentence, data)
+        save_sentence(data)
       end
 
       def find_sentence(data)
@@ -38,7 +38,9 @@ module Importers
         )
       end
 
-      def save_sentence(sentence, data)
+      def save_sentence(data)
+        sentence = find_sentence(data)
+
         sentence.save!(
           {
             crf_number: data[4],
