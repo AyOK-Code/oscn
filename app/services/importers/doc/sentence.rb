@@ -24,9 +24,8 @@ module Importers
 
       def find_and_save_sentence(data)
         profile_id = doc_mapping[row[0].to_i]
-        next if profile_id.blank?
+        return if profile_id.blank?
 
-        sentence = find_sentence(data)
         save_sentence(data)
       end
 
