@@ -1,10 +1,10 @@
 module Importers
   module Doc
-    class Statute
+    class OffenseCode
       attr_accessor :filename, :fields, :field_pattern, :bar
 
       def initialize
-        @filename = 'lib/data/Vendor_Offense_Extract_Text.dat'
+        @filename = Bucket.new.get_object('Vendor_Offense_Extract_Text.dat')
         @fields = [38, 40, 1]
         @field_pattern = "A#{fields.join('A')}"
         @bar = ProgressBar.new(File.read(filename).scan(/\n/).length)
@@ -22,7 +22,7 @@ module Importers
       private
 
       def save_statute(data)
-        ::Doc::OffenseCode.find_or_initialize_by(
+        statute = ::Doc::OffenseCode.find_or_initialize_by(
           statute_code: data[0],
           description: data[1],
           is_violent: data[2] == 'Y'

@@ -3,12 +3,12 @@ require 'open-uri'
 namespace :doc do
   desc 'Reset database and run all tasks'
   task reset: [:environment] do
-    Doc::Statute.delete_all
+    Doc::OffenseCode.delete_all
     Doc::Profile.delete_all
     Doc::Sentence.delete_all
     Doc::Alias.delete_all
 
-    Importers::Doc::Statute.new.perform
+    Importers::Doc::OffenseCode.new.perform
     Importers::Doc::Profile.new.perform
     Importers::Doc::Sentence.new.perform
     Importers::Doc::Alias.new.perform
