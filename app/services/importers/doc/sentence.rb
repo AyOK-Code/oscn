@@ -4,17 +4,18 @@ module Importers
       attr_accessor :filename, :fields, :field_pattern, :bar, :doc_mapping, :sentence_mapping
 
       def initialize
-        @filename = Bucket.new.get_object('Vendor_sentence_Extract_Text.dat')
+        @filename = File.open('lib/data/Vendor_sentence_Extract_Text.dat')
+        # @filename = Bucket.new.get_object('Vendor_sentence_Extract_Text.dat')
         @fields = [11, 40, 40, 9, 40, 12, 14]
         @field_pattern = "A#{fields.join('A')}"
-        @bar = ProgressBar.new(File.read(filename).scan(/\n/).length)
+        # @bar = ProgressBar.new(File.read(filename).scan(/\n/).length)
         @doc_mapping = ::Doc::Profile.pluck(:doc_number, :id).to_h
         @sentence_mapping = ::Doc::OffenseCode.pluck(:statute_code, :id).to_h
       end
 
       def perform
         File.foreach(filename) do |line|
-          bar.increment!
+          # bar.increment!
           data = line.unpack(field_pattern).map(&:squish)
           find_and_save_sentence(data)
         end
@@ -23,7 +24,7 @@ module Importers
       private
 
       def find_and_save_sentence(data)
-        profile_id = doc_mapping[row[0].to_i]
+        profile_id = doc_mapping[data[0].to_i]
         return if profile_id.blank?
 
         save_sentence(data)
@@ -40,7 +41,7 @@ module Importers
       def save_sentence(data)
         sentence = find_sentence(data)
 
-        sentence.save!(
+        sentence.assign_attributes(
           {
             crf_number: data[4],
             statute_code: data[1],
@@ -51,6 +52,7 @@ module Importers
             is_life_no_parole_sentence: data[5].to_i == 7777
           }
         )
+        sentence.save!
       end
     end
   end
