@@ -254,6 +254,7 @@ GEM
       ruby-graphviz (~> 1.2)
     rails-html-sanitizer (1.4.2)
       loofah (~> 2.3)
+    rails_autoscale_agent (0.11.0)
     railties (6.0.4.1)
       actionpack (= 6.0.4.1)
       activesupport (= 6.0.4.1)
@@ -390,6 +391,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 6.0.3)
   rails-erd
+  rails_autoscale_agent
   redis (~> 4.0)
   rspec-rails
   rubocop (~> 1.12)
