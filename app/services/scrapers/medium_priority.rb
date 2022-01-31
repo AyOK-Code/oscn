@@ -3,7 +3,7 @@ module Scrapers
   class MediumPriority
     attr_accessor :cases, :days_ago
 
-    def initialize(days_ago: 14, limit: 7500)
+    def initialize(days_ago: 14, limit: medium_count)
       @days_ago = days_ago
       @cases = CourtCase.active.older_than(14.days.ago).limit(limit)
     end
@@ -22,6 +22,12 @@ module Scrapers
           .perform_async({ county_id: c.county_id, case_number: c.case_number, scrape_case: true })
         bar.increment!
       end
+    end
+
+    private
+
+    def medium_count
+      ENV.fetch('MEDIUM_PRIORITY', 10000).to_i
     end
   end
 end

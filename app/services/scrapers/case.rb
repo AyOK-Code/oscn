@@ -18,7 +18,7 @@ module Scrapers
     end
 
     def counties
-      ENV['COUNTIES'].split(',') # TODO: Change to ENV variable
+      ENV['COUNTIES'].split(',')
     end
 
     def days_ago
