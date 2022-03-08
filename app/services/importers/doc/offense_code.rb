@@ -1,17 +1,17 @@
 module Importers
   module Doc
     class OffenseCode
-      attr_accessor :filename, :fields, :field_pattern, :bar
+      attr_accessor :file, :fields, :field_pattern, :bar
 
-      def initialize
-        @filename = Bucket.new.get_object('Vendor_Offense_Extract_Text.dat')
+      def initialize(dir)
+        @file = Bucket.new.get_object("doc/#{dir}/Vendor_Offense_Extract_Text.dat")
         @fields = [38, 40, 1]
         @field_pattern = "A#{fields.join('A')}"
-        @bar = ProgressBar.new(File.read(filename).scan(/\n/).length)
+        @bar = ProgressBar.new(@file.body.string.split("\r\n").size)
       end
 
       def perform
-        File.foreach(filename) do |line|
+        @file.body.string.split("\r\n").each do |line|
           bar.increment!
           data = line.unpack(field_pattern).map(&:squish)
 

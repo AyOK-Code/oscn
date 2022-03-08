@@ -1,21 +1,20 @@
 module Importers
   module Doc
     class Sentence
-      attr_accessor :filename, :fields, :field_pattern, :bar, :doc_mapping, :sentence_mapping
+      attr_accessor :file, :fields, :field_pattern, :bar, :doc_mapping, :sentence_mapping
 
-      def initialize
-        @filename = File.open('lib/data/Vendor_sentence_Extract_Text.dat')
-        # @filename = Bucket.new.get_object('Vendor_sentence_Extract_Text.dat')
+      def initialize(dir)
+        @file = Bucket.new.get_object("doc/#{dir}/Vendor_sentence_Extract_Text.dat")
         @fields = [11, 40, 40, 9, 40, 12, 14]
         @field_pattern = "A#{fields.join('A')}"
-        # @bar = ProgressBar.new(File.read(filename).scan(/\n/).length)
+        @bar = ProgressBar.new(file.body.string.split("\r\n").size)
         @doc_mapping = ::Doc::Profile.pluck(:doc_number, :id).to_h
         @sentence_mapping = ::Doc::OffenseCode.pluck(:statute_code, :id).to_h
       end
 
       def perform
-        File.foreach(filename) do |line|
-          # bar.increment!
+        file.body.string.split("\r\n").each do |line|
+          bar.increment!
           data = line.unpack(field_pattern).map(&:squish)
           find_and_save_sentence(data)
         end
