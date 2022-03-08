@@ -14,5 +14,6 @@ RSpec.describe Doc::Profile, type: :model do
   context 'associations' do
     it { should have_many(:aliases).class_name('Doc::Alias').with_foreign_key('doc_profile_id').dependent(:destroy) }
     it { should have_many(:sentences).class_name('Doc::Sentence').with_foreign_key('doc_profile_id').dependent(:destroy) }
+    it { should have_many(:statuses).class_name('Doc::Status').with_foreign_key('doc_profile_id').dependent(:destroy) }
   end
 end

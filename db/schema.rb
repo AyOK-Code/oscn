@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_24_152745) do
+ActiveRecord::Schema.define(version: 2022_03_08_152104) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -183,8 +183,20 @@ ActiveRecord::Schema.define(version: 2022_01_24_152745) do
     t.boolean "is_life_no_parole_sentence", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "court_case_id"
+    t.index ["court_case_id"], name: "index_doc_sentences_on_court_case_id"
     t.index ["doc_offense_code_id"], name: "index_doc_sentences_on_doc_offense_code_id"
     t.index ["doc_profile_id"], name: "index_doc_sentences_on_doc_profile_id"
+  end
+
+  create_table "doc_statuses", force: :cascade do |t|
+    t.bigint "doc_profile_id", null: false
+    t.string "facility", null: false
+    t.date "date"
+    t.string "reason"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["doc_profile_id"], name: "index_doc_statuses_on_doc_profile_id"
   end
 
   create_table "docket_event_types", force: :cascade do |t|
@@ -342,8 +354,10 @@ ActiveRecord::Schema.define(version: 2022_01_24_152745) do
   add_foreign_key "court_cases", "counties"
   add_foreign_key "court_cases", "judges", column: "current_judge_id"
   add_foreign_key "doc_aliases", "doc_profiles"
+  add_foreign_key "doc_sentences", "court_cases"
   add_foreign_key "doc_sentences", "doc_offense_codes"
   add_foreign_key "doc_sentences", "doc_profiles"
+  add_foreign_key "doc_statuses", "doc_profiles"
   add_foreign_key "docket_events", "court_cases"
   add_foreign_key "docket_events", "docket_event_types"
   add_foreign_key "docket_events", "parties"
