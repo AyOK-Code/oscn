@@ -5,7 +5,7 @@ module Importers
 
       def initialize(dir)
         @file = Bucket.new.get_object("doc/#{dir}/Vendor_sentence_Extract_Text.dat")
-        @fields = [11, 40, 40, 9, 40, 12, 14]
+        @fields = [11, 20, 20, 40, 40, 8, 40, 40, 12, 12]
         @field_pattern = "A#{fields.join('A')}"
         @bar = ProgressBar.new(file.body.string.split("\r\n").size)
         @doc_mapping = ::Doc::Profile.pluck(:doc_number, :id).to_h
@@ -30,11 +30,7 @@ module Importers
       end
 
       def find_sentence(data)
-        ::Doc::Sentence.find_or_initialize_by(
-          doc_profile_id: doc_mapping[data[0].to_i],
-          sentencing_county: data[2],
-          js_date: data[3].present? ? Date.parse(data[3]) : ''
-        )
+        ::Doc::Sentence.find_or_initialize_by(doc_profile_id: doc_mapping[data[0].to_i], sentence_id: data[1])
       end
 
       def save_sentence(data)
@@ -42,15 +38,19 @@ module Importers
 
         sentence.assign_attributes(
           {
-            crf_number: data[4],
-            statute_code: data[1],
-            incarcerated_term_in_years: data[5],
-            probation_term_in_years: data[6],
-            is_death_sentence: data[5].to_i == 9999,
-            is_life_sentence: data[5].to_i == 8888,
-            is_life_no_parole_sentence: data[5].to_i == 7777
+            sentencing_county: data[4],
+            consecutive_to_sentence_id: data[2],
+            js_date: data[5].present? ? Date.parse(data[5]) : '',
+            crf_number: data[6],
+            statute_code: data[3],
+            incarcerated_term_in_years: data[7],
+            probation_term_in_years: data[8],
+            is_death_sentence: data[7].to_i == 9999,
+            is_life_sentence: data[7].to_i == 8888,
+            is_life_no_parole_sentence: data[7].to_i == 7777
           }
         )
+
         sentence.save!
       end
     end
