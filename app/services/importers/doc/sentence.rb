@@ -5,7 +5,7 @@ module Importers
 
       def initialize(dir)
         @file = Bucket.new.get_object("doc/#{dir}/Vendor_sentence_Extract_Text.dat")
-        @fields = [11, 20, 20, 40, 40, 8, 40, 40, 12, 12]
+        @fields = [11, 20, 20, 40, 40, 8, 40, 13, 13]
         @field_pattern = "A#{fields.join('A')}"
         @bar = ProgressBar.new(file.body.string.split("\r\n").size)
         @doc_mapping = ::Doc::Profile.pluck(:doc_number, :id).to_h
@@ -43,8 +43,8 @@ module Importers
             js_date: data[5].present? ? Date.parse(data[5]) : '',
             crf_number: data[6],
             statute_code: data[3],
-            incarcerated_term_in_years: data[7],
-            probation_term_in_years: data[8],
+            incarcerated_term_in_years: data[7].to_f,
+            probation_term_in_years: data[8].to_f,
             is_death_sentence: data[7].to_i == 9999,
             is_life_sentence: data[7].to_i == 8888,
             is_life_no_parole_sentence: data[7].to_i == 7777

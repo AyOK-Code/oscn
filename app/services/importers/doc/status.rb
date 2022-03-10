@@ -5,16 +5,16 @@ module Importers
 
       def initialize(dir)
         @dir = dir
-        @filename = File.open("doc/#{dir}/Vendor_Profile_Extract_Text.dat")
+        @file = Bucket.new.get_object("doc/#{dir}/Vendor_Profile_Extract_Text.dat")
         @fields = [11, 30, 30, 30, 5, 9, 40, 9, 1, 40, 40, 2, 2, 4, 40, 10]
         @field_pattern = "A#{fields.join('A')}"
         @doc_mapping = ::Doc::Profile.pluck(:doc_number, :id).to_h
-        @bar = ProgressBar.new(File.read(filename).scan(/\n/).length)
+        @bar = ProgressBar.new(@file.body.string.split("\r\n").size)
       end
 
       def perform
-        puts "Importing #{dir}-01"
-        File.foreach(filename) do |line|
+        puts "Importing #{dir}"
+        @file.body.string.split("\r\n").each do |line|
           bar.increment!
           data = line.unpack(field_pattern).map(&:squish)
 
