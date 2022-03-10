@@ -12,6 +12,8 @@ RSpec.describe CourtCase, type: :model do
     it { should have_many(:counsel_parties).dependent(:destroy) }
     it { should have_many(:counsels).through(:counsel_parties) }
     it { should have_many(:docket_events) }
+
+    it { should have_many(:doc_sentences).class_name('Doc::Sentence') }
   end
 
   context 'validations' do
