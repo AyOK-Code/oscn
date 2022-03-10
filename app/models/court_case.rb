@@ -13,6 +13,9 @@ class CourtCase < ApplicationRecord
   has_one :case_html, dependent: :destroy
   has_one :case_stat
 
+  # Link to DOC data
+  has_many :doc_sentences, class_name: 'Doc::Sentence'
+
   validates :oscn_id, :case_number, presence: true
   validates :oscn_id, uniqueness: { scope: :county_id }
 
