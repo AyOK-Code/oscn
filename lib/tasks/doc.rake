@@ -46,4 +46,9 @@ namespace :doc do
   task link_cases: [:environment] do
     Importers::Doc::LinkCases.new.perform
   end
+
+  desc 'Link Sentence to OffenseCode'
+  task link_offense_codes: [:environment] do
+    Importers::Doc::LinkOffenseCodes.new.perform
+  end
 end

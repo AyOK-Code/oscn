@@ -15,7 +15,7 @@ module Importers
         file.body.string.split("\r\n").each do |line|
           bar.increment!
           data = line.unpack(field_pattern).map(&:squish)
-          profile_id = doc_mapping[row[0].to_i]
+          profile_id = doc_mapping[data[0].to_i]
           next if profile_id.blank?
 
           save_alias(data)
