@@ -3,13 +3,14 @@ module Importers
     class LinkCases
       attr_accessor :sentences, :bar, :court_case_mapping
 
-      def initialize
-        @sentences = ::Doc::Sentence.where(sentencing_county: 'OKLAHOMA COUNTY COURT')
+      def initialize(county)
+        @sentences = ::Doc::Sentence.where(sentencing_county: county)
         @bar = ProgressBar.new(@sentences.count)
         @court_case_mapping = ::CourtCase.all.pluck(:case_number, :id).to_h
       end
 
       def perform
+        puts "Processing #{@sentences.count} sentences"
         sentences.each do |sentence|
           bar.increment!
           cc = match_regex(sentence)
