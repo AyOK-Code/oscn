@@ -43,8 +43,9 @@ namespace :doc do
   end
 
   desc 'Link to OSCN'
-  task link_cases: [:environment] do
-    Importers::Doc::LinkCases.new.perform
+  task :link_cases, [:county] => [:environment] do |_t, args|
+    county = args.county
+    Importers::Doc::LinkCases.new(county).perform
   end
 
   desc 'Link Sentence to OffenseCode'
