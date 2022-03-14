@@ -7,6 +7,7 @@ env:
 
 jobs:
   build:
+    name: Run Test Suite
     runs-on: ubuntu-latest
     services:
       postgres:
