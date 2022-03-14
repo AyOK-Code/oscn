@@ -27,7 +27,7 @@ module Scrapers
     private
 
     def medium_count
-      ENV.fetch('MEDIUM_PRIORITY', 10000).to_i
+      ENV.fetch('MEDIUM_PRIORITY', 10_000).to_i
     end
   end
 end

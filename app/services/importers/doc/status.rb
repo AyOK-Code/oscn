@@ -27,7 +27,8 @@ module Importers
       def find_status(data)
         profile = doc_mapping[data[0].to_i]
         return if profile.nil?
-        status = ::Doc::Status.find_or_initialize_by(
+
+        ::Doc::Status.find_or_initialize_by(
           doc_profile_id: doc_mapping[data[0].to_i],
           date: parse_date("#{dir}-01"),
           facility: data[6]
@@ -37,6 +38,7 @@ module Importers
       def save_status(data)
         status = find_status(data)
         return if status.nil?
+
         status.save
       end
 
