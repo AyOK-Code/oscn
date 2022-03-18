@@ -36,10 +36,9 @@ namespace :doc do
   end
 
   desc 'Import statuses'
-  task statuses: [:environment] do
-    ['2019-04', '2019-07', '2019-10', '2020-01', '2020-04', '2020-07', '2020-10', '2021-01', '2021-04', '2021-10', '2022-01'].each do |dir|
-      Importers::Doc::Status.new(dir).perform
-    end
+  task :statuses, [:dir] => [:environment] do |_t, args|
+    dir = args.dir
+    Importers::Doc::Status.new(dir).perform
   end
 
   desc 'Link to OSCN'
