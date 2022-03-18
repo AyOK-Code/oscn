@@ -21,11 +21,12 @@ module Importers
       private
 
       def match_regex(sentence)
-        if /CF-\d{4}-[0-9]{1,4}/ =~ sentence.crf_number
+        case sentence.crf_number
+        when /CF-\d{4}-[0-9]{1,4}/
           court_case_mapping[sentence.crf_number]
-        elsif /\d{4}-[0-9]{1,4}/ =~ sentence.crf_number
+        when /\d{4}-[0-9]{1,4}/
           court_case_mapping["CF-#{sentence.crf_number}"]
-        elsif /\d{2}-[0-9]{1,4}/ =~ sentence.crf_number
+        when /\d{2}-[0-9]{1,4}/
           court_case_mapping["CF-20#{sentence.crf_number}"]
         end
       end

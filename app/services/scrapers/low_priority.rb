@@ -26,7 +26,7 @@ module Scrapers
     private
 
     def low_count
-      ENV.fetch('LOW_PRIORITY', 10000).to_i
+      ENV.fetch('LOW_PRIORITY', 10_000).to_i
     end
   end
 end
