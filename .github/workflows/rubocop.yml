@@ -16,4 +16,5 @@ jobs:
       - name: Bundle install
         run: bundle install
       - name: Run rubocop
-        run: rubocop .
+        run: |
+          bundle exec rubocop
