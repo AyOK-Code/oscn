@@ -32,7 +32,7 @@ module Importers
         payment = regex.match(docket_event_data[:description])
         return 0 if payment.nil?
 
-        amount = payment[1].gsub(',','').to_f
+        amount = payment[1].gsub(',', '').to_f
 
         if amount.zero?
           intercept_regex = /#{case_number}:\s*?\$-*?(\d|,)+\.\d{2}/
