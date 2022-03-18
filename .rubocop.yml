@@ -10,6 +10,7 @@ AllCops:
     - 'db/schema.rb'
     - 'db/migrate/*'
     - 'spec/models/**/*'
+    - 'vendor/**/*'
 Metrics/BlockLength:
   Max: 50
 Style/Documentation:
