@@ -5,7 +5,7 @@ module Importers
 
       def initialize(dir)
         @file = Bucket.new.get_object("doc/#{dir}/Vendor_Profile_Extract_Text.dat")
-        @fields = [11, 30, 30, 30, 5, 8, 40, 8, 1, 40, 40, 2, 2, 4, 40, 10]
+        @fields = field_spacing(dir)
         @field_pattern = "A#{fields.join('A')}"
         @bar = ProgressBar.new(file.body.string.split("\r\n").size)
       end
@@ -13,7 +13,7 @@ module Importers
       def perform
         file.body.string.split("\r\n").each do |line|
           bar.increment!
-          data = line.unpack(field_pattern).map(&:squish)
+          dat = line.unpack(field_pattern).map(&:squish)
 
           save_profile(data)
         end
@@ -60,6 +60,14 @@ module Importers
 
       def parse_status(data)
         data == 'Active' ? 'active' : 'inactive'
+      end
+
+      def field_spacing(dir)
+        if parse_date("#{dir}-01") > parse_date('2021-12-31')
+          [11, 30, 30, 30, 5, 8, 40, 8, 1, 40, 40, 2, 2, 4, 40, 10]
+        else
+          [11, 30, 30, 30, 5, 9, 40, 9, 1, 40, 40, 2, 2, 4, 40, 10]
+        end
       end
     end
   end
