@@ -6,7 +6,7 @@ module Importers
       def initialize(dir)
         @dir = dir
         @file = Bucket.new.get_object("doc/#{dir}/Vendor_Profile_Extract_Text.dat")
-        @fields = [11, 30, 30, 30, 5, 9, 40, 9, 1, 40, 40, 2, 2, 4, 40, 10]
+        @fields = field_spacing(dir)
         @field_pattern = "A#{fields.join('A')}"
         @doc_mapping = ::Doc::Profile.pluck(:doc_number, :id).to_h
         @bar = ProgressBar.new(@file.body.string.split("\r\n").size)
@@ -27,7 +27,8 @@ module Importers
       def find_status(data)
         profile = doc_mapping[data[0].to_i]
         return if profile.nil?
-        status = ::Doc::Status.find_or_initialize_by(
+
+        ::Doc::Status.find_or_initialize_by(
           doc_profile_id: doc_mapping[data[0].to_i],
           date: parse_date("#{dir}-01"),
           facility: data[6]
@@ -37,11 +38,20 @@ module Importers
       def save_status(data)
         status = find_status(data)
         return if status.nil?
+
         status.save
       end
 
       def parse_date(date)
         date.present? ? Date.parse(date) : nil
+      end
+
+      def field_spacing(dir)
+        if parse_date("#{dir}-01") > parse_date('2021-12-31')
+          [11, 30, 30, 30, 5, 8, 40, 8, 1, 40, 40, 2, 2, 4, 40, 10]
+        else
+          [11, 30, 30, 30, 5, 9, 40, 9, 1, 40, 40, 2, 2, 4, 40, 10]
+        end
       end
     end
   end
