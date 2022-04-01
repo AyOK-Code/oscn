@@ -20,8 +20,8 @@ module Importers
           begin
             ::Doc::Status.find_or_create_by!(
               doc_profile_id: id,
-              facility: row['Facility'],
-              reason: row['Reason'],
+              facility: row['Facility']&.squish,
+              reason: row['Reason']&.squish,
               date: parse_date(row['MovementDate'])
             )
             success[:success] += 1

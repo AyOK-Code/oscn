@@ -20,8 +20,8 @@ module Importers
           begin
             ::Doc::Status.find_or_create_by(
               doc_profile_id: id,
-              facility: row['ExitReason'],
-              reason: row[3],
+              facility: row['ExitReason']&.squish,
+              reason: row[3]&.squish,
               date: parse_date(row['ExitDate'])
             )
 

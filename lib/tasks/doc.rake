@@ -23,6 +23,10 @@ namespace :doc do
     Importers::Doc::OldExits.new.perform
   end
 
+  task old_sentences: [:environment] do
+    Importers::Doc::OldSentences.new.perform
+  end
+
   desc 'Import profiles'
   task profiles: [:environment] do
     Importers::Doc::Profile.new('2022-01').perform
