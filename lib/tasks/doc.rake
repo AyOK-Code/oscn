@@ -15,6 +15,14 @@ namespace :doc do
     Importers::Doc::Alias.new('2022-01').perform
   end
 
+  task old_receptions: [:environment] do
+    Importers::Doc::OldReceptions.new.perform
+  end
+
+  task old_exits: [:environment] do
+    Importers::Doc::OldExits.new.perform
+  end
+
   desc 'Import profiles'
   task profiles: [:environment] do
     Importers::Doc::Profile.new('2022-01').perform
