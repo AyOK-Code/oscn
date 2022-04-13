@@ -59,6 +59,11 @@ namespace :doc do
     Importers::Doc::LinkCases.new(county).perform
   end
 
+  desc 'Link OSCN parties to DOC profile'
+  task link_parties: [:environment] do
+    Importers::Doc::LinkParties.new.perform
+  end
+
   desc 'Link Sentence to OffenseCode'
   task link_offense_codes: [:environment] do
     Importers::Doc::LinkOffenseCodes.new.perform

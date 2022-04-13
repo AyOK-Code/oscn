@@ -14,6 +14,10 @@ module Importers
         sentences.each do |sentence|
           bar.increment!
           cc = match_regex(sentence)
+          # TODO: Check for party matches
+          # TODO: Best: match threshold 0.8 (Dice) + birth month / year match
+          # TODO: Good: match threshold 0.6 + birth month / year match
+          # TODO: Bad (Don't): match threshold < 0.6 || birth month / year match
           sentence.update(court_case_id: cc) if cc.present?
         end
       end

@@ -1,6 +1,7 @@
 class Party < ApplicationRecord
   belongs_to :party_type
   belongs_to :parent_party, optional: true
+  belongs_to :doc_profile, optional: true
   has_many :case_parties, dependent: :destroy
   has_many :court_cases, through: :case_parties
   has_many :counsel_parties, dependent: :destroy
@@ -18,4 +19,8 @@ class Party < ApplicationRecord
   scope :with_parent, -> { where.not(parent_party_id: nil) }
   scope :arresting_agency, -> { joins(:party_type).where(party_types: { name: 'arresting_agency' }) }
   scope :defendant, -> { joins(:party_type).where(party_types: { name: 'defendant' }) }
+
+  def last_first
+    "#{last_name} #{first_name}"
+  end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_12_135855) do
+ActiveRecord::Schema.define(version: 2022_04_12_200059) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -310,6 +310,8 @@ ActiveRecord::Schema.define(version: 2022_04_12_135855) do
     t.integer "birth_year"
     t.string "suffix"
     t.bigint "parent_party_id"
+    t.bigint "doc_profile_id"
+    t.index ["doc_profile_id"], name: "index_parties_on_doc_profile_id"
     t.index ["oscn_id"], name: "index_parties_on_oscn_id", unique: true
     t.index ["parent_party_id"], name: "index_parties_on_parent_party_id"
     t.index ["party_type_id"], name: "index_parties_on_party_type_id"
@@ -393,6 +395,7 @@ ActiveRecord::Schema.define(version: 2022_04_12_135855) do
   add_foreign_key "events", "court_cases"
   add_foreign_key "events", "parties"
   add_foreign_key "judges", "counties"
+  add_foreign_key "parties", "doc_profiles"
   add_foreign_key "parties", "parent_parties"
   add_foreign_key "parties", "party_types"
   add_foreign_key "party_addresses", "parties"
