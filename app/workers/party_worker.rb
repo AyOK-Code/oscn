@@ -7,6 +7,7 @@ class PartyWorker
   sidekiq_throttle_as :oscn
 
   def perform(oscn_id)
+    ::Importers::PartyHtml.perform(oscn_id)
     ::Importers::PartyData.perform(oscn_id)
   end
 end
