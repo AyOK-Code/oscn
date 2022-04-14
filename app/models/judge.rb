@@ -7,7 +7,7 @@ class Judge < ApplicationRecord
     if first_name.present? && last_name.present?
       "#{first_name} #{last_name}"
     else
-      ""
+      ''
     end
   end
 end
