@@ -5,6 +5,7 @@ RSpec.describe Importers::CourtCase do
     it 'saves data for a case' do
       # Create a case with html from fixture
       county = create(:county, name: 'Tulsa')
+      create(:judge, name: 'CF Docket E')
       court_case = create(:court_case, county_id: county.id, case_number: 'CF-2018-1016')
       html = File.open('spec/fixtures/example.html').read
       create(:case_html, court_case: court_case, html: html)
