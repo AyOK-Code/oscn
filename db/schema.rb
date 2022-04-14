@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_13_200902) do
+ActiveRecord::Schema.define(version: 2022_04_14_183306) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -306,6 +306,15 @@ ActiveRecord::Schema.define(version: 2022_04_13_200902) do
     t.index ["party_id"], name: "index_party_addresses_on_party_id"
   end
 
+  create_table "party_htmls", force: :cascade do |t|
+    t.bigint "party_id", null: false
+    t.datetime "scraped_at"
+    t.text "html"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["party_id"], name: "index_party_htmls_on_party_id"
+  end
+
   create_table "party_types", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
@@ -374,6 +383,7 @@ ActiveRecord::Schema.define(version: 2022_04_13_200902) do
   add_foreign_key "parties", "parent_parties"
   add_foreign_key "parties", "party_types"
   add_foreign_key "party_addresses", "parties"
+  add_foreign_key "party_htmls", "parties"
   add_foreign_key "warrants", "docket_events"
   add_foreign_key "warrants", "judges"
 
