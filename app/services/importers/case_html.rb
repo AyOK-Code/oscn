@@ -3,7 +3,6 @@ module Importers
   class CaseHtml
     attr_accessor :case_search, :case_number, :county
 
-    # TODO: Swap out hard coded County
     def initialize(county_id, case_number)
       @case_number = case_number
       @county = County.find(county_id)
