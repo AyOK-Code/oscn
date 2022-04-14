@@ -1,11 +1,10 @@
 module Importers
   # Save detailed Party information
   class PartyData
-    attr_accessor :party, :county_name
+    attr_accessor :party
 
     def initialize(oscn_id)
       @party = ::Party.find_by(oscn_id: oscn_id)
-      @county_name = @party.court_cases.first.county.name
     end
 
     def self.perform(oscn_id)
@@ -14,8 +13,8 @@ module Importers
 
     # TODO: Move data parsing to the Gem side
     def perform
-      data = OscnScraper::Requestor::Party.fetch_party(county_name, party.oscn_id)
-      parsed_html = Nokogiri::HTML(data.body)
+      html = party.party_html.html
+      parsed_html = Nokogiri::HTML(html)
       personal_columns = personal_html(parsed_html)
 
       string = personal_columns[2]&.text&.split('/')

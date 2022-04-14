@@ -7,6 +7,7 @@ class Party < ApplicationRecord
   has_many :counsels, through: :counsel_parties
   has_many :docket_events, dependent: :destroy
   has_many :addresses, class_name: 'PartyAddress', dependent: :destroy
+  has_one :party_html, dependent: :destroy
 
   validates :oscn_id, presence: true
   validates :oscn_id, uniqueness: { case_sensitive: true }
