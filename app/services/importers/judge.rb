@@ -16,17 +16,8 @@ module Importers
 
     def perform
       return if judges[judge_name].nil?
+
       court_case.update(current_judge_id: judges[judge_name])
-    end
-
-    private
-
-    def find_judge(judge_name)
-
-      return judge_id if judge_id
-
-      # new_judge = ::Judge.create(name: judge_name, county_id: court_case.county_id)
-      # court_case.update(current_judge_id: new_judge.id)
     end
   end
 end

@@ -7,7 +7,7 @@ module Importers
       @court_case = court_case
       @events_json = events_json
       @logs = logs
-      @judges = ::Judge.all.map { |j| [j.first_last, j.id]  }.to_h
+      @judges = ::Judge.all.map { |j| [j.first_last, j.id] }.to_h
       @party_matcher = Matchers::Party.new(court_case)
     end
 
