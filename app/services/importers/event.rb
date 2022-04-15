@@ -1,12 +1,13 @@
 module Importers
   # Imports events into database from a case
   class Event
-    attr_accessor :events_json, :court_case, :logs, :party_matcher
+    attr_accessor :events_json, :court_case, :logs, :party_matcher, :judges
 
     def initialize(events_json, court_case, logs)
       @court_case = court_case
       @events_json = events_json
       @logs = logs
+      @judges = ::Judge.all.map { |j| [j.first_last, j.id] }.to_h
       @party_matcher = Matchers::Party.new(court_case)
     end
 
@@ -23,6 +24,7 @@ module Importers
     def save_events(event_data)
       e = find_event(event_data)
       e.docket = event_data[:docket]
+      e.judge_id = judges[event_data[:docket]]
       e.event_type = event_data[:event_type]
       begin
         e.save!
