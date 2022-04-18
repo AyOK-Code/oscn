@@ -17,6 +17,8 @@ AllCops:
     - 'vendor/**/*'
 Metrics/BlockLength:
   Max: 50
+  Exclude: 
+    - 'spec/**/*'
 Style/Documentation:
   Enabled: false
 Style/FrozenStringLiteralComment:
