@@ -27,6 +27,7 @@ gem 'ruby-limiter'
 gem 'scenic'
 gem 'sidekiq'
 gem 'sidekiq-throttled'
+gem 'simplecov-lcov'
 gem 'slack-ruby-client'
 
 group :development, :test do

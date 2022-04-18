@@ -1,11 +1,16 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'simplecov'
+require 'simplecov-lcov'
+SimpleCov::Formatter::LcovFormatter.config.report_with_single_file = true
+SimpleCov.formatter = SimpleCov::Formatter::LcovFormatter
 SimpleCov.start :rails do
   # add_group 'Services', 'app/services'
+  minimum_coverage 90
+  maximum_coverage_drop 2
   coverage_dir 'tmp/coverage'
-  add_filter "/app/channels"
-  add_filter "/app/controllers"
-  add_filter "/app/mailers"
+  add_filter '/app/channels'
+  add_filter '/app/controllers'
+  add_filter '/app/mailers'
 end
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'

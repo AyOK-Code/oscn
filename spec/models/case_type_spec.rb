@@ -24,7 +24,6 @@ RSpec.describe CaseType, type: :model do
 
   describe '#oscn_id_mapping' do
     it 'returns a hash of with key = :abbreviation and value = :id' do
-
     end
   end
 end
