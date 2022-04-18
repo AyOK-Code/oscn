@@ -22,7 +22,7 @@
 /storage/*
 !/storage/.keep
 .byebug_history
-spec/examples.txt
+/spec/examples.txt
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
