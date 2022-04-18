@@ -1,8 +1,21 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'simplecov'
+require 'simplecov-json'
+
+SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new([
+                                                                  SimpleCov::Formatter::HTMLFormatter,
+                                                                  SimpleCov::Formatter::JSONFormatter
+                                                                ])
 SimpleCov.start :rails do
-  # add_group 'Services', 'app/services'
+  enable_coverage :line
+  add_group 'Services', 'app/services'
+  add_group 'Models', 'app/models'
+  add_group 'Workers', 'app/workers'
+  minimum_coverage 40
+  maximum_coverage_drop 2
   coverage_dir 'tmp/coverage'
+  add_filter '/app/channels'
+  add_filter '/app/mailers'
 end
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'

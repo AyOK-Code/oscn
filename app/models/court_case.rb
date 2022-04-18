@@ -32,7 +32,5 @@ class CourtCase < ApplicationRecord
   scope :with_error, -> { where('logs @> ?', { docket_events: { message: 'DocketEventCountError' } }.to_json) }
   scope :for_county_name, ->(name) { joins(:county).where(counties: { name: name }) }
 
-  def html
-    case_html.html
-  end
+  delegate :html, to: :case_html
 end
