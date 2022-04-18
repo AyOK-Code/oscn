@@ -8,12 +8,13 @@ SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new([
 ])
 SimpleCov.start :rails do
   enable_coverage :line
-  # add_group 'Services', 'app/services'
+  add_group 'Services', 'app/services'
+  add_group 'Models', 'app/models'
+  add_group 'Workers', 'app/workers'
   minimum_coverage 40
   maximum_coverage_drop 2
   coverage_dir 'tmp/coverage'
   add_filter '/app/channels'
-  add_filter '/app/controllers'
   add_filter '/app/mailers'
 end
 require 'spec_helper'
