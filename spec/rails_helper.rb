@@ -3,9 +3,9 @@ require 'simplecov'
 require 'simplecov-json'
 
 SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new([
-  SimpleCov::Formatter::HTMLFormatter,
-  SimpleCov::Formatter::JSONFormatter
-])
+                                                                  SimpleCov::Formatter::HTMLFormatter,
+                                                                  SimpleCov::Formatter::JSONFormatter
+                                                                ])
 SimpleCov.start :rails do
   enable_coverage :line
   add_group 'Services', 'app/services'
