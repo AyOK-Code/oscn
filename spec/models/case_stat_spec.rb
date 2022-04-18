@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe CaseStat, type: :model do
-  context 'associations' do
+  describe 'associations' do
     it { should belong_to(:court_case) }
   end
 

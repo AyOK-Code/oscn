@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Doc::OffenseCode, type: :model do
-  context 'associations' do
+  describe 'associations' do
     it {
       should have_many(:sentences)
         .class_name('Doc::Sentence')
@@ -10,7 +10,7 @@ RSpec.describe Doc::OffenseCode, type: :model do
     }
   end
 
-  context 'validations' do
+  describe 'validations' do
     it { should validate_presence_of(:statute_code) }
     it { should validate_presence_of(:description) }
   end

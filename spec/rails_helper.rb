@@ -3,6 +3,9 @@ require 'simplecov'
 SimpleCov.start :rails do
   # add_group 'Services', 'app/services'
   coverage_dir 'tmp/coverage'
+  add_filter "/app/channels"
+  add_filter "/app/controllers"
+  add_filter "/app/mailers"
 end
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
