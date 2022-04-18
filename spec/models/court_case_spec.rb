@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe CourtCase, type: :model do
-  context 'associations' do
+  describe 'associations' do
     it { should belong_to(:county) }
     it { should belong_to(:case_type) }
     it { should belong_to(:current_judge).class_name('Judge').optional }
@@ -11,20 +11,26 @@ RSpec.describe CourtCase, type: :model do
     it { should have_many(:events).dependent(:destroy) }
     it { should have_many(:counsel_parties).dependent(:destroy) }
     it { should have_many(:counsels).through(:counsel_parties) }
-    it { should have_many(:docket_events) }
+    it { should have_many(:docket_events).dependent(:destroy) }
+    it { should have_one(:case_html).dependent(:destroy) }
+    it { should have_one(:case_stat) }
 
     it { should have_many(:doc_sentences).class_name('Doc::Sentence') }
   end
 
-  context 'validations' do
+  describe 'validations' do
     it { should validate_presence_of(:oscn_id) }
     it { should validate_presence_of(:case_number) }
     subject { FactoryBot.build(:court_case) }
     it { should validate_uniqueness_of(:oscn_id).scoped_to(:county_id) }
   end
 
+  describe 'delegations' do
+    it { should delegate_method(:html).to(:case_html) }
+  end
+
   # Scopes
-  describe '#without_html' do
+  describe '.without_html' do
     it 'records that have not been scraped' do
       court_case = create(:court_case)
       create(:court_case, :with_html)
@@ -36,7 +42,7 @@ RSpec.describe CourtCase, type: :model do
     end
   end
 
-  describe '#with_html' do
+  describe '.with_html' do
     it 'records that have been scraped' do
       court_case = create(:court_case)
       create(:court_case, :with_html)
@@ -48,7 +54,7 @@ RSpec.describe CourtCase, type: :model do
     end
   end
 
-  describe '#without_docket_events' do
+  describe '.without_docket_events' do
     it 'scopes to court_cases without docket events' do
       court_case = create(:court_case)
       create(:court_case, :with_docket_event)
@@ -60,7 +66,7 @@ RSpec.describe CourtCase, type: :model do
     end
   end
 
-  describe '#valid' do
+  describe '.valid' do
     it 'filters out the cases that end in "-0"' do
       valid = create(:court_case, case_number: 'CF-2020-1')
       invalid = create(:court_case, :invalid)
@@ -72,7 +78,7 @@ RSpec.describe CourtCase, type: :model do
     end
   end
 
-  describe '#active' do
+  describe '.active' do
     it 'returns cases without a closed on date' do
       active = create(:court_case, :active)
       create(:court_case, :inactive)
@@ -84,7 +90,7 @@ RSpec.describe CourtCase, type: :model do
     end
   end
 
-  describe '#closed' do
+  describe '.closed' do
     it 'returns cases with a closed_on date' do
       create(:court_case, :active)
       inactive = create(:court_case, :inactive)
@@ -96,7 +102,7 @@ RSpec.describe CourtCase, type: :model do
     end
   end
 
-  describe '#last_scraped(date)' do
+  describe '.last_scraped(date)' do
     it 'returns cases that have scraped between the date given and the present date' do
       travel_to(Date.new(2021, 1, 1)) do
         in_range = create(:case_html, scraped_at: Date.new(2020, 6, 1))
@@ -111,7 +117,7 @@ RSpec.describe CourtCase, type: :model do
     end
   end
 
-  describe '#older_than(date)' do
+  describe '.older_than(date)' do
     it 'returns cases that have not been scraped since the date given' do
       travel_to(Date.new(2021, 1, 1)) do
         recent = create(:case_html, scraped_at: Date.new(2020, 12, 29))
@@ -126,9 +132,15 @@ RSpec.describe CourtCase, type: :model do
     end
   end
 
-  describe '#with_error' do
-    it '' do
+  describe '.with_error' do
+    it 'filters based on the DocketEventCountError' do
       skip
+    end
+  end
+
+  describe '.for_county_name(name)' do
+    it 'filters by the county name' do
+
     end
   end
 end
