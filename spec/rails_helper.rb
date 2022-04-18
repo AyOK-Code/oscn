@@ -5,7 +5,7 @@ SimpleCov::Formatter::LcovFormatter.config.report_with_single_file = true
 SimpleCov.formatter = SimpleCov::Formatter::LcovFormatter
 SimpleCov.start :rails do
   # add_group 'Services', 'app/services'
-  minimum_coverage 90
+  minimum_coverage 40
   maximum_coverage_drop 2
   coverage_dir 'tmp/coverage'
   add_filter '/app/channels'
