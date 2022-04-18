@@ -18,4 +18,51 @@ RSpec.describe Party, type: :model do
     subject { FactoryBot.build(:party) }
     it { should validate_uniqueness_of(:oscn_id) }
   end
+
+  describe '#without_birthday' do
+    it 'Filter to parties without birth month' do
+      party_bad = create(:party, birth_month: 12)
+      create(:party)
+      expect(described_class.without_birthday.size).to eq(1)
+      expect(described_class.without_birthday.first.id).not_to eq(party_bad.id)
+    end
+  end
+
+  describe '#without_parent' do
+    let(:parent_party) { create(:parent_party) }
+    it 'Filter to parties without parent party' do
+      party_bad = create(:party, birth_month: 12, parent_party: parent_party)
+      create(:party)
+      expect(described_class.without_parent.size).to eq(1)
+      expect(described_class.without_parent.first.id).not_to eq(party_bad.id)
+    end
+  end
+
+  describe '#with_parent' do
+    let(:parent_party) { create(:parent_party) }
+    it 'Filter to parties with parent party' do
+      party_good = create(:party, birth_month: 12, parent_party: parent_party)
+      create(:party)
+      expect(described_class.with_parent.size).to eq(1)
+      expect(described_class.with_parent.first.id).to eq(party_good.id)
+    end
+  end
+
+  describe '#arresting_agency' do
+    it 'filter by party type where party type is arresting_agency' do
+      party_good = create(:party, :arresting_agency)
+      create(:party)
+      expect(described_class.arresting_agency.size).to eq(1)
+      expect(described_class.arresting_agency.first.id).to eq(party_good.id)
+    end
+  end
+
+  describe '#defendant' do
+    it 'filter by party type where party type is defendant' do
+      party_good = create(:party, :defendant)
+      create(:party)
+      expect(described_class.defendant.size).to eq(1)
+      expect(described_class.defendant.first.id).to eq(party_good.id)
+    end
+  end
 end
