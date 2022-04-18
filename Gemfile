@@ -27,7 +27,6 @@ gem 'ruby-limiter'
 gem 'scenic'
 gem 'sidekiq'
 gem 'sidekiq-throttled'
-gem 'simplecov-lcov'
 gem 'slack-ruby-client'
 
 group :development, :test do
@@ -45,7 +44,8 @@ end
 group :test do
   gem 'database_cleaner'
   gem 'shoulda-matchers'
-  gem 'simplecov', require: false
+  gem 'simplecov'
+  gem 'simplecov-lcov'
 end
 
 group :development do
