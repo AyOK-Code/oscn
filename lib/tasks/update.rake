@@ -78,4 +78,28 @@ namespace :update do
       CourtCaseWorker.perform_in(1.minutes, { county_id: c[0], case_number: c[1], scrape_case: false })
     end
   end
+
+  desc 'Update parties from stored html'
+  task parties: [:environment] do
+    parties = CourtCase.joins(:case_type).where(case_types: {abbreviation: 'CF'}).limit(1000).map { |c| c.parties.defendant.pluck(:oscn_id)  }.flatten
+    bar = ProgressBar.new(parties.size)
+
+    parties.each_with_index do |p, i|
+      break if i > 10
+      bar.increment!
+      PartyWorker.perform_async(p)
+    end
+  end
+
+  desc 'Update parties from stored html'
+  task parties_test: [:environment] do
+    parties = Party.with_html
+    bar = ProgressBar.new(parties.size)
+
+    parties.each_with_index do |p, i|
+      break if i > 10
+      bar.increment!
+      ::Importers::PartyData.perform(p.oscn_id)
+    end
+  end
 end

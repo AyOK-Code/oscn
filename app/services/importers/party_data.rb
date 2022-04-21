@@ -16,13 +16,14 @@ module Importers
       html = party.party_html.html
       parsed_html = Nokogiri::HTML(html)
       personal_columns = personal_html(parsed_html)
-
+      aliases_cell = alias_html(parsed_html)
+      binding.pry
       string = personal_columns[2]&.text&.split('/')
       return if string.blank?
 
       party.update(birth_month: month(string), birth_year: year(string))
-
       save_addresses(parsed_html)
+      save_aliases(parsed_html)
     end
 
     def save_addresses(parsed_html)
@@ -36,12 +37,22 @@ module Importers
       end
     end
 
+    def save_aliases(parsed_html)
+      aliases = alias_html(parsed_html)
+
+      aliases.each
+    end
+
     def month(string)
       string[0].to_i
     end
 
     def year(string)
       string[1].to_i
+    end
+
+    def alias_html(parsed_html)
+      parsed_html.css('#TABLE_1 tbody tr')
     end
 
     def personal_html(parsed_html)

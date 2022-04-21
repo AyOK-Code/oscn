@@ -7,6 +7,7 @@ class Party < ApplicationRecord
   has_many :counsels, through: :counsel_parties
   has_many :docket_events, dependent: :destroy
   has_many :addresses, class_name: 'PartyAddress', dependent: :destroy
+  has_many :aliases, class_name: 'PartyAlias', dependent: :destroy
   has_one :party_html, dependent: :destroy
 
   validates :oscn_id, presence: true
@@ -17,6 +18,7 @@ class Party < ApplicationRecord
   scope :without_birthday, -> { where(birth_month: nil) } # TODO: Validate presence of party_type?
   scope :without_parent, -> { where(parent_party_id: nil) }
   scope :with_parent, -> { where.not(parent_party_id: nil) }
+  scope :with_html, -> { joins(:party_html).where.not(party_htmls: { html: nil }) }
   scope :arresting_agency, -> { joins(:party_type).where(party_types: { name: 'arresting_agency' }) }
   scope :defendant, -> { joins(:party_type).where(party_types: { name: 'defendant' }) }
 end
