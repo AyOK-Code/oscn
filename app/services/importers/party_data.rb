@@ -36,6 +36,10 @@ module Importers
       end
     end
 
+    def save_aliases(parsed_html)
+      
+    end
+
     def month(string)
       string[0].to_i
     end
