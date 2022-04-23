@@ -17,21 +17,25 @@ namespace :doc do
 
   desc 'Import profiles'
   task :profiles, [:dir] => [:environment] do |_t, args|
+    dir = args.dir
     Importers::Doc::Profile.new(dir).perform
   end
 
   desc 'Import sentences'
   task :sentences, [:dir] => [:environment] do |_t, args|
+    dir = args.dir
     Importers::Doc::Sentence.new(dir).perform
   end
 
   desc 'Import aliases'
   task :aliases, [:dir] => [:environment] do |_t, args|
+    dir = args.dir
     Importers::Doc::Alias.new(dir).perform
   end
 
   desc 'Import statutes'
   task :statutes, [:dir] => [:environment] do |_t, args|
+    dir = args.dir
     Importers::Doc::OffenseCode.new(dir).perform
   end
 
