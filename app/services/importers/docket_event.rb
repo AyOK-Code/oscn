@@ -33,6 +33,7 @@ module Importers
       docket_event = find_or_initialize_docket_event(index, court_case.id)
 
       docket_event.assign_attributes(docket_event_attributes(docket_event_data))
+
       docket_event.save!
 
       return unless docket_event.docket_event_type.code == 'ACCOUNT'
@@ -54,7 +55,7 @@ module Importers
     def docket_event_attributes(docket_event_data)
       event_type_id = find_or_create_docket_event_type(docket_event_data[:code])
       party_id = get_party_id(docket_event_data[:party])
-
+        
       {
         event_on: docket_event_data[:date],
         docket_event_type_id: event_type_id,
