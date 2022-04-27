@@ -25,8 +25,8 @@ module Importers
     private
 
     def save_parties(party_data)
-      ap party_data
       oscn_id = parse_id(party_data[:link])
+      
       if parties[oscn_id]
         save_existing_party_to_case(oscn_id)
       else
