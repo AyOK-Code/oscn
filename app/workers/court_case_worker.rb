@@ -8,7 +8,7 @@ class CourtCaseWorker
   sidekiq_throttle_as :oscn
 
   def perform(args)
-    ::Importers::CaseHtml.perform(args['county_id'], args['case_number']) if args['scrape_case']
+    # ::Importers::CaseHtml.perform(args['county_id'], args['case_number']) if args['scrape_case']
     ::Importers::CourtCase.perform(args['county_id'], args['case_number'])
   end
 end
