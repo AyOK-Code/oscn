@@ -75,7 +75,7 @@ namespace :update do
       bar.increment!
       next if c[2].nil?
 
-      DatabaseUpdateWorker.perform_in(1.minutes, { county_id: c[0], case_number: c[1])
+      DatabaseUpdateWorker.perform_in(1.minutes, { county_id: c[0], case_number: c[1] })
     end
   end
 end
