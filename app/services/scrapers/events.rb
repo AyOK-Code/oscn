@@ -4,7 +4,7 @@ module Scrapers
     attr_accessor :data
 
     def initialize
-      @file = Bucket.new.get_object("events.json")
+      @file = Bucket.new.get_object('events.json')
       @data = JSON.parse(@file.body.read)
     end
 
