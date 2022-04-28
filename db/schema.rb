@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_25_195426) do
+ActiveRecord::Schema.define(version: 2022_04_27_233603) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -233,16 +233,27 @@ ActiveRecord::Schema.define(version: 2022_04_25_195426) do
     t.index ["row_index", "court_case_id"], name: "index_docket_events_on_row_index_and_court_case_id", unique: true
   end
 
+  create_table "event_types", force: :cascade do |t|
+    t.integer "oscn_id", null: false
+    t.string "code", null: false
+    t.string "name", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["oscn_id"], name: "index_event_types_on_oscn_id", unique: true
+  end
+
   create_table "events", force: :cascade do |t|
     t.bigint "court_case_id", null: false
     t.bigint "party_id"
     t.datetime "event_at", null: false
-    t.string "event_type", null: false
+    t.string "event_name", null: false
     t.string "docket"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "judge_id"
+    t.bigint "event_type_id"
     t.index ["court_case_id"], name: "index_events_on_court_case_id"
+    t.index ["event_type_id"], name: "index_events_on_event_type_id"
     t.index ["judge_id"], name: "index_events_on_judge_id"
     t.index ["party_id"], name: "index_events_on_party_id"
   end
@@ -387,6 +398,7 @@ ActiveRecord::Schema.define(version: 2022_04_25_195426) do
   add_foreign_key "docket_events", "docket_event_types"
   add_foreign_key "docket_events", "parties"
   add_foreign_key "events", "court_cases"
+  add_foreign_key "events", "event_types"
   add_foreign_key "events", "parties"
   add_foreign_key "judges", "counties"
   add_foreign_key "parties", "parent_parties"
