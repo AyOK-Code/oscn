@@ -1,9 +1,11 @@
 module Scrapers
+  # TODO: Pull data using OSCN scraper gem
   class Events
-    attr_accessor :base_url
+    attr_accessor :data
 
     def initialize
-      @base_url = 'https://www.oscn.net/applications/oscn/report.asp?report=WebJudicialDocketEventAll'
+      @file = Bucket.new.get_object("events.json")
+      @data = JSON.parse(@file.body.read)
     end
 
     def self.perform
@@ -11,7 +13,6 @@ module Scrapers
     end
 
     def perform
-      data = JSON.parse(File.open('lib/data/events.json').read)
       data.each do |o|
         e = EventType.find_or_initialize_by(oscn_id: o['oscn_id'])
         e.code = o['code']
