@@ -7,7 +7,6 @@ SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new([
                                                                   SimpleCov::Formatter::JSONFormatter
                                                                 ])
 
-
 SimpleCov.start :rails do
   enable_coverage :line
   add_group 'Services', 'app/services'
@@ -37,7 +36,7 @@ rescue ActiveRecord::PendingMigrationError => e
   exit 1
 end
 
-Dir[Rails.root.join('spec', 'support', '**', '*.rb')].each { |f| require f }
+Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = false

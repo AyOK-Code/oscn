@@ -42,7 +42,6 @@ module Importers
       rescue StandardError
         logs.create_log('counts', "#{court_case.case_number} skipped count due to missing party.", count_data)
       end
-
     end
 
     def count_attributes(count_data)

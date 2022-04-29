@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :case_type do
     sequence(:oscn_id)
-    name { Faker::Lorem.unique.word }
+    sequence(:name) { |n| Faker::Lorem.word + n.to_s }
     abbreviation { Faker::Name.unique.initials }
 
     trait :felony do

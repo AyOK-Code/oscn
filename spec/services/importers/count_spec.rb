@@ -5,8 +5,7 @@ RSpec.describe Importers::Count do
     let(:file_path) { 'spec/fixtures/importers/count_data.json' }
     let(:test_data) { parse_json(file_path) }
     let(:court_case) { create(:court_case) }
-    let(:party) {create(:party ,full_name: "PIT, ANTHONY LEE")}
-    
+    let(:party) { create(:party, full_name: 'PIT, ANTHONY LEE') }
 
     let(:log) { ::Importers::Logger.new(court_case) }
     it 'logs counts with missing parties' do
