@@ -25,11 +25,11 @@ RSpec.describe Importers::DocketEvent do
 
     it 'updates existing docket events' do
       create(:docket_event, row_index: 0, court_case: court_case, description: 'Test Text')
-
+      description = "CRIMINAL FELONY INITIAL FILING. Document Available at Court Clerk's Office"
       described_class.perform(test_data, court_case, log)
 
       expect(court_case.docket_events.all.size).to eq(2)
-      expect(court_case.docket_events.first.description).to include("CRIMINAL FELONY INITIAL FILING. Document Available at Court Clerk's Office")
+      expect(court_case.docket_events.first.description).to include(description)
     end
   end
 end

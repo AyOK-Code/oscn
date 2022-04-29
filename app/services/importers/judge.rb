@@ -5,7 +5,7 @@ module Importers
 
     def initialize(judge_name, court_case, logs)
       @judges = ::Judge.pluck(:name, :id).to_h
-      @judge_name = judge_name.first[:judge]
+      @judge_name = judge_name
       @court_case = court_case
       @logs = logs
     end
@@ -15,12 +15,9 @@ module Importers
     end
 
     def perform
-      
-
       return if judges[judge_name].nil?
 
       court_case.update(current_judge_id: judges[judge_name])
-
     end
   end
 end

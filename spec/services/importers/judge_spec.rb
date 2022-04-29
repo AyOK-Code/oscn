@@ -9,7 +9,7 @@ RSpec.describe Importers::Judge do
     it 'add specs' do
       # variable in judge importer, judge doesnt specify json, could it maybe just take in a string?
       judge_test = create(:judge, name: 'Palumbo, Amy')
-      described_class.perform(test_data, court_case, log)
+      described_class.perform('Palumbo, Amy', court_case, log)
       expect(court_case.current_judge_id).to eq(judge_test.id)
     end
   end
