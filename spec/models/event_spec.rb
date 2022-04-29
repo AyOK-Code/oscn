@@ -5,6 +5,7 @@ RSpec.describe Event, type: :model do
     it { should belong_to(:court_case) }
     it { should belong_to(:party).optional }
     it { should belong_to(:judge).optional }
+    it { should belong_to(:event_type).optional }
   end
 
   describe 'validations' do
