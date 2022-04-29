@@ -11,8 +11,6 @@ module Scrapers
     end
 
     def perform
-      html = HTTParty.get(base_url)
-      parsed_data = Nokogiri::HTML(html.body)
       data = parsed_data.css('select[name="Judge"]')
       data.css('option').each do |o|
         j = Judge.find_or_initialize_by(oscn_id: o['value'])
