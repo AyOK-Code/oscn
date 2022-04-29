@@ -19,7 +19,7 @@ module Importers
       aliases_column = aliases_html(parsed_html)
 
       save_aliases(aliases_column)
-      save_personal(parsed_html)
+      save_personal(personal_columns)
       save_addresses(parsed_html)
     end
 

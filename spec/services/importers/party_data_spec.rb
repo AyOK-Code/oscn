@@ -10,6 +10,7 @@ RSpec.describe Importers::PartyData do
 
       described_class.perform(party.oscn_id)
       expect(party.aliases.size).to eq 2
+      expect(party.aliases.pluck(:name)).to include 'BARNES, GABRIELLE'
     end
   end
 end
