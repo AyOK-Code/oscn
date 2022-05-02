@@ -11,7 +11,7 @@ RSpec.describe Importers::Attorney do
     end
 
     it 'creates the counsel if one is not found' do
-      data = File.open('spec/fixtures/importers/attorney_data.json').read
+      data = File.read('spec/fixtures/importers/attorney_data.json')
       parsed = JSON.parse(data)
       attorney_object = parsed.map(&:with_indifferent_access)
 

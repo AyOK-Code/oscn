@@ -7,7 +7,7 @@ RSpec.describe Importers::CourtCase do
       county = create(:county, name: 'Tulsa')
       create(:judge, name: 'CF Docket E')
       court_case = create(:court_case, county_id: county.id, case_number: 'CF-2018-1016')
-      html = File.open('spec/fixtures/example.html').read
+      html = File.read('spec/fixtures/example.html')
       create(:case_html, court_case: court_case, html: html)
 
       # Run importer
