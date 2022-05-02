@@ -9,7 +9,6 @@ RSpec.describe Importers::Count do
 
     let(:log) { ::Importers::Logger.new(court_case) }
     it 'logs counts with missing parties' do
-      court_case.parties.push(party)
       described_class.perform(test_data, court_case, log)
       expect(log.nil?).to eq(false)
     end
@@ -21,14 +20,12 @@ RSpec.describe Importers::Count do
     end
 
     it 'creates the plea if one is not found' do
-      court_case.parties.push(party)
       described_class.perform(test_data, court_case, log)
       expect(Plea.all.size).to eq(1)
       expect(Plea.all.first.name.upcase).to include(test_data.first[:plea].upcase)
     end
 
     it 'creates the verdict if one is not found' do
-      court_case.parties.push(party)
       described_class.perform(test_data, court_case, log)
       expect(Verdict.all.size).to eq(1)
       expect(Verdict.all.first.name.upcase).to include(test_data.first[:verdict].upcase)
