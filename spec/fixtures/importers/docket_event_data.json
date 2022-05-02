@@ -1,0 +1,18 @@
+[{
+    "event_number":0,
+    "date":"Tue, 06 Mar 2018",
+    "code":"TEXT",
+    "description":"CRIMINAL FELONY INITIAL FILING. Document Available at Court Clerk's Office",
+    "count":"",
+    "party":"PIT, ANTHONY LEE",
+    "amount":"$25.50"
+  }, 
+  {
+    "event_number":1,
+    "date":"Tue, 06 Mar 2018",
+    "code":"INFORMATION",
+    "description":"DEFENDANT ANTHONY LEE PIT WAS CHARGED WITH COUNT #1, ROBBERY WITH A FIREAM IN VIOLATION OF 21 O.S. 801",
+    "count":"1",
+    "party":"PIT, ANTHONY LEE",
+    "amount":""
+  }]

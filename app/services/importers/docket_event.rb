@@ -33,6 +33,7 @@ module Importers
       docket_event = find_or_initialize_docket_event(index, court_case.id)
 
       docket_event.assign_attributes(docket_event_attributes(docket_event_data))
+
       docket_event.save!
 
       return unless docket_event.docket_event_type.code == 'ACCOUNT'
