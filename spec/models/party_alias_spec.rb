@@ -6,6 +6,6 @@ RSpec.describe PartyAlias, type: :model do
   end
 
   describe 'associations' do
-    it { should validate_presence_of(:alias) }
+    it { should validate_presence_of(:name) }
   end
 end
