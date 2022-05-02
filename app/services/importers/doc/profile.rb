@@ -13,7 +13,7 @@ module Importers
       def perform
         file.body.string.split("\r\n").each do |line|
           bar.increment!
-          line.unpack(field_pattern).map(&:squish)
+          data = line.unpack(field_pattern).map(&:squish)
 
           save_profile(data)
         end
