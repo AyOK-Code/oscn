@@ -2,6 +2,7 @@ class DocketEvent < ApplicationRecord
   belongs_to :court_case
   belongs_to :docket_event_type
   belongs_to :party, optional: true
+  has_many :docket_event_links, class_name: 'DocketEventLink', dependent: :destroy
   validates :event_on, presence: true
 
   scope :for_code, ->(code) { joins(:docket_event_type).where(docket_event_types: { code: code }) }
