@@ -8,6 +8,7 @@ RSpec.describe Importers::DocketEvent do
     let(:log) { ::Importers::Logger.new(court_case) }
     it 'creates a new docket_event_type if it does not exist' do
       described_class.perform(test_data, court_case, log)
+
       expect(DocketEventType.all.size).to eq(2)
     end
 
