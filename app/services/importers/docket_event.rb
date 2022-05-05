@@ -36,6 +36,8 @@ module Importers
 
       docket_event.save!
 
+      Importers::DocketEvents::Link.perform(docket_event_data[:links], docket_event)
+
       return unless docket_event.docket_event_type.code == 'ACCOUNT'
 
       Importers::DocketEvents::Fee.perform(docket_event, docket_event_data, court_case.case_number)
@@ -63,6 +65,7 @@ module Importers
         party_id: party_id,
         description: docket_event_data[:description],
         amount: currency_to_number(docket_event_data[:amount])
+
       }
     end
 
