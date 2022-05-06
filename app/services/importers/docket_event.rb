@@ -35,9 +35,10 @@ module Importers
       docket_event.assign_attributes(docket_event_attributes(docket_event_data))
 
       docket_event.save!
-
-      Importers::DocketEvents::Link.perform(docket_event_data[:links], docket_event)
-
+      unless docket_event_data[:links].nil?
+        Importers::DocketEvents::Link.perform(docket_event_data[:links],
+                                              docket_event)
+      end
       return unless docket_event.docket_event_type.code == 'ACCOUNT'
 
       Importers::DocketEvents::Fee.perform(docket_event, docket_event_data, court_case.case_number)
