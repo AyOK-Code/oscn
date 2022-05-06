@@ -19,7 +19,7 @@ module Importers
         link_json.each do |link_data|
           save_docket_event_link(link_data)
         end
-        links = docket_event.docket_event_links.count
+        links = docket_event.links.count
 
         return unless links != expected_links
       end
@@ -28,8 +28,6 @@ module Importers
         docket_event_link = find_or_initialize_docket_event_link(link_data)
 
         docket_event_link.save!
-
-        nil
       end
 
       def find_or_initialize_docket_event_link(link_data)
