@@ -28,6 +28,13 @@ RSpec.describe Importers::Party do
         expect(Party.all.size).to eq(2)
       end
 
+      it 'updates a party name if it changes' do
+        create(:party, oscn_id: 18_498_184, full_name: 'PENA,  ANT  RAMIRO')
+        described_class.perform(test_data, court_case, log)
+        party = ::Party.find_by(oscn_id: 18_498_184)
+        expect(party.full_name).to eq 'PENA,  ANTHONY  RAMIRO'
+      end
+
       it 'links a party to a case' do
         create(:party, oscn_id: 18_498_184, full_name: 'PENA,  ANTHONY  RAMIRO')
         described_class.perform(test_data, court_case, log)
