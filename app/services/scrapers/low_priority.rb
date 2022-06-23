@@ -15,7 +15,7 @@ module Scrapers
       puts "Pulling #{cases.count} low priority cases"
       bar = ProgressBar.new(cases.count)
 
-      cases.each do |c|
+      cases.each do |_c|
         worker_args = JSON.dump({ county_id: @county.id, case_number: case_number, scrape_case: true })
 
         CourtCaseWorker
