@@ -16,22 +16,19 @@ namespace :scrape do
       data = Nokogiri::HTML(html.body)
       puts "Pulling cases from #{date.strftime('%m/%d/%Y')}"
 
-      data.css('tr').each do |row|
-        binding.pry
-        input = OscnScraper::Parsers::Link.parse(row)
-        #uri = URI(row['href'])
-        #params = CGI.parse(uri.query)
-        case_number = input[:case_number]
-        oscn_id = input[:oscn_id]
-        county = input[:county]
+      data.css('tr a').each do |row|
+        uri = URI(row['href'])
+        params = CGI.parse(uri.query)
+        case_number = row.text
+        oscn_id = params['casemasterID'].first.to_i
+        county = params['db'].first
         case_type = case_number.split('-').first
         next if case_types[case_type].blank?
 
-        c = ::CourtCase.find_or_initialize_by(oscn_id: input[oscn_id], county_id: counties[county])
+        c = ::CourtCase.find_or_initialize_by(oscn_id: oscn_id, county_id: counties[county])
         c.case_type_id = case_types[case_type]
-        c.case_number = case_number
+        c.case_number = row.text
         c.filed_on = date
-       
         c.save!
       end
     end
