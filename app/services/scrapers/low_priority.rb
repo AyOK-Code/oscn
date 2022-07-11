@@ -11,12 +11,16 @@ module Scrapers
       new(days_ago: days_ago).perform
     end
 
+    # performs main concern is adding jobs to the queue
     def perform
       puts "Pulling #{cases.count} low priority cases"
       bar = ProgressBar.new(cases.count)
 
-      cases.each do |_c|
-        worker_args = JSON.dump({ county_id: @county.id, case_number: case_number, scrape_case: true })
+      cases.each do |c|
+        county = c.county
+
+        case_number = c.case_number
+        worker_args = JSON.dump({ county_id: county.id, case_number: case_number, scrape_case: true })
 
         CourtCaseWorker
           .set(queue: :low)
