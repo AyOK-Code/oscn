@@ -11,7 +11,6 @@ module Scrapers
       new(days_ago: days_ago).perform
     end
 
-    # performs main concern is adding jobs to the queue
     def perform
       puts "Pulling #{cases.count} low priority cases"
       bar = ProgressBar.new(cases.count)
