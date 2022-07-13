@@ -11,7 +11,6 @@ RSpec.describe CaseType, type: :model do
     it { should have_many(:court_cases).dependent(:destroy) }
   end
 
-  # https://betterprogramming.pub/using-environment-variables-with-rspec-unit-tests-f094b400c299
   describe '.active' do
     it 'returns case types that are included in the CASE_TYPES_ABBREVIATION ENV variable' do
       # get access to this envio variable and post its contents?
