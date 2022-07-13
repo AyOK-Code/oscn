@@ -1,3 +1,4 @@
+require 'open-uri'
 module Scrapers
   # Pulls accurate data from the OK Bar Association
   # TODO: Figure out refresh schedule
@@ -15,13 +16,17 @@ module Scrapers
 
     def perform
       url = "pagenum=1&sort%5B5%5D=desc&filter_11=#{state_abreviation}&mode=all"
-
-      html = URI.parse("#{base_url}#{url}").open
-      parsed_data = Nokogiri::HTML(html.body)
+      
+      full_url  = "#{base_url}#{url}"
+     
+      html = URI.open(full_url)
+      parsed_data = Nokogiri::HTML(html)
       pages = (1..page_count(parsed_data)).to_a
       bar = ProgressBar.new(pages.count)
+      
       pages.each do |page_number|
         process_data(page_number)
+        binding.pry
         bar.increment!
       end
     end
@@ -29,7 +34,7 @@ module Scrapers
     def process_data(page_number)
       url = "#{base_url}pagenum=#{page_number}&sort%5B5%5D=desc&filter_11=#{state_abreviation}&mode=all"
       html = URI.parse(url).open
-      parsed_data = Nokogiri::HTML(html.body)
+      parsed_data = Nokogiri::HTML(html)
       table_rows = parsed_data.css('tbody tr')
       table_rows.each do |row|
         save_attorney(row)
