@@ -6,9 +6,9 @@ RSpec.describe Scrapers::HighPriority do
   describe '#perform' do
     it 'add specs' do
       county = create(:county, name: 'Tulsa')
-      test_case = create(:court_case, closed_on: '6/15/2022', county: county)
+      test_case = create(:court_case, closed_on: 7.days.ago, county: county)
 
-      create(:court_case, closed_on: '7/11/2022', county: county)
+      create(:court_case, closed_on: 2.days.ago, county: county)
 
       data = described_class.perform('Tulsa')
       expect do
