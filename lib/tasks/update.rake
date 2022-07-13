@@ -68,7 +68,7 @@ namespace :update do
 
   desc 'Update full database from stored html'
   task database: [:environment] do
-    court_cases = CourtCase.joins(:case_html).pluck('county_id', :case_number, 'case_htmls.id')
+    court_cases = CourtCase.with_error.joins(:case_html).pluck('county_id', :case_number, 'case_htmls.id')
     bar = ProgressBar.new(court_cases.count)
 
     court_cases.each do |c|

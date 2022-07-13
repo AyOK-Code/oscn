@@ -29,7 +29,7 @@ class CourtCase < ApplicationRecord
   scope :last_scraped, ->(date) { joins(:case_html).where(case_htmls: { scraped_at: date..DateTime.current }) }
   scope :older_than, ->(date) { joins(:case_html).where('case_htmls.scraped_at < ?', date) }
   # TODO: Make scope more dynamic to search for different errors
-  scope :with_error, -> { where('logs @> ?', { docket_events: { message: 'DocketEventCountError' } }.to_json) }
+  scope :with_error, -> { where.not('logs @> ?', { events: nil }.to_json) }
   scope :for_county_name, ->(name) { joins(:county).where(counties: { name: name }) }
 
   delegate :html, to: :case_html

@@ -12,7 +12,8 @@ RSpec.describe Judge, type: :model do
 
   describe '#first_last' do
     it 'returns a concatented string of the first and last name of the judge' do
-      skip
+      judge = create(:judge, first_name: 'Bilbo', last_name: 'Baggins')
+      expect(judge.first_last).to eq('Bilbo Baggins')
     end
   end
 end
