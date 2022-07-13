@@ -5,6 +5,7 @@ RSpec.describe DocketEvent, type: :model do
     it { should belong_to(:court_case) }
     it { should belong_to(:docket_event_type) }
     it { should belong_to(:party).optional }
+    it { should have_many(:links).dependent(:destroy) }
   end
 
   describe 'validations' do
