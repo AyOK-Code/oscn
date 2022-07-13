@@ -25,8 +25,6 @@ RSpec.describe CaseType, type: :model do
 
   describe '#oscn_id_mapping' do
     it 'returns a hash of with key = :abbreviation and value = :id' do
-      # it seems that only 1 id can be associated with a certain abbreviation.
-      # if 2 case_types have same abbeviation, recent one replaces old one.
       cassygood = create(:case_type, abbreviation: 'CF')
       cassygood2 = create(:case_type, abbreviation: 'CM')
       create(:case_type, abbreviation: 'ZZ')
