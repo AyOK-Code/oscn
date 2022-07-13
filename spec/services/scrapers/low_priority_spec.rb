@@ -5,8 +5,8 @@ Sidekiq::Testing.fake!
 RSpec.describe Scrapers::LowPriority do
   describe '#perform' do
     it 'add specs' do
-      test_case = create(:court_case, :with_html, closed_on: '1/1/2022')
-      test_case.case_html.update(scraped_at: '1/1/2022')
+      test_case = create(:court_case, :with_html, closed_on: 7.months.ago)
+      test_case.case_html.update(scraped_at: 7.months.ago)
 
       data = described_class.perform
 
