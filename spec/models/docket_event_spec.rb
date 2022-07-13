@@ -15,19 +15,31 @@ RSpec.describe DocketEvent, type: :model do
   describe 'scopes' do
     describe '#for_code' do
       it 'returns docket events of a certain code' do
-        skip
+        docket_event = create(:docket_event)
+        docket_event.docket_event_type.code = 'SGDS'
+        docket_event.docket_event_type.save
+        docket_event2 = create(:docket_event, docket_event_type: docket_event.docket_event_type)
+        expect(described_class.for_code('SGDS').size).to eq(2)
+        expect(described_class.for_code('SGDS').pluck(:id)).to include(docket_event.id, docket_event2.id)
+        # binding.pry
       end
     end
 
-    describe '#with_amount' do
+    describe '#without_amount' do
       it '' do
-        skip
+        create(:docket_event, amount: 200)
+        docket_event = create(:docket_event, amount: 0)
+        expect(described_class.without_amount.size).to eq(1)
+        expect(described_class.without_amount.pluck(:id)).to include(docket_event.id)
       end
     end
 
     describe '#with_text' do
       it '' do
-        skip
+        docket_event = create(:docket_event, description: 'For Narnia!')
+        create(:docket_event, description: nil)
+        expect(described_class.with_text('Narnia').size).to eq(1)
+        expect(described_class.with_text('Narnia').pluck(:id)).to include(docket_event.id)
       end
     end
   end
