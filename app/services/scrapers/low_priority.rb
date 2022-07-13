@@ -14,9 +14,12 @@ module Scrapers
     def perform
       puts "Pulling #{cases.count} low priority cases"
       bar = ProgressBar.new(cases.count)
+      binding.pry
+      cases.each do |c|
+        county = c.county
 
-      cases.each do |_c|
-        worker_args = JSON.dump({ county_id: @county.id, case_number: case_number, scrape_case: true })
+        case_number = c.case_number
+        worker_args = JSON.dump({ county_id: county.id, case_number: case_number, scrape_case: true })
 
         CourtCaseWorker
           .set(queue: :low)

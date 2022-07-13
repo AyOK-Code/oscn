@@ -18,9 +18,13 @@ module Scrapers
 
       bar = ProgressBar.new(cases.count)
       puts "#{cases.count} are high priority for update for #{county.name} county"
-
+      binding.pry
       cases.each do |case_number|
-        worker_args = JSON.dump({ county_id: @county.id, case_number: case_number, scrape_case: true })
+        county = c.county
+
+        case_number = c.case_number
+        worker_args = JSON.dump({ county_id: county.id, case_number: case_number, scrape_case: true })
+
         CourtCaseWorker
           .set(queue: :high)
           .perform_async(worker_args)
