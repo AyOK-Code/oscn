@@ -328,6 +328,14 @@ ActiveRecord::Schema.define(version: 2022_05_03_152707) do
     t.index ["party_id"], name: "index_party_addresses_on_party_id"
   end
 
+  create_table "party_aliases", force: :cascade do |t|
+    t.bigint "party_id", null: false
+    t.string "name", default: "", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["party_id"], name: "index_party_aliases_on_party_id"
+  end
+
   create_table "party_htmls", force: :cascade do |t|
     t.bigint "party_id", null: false
     t.datetime "scraped_at"
