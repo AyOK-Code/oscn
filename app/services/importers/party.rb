@@ -28,6 +28,7 @@ module Importers
       oscn_id = parse_id(party_data[:link])
 
       if parties[oscn_id]
+        update_party(parties[oscn_id], party_data)
         save_existing_party_to_case(oscn_id)
       else
         create_and_save_party_to_case(oscn_id, party_data)
@@ -38,6 +39,13 @@ module Importers
       uri = URI(link)
       params = CGI.parse(uri.query)
       params['id'].first.to_i
+    end
+
+    def update_party(party_id, party_data)
+      party = ::Party.find(party_id)
+      party.update(
+        full_name: party_data[:name]
+      )
     end
 
     def save_existing_party_to_case(oscn_id)

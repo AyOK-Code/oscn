@@ -1,0 +1,13 @@
+[{
+    "event_number":0,
+    "date":"Tue, 06 Mar 2018",
+    "code":"RULE8",
+    "description":"ORDER OF THE COURT - RULE 8 HEARING Document Available (#1050827996)",
+    "count":"",
+    "party":"SHEPPARD, AUSTIN EUGENE",
+    "amount":"$25.50",
+    "links": [
+      { "oscn_id": "1050827996", "title": "TIFF", "link": "GetDocument.aspx?ct=tulsa&cn=CF-2020-49&bc=1050827996&fmt=tif" },
+      { "oscn_id": "1050827996","title": "PDF", "link": "GetDocument.aspx?ct=tulsa&bc=1050827996&cn=CF-2020-49&fmt=pdf" }
+    ]
+  }]
