@@ -6,17 +6,17 @@ RSpec.describe Scrapers::Case do
   
   describe '#perform' do
     let!(:county) {create(:county, name: 'Tulsa')}
-      let!(:test_case) {create(:court_case, :with_html,county: county)}
-      let!(:test_case2) {create(:court_case, :with_html,county:county)}
-      let!(:test_case3) {create(:court_case, :with_html,county:county)}
+      let!(:low_case) {create(:court_case, :with_html,county: county)}
+      let!(:med_case) {create(:court_case, :with_html,county:county)}
+      let!(:high_case) {create(:court_case, :with_html,county:county)}
       
     
     context 'Low' do
       before do
         ENV['COUNTIES'] = 'Tulsa'
       end
-    it 'add specs' do
-      test_case.case_html.update(scraped_at: '1/1/2022')
+    it ' adds a low priority case' do
+      low_case.case_html.update(scraped_at: 90.days.ago)
       described_class.perform
     end
     after do
@@ -27,10 +27,10 @@ RSpec.describe Scrapers::Case do
       before do
         ENV['COUNTIES'] = 'Tulsa'
       end
-      it 'add specs' do
+      it 'adds a med priority case' do
        
       
-      test_case2.case_html.update(scraped_at: '24/6/2022')
+      med_case.case_html.update(scraped_at: 14.days.ago)
         described_class.perform
       end
       after do
@@ -41,10 +41,10 @@ RSpec.describe Scrapers::Case do
       before do
         ENV['COUNTIES'] = 'Tulsa'
       end
-      it 'add specs' do
+      it 'adds a high priority case' do
        
      
-      test_case3.case_html.update(scraped_at: '4/7/2022')
+      high_case.case_html.update(scraped_at: 7.days.ago)
       
         described_class.perform
       end
