@@ -8,17 +8,15 @@ RSpec.describe Importers::NewCourtCase do
       create(:county, name: 'Arkansas')
       create(:case_type, :misdemeanor)
       file_path = 'spec/fixtures/importers/link.html'
-      html = File.open(file_path).read
-       link_html = Nokogiri::HTML.parse(html)
-       link_html = link_html.css('a').first
+      html = File.read(file_path)
+      link_html = Nokogiri::HTML.parse(html)
+      link_html = link_html.css('a').first
 
       data = described_class.new(link_html)
       data.perform
-      expect(data.case_number).to eq "CF-2021-489"
-      expect(data.case_types.keys.first).to eq "CF"
-      expect(data.counties.keys.first).to eq "Oklahoma"
-          
-      
+      expect(data.case_number).to eq 'CF-2021-489'
+      expect(data.case_types.keys.first).to eq 'CF'
+      expect(data.counties.keys.first).to eq 'Oklahoma'
     end
   end
 end
