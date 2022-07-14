@@ -18,6 +18,7 @@ module Scrapers
       cases.each do |c|
         county = c.county
 
+
         case_number = c.case_number
         worker_args = JSON.dump({ county_id: county.id, case_number: case_number, scrape_case: true })
 

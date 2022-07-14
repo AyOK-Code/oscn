@@ -5,7 +5,10 @@
     "description":"CRIMINAL FELONY INITIAL FILING. Document Available at Court Clerk's Office",
     "count":"",
     "party":"PIT, ANTHONY LEE",
-    "amount":"$25.50"
+    "amount":"$25.50",
+    "links": [
+      { "oscn_id": "1050827996", "title": "TIFF", "link": "GetDocument.aspx?ct=tulsa&cn=CF-2020-49&bc=1050827996&fmt=tif" }
+    ]
   }, 
   {
     "event_number":1,
@@ -14,5 +17,8 @@
     "description":"DEFENDANT ANTHONY LEE PIT WAS CHARGED WITH COUNT #1, ROBBERY WITH A FIREAM IN VIOLATION OF 21 O.S. 801",
     "count":"1",
     "party":"PIT, ANTHONY LEE",
-    "amount":""
+    "amount":"",
+    "links": [
+      { "oscn_id": "1050827996","title": "PDF", "link": "GetDocument.aspx?ct=tulsa&bc=1050827996&cn=CF-2020-49&fmt=pdf" }
+    ]
   }]

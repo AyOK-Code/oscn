@@ -31,9 +31,10 @@ namespace :update do
 
     data.values.each do |case_number|
       bar.increment!
+      worker_args = JSON.dump({ county_id: county.id, case_number: case_number, scrape_case: true })
       CourtCaseWorker
         .set(queue: :default)
-        .perform_async({ county_id: county.id, case_number: case_number, scrape_case: true })
+        .perform_async(worker_args)
 
       case_id = CourtCase.find_by(case_number: case_number)&.id
 
