@@ -21,17 +21,18 @@ module Scrapers
         data = Nokogiri::HTML(html.body)
         puts "Pulling cases from #{date.strftime('%m/%d/%Y')}"
 
-        data.css('tr a').each do |row|
+        data.css('tr').each do |row|
           save_case(row, date)
         end
       end
     end
 
     def save_case(row, date)
-      # TODO: Extract service that takes link and pulls out the params to gem
-      params = extract_params(row['href'])
-      case_number = row.text
+      params = OscnScraper::Parsers::Link.parse(row)
+
+      case_number = params[:case_number]
       case_type_id = case_types[case_type(case_number)]
+
       return if case_type_id.blank?
 
       c = ::CourtCase.find_or_initialize_by(oscn_id: oscn_id(params), county_id: counties[county_mapping(params)])
@@ -50,11 +51,11 @@ module Scrapers
     end
 
     def oscn_id(params)
-      params['casemasterID'].first.to_i
+      params[:oscn_id]
     end
 
     def county_mapping(params)
-      params['db'].first
+      params[:county]
     end
 
     def case_type(case_number)

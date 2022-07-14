@@ -20,7 +20,11 @@ RSpec.describe Counsel, type: :model do
 
   describe '.bar_number?' do
     it 'returns true in bar number is present' do
-      skip
+      counsel = create(:counsel)
+      counselbad = create(:counsel, bar_number: nil)
+
+      expect(counsel.bar_number?).to eq(true)
+      expect(counselbad.bar_number?).to eq(false)
     end
   end
 end

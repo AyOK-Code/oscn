@@ -7,7 +7,10 @@ RSpec.describe PartyAddress, type: :model do
 
   describe '.current' do
     it 'returns the current address' do
-      skip
+      address = create(:party_address, status: 'Current')
+      create(:party_address)
+      expect(described_class.current.size).to eq(1)
+      expect(described_class.current.first.id).to eq(address.id)
     end
   end
 end
