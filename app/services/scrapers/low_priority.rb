@@ -5,6 +5,7 @@ module Scrapers
 
     def initialize(days_ago: 90, limit: low_count)
       @cases = CourtCase.closed.older_than(days_ago.days.ago).limit(limit)
+      binding.pry
     end
 
     def self.perform(days_ago: 90)
@@ -14,7 +15,7 @@ module Scrapers
     def perform
       puts "Pulling #{cases.count} low priority cases"
       bar = ProgressBar.new(cases.count)
-      binding.pry
+      
       cases.each do |c|
         county = c.county
 

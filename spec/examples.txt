@@ -174,7 +174,9 @@ example_id                                                | status  | run_time  
 ./spec/services/matchers/judge_spec.rb[1:1:1]             | pending | 0.00055 seconds |
 ./spec/services/matchers/party_spec.rb[1:1:1]             | pending | 0.01915 seconds |
 ./spec/services/scrapers/attorney_spec.rb[1:1:1]          | pending | 0.00062 seconds |
-./spec/services/scrapers/case_spec.rb[1:1:1]              | pending | 0.00046 seconds |
+./spec/services/scrapers/case_spec.rb[1:1:1:1]            | failed  | 0.04729 seconds |
+./spec/services/scrapers/case_spec.rb[1:1:2:1]            | unknown |                 |
+./spec/services/scrapers/case_spec.rb[1:1:3:1]            | unknown |                 |
 ./spec/services/scrapers/high_priority_spec.rb[1:1:1]     | pending | 0.00048 seconds |
 ./spec/services/scrapers/low_priority_spec.rb[1:1:1]      | pending | 0.00043 seconds |
 ./spec/services/scrapers/medium_priority_spec.rb[1:1:1]   | pending | 0.00058 seconds |
