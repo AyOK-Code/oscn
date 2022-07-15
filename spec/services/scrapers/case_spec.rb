@@ -6,17 +6,26 @@ RSpec.describe Scrapers::Case do
   
   describe '#perform' do
     let!(:county) {create(:county, name: 'Tulsa')}
-      let!(:low_case) {create(:court_case, :with_html,county: county)}
-      let!(:med_case) {create(:court_case, :with_html,county:county)}
-      let!(:high_case) {create(:court_case, :with_html,county:county)}
-      
+      let!(:low_case) {create(:court_case, :with_html,county: county,case_number:'CF-2020-001',closed_on: 89.days.ago)}
+      let!(:med_case) {create(:court_case, :with_html,county:county,case_number:'CF-2020-002')}
+      let!(:high_case) {create(:court_case, :with_html,county:county,case_number:'CF-2020-003')}
+     
     
     context 'Low' do
       before do
         ENV['COUNTIES'] = 'Tulsa'
+        county.save
+        low_case.case_html.update(scraped_at: 89.days.ago)
+        low_case.case_html.save
+        low_case.save
+
+        med_case.save
+        high_case.save
+        binding.pry
       end
     it ' adds a low priority case' do
-      low_case.case_html.update(scraped_at: 90.days.ago)
+      binding.pry
+      
       described_class.perform
     end
     after do
