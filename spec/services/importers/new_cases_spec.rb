@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe Importers::NewCourtCase do
   describe '#perform' do
-   
     it 'saves to the database' do
       county = create(:county, name: 'Oklahoma')
       create(:case_type, :felony)
@@ -21,11 +20,10 @@ RSpec.describe Importers::NewCourtCase do
       expect(court_case.case_number).to eq 'CF-2021-489'
       expect(court_case.case_number[0..1]).to eq 'CF'
       expect(court_case.county.name).to eq 'Oklahoma'
-
     end
 
     it ' does not duplicate' do
-      county = create(:county, name: 'Oklahoma')
+      create(:county, name: 'Oklahoma')
       create(:case_type, :felony)
       create(:county, name: 'Arkansas')
       create(:case_type, :misdemeanor)
@@ -36,12 +34,11 @@ RSpec.describe Importers::NewCourtCase do
 
       data = described_class.new(link_html)
       data.perform
-     
-      false_data= described_class.new(link_html)
+
+      false_data = described_class.new(link_html)
       false_data.perform
 
       expect(CourtCase.all.size).to eq 1
-  
     end
   end
 end
