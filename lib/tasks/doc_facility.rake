@@ -35,7 +35,7 @@ namespace :doc do
            
          end
 
-         binding.pry
+         
          profile = Doc::Profile.find_by  facility: fac
          unless status.nil?
             status.update(doc_facility_id: facility.id)
