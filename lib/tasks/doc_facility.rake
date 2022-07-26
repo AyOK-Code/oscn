@@ -20,11 +20,30 @@ namespace :doc do
     facil.each_with_index do |fac,index| 
         prison = false
          prison = csv.include? fac
-         binding.pry
-         status = Doc::Status.find_by!  facility: fac
-         profile = Doc::Profile.find_by!  facility: fac
+         
+        unless fac.blank? || fac.nil?
+         facility = DocFacility.find_or_initialize_by(name:fac, is_prison: prison)
+         facility.save!
+         
+        else
+         next
+        end
+         status = Doc::Status.find_by  facility: fac
+         unless status.nil?
+            status.update(doc_facility_id: facility.id)
+         else
+           
+         end
 
-        binding.pry
+         binding.pry
+         profile = Doc::Profile.find_by  facility: fac
+         unless status.nil?
+            status.update(doc_facility_id: facility.id)
+         else
+            
+         end
+
+        
     end
   end
 end
