@@ -43,4 +43,18 @@ RSpec.describe DocketEvent, type: :model do
       end
     end
   end
+
+  describe 'methods' do
+    describe '#is_error' do
+      let(:subject) { docket_event.is_error }
+      context 'with a normal description' do
+        let(:docket_event) { build(:docket_event) }
+        it { should be false }
+      end
+      context 'when description contains an error string' do
+        let(:docket_event) { build(:docket_event, description: "CASE FILED IN ERROR SHOULD BE A CHARGE PER DA" ) }
+        it { should be true }
+      end
+    end
+  end
 end
