@@ -21,7 +21,6 @@ module Importers
       return if parsed_html.css('.errorMessage').count.positive?
 
       ActiveRecord::Base.transaction do
-        save_case
         save_parties
         save_judges
         save_attorneys
@@ -29,11 +28,12 @@ module Importers
         save_events
         save_docket_events
         logs.update_logs
+        save_case
       end
     end
 
     def save_case
-      court_case.update(filed_on: data[:filed_on], closed_on: data[:closed_on])
+      court_case.update(filed_on: data[:filed_on], closed_on: data[:closed_on], is_error: check_is_error )
     end
 
     def save_parties
