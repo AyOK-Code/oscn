@@ -147,19 +147,19 @@ RSpec.describe CourtCase, type: :model do
   describe '#check_is_error' do
     subject { court_case.check_is_error}
     context 'when there is any data present' do
-      let( :court_case ) { create(:court_case, :with_docket_event) }
+      let( :court_case ) { build(:court_case, docket_events: [build(:docket_event)]) }
       it { should be false }
       context 'when there is an error from the docket' do
         let( :court_case ) do
-          create(:court_case, docket_events: [
-            create(:docket_event, description: "CASE FILED IN ERROR SHOULD BE A CHARGE PER DA") ]
+          build(:court_case, docket_events: [
+            build(:docket_event, description: "CASE FILED IN ERROR SHOULD BE A CHARGE PER DA") ]
           )
         end
         it { should be true }
       end
     end
     context 'when there is no data present' do
-      let( :court_case ) { create(:court_case) }
+      let( :court_case ) { build(:court_case) }
       it { should be true }
     end
   end
