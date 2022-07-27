@@ -28,18 +28,20 @@ namespace :doc do
         else
          next
         end
-         status = Doc::Status.find_by  facility: fac
+         status = Doc::Status.where(facility: fac)
          unless status.nil?
-            status.update(doc_facility_id: facility.id)
-         else
-           
-         end
+          status.each do |stat|
+            stat.update(doc_facility_id: facility.id)
+          end
+        end
+         
 
          
-         profile = Doc::Profile.find_by  facility: fac
-         unless status.nil?
-            status.update(doc_facility_id: facility.id)
-         else
+         profile = Doc::Profile.where(facility: fac)
+         unless profile.nil?
+          profile.each do |prof|
+            prof.update(doc_facility_id: facility.id)
+          end
             
          end
 
