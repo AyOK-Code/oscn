@@ -5,7 +5,7 @@ namespace :update do
     associations = [:parties, :current_judge, :counsels, :counts, :events, :docket_events]
     CourtCase.in_batches(of: 1000) do |court_cases|
       court_cases.includes(associations).each do |court_case|
-        court_case.update!(is_error: true) if court_case.check_is_error
+        court_case.update!(is_error: true) if court_case.error?
       end
     end
   end

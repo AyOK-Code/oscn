@@ -144,8 +144,8 @@ RSpec.describe CourtCase, type: :model do
     end
   end
 
-  describe '#check_is_error' do
-    subject { court_case.check_is_error}
+  describe '#error?' do
+    subject { court_case.error?}
     context 'when there is any data present' do
       let( :court_case ) { build(:court_case, docket_events: [build(:docket_event)]) }
       it { should be false }

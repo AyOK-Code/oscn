@@ -34,7 +34,7 @@ class CourtCase < ApplicationRecord
 
   delegate :html, to: :case_html
 
-  def check_is_error
+  def error?
     associations = [parties, current_judge, counsels, counts, events, docket_events]
     associations.all?(&:blank?) || docket_events.any?(&:error?)
   end
