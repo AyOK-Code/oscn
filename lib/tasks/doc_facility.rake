@@ -7,6 +7,12 @@ namespace :doc do
     csv_path = 'lib/Prison.Facilities-Table.1.csv'
     csv = []
     facil=Doc::Status.distinct.pluck(:facility)
+    facil_prof=Doc::Profile.distinct.pluck(:facility)
+    status_profile_facil = facil + facil_prof
+    status_profile_facil = status_profile_facil.uniq
+
+    
+binding.pry
 
     CSV.foreach('lib/Prison.Facilities-Table.1.csv') do |row|
         
@@ -17,33 +23,32 @@ namespace :doc do
       end
     
 
-    facil.each_with_index do |fac,index| 
+      status_profile_facil.each_with_index do |fac,index| 
         prison = false
          prison = csv.include? fac
          
-        unless fac.blank? || fac.nil?
+         next  if  fac.blank? || fac.nil? 
+          
+         
+        
+         
          facility = DocFacility.find_or_initialize_by(name:fac, is_prison: prison)
          facility.save!
+        
+         status = Doc::Status.where(facility: fac).in_batches 
          
-        else
-         next
-        end
-         status = Doc::Status.where(facility: fac)
-         unless status.nil?
-          status.each do |stat|
-            stat.update(doc_facility_id: facility.id)
-          end
-        end
+           status.update_all(doc_facility_id: facility.id)
+
+        
          
 
-         
-         profile = Doc::Profile.where(facility: fac)
-         unless profile.nil?
-          profile.each do |prof|
-            prof.update(doc_facility_id: facility.id)
-          end
+         #includes(:doc_profiles) ?? status can only access doc_profiles_id, it belongs, doesnt have profiles. not sure how including them will help either, may be optional?
+         profile = Doc::Profile.where(facility: fac).in_batches
+        
+    profile.update_all(doc_facility_id: facility.id)
+          
             
-         end
+         
 
         
     end
