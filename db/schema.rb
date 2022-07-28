@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_26_211411) do
+ActiveRecord::Schema.define(version: 2022_07_28_193602) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -234,11 +234,11 @@ ActiveRecord::Schema.define(version: 2022_07_26_211411) do
     t.bigint "court_case_id"
     t.string "sentence_id", null: false
     t.string "consecutive_to_sentence_id"
-    t.bigint "doc_sentencing_counties_id"
+    t.bigint "doc_sentencing_county_id"
     t.index ["court_case_id"], name: "index_doc_sentences_on_court_case_id"
     t.index ["doc_offense_code_id"], name: "index_doc_sentences_on_doc_offense_code_id"
     t.index ["doc_profile_id"], name: "index_doc_sentences_on_doc_profile_id"
-    t.index ["doc_sentencing_counties_id"], name: "index_doc_sentences_on_doc_sentencing_counties_id"
+    t.index ["doc_sentencing_county_id"], name: "index_doc_sentences_on_doc_sentencing_county_id"
   end
 
   create_table "doc_sentencing_counties", force: :cascade do |t|
