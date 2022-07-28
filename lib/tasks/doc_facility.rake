@@ -12,7 +12,7 @@ namespace :doc do
     status_profile_facil = status_profile_facil.uniq
 
     
-binding.pry
+
 
     CSV.foreach('lib/Prison.Facilities-Table.1.csv') do |row|
         
@@ -42,7 +42,7 @@ binding.pry
         
          
 
-         #includes(:doc_profiles) ?? status can only access doc_profiles_id, it belongs, doesnt have profiles. not sure how including them will help either, may be optional?
+         
          profile = Doc::Profile.where(facility: fac).in_batches
         
     profile.update_all(doc_facility_id: facility.id)
