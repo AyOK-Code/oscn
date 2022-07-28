@@ -1,5 +1,5 @@
 class DocketEvent < ApplicationRecord
-  ERROR_STRINGS = ["CASE FILED IN ERROR"]
+  ERROR_STRINGS = ['CASE FILED IN ERROR']
 
   belongs_to :court_case
   belongs_to :docket_event_type
@@ -16,7 +16,7 @@ class DocketEvent < ApplicationRecord
   scope :negative, -> { where('amount < 0') }
   scope :positive, -> { where('amount > 0') }
 
-  def is_error
+  def error?
     ERROR_STRINGS.any? { |string| description.include? string }
   end
 end
