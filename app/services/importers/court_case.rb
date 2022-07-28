@@ -33,7 +33,7 @@ module Importers
     end
 
     def save_case
-      court_case.update(filed_on: data[:filed_on], closed_on: data[:closed_on], is_error: court_case.check_is_error )
+      court_case.update(filed_on: data[:filed_on], closed_on: data[:closed_on], is_error: court_case.check_is_error)
     end
 
     def save_parties
