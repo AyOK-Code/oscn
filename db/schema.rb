@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_28_193602) do
+ActiveRecord::Schema.define(version: 2022_07_29_201159) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -242,8 +242,8 @@ ActiveRecord::Schema.define(version: 2022_07_28_193602) do
   end
 
   create_table "doc_sentencing_counties", force: :cascade do |t|
-    t.string "name"
-    t.bigint "county_id", null: false
+    t.string "name", null: false
+    t.bigint "county_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["county_id"], name: "index_doc_sentencing_counties_on_county_id"
