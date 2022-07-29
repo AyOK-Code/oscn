@@ -17,7 +17,7 @@ RSpec.describe Scrapers::Parties::HighPriority do
     context 'when there is a party with html' do
       let!(:party_with_html) { create(:party, :with_html) }
 
-      it 'adds jobs to the PartyWorker' do
+      it 'doesn\'t add jobs to the PartyWorker' do
         expect do
           described_class.perform.to change(PartyWorker.jobs, :size).by(0)
         end
