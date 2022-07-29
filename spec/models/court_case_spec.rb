@@ -149,7 +149,7 @@ RSpec.describe CourtCase, type: :model do
     context 'when there are any associations present' do
       let( :court_case ) { build(:court_case, docket_events: [build(:docket_event)]) }
       it { should be false }
-      context 'when there is an error a docket event' do
+      context 'when there is an error on a docket event' do
         let( :court_case ) do
           build(:court_case, docket_events: [
             build(:docket_event, description: 'CASE FILED IN ERROR SHOULD BE A CHARGE PER DA') ]
