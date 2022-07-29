@@ -4,6 +4,10 @@ FactoryBot.define do
     full_name { Faker::Name.name }
     party_type
 
+    trait :with_html do
+      party_html
+    end
+
     trait :defendant do
       party_type { PartyType.find_by(name: 'defendant') || create(:party_type, name: 'defendant') }
     end
