@@ -5,7 +5,7 @@ FactoryBot.define do
     party_type
 
     trait :with_html do
-      party_html
+      after(:create) { |party| create(:party_html, party: party) }
     end
 
     trait :defendant do

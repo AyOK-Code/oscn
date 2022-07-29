@@ -18,7 +18,7 @@ module Scrapers
       end
 
       def parties_high_count
-        ENV.fetch('PARTIES_HIGH_PRIORITY', 10_000).to_i
+        ENV.fetch('PARTIES_HIGH_PRIORITY', 5_000).to_i
       end
     end
   end
