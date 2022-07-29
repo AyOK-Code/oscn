@@ -1,6 +1,5 @@
 module Scrapers
   module Parties
-    # Lowest priority for update
     class LowPriority
       attr :parties_oscn_ids
       def initialize(days_ago: 90, limit: low_count)
