@@ -33,7 +33,6 @@ RSpec.describe Party, type: :model do
 
     describe '#without_html' do
       context 'with parties with and without html' do
-        let(:date) { Time.current - 1.year }
         let!(:with_html) { create(:party, :with_html) }
         let!(:without_html) { create(:party) }
         it 'only includes parties without html' do
