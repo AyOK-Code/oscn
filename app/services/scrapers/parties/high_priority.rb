@@ -1,6 +1,5 @@
 module Scrapers
   module Parties
-    # Updates html for parties that have been on the docket in the past week or parties without html (new parties)
     class HighPriority
       def self.perform
         new.perform
