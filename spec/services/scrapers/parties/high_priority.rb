@@ -14,7 +14,7 @@ RSpec.describe Scrapers::Parties::HighPriority do
       end
     end
 
-    context 'when there is a test case with html' do
+    context 'when there is a party with html' do
       let!(:party_with_html) { create(:party, :with_html) }
 
       it 'adds jobs to the PartyWorker' do
