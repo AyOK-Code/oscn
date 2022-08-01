@@ -1,5 +1,5 @@
 namespace :import do
-  desc "Import Oklahoma List Statutes"
+  desc 'Import Oklahoma List Statutes'
   task agency_mapping: :environment do
     file = File.open('lib/agencies_mapped.csv').read
     data = CSV.parse(file, headers: true)
@@ -12,7 +12,7 @@ namespace :import do
       pp = ParentParty.find_or_create_by(name: row['mapped_name'])
       begin
         Party.find_by(oscn_id: row['oscn_id']).update(parent_party_id: pp.id)
-      rescue
+      rescue StandardError
         next
       end
     end

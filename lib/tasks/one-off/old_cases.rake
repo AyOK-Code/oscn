@@ -25,11 +25,10 @@ namespace :update do
           AND docket_events.party_id = parties.id
       ) > 0")
 
-
     county = County.find_by(name: 'Oklahoma')
     bar = ProgressBar.new(data.values.size)
 
-    data.values.each do |case_number|
+    data.each_value do |case_number|
       bar.increment!
       worker_args = JSON.dump({ county_id: county.id, case_number: case_number, scrape_case: true })
       CourtCaseWorker

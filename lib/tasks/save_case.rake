@@ -21,7 +21,6 @@ namespace :save do
     court_cases.each do |c|
       parsed_html = Nokogiri::HTML(c.case_html.html.body)
       data = OscnScraper::Parsers::BaseParser.new(parsed_html).build_object
-      logs = Importers::Logger.new(c)
       judge_id = Matchers::Judge.new(c.county_id, data[:judge]).judge_id
       c.update(current_judge_id: judge_id)
       bar.increment!
