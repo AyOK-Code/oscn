@@ -17,6 +17,6 @@ class DocketEvent < ApplicationRecord
   scope :positive, -> { where('amount > 0') }
 
   def error?
-    ERROR_STRINGS.any? { |string| description.include? string }
+    ERROR_STRINGS.any? { |string| description.downcase.include? string.downcase }
   end
 end
