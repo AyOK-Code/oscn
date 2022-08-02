@@ -21,7 +21,7 @@ RSpec.describe Importers::NewCourtCase do
       expect(court_case.county.name).to eq 'Oklahoma'
     end
 
-    it ' does not duplicate' do
+    it 'does not duplicate' do
       county = create(:county, name: 'Oklahoma')
       create(:court_case, :felony, county_id: county.id, oscn_id: 3_946_802)
       file_path = 'spec/fixtures/importers/link.html'
