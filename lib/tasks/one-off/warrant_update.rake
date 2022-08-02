@@ -71,7 +71,7 @@ namespace :warrants do
           age = nil
         else
           court_case = CourtCase.find(case_id)
-          party_map = court_case.parties.pluck(:full_name, :oscn_id).map { |a| [a[0].squish, a[1]] }.to_h
+          party_map = court_case.parties.pluck(:full_name, :oscn_id).to_h { |a| [a[0].squish, a[1]] }
           party = Party.find_by(oscn_id: party_map[warrant['Party']])
           address = party&.addresses&.current&.first
           age = party&.birth_year.present? ? current - party&.birth_year : nil
