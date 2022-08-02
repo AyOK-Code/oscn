@@ -2,7 +2,7 @@ require 'open-uri'
 
 namespace :save do
   desc 'Load District Attorney Data'
-  task district_attorney:  [:environment] do
+  task district_attorney: [:environment] do
     html = OscnScraper::Requestor::DistrictAttorney.new
 
     html = html.perform
@@ -11,9 +11,7 @@ namespace :save do
 
     parsed_json = parser.district_attorneys
 
-     district_attorney = Scrapers::DistrictAttorney.new(parsed_json)
-     district_attorney.perform
-     
-     
+    district_attorney = Scrapers::DistrictAttorney.new(parsed_json)
+    district_attorney.perform
   end
 end
