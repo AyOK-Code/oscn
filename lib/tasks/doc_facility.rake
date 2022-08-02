@@ -39,7 +39,7 @@ namespace :doc do
          
 
          
-         profile = Doc::Profile.where(facility: fac).in_batches
+         profile = Doc::Profile.where(facility: fac)
         
     profile.update_all(doc_facility_id: facility.id)
           
