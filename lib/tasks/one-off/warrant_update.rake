@@ -22,6 +22,7 @@ namespace :warrants do
       bar.increment!
       case_id = court_cases[c['Case #']]
       next if case_id.nil?
+
       worker_args = JSON.dump({ county_id: county.id, case_number: c['Case #'], scrape_case: true })
       CourtCaseWorker
         .set(queue: :default)
@@ -53,9 +54,12 @@ namespace :warrants do
     CSV.open(temp, 'w') do |temp_csv|
       warrants = CSV.parse(resp.body.read, headers: true)
       bar = ProgressBar.new(warrants.count)
-      count_headers = (1..30).to_a.map { |e| ["count_#{e}_status", "count_#{e}_as_disposed", "count_#{e}_description"] }.flatten
+      count_headers = (1..30).to_a.map do |e|
+        ["count_#{e}_status", "count_#{e}_as_disposed", "count_#{e}_description"]
+      end.flatten
 
-      temp_csv << (['warrant_number', 'case_number', 'party', 'bond_amount', 'hold', 'date_issued', 'judge', 'warrant_type', 'party_id', 'birth_month', 'birth_year', 'age', 'zip'] + count_headers).flatten
+      temp_csv << (['warrant_number', 'case_number', 'party', 'bond_amount', 'hold', 'date_issued', 'judge',
+                    'warrant_type', 'party_id', 'birth_month', 'birth_year', 'age', 'zip'] + count_headers).flatten
 
       warrants.each do |warrant|
         bar.increment!
