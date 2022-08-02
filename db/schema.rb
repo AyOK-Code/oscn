@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_08_02_165843) do
+ActiveRecord::Schema.define(version: 2022_08_02_170326) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -461,6 +461,7 @@ ActiveRecord::Schema.define(version: 2022_08_02_165843) do
   add_foreign_key "court_cases", "counties"
   add_foreign_key "court_cases", "judges", column: "current_judge_id"
   add_foreign_key "doc_aliases", "doc_profiles"
+  add_foreign_key "doc_profiles", "doc_facilities"
   add_foreign_key "doc_profiles", "parent_parties"
   add_foreign_key "doc_sentences", "court_cases"
   add_foreign_key "doc_sentences", "doc_offense_codes"
