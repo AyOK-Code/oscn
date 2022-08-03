@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_19_193932) do
+ActiveRecord::Schema.define(version: 2022_05_03_152707) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -85,8 +85,6 @@ ActiveRecord::Schema.define(version: 2022_07_19_193932) do
     t.string "fips_code", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "district_attorney_id"
-    t.index ["district_attorney_id"], name: "index_counties_on_district_attorney_id"
   end
 
   create_table "counts", force: :cascade do |t|
@@ -128,13 +126,6 @@ ActiveRecord::Schema.define(version: 2022_07_19_193932) do
     t.index ["county_id", "oscn_id"], name: "index_court_cases_on_county_id_and_oscn_id", unique: true
     t.index ["county_id"], name: "index_court_cases_on_county_id"
     t.index ["current_judge_id"], name: "index_court_cases_on_current_judge_id"
-  end
-
-  create_table "district_attorneys", force: :cascade do |t|
-    t.string "name", null: false
-    t.integer "number", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "doc_aliases", force: :cascade do |t|

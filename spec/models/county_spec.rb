@@ -8,5 +8,6 @@ RSpec.describe County, type: :model do
 
   describe 'associations' do
     it { should have_many(:court_cases).dependent(:destroy) }
+    it { should belongs_to(:district_attorneys)}
   end
 end
