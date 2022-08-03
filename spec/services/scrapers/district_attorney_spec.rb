@@ -7,22 +7,12 @@ RSpec.describe Scrapers::DistrictAttorney do
     html = File.read(fixture_path)
 
     it 'saves  district attorney and hooks up counties' do
-      create(:county, name: 'Beaver')
-      create(:county, name: 'Cimarron')
-      create(:county, name: 'Harper')
-      create(:county, name: 'Texas')
+      counties = ['Beaver', 'Cimarron', 'Harper', 'Texas', 'Beckham', 'Custer', 'Ellis', 'Roger Mills', 'Washita', 'Greer', 'Harmon', 'Jackson', 'Kiowa', 'Tillman']
 
-      create(:county, name: 'Beckham')
-      create(:county, name: 'Custer')
-      create(:county, name: 'Ellis')
-      create(:county, name: 'Roger Mills')
-      create(:county, name: 'Washita')
+        counties.each do |name|
+          create(:county, name: name)
+        end
 
-      create(:county, name: 'Greer')
-      create(:county, name: 'Harmon')
-      create(:county, name: 'Jackson')
-      create(:county, name: 'Kiowa')
-      create(:county, name: 'Tillman')
 
       parser = OscnScraper::Parsers::DistrictAttorney.new(html)
       parser.perform
