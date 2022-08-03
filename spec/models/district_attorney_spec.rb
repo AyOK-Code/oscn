@@ -7,6 +7,6 @@ RSpec.describe DistrictAttorney, type: :model do
   end
 
   describe 'associations' do
-    it { should have_many(:counties)}
+    it { should have_many(:counties) }
   end
 end
