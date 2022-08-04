@@ -18,6 +18,10 @@ FactoryBot.define do
       after(:create) { |court_case| create(:docket_event, court_case: court_case) }
     end
 
+    trait :with_party do
+      after(:create) { |court_case| create(:party, court_case: court_case) }
+    end
+
     trait :active do
       closed_on { nil }
     end
