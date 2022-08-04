@@ -40,3 +40,6 @@ sample.dump
 
 # Ignore .env
 .env
+
+# Ignore ide specific files
+.idea
