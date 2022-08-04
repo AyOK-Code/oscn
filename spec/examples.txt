@@ -1,5 +1,6 @@
 example_id                                                | status  | run_time        |
 --------------------------------------------------------- | ------- | --------------- |
+./spec/lib/tasks/update_spec.rb[1:1:1:1]                  | passed  | 0.61348 seconds |
 ./spec/models/case_html_spec.rb[1:1:1]                    | passed  | 0.00228 seconds |
 ./spec/models/case_html_spec.rb[1:2:1]                    | passed  | 0.00323 seconds |
 ./spec/models/case_html_spec.rb[1:2:2]                    | passed  | 0.01171 seconds |
