@@ -7,4 +7,9 @@ class Doc::Profile < ApplicationRecord
 
   enum status: [:active, :inactive]
   enum sex: [:male, :female]
+
+  def full_name
+    puts full_name
+    "#{last_name}, #{first_name} #{middle_name}"
+  end
 end
