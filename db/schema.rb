@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_29_201159) do
+ActiveRecord::Schema.define(version: 2022_07_26_202412) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -234,16 +234,16 @@ ActiveRecord::Schema.define(version: 2022_07_29_201159) do
     t.bigint "court_case_id"
     t.string "sentence_id", null: false
     t.string "consecutive_to_sentence_id"
-    t.bigint "doc_sentencing_county_id"
+    t.bigint "doc_sentencing_county_id_id"
     t.index ["court_case_id"], name: "index_doc_sentences_on_court_case_id"
     t.index ["doc_offense_code_id"], name: "index_doc_sentences_on_doc_offense_code_id"
     t.index ["doc_profile_id"], name: "index_doc_sentences_on_doc_profile_id"
-    t.index ["doc_sentencing_county_id"], name: "index_doc_sentences_on_doc_sentencing_county_id"
+    t.index ["doc_sentencing_county_id_id"], name: "index_doc_sentences_on_doc_sentencing_county_id_id"
   end
 
   create_table "doc_sentencing_counties", force: :cascade do |t|
     t.string "name", null: false
-    t.bigint "county_id"
+    t.bigint "county_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["county_id"], name: "index_doc_sentencing_counties_on_county_id"
@@ -461,11 +461,13 @@ ActiveRecord::Schema.define(version: 2022_07_29_201159) do
   add_foreign_key "court_cases", "counties"
   add_foreign_key "court_cases", "judges", column: "current_judge_id"
   add_foreign_key "doc_aliases", "doc_profiles"
+  add_foreign_key "doc_profiles", "doc_facilities"
   add_foreign_key "doc_profiles", "parent_parties"
   add_foreign_key "doc_sentences", "court_cases"
   add_foreign_key "doc_sentences", "doc_offense_codes"
   add_foreign_key "doc_sentences", "doc_profiles"
   add_foreign_key "doc_sentencing_counties", "counties"
+  add_foreign_key "doc_statuses", "doc_facilities"
   add_foreign_key "doc_statuses", "doc_profiles"
   add_foreign_key "docket_event_links", "docket_events"
   add_foreign_key "docket_events", "court_cases"
