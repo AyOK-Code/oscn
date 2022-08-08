@@ -340,6 +340,7 @@ GEM
       gli
       hashie
       websocket-driver
+    slowweb (0.1.1)
     spring (2.1.1)
     spring-watcher-listen (2.0.1)
       listen (>= 2.7, < 4.0)
@@ -411,6 +412,7 @@ DEPENDENCIES
   simplecov
   simplecov-json
   slack-ruby-client
+  slowweb
   spring
   spring-watcher-listen (~> 2.0.0)
   tzinfo-data
