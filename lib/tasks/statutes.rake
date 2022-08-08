@@ -1,7 +1,7 @@
 namespace :import do
   desc 'Import Oklahoma List Statutes'
   task :statutes do
-    file = File.open('lib/data/ok_statutes.csv').read
+    file = File.read('lib/data/ok_statutes.csv')
     data = CSV.parse(file, headers: true)
 
     # TODO: Change to pull from S3 file or directly from site with file

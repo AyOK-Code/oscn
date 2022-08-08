@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/AyOK-Code/oscn_scraper
-  revision: d0f8893b620aacdbe5ef29bbe641f98fcbacbd41
-  ref: d0f8893
+  revision: 41ff05f1a86454a7dcec277500366e49ae9c6735
+  ref: 41ff05f
   specs:
     oscn_scraper (0.1.1)
       activesupport (>= 5.0.0)
@@ -351,7 +351,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    thor (1.1.0)
+    thor (1.2.1)
     thread_safe (0.3.6)
     tzinfo (1.2.9)
       thread_safe (~> 0.1)

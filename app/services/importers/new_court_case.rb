@@ -24,7 +24,7 @@ module Importers
     private
 
     def oscn_id
-      params['casemasterid'].first.to_i
+      params['casemasterID'].first.to_i
     end
 
     def county
