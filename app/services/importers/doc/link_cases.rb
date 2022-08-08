@@ -15,7 +15,7 @@ module Importers
         sentences.each do |sentence|
           bar.increment!
           court_case = match_regex(sentence)
-          return if court_case.blank?
+          next if court_case.blank?
 
           sentence.update(court_case_id: court_case.id) if match_name(sentence, court_case)
         end
@@ -24,12 +24,10 @@ module Importers
       private
 
       def match_name(sentence, court_case)
-        party_names = court_case.parties.map{|party| "#{party.first_name} #{party.last_name}" }
+        party_names = court_case.parties.map { |party| "#{party.first_name} #{party.last_name}" }
         profile_name = "#{sentence.profile.first_name} #{sentence.profile.last_name}"
-        name_match_with_score = FuzzyMatch.new(party_names).find_with_score(profile_name)
-        dice_match_score = name_match_with_score[1]
-        levenshtein_match_score = name_match_with_score[2]
-        [dice_match_score && levenshtein_match_score].any? { |v| v >= 0.5 }
+        match_scores = FuzzyMatch.new(party_names).find_with_score(profile_name)
+        match_scores.present? && [match_scores[1] && match_scores[2]].any? { |v| v >= 0.5 }
       end
 
       def match_regex(sentence)
