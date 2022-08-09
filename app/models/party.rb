@@ -15,6 +15,8 @@ class Party < ApplicationRecord
   validates :birth_month, inclusion: 1..12, allow_nil: true
   validates :birth_year, inclusion: 1800..DateTime.current.year, allow_nil: true
 
+  scope :older_than, ->(date) { joins(:party_html).where('party_htmls.scraped_at < ?', date) }
+  scope :without_html, -> { left_outer_joins(:party_html).where(party_htmls: { html: nil }) }
   scope :without_birthday, -> { where(birth_month: nil) } # TODO: Validate presence of party_type?
   scope :without_parent, -> { where(parent_party_id: nil) }
   scope :with_parent, -> { where.not(parent_party_id: nil) }

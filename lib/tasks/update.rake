@@ -30,15 +30,7 @@ namespace :update do
 
   desc 'Save party detail information'
   task party_detail: [:environment] do
-    # TODO: Refine party scraping so that parties
-    # with missing birthdays don't get scraped every night
-    parties = Party.defendant.without_birthday
-    bar = ProgressBar.new(parties.count)
-
-    parties.each do |p|
-      bar.increment!
-      PartyWorker.perform_async(p.oscn_id)
-    end
+    Scrapers::Party.perform
   end
 
   desc 'Assign parents'
