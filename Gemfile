@@ -28,6 +28,7 @@ gem 'scenic'
 gem 'sidekiq'
 gem 'sidekiq-throttled'
 gem 'slack-ruby-client'
+gem 'slowweb'
 
 group :development, :test do
   gem 'bullet'
