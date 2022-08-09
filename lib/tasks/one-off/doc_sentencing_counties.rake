@@ -2,7 +2,7 @@ require 'open-uri'
 
 namespace :doc do
   desc 'Populates DocSentencingCounty and assignes it to Doc::Sentence'
-  task :sentencing_counties do
+  task sentencing_counties: [:environment] do
     sent_counties = ::Doc::Sentence.distinct.pluck(:sentencing_county).sort
     sent_counties.each do |sent|
       sentence = Doc::Sentence.where(sentencing_county: sent)

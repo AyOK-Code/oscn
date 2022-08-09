@@ -3,7 +3,7 @@ require 'csv'
 
 namespace :doc do
   desc 'fill out doc_facility table and link records to status and profile'
-  task :doc_facilities do
+  task doc_facilities: [:environment] do
     csv_path = 'lib/Prison.Facilities-Table.1.csv'
     prison_names = []
     facil = Doc::Status.distinct.pluck(:facility)
