@@ -19,11 +19,10 @@ module Scrapers
         county = c.county
 
         case_number = c.case_number
-        worker_args = JSON.dump({ county_id: county.id, case_number: case_number, scrape_case: true })
 
         CourtCaseWorker
           .set(queue: :low)
-          .perform_async(worker_args)
+          .perform_async(county.id, case_number, true)
         bar.increment!
       end
     end
