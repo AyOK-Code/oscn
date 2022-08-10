@@ -9,11 +9,10 @@ namespace :doc do
 
       if sent.upcase.include?('COUNTY COURT') && (sent != 'UNKNOWN COUNTY COURT')
         county = County.where('lower(name) = ?', sent.split(' COUNTY COURT').first.downcase).first
-        #binding.pry
+
         doc_sent = DocSentencingCounty.find_or_initialize_by(name: sent, county_id: county.id)
 
       else
-       # binding.pry
 
         doc_sent = DocSentencingCounty.find_or_initialize_by(name: sent)
 
