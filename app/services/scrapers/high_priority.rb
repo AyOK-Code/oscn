@@ -20,10 +20,9 @@ module Scrapers
       puts "#{cases.count} are high priority for update for #{county.name} county"
 
       cases.each do |case_number|
-        worker_args = JSON.dump({ county_id: @county.id, case_number: case_number, scrape_case: true })
         CourtCaseWorker
           .set(queue: :high)
-          .perform_async(worker_args)
+          .perform_async(@county.id, case_number, true)
         bar.increment!
       end
     end
