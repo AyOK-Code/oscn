@@ -13,7 +13,7 @@ RSpec.describe Importers::NewCourtCase do
 
       data = described_class.new(link_html)
       data.perform
-      oscn_id = data.params['casemasterID']
+      oscn_id = data.params['casemasterid']
       court_case = CourtCase.find_by(county_id: county.id, oscn_id: oscn_id)
 
       expect(court_case.case_number).to eq 'CF-2021-489'
