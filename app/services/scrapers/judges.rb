@@ -26,7 +26,7 @@ module Scrapers
       data = parsed_data.css('select[name="Judge"]')
       data.css('option').each do |o|
         j = Judge.find_or_initialize_by(oscn_id: o['value'])
-        j.name = o.text
+        j.name = o.text.chomp(',')
         j.first_name = o.text.split(',')[1]&.squish
         j.last_name = o.text.split(',')[0]&.squish
         j.save!
