@@ -33,4 +33,9 @@ class CourtCase < ApplicationRecord
   scope :for_county_name, ->(name) { joins(:county).where(counties: { name: name }) }
 
   delegate :html, to: :case_html
+
+  def error?
+    associations = [parties, current_judge, counsels, counts, events, docket_events]
+    associations.all?(&:blank?) || docket_events.any?(&:error?)
+  end
 end
