@@ -5,7 +5,7 @@ namespace :update do
   desc 'Scrape cases data'
   task cases: [:environment] do
     Scrapers::Judges.perform
-    Scrapers::Case.perform
+    # Scrapers::Case.perform
   end
 
   desc 'Refresh the materialized views for the database'
