@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/AyOK-Code/oscn_scraper
-  revision: e9b05990403d4990b3685f301ad399c8075f3575
-  ref: e9b0599
+  revision: 221ec54308751216d2b78df482f9ea31b19abd0c
+  ref: 221ec54
   specs:
     oscn_scraper (0.1.1)
       activesupport (>= 5.0.0)
