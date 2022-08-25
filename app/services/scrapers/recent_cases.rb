@@ -56,7 +56,7 @@ module Scrapers
     end
 
     def date_range
-      (days_ago.days.ago.to_date..days_forward.days.from_now.to_date).to_a
+      (Date.current - days_ago..Date.current + days_forward).to_a
     end
   end
 end

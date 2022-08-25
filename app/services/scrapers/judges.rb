@@ -15,8 +15,6 @@ module Scrapers
       user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36'
       accept = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
       # rubocop:enable Layout/LineLength
-      HTTParty::Basement.debug_output $stdout
-      HTTParty::Basement.http_proxy('shorelinetechnicalsales.com', nil, nil, nil)
       html = HTTParty.get(base_url, headers: {
                             'User-Agent': user_agent,
                             'Accept-Encoding': 'gzip, deflate, br',
