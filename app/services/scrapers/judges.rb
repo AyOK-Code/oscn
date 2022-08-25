@@ -17,11 +17,11 @@ module Scrapers
       # rubocop:enable Layout/LineLength
 
       html = HTTParty.get(base_url, headers: {
-        'User-Agent': user_agent,
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Accept-Language': 'en-US,en;q=0.9,es;q=0.8',
-        Accept: accept
-      })
+                            'User-Agent': user_agent,
+                            'Accept-Encoding': 'gzip, deflate, br',
+                            'Accept-Language': 'en-US,en;q=0.9,es;q=0.8',
+                            Accept: accept
+                          })
       parsed_data = Nokogiri::HTML(html.body)
       data = parsed_data.css('select[name="Judge"]')
       data.css('option').each do |o|
