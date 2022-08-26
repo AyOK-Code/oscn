@@ -14,7 +14,7 @@ gem 'jbuilder', '~> 2.7'
 gem 'jwt'
 gem 'kaminari'
 gem 'monetize'
-gem 'oscn_scraper', git: 'https://github.com/AyOK-Code/oscn_scraper', ref: '072a112'
+gem 'oscn_scraper', git: 'https://github.com/AyOK-Code/oscn_scraper', ref: '9bdf536'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'progress_bar'
 gem 'puma', '~> 4.1'
@@ -42,6 +42,7 @@ group :development, :test do
   gem 'rubocop-rspec'
   gem 'simplecov'
   gem 'simplecov-json'
+  gem "webmock"
 end
 
 group :test do
