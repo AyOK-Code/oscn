@@ -7,6 +7,5 @@ RSpec.describe OkcBlotterBooking, type: :model do
     it { should validate_presence_of(:inmate_number) }
     it { should validate_presence_of(:booking_number) }
     it { should validate_presence_of(:booking_date) }
-
   end
 end
