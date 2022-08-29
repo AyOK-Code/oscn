@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_08_02_170326) do
+ActiveRecord::Schema.define(version: 2022_08_26_221907) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -124,6 +124,7 @@ ActiveRecord::Schema.define(version: 2022_08_02_170326) do
     t.datetime "updated_at", precision: 6, null: false
     t.jsonb "logs"
     t.bigint "current_judge_id"
+    t.boolean "is_error", default: false, null: false
     t.index ["case_type_id"], name: "index_court_cases_on_case_type_id"
     t.index ["county_id", "oscn_id"], name: "index_court_cases_on_county_id_and_oscn_id", unique: true
     t.index ["county_id"], name: "index_court_cases_on_county_id"
@@ -337,6 +338,45 @@ ActiveRecord::Schema.define(version: 2022_08_02_170326) do
     t.string "first_name"
     t.string "last_name"
     t.index ["county_id"], name: "index_judges_on_county_id"
+  end
+
+  create_table "okc_blotter_bookings", force: :cascade do |t|
+    t.integer "pdf_id", null: false
+    t.integer "person_id", null: false
+    t.string "first_name"
+    t.string "last_name"
+    t.date "dob"
+    t.string "sex"
+    t.string "race"
+    t.string "zip"
+    t.boolean "transient", default: false, null: false
+    t.string "inmate_number", null: false
+    t.string "booking_number", null: false
+    t.string "booking_type"
+    t.date "booking_date", null: false
+    t.date "release_date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "okc_blotter_offenses", force: :cascade do |t|
+    t.integer "booking_id", null: false
+    t.string "type", null: false
+    t.decimal "bond", precision: 2
+    t.string "code"
+    t.string "dispo"
+    t.string "charge", null: false
+    t.string "warrant_number"
+    t.string "citation_number"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "okc_blotter_pdfs", force: :cascade do |t|
+    t.date "parsed_on"
+    t.date "date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "oklahoma_statutes", force: :cascade do |t|

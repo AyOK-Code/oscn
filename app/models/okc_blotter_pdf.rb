@@ -1,0 +1,2 @@
+class OkcBlotterPdf < ApplicationRecord
+end
