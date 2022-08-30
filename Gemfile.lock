@@ -200,6 +200,7 @@ GEM
     multi_xml (0.6.0)
     multipart-post (2.1.1)
     nio4r (2.5.8)
+    node-runner (1.1.0)
     nokogiri (1.13.3)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
@@ -389,6 +390,7 @@ DEPENDENCIES
   kaminari
   listen (~> 3.2)
   monetize
+  node-runner
   oscn_scraper!
   pg (>= 0.18, < 2.0)
   progress_bar

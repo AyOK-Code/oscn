@@ -29,6 +29,7 @@ gem 'sidekiq'
 gem 'sidekiq-throttled'
 gem 'slack-ruby-client'
 gem 'slowweb'
+gem 'node-runner'
 
 group :development, :test do
   gem 'bullet'
