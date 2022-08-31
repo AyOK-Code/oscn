@@ -5,6 +5,10 @@ class Bucket
     @s3 = client
   end
 
+  def put_object(filepath, buffer)
+    s3.put_object(bucket: ENV['BUCKETEER_BUCKET_NAME'], key: filepath, body: buffer)
+  end
+
   def get_object(filepath)
     s3.get_object(bucket: ENV['BUCKETEER_BUCKET_NAME'], key: filepath)
   end
