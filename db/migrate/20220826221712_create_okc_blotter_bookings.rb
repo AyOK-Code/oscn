@@ -1,7 +1,7 @@
 class CreateOkcBlotterBookings < ActiveRecord::Migration[6.0]
   def change
-    create_table :okc_blotter_bookings do |t|
-      t.references :okc_blotter_pdfs, null: false, foreign_key: true
+    create_table :bookings do |t|
+      t.references :pdfs, null: false, foreign_key: true
       t.string :first_name
       t.string :last_name
       t.date :dob

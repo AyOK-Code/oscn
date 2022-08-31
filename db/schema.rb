@@ -10,10 +10,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_08_26_221907) do
+ActiveRecord::Schema.define(version: 2022_08_31_204508) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "bookings", force: :cascade do |t|
+    t.bigint "pdfs_id", null: false
+    t.string "first_name"
+    t.string "last_name"
+    t.date "dob"
+    t.string "sex"
+    t.string "race"
+    t.string "zip"
+    t.boolean "transient", default: false, null: false
+    t.string "inmate_number", null: false
+    t.string "booking_number", null: false
+    t.string "booking_type"
+    t.date "booking_date", null: false
+    t.date "release_date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "offense_id", null: false
+    t.index ["offense_id"], name: "index_bookings_on_offense_id"
+    t.index ["pdfs_id"], name: "index_bookings_on_pdfs_id"
+  end
 
   create_table "case_htmls", force: :cascade do |t|
     t.bigint "court_case_id", null: false
@@ -340,27 +361,8 @@ ActiveRecord::Schema.define(version: 2022_08_26_221907) do
     t.index ["county_id"], name: "index_judges_on_county_id"
   end
 
-  create_table "okc_blotter_bookings", force: :cascade do |t|
-    t.bigint "okc_blotter_pdfs_id", null: false
-    t.string "first_name"
-    t.string "last_name"
-    t.date "dob"
-    t.string "sex"
-    t.string "race"
-    t.string "zip"
-    t.boolean "transient", default: false, null: false
-    t.string "inmate_number", null: false
-    t.string "booking_number", null: false
-    t.string "booking_type"
-    t.date "booking_date", null: false
-    t.date "release_date"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["okc_blotter_pdfs_id"], name: "index_okc_blotter_bookings_on_okc_blotter_pdfs_id"
-  end
-
-  create_table "okc_blotter_offenses", force: :cascade do |t|
-    t.bigint "okc_blotter_bookings_id", null: false
+  create_table "offenses", force: :cascade do |t|
+    t.bigint "bookings_id", null: false
     t.string "type", null: false
     t.decimal "bond", precision: 2
     t.string "code"
@@ -370,14 +372,7 @@ ActiveRecord::Schema.define(version: 2022_08_26_221907) do
     t.string "citation_number"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["okc_blotter_bookings_id"], name: "index_okc_blotter_offenses_on_okc_blotter_bookings_id"
-  end
-
-  create_table "okc_blotter_pdfs", force: :cascade do |t|
-    t.date "parsed_on"
-    t.date "date"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.index ["bookings_id"], name: "index_offenses_on_bookings_id"
   end
 
   create_table "oklahoma_statutes", force: :cascade do |t|
@@ -454,6 +449,15 @@ ActiveRecord::Schema.define(version: 2022_08_26_221907) do
     t.index ["name"], name: "index_party_types_on_name", unique: true
   end
 
+  create_table "pdfs", force: :cascade do |t|
+    t.date "parsed_on"
+    t.date "date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "booking_id", null: false
+    t.index ["booking_id"], name: "index_pdfs_on_booking_id"
+  end
+
   create_table "pleas", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
@@ -486,6 +490,8 @@ ActiveRecord::Schema.define(version: 2022_08_26_221907) do
     t.index ["judge_id"], name: "index_warrants_on_judge_id"
   end
 
+  add_foreign_key "bookings", "offenses"
+  add_foreign_key "bookings", "pdfs", column: "pdfs_id"
   add_foreign_key "case_htmls", "court_cases"
   add_foreign_key "case_parties", "court_cases"
   add_foreign_key "case_parties", "parties"
@@ -518,14 +524,14 @@ ActiveRecord::Schema.define(version: 2022_08_26_221907) do
   add_foreign_key "events", "event_types"
   add_foreign_key "events", "parties"
   add_foreign_key "judges", "counties"
-  add_foreign_key "okc_blotter_bookings", "okc_blotter_pdfs", column: "okc_blotter_pdfs_id"
-  add_foreign_key "okc_blotter_offenses", "okc_blotter_bookings", column: "okc_blotter_bookings_id"
+  add_foreign_key "offenses", "bookings", column: "bookings_id"
   add_foreign_key "parties", "doc_profiles"
   add_foreign_key "parties", "parent_parties"
   add_foreign_key "parties", "party_types"
   add_foreign_key "party_addresses", "parties"
   add_foreign_key "party_aliases", "parties"
   add_foreign_key "party_htmls", "parties"
+  add_foreign_key "pdfs", "bookings"
   add_foreign_key "warrants", "docket_events"
   add_foreign_key "warrants", "judges"
 

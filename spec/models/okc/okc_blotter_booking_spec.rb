@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Okc::OkcBlotterBooking, type: :model do
+RSpec.describe OkcBlotter::Booking, type: :model do
   describe 'validations' do
     it { should validate_presence_of(:transient) }
     it { should validate_presence_of(:inmate_number) }
@@ -8,6 +8,6 @@ RSpec.describe Okc::OkcBlotterBooking, type: :model do
     it { should validate_presence_of(:booking_date) }
   end
   describe 'associations' do
-    it { should belong_to(:okc_offense).class_name('Okc::OkcBlotterOffense') }
+    it { should belong_to(:offense).class_name('OkcBlotter::Offense') }
   end
 end
