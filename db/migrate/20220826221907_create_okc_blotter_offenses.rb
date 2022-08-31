@@ -1,7 +1,7 @@
 class CreateOkcBlotterOffenses < ActiveRecord::Migration[6.0]
   def change
     create_table :okc_blotter_offenses do |t|
-      t.integer :booking_id ,null:false
+      t.references :okc_blotter_bookings, null: false, foreign_key: true
       t.string :type , null:false
       t.decimal :bond ,precision: 2
       t.string :code

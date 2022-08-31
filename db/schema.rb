@@ -341,8 +341,7 @@ ActiveRecord::Schema.define(version: 2022_08_26_221907) do
   end
 
   create_table "okc_blotter_bookings", force: :cascade do |t|
-    t.integer "pdf_id", null: false
-    t.integer "person_id", null: false
+    t.bigint "okc_blotter_pdfs_id", null: false
     t.string "first_name"
     t.string "last_name"
     t.date "dob"
@@ -357,10 +356,11 @@ ActiveRecord::Schema.define(version: 2022_08_26_221907) do
     t.date "release_date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["okc_blotter_pdfs_id"], name: "index_okc_blotter_bookings_on_okc_blotter_pdfs_id"
   end
 
   create_table "okc_blotter_offenses", force: :cascade do |t|
-    t.integer "booking_id", null: false
+    t.bigint "okc_blotter_bookings_id", null: false
     t.string "type", null: false
     t.decimal "bond", precision: 2
     t.string "code"
@@ -370,6 +370,7 @@ ActiveRecord::Schema.define(version: 2022_08_26_221907) do
     t.string "citation_number"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["okc_blotter_bookings_id"], name: "index_okc_blotter_offenses_on_okc_blotter_bookings_id"
   end
 
   create_table "okc_blotter_pdfs", force: :cascade do |t|
@@ -517,6 +518,8 @@ ActiveRecord::Schema.define(version: 2022_08_26_221907) do
   add_foreign_key "events", "event_types"
   add_foreign_key "events", "parties"
   add_foreign_key "judges", "counties"
+  add_foreign_key "okc_blotter_bookings", "okc_blotter_pdfs", column: "okc_blotter_pdfs_id"
+  add_foreign_key "okc_blotter_offenses", "okc_blotter_bookings", column: "okc_blotter_bookings_id"
   add_foreign_key "parties", "doc_profiles"
   add_foreign_key "parties", "parent_parties"
   add_foreign_key "parties", "party_types"
