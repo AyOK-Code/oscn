@@ -3,6 +3,13 @@ require "node-runner"
 module Importers
   module OkcBlotter
     class Pdf
+      def initialize(date)
+        @pdf = Bucket.new.get_object("#{self.class.s3_path}/#{date}.pdf")
+        @json = self.class.js_runner.parsePdf(@pdf.data.body, date)
+        # @json = self.class.js_runner.downloadAllPdfs('2022-08-30')
+        test = true
+      end
+
       def self.download_all_available(from_date = nil)
         js_runner.downloadAllPdfs(from_date)
         Dir.foreach(pdf_directory) do |filename|
@@ -25,7 +32,7 @@ module Importers
       end
 
       def self.js_runner
-        NodeRunner.new(
+        @@js_runner ||= NodeRunner.new(
           <<~JAVASCRIPT % self.pdf_directory
             const pdf_directory = "%s" 
             const fs = require('fs');
@@ -37,19 +44,17 @@ module Importers
               const pdfsWithPostedDate = await okcb.fetchAllPdfs(date);
               for (let i = 0; i < pdfsWithPostedDate.length; i++) {     
                 let fileName = `${pdf_directory}/${pdfsWithPostedDate[i].postedOn}.pdf`        
-                fs.writeFileSync(
-                    fileName, 
-                    pdfsWithPostedDate[i].buf,
-                    'binary'
-                    );
+                fs.writeFileSync(fileName, pdfsWithPostedDate[i].buf, 'binary');
                 fs.chmod(fileName, 0777, () => {});
               }
-              //note: return statements don't work with node-runner and async
             }
-            const parsePdf = async (pdf) => {
-              log = []
-              const jsons = await okcb.fetchAndParseAllPdfs();
-              return {"log": log, "results": jsons}
+            const parsePdf = async (pdf, date) => {
+              // log = []
+              // const json = {}
+              // const json = await okcb.parseJailblotter(pdf);
+              // let fileName = `${pdf_directory}/${date}.json`        
+              // fs.writefilesync(filename, json);
+              // fs.chmod(fileName, 0777, () => {});
             }
         JAVASCRIPT
         )
