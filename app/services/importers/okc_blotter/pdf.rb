@@ -1,63 +1,71 @@
-require "node-runner"
+require 'zip'
 
 module Importers
   module OkcBlotter
-    class Pdf
+    class Pdf < ApplicationService
       def initialize(date)
-        @pdf = Bucket.new.get_object("#{self.class.s3_path}/#{date}.pdf")
-        @json = self.class.js_runner.parsePdf(@pdf.data.body, date)
-        # @json = self.class.js_runner.downloadAllPdfs('2022-08-30')
-        test = true
+        @date = date
       end
 
-      def self.download_all_available(from_date = nil)
-        js_runner.downloadAllPdfs(from_date)
-        Dir.foreach(pdf_directory) do |filename|
-          next if filename == '.' or filename == '..'
-          pdf = File.open("#{pdf_directory}/#{filename}")
-          Bucket.new.put_object("#{s3_path}/#{filename}", pdf)
-          File.delete("#{pdf_directory}/#{filename}")
+      def json
+        # see https://github.com/jnunemaker/httparty/issues/675#issuecomment-590757288
+        def pdf.path
+          '/path/hack.pdf'
         end
-        # File.delete(pdf_directory) #todo: this doesn't work
+        @json ||= JSON.parse(HTTParty.post(
+          "#{self.class.url}/parse",
+          body: { pdf: pdf },
+          headers: { 'Authorization': self.class.auth_token }
+        ).body)
+      end
+
+      def pdf
+        @pdf ||= Bucket.new.get_object("#{self.class.s3_path}/#{@date}.pdf").body
+      end
+
+      def save
+        test = json
+        puts 'yolo'
+      end
+
+      def perform
+        save
+      end
+
+      def self.import_from_website(from_date = nil)
+        dates = download_from_website(from_date)
+        dates.each do |date|
+          self.perform(date)
+        end
+      end
+
+      def self.download_from_website(from_date = nil)
+        input = HTTParty.get("#{url}/pdfs?after=#{from_date}",
+                             headers: {
+                               'Authorization': auth_token,
+                             }).body
+        dates = []
+        Zip::InputStream.open(StringIO.new(input)) do |io|
+          while entry = io.get_next_entry
+            pdf = io.read
+            filename = entry.name
+            Bucket.new.put_object("#{s3_path}/#{filename}", pdf)
+            dates << filename.chomp!('.pdf')
+          end
+        end
+        dates
       end
 
       def self.s3_path
         'okc_blotter'
       end
 
-      def self.pdf_directory
-        @@pdf_directory ||= Rails.root.join("tmp/storage/okc_blotter_pdfs/#{Time.now}")
-        Dir.mkdir(@@pdf_directory, 0777) unless Dir.exist?(@@pdf_directory)
-        @@pdf_directory
+      def self.url
+        'https://okc-blotter.herokuapp.com'
       end
 
-      def self.js_runner
-        @@js_runner ||= NodeRunner.new(
-          <<~JAVASCRIPT % self.pdf_directory
-            const pdf_directory = "%s" 
-            const fs = require('fs');
-            const okcb = require('okcjb')
-            let log = []
-            console.log = (message) => { log.push(message) };
-            const downloadAllPdfs = async (date) => {
-              log = []
-              const pdfsWithPostedDate = await okcb.fetchAllPdfs(date);
-              for (let i = 0; i < pdfsWithPostedDate.length; i++) {     
-                let fileName = `${pdf_directory}/${pdfsWithPostedDate[i].postedOn}.pdf`        
-                fs.writeFileSync(fileName, pdfsWithPostedDate[i].buf, 'binary');
-                fs.chmod(fileName, 0777, () => {});
-              }
-            }
-            const parsePdf = async (pdf, date) => {
-              // log = []
-              // const json = {}
-              // const json = await okcb.parseJailblotter(pdf);
-              // let fileName = `${pdf_directory}/${date}.json`        
-              // fs.writefilesync(filename, json);
-              // fs.chmod(fileName, 0777, () => {});
-            }
-        JAVASCRIPT
-        )
+      def self.auth_token
+        ENV['OKC_BLOTTER_AUTH_TOKEN']
       end
     end
   end
