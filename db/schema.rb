@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_08_31_204508) do
+ActiveRecord::Schema.define(version: 2022_08_26_221907) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,8 +31,6 @@ ActiveRecord::Schema.define(version: 2022_08_31_204508) do
     t.date "release_date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "offense_id", null: false
-    t.index ["offense_id"], name: "index_bookings_on_offense_id"
     t.index ["pdfs_id"], name: "index_bookings_on_pdfs_id"
   end
 
@@ -454,8 +452,6 @@ ActiveRecord::Schema.define(version: 2022_08_31_204508) do
     t.date "date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "booking_id", null: false
-    t.index ["booking_id"], name: "index_pdfs_on_booking_id"
   end
 
   create_table "pleas", force: :cascade do |t|
@@ -490,7 +486,6 @@ ActiveRecord::Schema.define(version: 2022_08_31_204508) do
     t.index ["judge_id"], name: "index_warrants_on_judge_id"
   end
 
-  add_foreign_key "bookings", "offenses"
   add_foreign_key "bookings", "pdfs", column: "pdfs_id"
   add_foreign_key "case_htmls", "court_cases"
   add_foreign_key "case_parties", "court_cases"
@@ -531,7 +526,6 @@ ActiveRecord::Schema.define(version: 2022_08_31_204508) do
   add_foreign_key "party_addresses", "parties"
   add_foreign_key "party_aliases", "parties"
   add_foreign_key "party_htmls", "parties"
-  add_foreign_key "pdfs", "bookings"
   add_foreign_key "warrants", "docket_events"
   add_foreign_key "warrants", "judges"
 
