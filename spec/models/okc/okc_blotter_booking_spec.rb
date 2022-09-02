@@ -8,6 +8,6 @@ RSpec.describe OkcBlotter::Booking, type: :model do
     it { should validate_presence_of(:booking_date) }
   end
   describe 'associations' do
-    it { should belong_to(:offense).class_name('OkcBlotter::Offense') }
+    it { should belong_to(:pdf).class_name('OkcBlotter::Pdf') }
   end
 end
