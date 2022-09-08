@@ -17,10 +17,9 @@ module Scrapers
       bar = ProgressBar.new(cases.count)
 
       cases.each do |c|
-        worker_args = JSON.dump({ county_id: c.county_id, case_number: c.case_number, scrape_case: true })
         CourtCaseWorker
           .set(queue: :medium)
-          .perform_async(worker_args)
+          .perform_async(c.county_id, c.case_number, true)
         bar.increment!
       end
     end

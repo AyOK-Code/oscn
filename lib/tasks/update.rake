@@ -4,6 +4,7 @@ require 'oscn_scraper'
 namespace :update do
   desc 'Scrape cases data'
   task cases: [:environment] do
+    Scrapers::Judges.perform
     Scrapers::Case.perform
   end
 
@@ -68,6 +69,18 @@ namespace :update do
       next if c[2].nil?
 
       DatabaseUpdateWorker.perform_in(1.minutes, { county_id: c[0], case_number: c[1] })
+    end
+  end
+
+  desc 'Set the is_error flag on court_cases'
+  task is_error: [:environment] do
+    associations = [:parties, :current_judge, :counsels, :counts, :events, :docket_events]
+    bar = ProgressBar.new(CourtCase.all.count)
+    CourtCase.in_batches(of: 1000) do |court_cases|
+      court_cases.includes(associations).each do |court_case|
+        court_case.update!(is_error: true) if court_case.error?
+      end
+      bar.increment!(1000)
     end
   end
 end

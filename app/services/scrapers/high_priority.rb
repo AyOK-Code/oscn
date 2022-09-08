@@ -18,20 +18,18 @@ module Scrapers
 
       bar = ProgressBar.new(cases.count)
       puts "#{cases.count} are high priority for update for #{county.name} county"
-
       cases.each do |case_number|
-        worker_args = JSON.dump({ county_id: @county.id, case_number: case_number, scrape_case: true })
         CourtCaseWorker
           .set(queue: :high)
-          .perform_async(worker_args)
+          .perform_async(@county.id, case_number, true)
         bar.increment!
       end
     end
 
     def fetch_case_list
-      missing_html_cases = CourtCase.for_county_name(county.name).without_html.pluck(:case_number)
       recent_cases = Scrapers::RecentCases.perform(county.name, days_ago: days_ago, days_forward: days_forward)
-      (missing_html_cases + recent_cases).flatten.uniq
+      missing_html_cases = CourtCase.for_county_name(county.name).without_html.pluck(:case_number)
+      (recent_cases + missing_html_cases).flatten.uniq.compact
     end
   end
 end

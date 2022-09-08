@@ -15,14 +15,13 @@ module Importers
 
     def perform
       html = case_search.fetch_case_by_number
-      Importers::NewCourtCase.new(case_number).perform if court_case.nil?
       save_html(court_case, html)
     end
 
     private
 
     def court_case
-      ::CourtCase.find_by(county_id: county.id, case_number: case_number)
+      ::CourtCase.find_by!(county_id: county.id, case_number: case_number)
     end
 
     def save_html(court_case, html)

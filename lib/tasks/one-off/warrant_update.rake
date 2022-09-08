@@ -23,10 +23,9 @@ namespace :warrants do
       case_id = court_cases[c['Case #']]
       next if case_id.nil?
 
-      worker_args = JSON.dump({ county_id: county.id, case_number: c['Case #'], scrape_case: true })
       CourtCaseWorker
         .set(queue: :default)
-        .perform_async(worker_args)
+        .perform_async(county.id, c['Case #'], true)
 
       CaseParty.where(court_case_id: case_id).each do |cp|
         PartyWorker.perform_in(1.hour, cp.party.oscn_id)
