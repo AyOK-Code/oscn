@@ -18,7 +18,6 @@ module Scrapers
 
       bar = ProgressBar.new(cases.count)
       puts "#{cases.count} are high priority for update for #{county.name} county"
-
       cases.each do |case_number|
         CourtCaseWorker
           .set(queue: :high)
