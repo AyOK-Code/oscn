@@ -12,6 +12,7 @@ RSpec.describe Doc::Profile, type: :model do
   end
 
   describe 'associations' do
+    it { should belong_to(:roster).class_name('Roster') }
     it { should have_many(:aliases).class_name('Doc::Alias').with_foreign_key('doc_profile_id').dependent(:destroy) }
     it {
       should have_many(:sentences).class_name('Doc::Sentence').with_foreign_key('doc_profile_id').dependent(:destroy)

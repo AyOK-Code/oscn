@@ -8,6 +8,7 @@ RSpec.describe CaseParty, type: :model do
 
   describe 'validations' do
     subject { FactoryBot.build(:case_party) }
+    it { should belong_to(:roster).class_name('Roster').optional }
     it { should validate_uniqueness_of(:party_id).scoped_to(:court_case_id) }
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_08_26_221907) do
+ActiveRecord::Schema.define(version: 2022_09_13_181927) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,7 +31,9 @@ ActiveRecord::Schema.define(version: 2022_08_26_221907) do
     t.date "release_date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "roster_id"
     t.index ["pdfs_id"], name: "index_bookings_on_pdfs_id"
+    t.index ["roster_id"], name: "index_bookings_on_roster_id"
   end
 
   create_table "case_htmls", force: :cascade do |t|
@@ -48,10 +50,12 @@ ActiveRecord::Schema.define(version: 2022_08_26_221907) do
     t.bigint "party_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "roster_id"
     t.index ["court_case_id", "party_id"], name: "index_case_parties_on_court_case_id_and_party_id", unique: true
     t.index ["court_case_id"], name: "index_case_parties_on_court_case_id"
     t.index ["party_id", "court_case_id"], name: "index_case_parties_on_party_id_and_court_case_id", unique: true
     t.index ["party_id"], name: "index_case_parties_on_party_id"
+    t.index ["roster_id"], name: "index_case_parties_on_roster_id"
   end
 
   create_table "case_types", force: :cascade do |t|
@@ -232,9 +236,11 @@ ActiveRecord::Schema.define(version: 2022_08_26_221907) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "parent_party_id"
     t.bigint "doc_facility_id"
+    t.bigint "roster_id"
     t.index ["doc_facility_id"], name: "index_doc_profiles_on_doc_facility_id"
     t.index ["doc_number"], name: "index_doc_profiles_on_doc_number", unique: true
     t.index ["parent_party_id"], name: "index_doc_profiles_on_parent_party_id"
+    t.index ["roster_id"], name: "index_doc_profiles_on_roster_id"
   end
 
   create_table "doc_sentences", force: :cascade do |t|
@@ -461,6 +467,21 @@ ActiveRecord::Schema.define(version: 2022_08_26_221907) do
     t.index ["name"], name: "index_pleas_on_name", unique: true
   end
 
+  create_table "rosters", force: :cascade do |t|
+    t.string "birth_year"
+    t.string "birth_month"
+    t.string "birth_day"
+    t.string "sex"
+    t.string "race"
+    t.string "street_address"
+    t.integer "zip"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "middle_name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "titles", force: :cascade do |t|
     t.string "code"
     t.string "name"
@@ -487,9 +508,11 @@ ActiveRecord::Schema.define(version: 2022_08_26_221907) do
   end
 
   add_foreign_key "bookings", "pdfs", column: "pdfs_id"
+  add_foreign_key "bookings", "rosters"
   add_foreign_key "case_htmls", "court_cases"
   add_foreign_key "case_parties", "court_cases"
   add_foreign_key "case_parties", "parties"
+  add_foreign_key "case_parties", "rosters"
   add_foreign_key "counsel_parties", "counsels"
   add_foreign_key "counsel_parties", "court_cases"
   add_foreign_key "counsel_parties", "parties"
@@ -505,6 +528,7 @@ ActiveRecord::Schema.define(version: 2022_08_26_221907) do
   add_foreign_key "doc_aliases", "doc_profiles"
   add_foreign_key "doc_profiles", "doc_facilities"
   add_foreign_key "doc_profiles", "parent_parties"
+  add_foreign_key "doc_profiles", "rosters"
   add_foreign_key "doc_sentences", "court_cases"
   add_foreign_key "doc_sentences", "doc_offense_codes"
   add_foreign_key "doc_sentences", "doc_profiles"
