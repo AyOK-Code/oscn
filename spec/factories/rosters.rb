@@ -7,8 +7,8 @@ FactoryBot.define do
     race { 'MyString' }
     street_address { 'MyString' }
     zip { 1 }
-    first_name { Faker::Name.name  }
-    last_name { Faker::Name.name  }
-    middle_name { Faker::Name.name  }
+    first_name { Faker::Name.name }
+    last_name { Faker::Name.name }
+    middle_name { Faker::Name.name }
   end
 end
