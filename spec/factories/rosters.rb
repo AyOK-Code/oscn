@@ -1,11 +1,11 @@
 FactoryBot.define do
   factory :roster do
-    birth_year { 'MyString' }
-    birth_month { 'MyString' }
-    birth_day { 'MyString' }
-    sex { 'MyString' }
-    race { 'MyString' }
-    street_address { 'MyString' }
+    birth_year { Faker::Lorem.word}
+    birth_month { Faker::Lorem.word }
+    birth_day { Faker::Lorem.word}
+    sex { Faker::Lorem.word }
+    race { Faker::Lorem.word }
+    street_address { Faker::Lorem.word }
     zip { 1 }
     first_name { Faker::Name.name }
     last_name { Faker::Name.name }
