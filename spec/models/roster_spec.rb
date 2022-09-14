@@ -1,5 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Roster, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe 'associations' do
+    it { should have_many(:booking)}
+    it { should have_many(:case_parties)}
+    it { should have_many(:doc_profiles)}
+  end
+  
 end
