@@ -1,4 +1,5 @@
 class CaseParty < ApplicationRecord
+  belongs_to :roster, optional: true
   belongs_to :court_case
   belongs_to :party
 
