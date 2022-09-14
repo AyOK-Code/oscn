@@ -9,6 +9,6 @@ RSpec.describe OkcBlotter::Booking, type: :model do
   end
   describe 'associations' do
     it { should belong_to(:pdf).class_name('OkcBlotter::Pdf') }
-    it { should have_many(:offense).dependent(:destroy) }
+    it { should have_many(:offenses).dependent(:destroy) }
   end
 end

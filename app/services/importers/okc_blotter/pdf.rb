@@ -8,14 +8,14 @@ module Importers
       end
 
       def json
-        # see https://github.com/jnunemaker/httparty/issues/675#issuecomment-590757288
         def pdf.path
-          '/path/hack.pdf'
+          '/path/hack.pdf' # this is a hack see https://github.com/jnunemaker/httparty/issues/675#issuecomment-590757288
         end
+
         @json ||= JSON.parse(HTTParty.post(
           "#{self.class.url}/parse",
           body: { pdf: pdf },
-          headers: { 'Authorization': self.class.auth_token }
+          headers: { Authorization: self.class.auth_token }
         ).body)
       end
 
@@ -24,25 +24,72 @@ module Importers
       end
 
       def save
-        test = json
-        puts 'yolo'
+        bookings_hash = json
+        ::OkcBlotter::Pdf.create!(
+          parsed_on: DateTime.now.to_date,
+          date: @date,
+          bookings: bookings_hash.map do |booking_hash|
+            build_bookings(booking_hash)
+          end
+        )
+      end
+
+      def build_bookings(booking_hash)
+        ::OkcBlotter::Booking.new({
+                                    dob: booking_hash['dob'],
+                                    sex: booking_hash['sex'],
+                                    last_name: booking_hash['lastName'],
+                                    first_name: booking_hash['firstName'],
+                                    race: booking_hash['race'],
+                                    booking_number: booking_hash['bookingNumber'],
+                                    booking_date: booking_hash['bookingDate'],
+                                    inmate_number: booking_hash['inmateNumber'],
+                                    transient: booking_hash['transient'],
+                                    zip: booking_hash['zip'],
+                                    booking_type: booking_hash['bookingType'],
+                                    offenses: booking_hash['offenses'].map do |offense_hash|
+                                      build_offense(offense_hash)
+                                    end
+                                  })
+      end
+
+      def build_offense(offense_hash)
+        ::OkcBlotter::Offense.new({
+                                    type: offense_hash['type'],
+                                    bond: offense_hash['bond'],
+                                    code: offense_hash['code'],
+                                    dispo: offense_hash['dispo'],
+                                    charge: offense_hash['charge'],
+                                    warrant_number: offense_hash['warrantNumber'],
+                                    citation_number: offense_hash['citationNumber']
+                                  })
       end
 
       def perform
         save
       end
 
-      def self.import_from_website(from_date = nil)
-        dates = download_from_website(from_date)
-        dates.each do |date|
-          self.perform(date)
+      def self.import_since_last_run
+        last_run_date = ::OkcBlotter::Pdf.order(date: :desc).first.date
+        (last_run_date..DateTime.now.to_date).each do |date|
+          import_from_website(date)
         end
       end
 
-      def self.download_from_website(from_date = nil)
-        input = HTTParty.get("#{url}/pdfs?after=#{from_date}",
+      def self.import_from_website(date = nil)
+        download_pdfs_from_website(date)
+        begin
+          perform(date)
+        rescue StandardError
+          puts "error processing #{date}. Data not saved" #todo: log these somewhere?
+        end
+      end
+
+      # TODO: simplify this code since we're only getting one pdf (needs to be )
+      def self.download_pdfs_from_website(date = nil)
+        input = HTTParty.get("#{url}/pdfs?date=#{date}",
                              headers: {
-                               'Authorization': auth_token,
+                               Authorization: auth_token
                              }).body
         dates = []
         Zip::InputStream.open(StringIO.new(input)) do |io|
