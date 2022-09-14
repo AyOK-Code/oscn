@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :roster do
-    birth_year { Faker::Lorem.word}
+    birth_year { Faker::Lorem.word }
     birth_month { Faker::Lorem.word }
-    birth_day { Faker::Lorem.word}
+    birth_day { Faker::Lorem.word }
     sex { Faker::Lorem.word }
     race { Faker::Lorem.word }
     street_address { Faker::Lorem.word }
