@@ -14,7 +14,7 @@ RSpec.describe Scrapers::HighPriority do
       expect do
         described_class.perform.to change(CourtCaseWorker.jobs, :size).by(1)
       end
-      expect(data.first).to eq test_case.case_number
+      expect(data.first).to eq test_case.oscn_id
     end
   end
 end
