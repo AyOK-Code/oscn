@@ -10,10 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_13_181927) do
+ActiveRecord::Schema.define(version: 2022_09_20_143924) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "arrests", force: :cascade do |t|
+    t.bigint "inmate_id"
+    t.string "arrest_date"
+    t.string "arrest_time"
+    t.string "arrested_by"
+    t.string "booking_date"
+    t.string "booking_time"
+    t.string "release_date"
+    t.string "release_time"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["inmate_id"], name: "index_arrests_on_inmate_id"
+  end
 
   create_table "bookings", force: :cascade do |t|
     t.bigint "pdfs_id", null: false
@@ -353,6 +367,26 @@ ActiveRecord::Schema.define(version: 2022_09_13_181927) do
     t.index ["party_id"], name: "index_events_on_party_id"
   end
 
+  create_table "inmates", force: :cascade do |t|
+    t.string "first"
+    t.string "middle"
+    t.string "last"
+    t.string "gender"
+    t.bigint "roster_id"
+    t.bigint "booking_id"
+    t.string "race"
+    t.string "address"
+    t.string "height"
+    t.integer "weight"
+    t.integer "zip"
+    t.string "hair"
+    t.string "eyes"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["booking_id"], name: "index_inmates_on_booking_id"
+    t.index ["roster_id"], name: "index_inmates_on_roster_id"
+  end
+
   create_table "judges", force: :cascade do |t|
     t.string "name", null: false
     t.string "courthouse"
@@ -489,6 +523,19 @@ ActiveRecord::Schema.define(version: 2022_09_13_181927) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "tulsa_offenses", force: :cascade do |t|
+    t.bigint "arrest_id"
+    t.string "description"
+    t.string "case_number"
+    t.string "court_date"
+    t.string "bond_type"
+    t.string "bound_amount"
+    t.string "disposition"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["arrest_id"], name: "index_tulsa_offenses_on_arrest_id"
+  end
+
   create_table "verdicts", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
@@ -507,6 +554,7 @@ ActiveRecord::Schema.define(version: 2022_09_13_181927) do
     t.index ["judge_id"], name: "index_warrants_on_judge_id"
   end
 
+  add_foreign_key "arrests", "inmates"
   add_foreign_key "bookings", "pdfs", column: "pdfs_id"
   add_foreign_key "bookings", "rosters"
   add_foreign_key "case_htmls", "court_cases"
@@ -542,6 +590,8 @@ ActiveRecord::Schema.define(version: 2022_09_13_181927) do
   add_foreign_key "events", "court_cases"
   add_foreign_key "events", "event_types"
   add_foreign_key "events", "parties"
+  add_foreign_key "inmates", "bookings"
+  add_foreign_key "inmates", "rosters"
   add_foreign_key "judges", "counties"
   add_foreign_key "offenses", "bookings", column: "bookings_id"
   add_foreign_key "parties", "doc_profiles"
@@ -550,6 +600,7 @@ ActiveRecord::Schema.define(version: 2022_09_13_181927) do
   add_foreign_key "party_addresses", "parties"
   add_foreign_key "party_aliases", "parties"
   add_foreign_key "party_htmls", "parties"
+  add_foreign_key "tulsa_offenses", "arrests"
   add_foreign_key "warrants", "docket_events"
   add_foreign_key "warrants", "judges"
 
