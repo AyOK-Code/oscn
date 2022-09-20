@@ -29,10 +29,12 @@ ActiveRecord::Schema.define(version: 2022_09_14_024803) do
     t.bigint "party_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "roster_id"
     t.index ["court_case_id", "party_id"], name: "index_case_parties_on_court_case_id_and_party_id", unique: true
     t.index ["court_case_id"], name: "index_case_parties_on_court_case_id"
     t.index ["party_id", "court_case_id"], name: "index_case_parties_on_party_id_and_court_case_id", unique: true
     t.index ["party_id"], name: "index_case_parties_on_party_id"
+    t.index ["roster_id"], name: "index_case_parties_on_roster_id"
   end
 
   create_table "case_types", force: :cascade do |t|
@@ -213,9 +215,11 @@ ActiveRecord::Schema.define(version: 2022_09_14_024803) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "parent_party_id"
     t.bigint "doc_facility_id"
+    t.bigint "roster_id"
     t.index ["doc_facility_id"], name: "index_doc_profiles_on_doc_facility_id"
     t.index ["doc_number"], name: "index_doc_profiles_on_doc_number", unique: true
     t.index ["parent_party_id"], name: "index_doc_profiles_on_parent_party_id"
+    t.index ["roster_id"], name: "index_doc_profiles_on_roster_id"
   end
 
   create_table "doc_sentences", force: :cascade do |t|
@@ -356,7 +360,9 @@ ActiveRecord::Schema.define(version: 2022_09_14_024803) do
     t.datetime "release_date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "roster_id"
     t.index ["pdf_id"], name: "index_okc_blotter_bookings_on_pdf_id"
+    t.index ["roster_id"], name: "index_okc_blotter_bookings_on_roster_id"
   end
 
   create_table "okc_blotter_offenses", force: :cascade do |t|
@@ -461,6 +467,21 @@ ActiveRecord::Schema.define(version: 2022_09_14_024803) do
     t.index ["name"], name: "index_pleas_on_name", unique: true
   end
 
+  create_table "rosters", force: :cascade do |t|
+    t.string "birth_year"
+    t.string "birth_month"
+    t.string "birth_day"
+    t.string "sex"
+    t.string "race"
+    t.string "street_address"
+    t.integer "zip"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "middle_name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "titles", force: :cascade do |t|
     t.string "code"
     t.string "name"
@@ -489,6 +510,7 @@ ActiveRecord::Schema.define(version: 2022_09_14_024803) do
   add_foreign_key "case_htmls", "court_cases", on_update: :cascade
   add_foreign_key "case_parties", "court_cases", on_update: :cascade
   add_foreign_key "case_parties", "parties", on_update: :cascade
+  add_foreign_key "case_parties", "rosters"
   add_foreign_key "counsel_parties", "counsels", on_update: :cascade
   add_foreign_key "counsel_parties", "court_cases", on_update: :cascade
   add_foreign_key "counsel_parties", "parties", on_update: :cascade
@@ -506,6 +528,7 @@ ActiveRecord::Schema.define(version: 2022_09_14_024803) do
   add_foreign_key "doc_historical_sentences", "doc_profiles", on_update: :cascade
   add_foreign_key "doc_profiles", "doc_facilities", on_update: :cascade
   add_foreign_key "doc_profiles", "parent_parties", on_update: :cascade
+  add_foreign_key "doc_profiles", "rosters"
   add_foreign_key "doc_sentences", "court_cases", on_update: :cascade
   add_foreign_key "doc_sentences", "doc_offense_codes", on_update: :cascade
   add_foreign_key "doc_sentences", "doc_profiles", on_update: :cascade
@@ -522,6 +545,7 @@ ActiveRecord::Schema.define(version: 2022_09_14_024803) do
   add_foreign_key "events", "parties", on_update: :cascade
   add_foreign_key "judges", "counties", on_update: :cascade
   add_foreign_key "okc_blotter_bookings", "okc_blotter_pdfs", column: "pdf_id"
+  add_foreign_key "okc_blotter_bookings", "rosters"
   add_foreign_key "okc_blotter_offenses", "okc_blotter_bookings", column: "booking_id"
   add_foreign_key "parties", "doc_profiles", on_update: :cascade
   add_foreign_key "parties", "parent_parties", on_update: :cascade
