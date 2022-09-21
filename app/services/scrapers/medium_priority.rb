@@ -19,7 +19,7 @@ module Scrapers
       cases.each do |c|
         CourtCaseWorker
           .set(queue: :medium)
-          .perform_async(c.county_id, c.case_number, true)
+          .perform_async(c.county_id, c.oscn_id, true)
         bar.increment!
       end
     end
