@@ -17,12 +17,11 @@ module Scrapers
 
       cases.each do |c|
         county = c.county
-
-        case_number = c.case_number
+        oscn_id = c.oscn_id
 
         CourtCaseWorker
           .set(queue: :low)
-          .perform_async(county.id, case_number, true)
+          .perform_async(county.id, oscn_id, true)
         bar.increment!
       end
     end
