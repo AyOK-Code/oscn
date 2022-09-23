@@ -5,7 +5,6 @@ module Importers
     attr_accessor :counties, :case_types
 
     def initialize(link)
-      
       @case_number = link.text
       @case_types = CaseType.oscn_id_mapping
       @counties = County.pluck(:name, :id).to_h
