@@ -9,6 +9,7 @@ module Scrapers
       @county = county
       @court_cases = CourtCase.pluck(:case_number, :oscn_id).to_h
       @case_types = CaseType.active
+      #binding.pry
       @recent_cases = []
       @days_ago = days_ago
       @days_forward = days_forward
@@ -18,7 +19,7 @@ module Scrapers
       new(county, days_ago, days_forward).perform
     end
 
-    def perform
+    def perform     
       date_range.each do |date|
         puts "Pulling case changes for #{date.to_date}"
         fetch_docket_for_date(date)
@@ -30,22 +31,33 @@ module Scrapers
       case_types.each do |case_type_oscn_id|
         case_numbers = scrape_recent_cases(date, case_type_oscn_id)
         recent_cases << case_numbers
+        
       end
       recent_cases
+     
+
     end
 
     def scrape_recent_cases(date, case_type_oscn_id)
       data = fetch_data(county, date, case_type_oscn_id)
+     
 
       data.each do |link|
+        
         Importers::NewCourtCase.new(link).perform if court_cases[link.text].nil?
       end
       return if data.empty?
 
       data.map(&:text)
+      url =data.first.attributes.first.second.value
+      params = CGI.parse(URI(url).query).to_h { |k, v| [k.downcase, v.first] }
+      params['casemasterid']
+     # binding.pry
+
     end
 
     def fetch_data(county, date, case_type_oscn_id)
+      #binding.pry
       scraper = OscnScraper::Requestor::Report.new({
                                                      county: county,
                                                      case_type_id: case_type_oscn_id,
@@ -53,6 +65,7 @@ module Scrapers
                                                    })
       request = scraper.events_scheduled
       case_changes.new(Nokogiri::HTML.parse(request.body)).parse
+
     end
 
     def date_range

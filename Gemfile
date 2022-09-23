@@ -42,6 +42,7 @@ group :development, :test do
   gem 'rubocop-rspec'
   gem 'simplecov'
   gem 'simplecov-json'
+  gem 'webmock'
 end
 
 group :test do
