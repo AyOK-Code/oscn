@@ -5,6 +5,7 @@ FactoryBot.define do
     abbreviation { Faker::Name.unique.initials }
 
     trait :felony do
+      oscn_id {31}
       name { 'CRIMINAL FELONY' }
       abbreviation { 'CF' }
     end

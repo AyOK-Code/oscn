@@ -7,8 +7,8 @@ class CourtCaseWorker
   sidekiq_options retry: 5, queue: :medium
   sidekiq_throttle_as :oscn
 
-  def perform(county_id, _case_number, scrape_case)
-    ::Importers::CaseHtml.perform(county_id, oscn) if scrape_case
-    ::Importers::CourtCase.perform(county_id, oscn)
+  def perform(county_id, oscn_id, scrape_case)
+    ::Importers::CaseHtml.perform(county_id, oscn_id) if scrape_case
+    ::Importers::CourtCase.perform(county_id, oscn_id)
   end
 end
