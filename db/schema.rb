@@ -15,20 +15,6 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "arrests", force: :cascade do |t|
-    t.bigint "inmate_id"
-    t.string "arrest_date"
-    t.string "arrest_time"
-    t.string "arrested_by"
-    t.string "booking_date"
-    t.string "booking_time"
-    t.string "release_date"
-    t.string "release_time"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["inmate_id"], name: "index_arrests_on_inmate_id"
-  end
-
   create_table "bookings", force: :cascade do |t|
     t.bigint "pdfs_id", null: false
     t.string "first_name"
@@ -367,26 +353,6 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
     t.index ["party_id"], name: "index_events_on_party_id"
   end
 
-  create_table "inmates", force: :cascade do |t|
-    t.string "first"
-    t.string "middle"
-    t.string "last"
-    t.string "gender"
-    t.bigint "roster_id"
-    t.bigint "booking_id"
-    t.string "race"
-    t.string "address"
-    t.string "height"
-    t.integer "weight"
-    t.integer "zip"
-    t.string "hair"
-    t.string "eyes"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["booking_id"], name: "index_inmates_on_booking_id"
-    t.index ["roster_id"], name: "index_inmates_on_roster_id"
-  end
-
   create_table "judges", force: :cascade do |t|
     t.string "name", null: false
     t.string "courthouse"
@@ -523,8 +489,42 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "tulsa_offenses", force: :cascade do |t|
-    t.bigint "arrest_id"
+  create_table "tulsa_blotter_arrests", force: :cascade do |t|
+    t.bigint "tulsa_blotter_inmates_id"
+    t.string "arrest_date"
+    t.string "arrest_time"
+    t.string "arrested_by"
+    t.string "booking_date"
+    t.string "booking_time"
+    t.string "release_date"
+    t.string "release_time"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["tulsa_blotter_inmates_id"], name: "index_tulsa_blotter_arrests_on_tulsa_blotter_inmates_id"
+  end
+
+  create_table "tulsa_blotter_inmates", force: :cascade do |t|
+    t.string "first"
+    t.string "middle"
+    t.string "last"
+    t.string "gender"
+    t.bigint "roster_id"
+    t.bigint "booking_id"
+    t.string "race"
+    t.string "address"
+    t.string "height"
+    t.integer "weight"
+    t.integer "zip"
+    t.string "hair"
+    t.string "eyes"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["booking_id"], name: "index_tulsa_blotter_inmates_on_booking_id"
+    t.index ["roster_id"], name: "index_tulsa_blotter_inmates_on_roster_id"
+  end
+
+  create_table "tulsa_blotter_tulsa_offenses", force: :cascade do |t|
+    t.bigint "tulsa_blotter_arrests_id"
     t.string "description"
     t.string "case_number"
     t.string "court_date"
@@ -533,7 +533,7 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
     t.string "disposition"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["arrest_id"], name: "index_tulsa_offenses_on_arrest_id"
+    t.index ["tulsa_blotter_arrests_id"], name: "index_tulsa_blotter_tulsa_offenses_on_tulsa_blotter_arrests_id"
   end
 
   create_table "verdicts", force: :cascade do |t|
@@ -554,7 +554,6 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
     t.index ["judge_id"], name: "index_warrants_on_judge_id"
   end
 
-  add_foreign_key "arrests", "inmates"
   add_foreign_key "bookings", "pdfs", column: "pdfs_id"
   add_foreign_key "bookings", "rosters"
   add_foreign_key "case_htmls", "court_cases"
@@ -590,8 +589,6 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
   add_foreign_key "events", "court_cases"
   add_foreign_key "events", "event_types"
   add_foreign_key "events", "parties"
-  add_foreign_key "inmates", "bookings"
-  add_foreign_key "inmates", "rosters"
   add_foreign_key "judges", "counties"
   add_foreign_key "offenses", "bookings", column: "bookings_id"
   add_foreign_key "parties", "doc_profiles"
@@ -600,7 +597,10 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
   add_foreign_key "party_addresses", "parties"
   add_foreign_key "party_aliases", "parties"
   add_foreign_key "party_htmls", "parties"
-  add_foreign_key "tulsa_offenses", "arrests"
+  add_foreign_key "tulsa_blotter_arrests", "tulsa_blotter_inmates", column: "tulsa_blotter_inmates_id"
+  add_foreign_key "tulsa_blotter_inmates", "bookings"
+  add_foreign_key "tulsa_blotter_inmates", "rosters"
+  add_foreign_key "tulsa_blotter_tulsa_offenses", "tulsa_blotter_arrests", column: "tulsa_blotter_arrests_id"
   add_foreign_key "warrants", "docket_events"
   add_foreign_key "warrants", "judges"
 
