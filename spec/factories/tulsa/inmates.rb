@@ -4,8 +4,8 @@ FactoryBot.define do
     middle { Faker::Lorem.word }
     last { Faker::Lorem.word }
     gender { Faker::Lorem.word }
-    roster { '' }
-    booking { '' }
+    roster {  }
+    booking {  }
     race { Faker::Lorem.word }
     address { Faker::Lorem.word }
     height { Faker::Lorem.word }
