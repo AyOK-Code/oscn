@@ -1,6 +1,6 @@
 class CreateTulsaBlotterInmates < ActiveRecord::Migration[6.0]
   def change
-    create_table :inmates do |t|
+    create_table :tulsa_blotter_inmates do |t|
       t.string :first
       t.string :middle
       t.string :last

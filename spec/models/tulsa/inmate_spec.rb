@@ -10,6 +10,6 @@ RSpec.describe TulsaBlotter::Inmate, type: :model do
 
   describe 'associations' do
     it { should belong_to(:roster).class_name('Roster').optional }
-    it { should have_many(:arrests) }
+    it { should have_many(:tulsa_blotter_arrests) }
   end
 end

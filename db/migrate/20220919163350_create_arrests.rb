@@ -1,7 +1,7 @@
 class CreateArrests < ActiveRecord::Migration[6.0]
   def change
-    create_table :arrests do |t|
-      t.references :inmate, null: true, foreign_key: true
+    create_table :tulsa_blotter_arrests do |t|
+      t.references :tulsa_blotter_inmates, null: true, foreign_key: true
       t.string :arrest_date
       t.string :arrest_time
       t.string :arrested_by
