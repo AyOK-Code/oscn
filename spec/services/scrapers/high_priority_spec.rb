@@ -9,7 +9,7 @@ RSpec.describe Scrapers::HighPriority do
     ENV['CASE_TYPES_ABBREVIATION'] = 'CF'
   end
   describe '#perform' do
-    # let!(:case_type1) { create(:case_type,name:'CIVIL RELIEF MORE THAN $10,000',abbreviation:'CJ') }
+    let!(:case_type1) { create(:case_type, :felony) }
     # let!(:case_type2) { create(:case_type,name:'CIVIL RELIEF LESS THAN $10,000',abbreviation:'CS') }
     it 'add specs' do
       # do creates outside of test
@@ -23,8 +23,7 @@ RSpec.describe Scrapers::HighPriority do
       expect do
         described_class.perform.to change(CourtCaseWorker.jobs, :size).by(1)
       end
-      binding.pry
-      expect(data.count).to eq 290
+      expect(data.count).to eq 289
     end
   end
 end

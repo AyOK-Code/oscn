@@ -37,7 +37,6 @@ module Scrapers
     def scrape_recent_cases(date, case_type_oscn_id)
       data = fetch_data(county, date, case_type_oscn_id)
       oscn_ids = []
-
       data.each do |link|
         Importers::NewCourtCase.new(link).perform if court_cases[link.text].nil?
         url = link.attributes.first.second.value
