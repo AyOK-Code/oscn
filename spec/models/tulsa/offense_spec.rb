@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe TulsaBlotter::TulsaOffense, type: :model do
+RSpec.describe TulsaBlotter::Offense, type: :model do
   describe 'validations' do
     it { should validate_presence_of(:case_number) }
     it { should validate_presence_of(:court_date) }

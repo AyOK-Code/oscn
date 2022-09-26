@@ -523,7 +523,7 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
     t.index ["roster_id"], name: "index_tulsa_blotter_inmates_on_roster_id"
   end
 
-  create_table "tulsa_blotter_tulsa_offenses", force: :cascade do |t|
+  create_table "tulsa_blotter_offenses", force: :cascade do |t|
     t.bigint "tulsa_blotter_arrests_id"
     t.string "description"
     t.string "case_number"
@@ -533,7 +533,7 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
     t.string "disposition"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["tulsa_blotter_arrests_id"], name: "index_tulsa_blotter_tulsa_offenses_on_tulsa_blotter_arrests_id"
+    t.index ["tulsa_blotter_arrests_id"], name: "index_tulsa_blotter_offenses_on_tulsa_blotter_arrests_id"
   end
 
   create_table "verdicts", force: :cascade do |t|
@@ -600,7 +600,7 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
   add_foreign_key "tulsa_blotter_arrests", "tulsa_blotter_inmates", column: "tulsa_blotter_inmates_id"
   add_foreign_key "tulsa_blotter_inmates", "bookings"
   add_foreign_key "tulsa_blotter_inmates", "rosters"
-  add_foreign_key "tulsa_blotter_tulsa_offenses", "tulsa_blotter_arrests", column: "tulsa_blotter_arrests_id"
+  add_foreign_key "tulsa_blotter_offenses", "tulsa_blotter_arrests", column: "tulsa_blotter_arrests_id"
   add_foreign_key "warrants", "docket_events"
   add_foreign_key "warrants", "judges"
 

@@ -9,7 +9,7 @@ RSpec.describe TulsaBlotter::Arrest, type: :model do
   end
 
   describe 'associations' do
-    it { should belong_to(:tulsa_blotter_inmate).class_name('TulsaBlotter::Inmate').optional }
-    it { should have_many(:tulsa_blotter_tulsa_offenses).class_name('TulsaBlotter::TulsaOffense') }
+    it { should belong_to(:tulsa_blotter_inmate).class_name('TulsaBlotter::Inmates').optional }
+    it { should have_many(:tulsa_blotter_offenses).class_name('TulsaBlotter::Offense') }
   end
 end
