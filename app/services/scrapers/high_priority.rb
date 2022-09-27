@@ -28,7 +28,6 @@ module Scrapers
 
     def fetch_case_list
       recent_cases = Scrapers::RecentCases.perform(county.name, days_ago: days_ago, days_forward: days_forward)
-      # ^ Need to change this to oscn?
       missing_html_cases = CourtCase.for_county_name(county.name).without_html.pluck(:oscn_id)
       (recent_cases + missing_html_cases).flatten.uniq.compact
     end
