@@ -85,7 +85,7 @@ module Importers
         end
       end
 
-      # TODO: simplify this code since we're only getting one pdf (needs to be )
+      # This code can be simplified since we're only getting one pdf from the website
       def self.download_pdfs_from_website(date = nil)
         input = HTTParty.get("#{url}/pdfs?date=#{date}",
                              headers: {
