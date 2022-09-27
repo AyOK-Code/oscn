@@ -1,16 +1,16 @@
 module Importers
   # Saves the Html of a court case to the database
   class CaseHtml
-    attr_accessor :case_search, :case_number, :county
+    attr_accessor :case_search, :oscn_id, :county
 
-    def initialize(county_id, case_number)
-      @case_number = case_number
+    def initialize(county_id, oscn_id)
+      @oscn_id = oscn_id
       @county = County.find(county_id)
-      @case_search = OscnScraper::Requestor::Case.new({ county: county.name, number: case_number })
+      @case_search = OscnScraper::Requestor::Case.new({ county: county.name, oscn: oscn_id })
     end
 
-    def self.perform(county_id, case_number)
-      new(county_id, case_number).perform
+    def self.perform(county_id, oscn_id)
+      new(county_id, oscn_id).perform
     end
 
     def perform
@@ -21,7 +21,7 @@ module Importers
     private
 
     def court_case
-      ::CourtCase.find_by!(county_id: county.id, case_number: case_number)
+      ::CourtCase.find_by!(county_id: county.id, oscn_id: oscn_id)
     end
 
     def save_html(court_case, html)

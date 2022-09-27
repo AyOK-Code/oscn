@@ -36,13 +36,17 @@ module Scrapers
 
     def scrape_recent_cases(date, case_type_oscn_id)
       data = fetch_data(county, date, case_type_oscn_id)
-
+      oscn_ids = []
       data.each do |link|
         Importers::NewCourtCase.new(link).perform if court_cases[link.text].nil?
+        url = link.attributes.first.second.value
+        params = CGI.parse(URI(url).query).to_h { |k, v| [k.downcase, v.first] }
+        oscn_ids <<  params['casemasterid']
       end
       return if data.empty?
 
       data.map(&:text)
+      oscn_ids
     end
 
     def fetch_data(county, date, case_type_oscn_id)
