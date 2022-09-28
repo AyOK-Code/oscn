@@ -491,19 +491,19 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
 
   create_table "tulsa_blotter_arrests", force: :cascade do |t|
     t.bigint "tulsa_blotter_inmates_id"
-    t.string "arrest_date"
-    t.string "arrest_time"
+    t.datetime "arrest_date"
     t.string "arrested_by"
-    t.string "booking_date"
-    t.string "booking_time"
-    t.string "release_date"
-    t.string "release_time"
+    t.string "arresting_agency"
+    t.datetime "booking_date"
+    t.datetime "release_date"
+    t.date "freedom_date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["tulsa_blotter_inmates_id"], name: "index_tulsa_blotter_arrests_on_tulsa_blotter_inmates_id"
   end
 
   create_table "tulsa_blotter_inmates", force: :cascade do |t|
+    t.string "dlm"
     t.string "first"
     t.string "middle"
     t.string "last"
@@ -514,9 +514,11 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
     t.string "address"
     t.string "height"
     t.integer "weight"
-    t.integer "zip"
+    t.string "zip"
     t.string "hair"
     t.string "eyes"
+    t.date "last_scraped_at"
+    t.string "mugshot"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["booking_id"], name: "index_tulsa_blotter_inmates_on_booking_id"
