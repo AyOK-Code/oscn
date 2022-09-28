@@ -1,6 +1,7 @@
 class CreateTulsaBlotterInmates < ActiveRecord::Migration[6.0]
   def change
     create_table :tulsa_blotter_inmates do |t|
+      t.string :dlm
       t.string :first
       t.string :middle
       t.string :last
@@ -11,9 +12,11 @@ class CreateTulsaBlotterInmates < ActiveRecord::Migration[6.0]
       t.string :address
       t.string :height
       t.integer :weight
-      t.integer :zip
+      t.string :zip
       t.string :hair
       t.string :eyes
+      t.date :last_scraped_at
+      t.string :mugshot
 
       t.timestamps
     end
