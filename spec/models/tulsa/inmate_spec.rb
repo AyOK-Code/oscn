@@ -2,10 +2,7 @@ require 'rails_helper'
 
 RSpec.describe TulsaBlotter::Inmate, type: :model do
   describe 'validations' do
-    it { should validate_presence_of(:first) }
-    it { should validate_presence_of(:middle) }
-    it { should validate_presence_of(:last) }
-    it { should validate_presence_of(:gender) }
+    it { should validate_presence_of(:dlm) }
   end
 
   describe 'associations' do
