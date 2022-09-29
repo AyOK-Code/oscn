@@ -12,7 +12,7 @@ namespace :import do
       #	Booking Time	Release Date	Release Time
       #Offenses:(description) 	Case Numbers	Court Dates	Bond Types	Bond Amounts	Dispositions
       data.each  do |row| 
-       
+       binding.pry
         inmate =  TulsaBlotter::Inmate.create(dlm:row["Inmate ID"])
         inmate.first = row["First Name"]
         inmate.middle = row["Middle Name"]
@@ -29,7 +29,7 @@ namespace :import do
         inmate.last_scraped_at =  Date.strptime(row["Updated"], "%m/%d/%Y")
         inmate.mugshot = row["Mugshot"]
         
-       # binding.pry
+       
 
         arrest = TulsaBlotter::Arrest.create(arrested_by:row["Arresting Officer"])
         arrest.tulsa_blotter_inmates_id = inmate
