@@ -7,20 +7,27 @@ module Importers
         @date = date
       end
 
-      def json
-        def pdf.path
-          '/path/hack.pdf' # this is a hack see https://github.com/jnunemaker/httparty/issues/675#issuecomment-590757288
-        end
-
-        @json ||= JSON.parse(HTTParty.post(
-          "#{self.class.url}/parse",
-          body: { pdf: pdf },
-          headers: { Authorization: self.class.auth_token }
-        ).body)
+      def perform
+        download_pdfs_from_website
+        save
       end
 
-      def pdf
-        @pdf ||= Bucket.new.get_object("#{self.class.s3_path}/#{@date}.pdf").body
+      # This code can be simplified since we're only getting one pdf from the website
+      def download_pdfs_from_website
+        input = HTTParty.get("#{url}/pdfs?date=#{date}",
+                             headers: {
+                               Authorization: auth_token
+                             }).body
+        dates = []
+        Zip::InputStream.open(StringIO.new(input)) do |io|
+          while entry = io.get_next_entry
+            pdf = io.read
+            filename = entry.name
+            Bucket.new.put_object("#{s3_path}/#{filename}", pdf)
+            dates << filename.chomp!('.pdf')
+          end
+        end
+        dates
       end
 
       def save
@@ -32,6 +39,22 @@ module Importers
             build_bookings(booking_hash)
           end
         )
+      end
+
+      def json
+        def pdf.path
+          '/path/hack.pdf' # this is a hack see https://github.com/jnunemaker/httparty/issues/675#issuecomment-590757288
+        end
+
+        @json ||= JSON.parse(HTTParty.post(
+          "#{url}/parse",
+          body: { pdf: pdf },
+          headers: { Authorization: auth_token }
+        ).body)
+      end
+
+      def pdf
+        @pdf ||= Bucket.new.get_object("#{s3_path}/#{@date}.pdf").body
       end
 
       def build_bookings(booking_hash)
@@ -65,54 +88,27 @@ module Importers
                                   })
       end
 
-      def perform
-        save
+      def s3_path
+        'okc_blotter'
+      end
+
+      def url
+        'https://okc-blotter.herokuapp.com'
+      end
+
+      def auth_token
+        ENV['OKC_BLOTTER_AUTH_TOKEN']
       end
 
       def self.import_since_last_run
         last_run_date = ::OkcBlotter::Pdf.order(date: :desc).first.date
         (last_run_date..DateTime.now.to_date).each do |date|
-          import_from_website(date)
-        end
-      end
-
-      def self.import_from_website(date = nil)
-        download_pdfs_from_website(date)
-        begin
-          perform(date)
-        rescue StandardError
-          puts "error processing #{date}. Data not saved" #todo: log these somewhere?
-        end
-      end
-
-      # This code can be simplified since we're only getting one pdf from the website
-      def self.download_pdfs_from_website(date = nil)
-        input = HTTParty.get("#{url}/pdfs?date=#{date}",
-                             headers: {
-                               Authorization: auth_token
-                             }).body
-        dates = []
-        Zip::InputStream.open(StringIO.new(input)) do |io|
-          while entry = io.get_next_entry
-            pdf = io.read
-            filename = entry.name
-            Bucket.new.put_object("#{s3_path}/#{filename}", pdf)
-            dates << filename.chomp!('.pdf')
+          begin
+            perform(date)
+          rescue StandardError
+            puts "error processing #{date}. Data not saved" #todo: log these somewhere?
           end
         end
-        dates
-      end
-
-      def self.s3_path
-        'okc_blotter'
-      end
-
-      def self.url
-        'https://okc-blotter.herokuapp.com'
-      end
-
-      def self.auth_token
-        ENV['OKC_BLOTTER_AUTH_TOKEN']
       end
     end
   end
