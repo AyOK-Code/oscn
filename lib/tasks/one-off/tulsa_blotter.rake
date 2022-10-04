@@ -16,19 +16,22 @@ namespace :import do
 
       next if row['Inmate ID'].nil?
 
-      inmate = TulsaBlotter::Inmate.create(dlm: row['Inmate ID'])
-      inmate.first = row['First Name']
-      inmate.middle = row['Middle Name']
-      inmate.last = row['Last Name']
+      inmate = TulsaBlotter::Inmate.create(dlm: row['Inmate ID'],first: row['First Name'],
+        middle:row['Middle Name'],last:row['Last Name'],gender:row['Gender'],race:row['Race'],
+        address:row['Address'],zip:row['City/State/Zip'],height:row['Height'],weight:row['Weight'],
+        hair:row['Hair Color'],eyes:row['Eye Color'],mugshot:row['Mugshot'])
+      #inmate.first = row['First Name']
+      #inmate.middle = row['Middle Name']
+      #inmate.last = row['Last Name']
 
-      inmate.gender = row['Gender']
-      inmate.race = row['Race']
-      inmate.address = row['Address']
-      inmate.zip = row['City/State/Zip']
-      inmate.height = row['Height']
-      inmate.weight = row['Weight']
-      inmate.hair = row['Hair Color']
-      inmate.eyes = row['Eye Color']
+      #inmate.gender = row['Gender']
+      #inmate.race = row['Race']
+      #inmate.address = row['Address']
+      #inmate.zip = row['City/State/Zip']
+      #inmate.height = row['Height']
+      #inmate.weight = row['Weight']
+      #inmate.hair = row['Hair Color']
+      #inmate.eyes = row['Eye Color']
       inmate.last_scraped_at = if row['Updated'].nil? || row['Updated'].include?('N/A')
                                  nil
                                else
@@ -36,12 +39,12 @@ namespace :import do
                                    row['Updated'], '%m/%d/%Y'
                                  )
                                end
-      inmate.mugshot = row['Mugshot']
+      #inmate.mugshot = row['Mugshot']
 
       inmate.save!
 
-      arrest = TulsaBlotter::Arrest.create(arrested_by: row['Arresting Officer'])
-      arrest.tulsa_blotter_inmates_id = inmate.id
+      arrest = TulsaBlotter::Arrest.create(arrested_by: row['Arresting Officer'],tulsa_blotter_inmates_id:inmate.id)
+      #arrest.tulsa_blotter_inmates_id = inmate.id
       date = if row['Arrest Date'].nil? || row['Arrest Date'].include?('N/A')
                nil
              else
