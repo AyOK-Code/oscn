@@ -6,7 +6,7 @@ module Scrapers
       end
 
       def perform
-        parties_oscn_ids = ::Party.without_html.limit(parties_high_count).pluck(:oscn_id)
+        parties_oscn_ids = ::Party.without_html.where.not(oscn_id: nil).limit(parties_high_count).pluck(:oscn_id)
 
         bar = ProgressBar.new(parties_oscn_ids.count)
         puts "#{parties_oscn_ids.count} are missing html"
