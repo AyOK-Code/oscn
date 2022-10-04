@@ -14,7 +14,6 @@ RSpec.describe Party, type: :model do
   end
 
   describe 'validations' do
-    it { should validate_presence_of(:oscn_id) }
     subject { FactoryBot.build(:party) }
     it { should validate_uniqueness_of(:oscn_id) }
   end
