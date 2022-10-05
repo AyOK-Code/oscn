@@ -10,31 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_20_143924) do
+ActiveRecord::Schema.define(version: 2022_10_03_201309) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "bookings", force: :cascade do |t|
-    t.bigint "pdfs_id", null: false
-    t.string "first_name"
-    t.string "last_name"
-    t.date "dob"
-    t.string "sex"
-    t.string "race"
-    t.string "zip"
-    t.boolean "transient", default: false, null: false
-    t.string "inmate_number", null: false
-    t.string "booking_number", null: false
-    t.string "booking_type"
-    t.date "booking_date", null: false
-    t.date "release_date"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.bigint "roster_id"
-    t.index ["pdfs_id"], name: "index_bookings_on_pdfs_id"
-    t.index ["roster_id"], name: "index_bookings_on_roster_id"
-  end
 
   create_table "case_htmls", force: :cascade do |t|
     t.bigint "court_case_id", null: false
@@ -365,10 +344,31 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
     t.index ["county_id"], name: "index_judges_on_county_id"
   end
 
-  create_table "offenses", force: :cascade do |t|
-    t.bigint "bookings_id", null: false
+  create_table "okc_blotter_bookings", force: :cascade do |t|
+    t.bigint "pdf_id", null: false
+    t.string "first_name"
+    t.string "last_name"
+    t.date "dob"
+    t.string "sex"
+    t.string "race"
+    t.string "zip"
+    t.boolean "transient", default: false, null: false
+    t.string "inmate_number", null: false
+    t.string "booking_number", null: false
+    t.string "booking_type"
+    t.datetime "booking_date", null: false
+    t.datetime "release_date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "roster_id"
+    t.index ["pdf_id"], name: "index_okc_blotter_bookings_on_pdf_id"
+    t.index ["roster_id"], name: "index_okc_blotter_bookings_on_roster_id"
+  end
+
+  create_table "okc_blotter_offenses", force: :cascade do |t|
+    t.bigint "booking_id", null: false
     t.string "type", null: false
-    t.decimal "bond", precision: 2
+    t.decimal "bond", precision: 10, scale: 2
     t.string "code"
     t.string "dispo"
     t.string "charge", null: false
@@ -376,7 +376,14 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
     t.string "citation_number"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["bookings_id"], name: "index_offenses_on_bookings_id"
+    t.index ["booking_id"], name: "index_okc_blotter_offenses_on_booking_id"
+  end
+
+  create_table "okc_blotter_pdfs", force: :cascade do |t|
+    t.date "parsed_on"
+    t.date "date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "oklahoma_statutes", force: :cascade do |t|
@@ -451,13 +458,6 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name"], name: "index_party_types_on_name", unique: true
-  end
-
-  create_table "pdfs", force: :cascade do |t|
-    t.date "parsed_on"
-    t.date "date"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "pleas", force: :cascade do |t|
@@ -554,8 +554,6 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
     t.index ["judge_id"], name: "index_warrants_on_judge_id"
   end
 
-  add_foreign_key "bookings", "pdfs", column: "pdfs_id"
-  add_foreign_key "bookings", "rosters"
   add_foreign_key "case_htmls", "court_cases"
   add_foreign_key "case_parties", "court_cases"
   add_foreign_key "case_parties", "parties"
@@ -590,7 +588,9 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
   add_foreign_key "events", "event_types"
   add_foreign_key "events", "parties"
   add_foreign_key "judges", "counties"
-  add_foreign_key "offenses", "bookings", column: "bookings_id"
+  add_foreign_key "okc_blotter_bookings", "okc_blotter_pdfs", column: "pdf_id"
+  add_foreign_key "okc_blotter_bookings", "rosters"
+  add_foreign_key "okc_blotter_offenses", "okc_blotter_bookings", column: "booking_id"
   add_foreign_key "parties", "doc_profiles"
   add_foreign_key "parties", "parent_parties"
   add_foreign_key "parties", "party_types"
@@ -598,7 +598,7 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
   add_foreign_key "party_aliases", "parties"
   add_foreign_key "party_htmls", "parties"
   add_foreign_key "tulsa_blotter_arrests", "tulsa_blotter_inmates", column: "tulsa_blotter_inmates_id"
-  add_foreign_key "tulsa_blotter_inmates", "bookings"
+  add_foreign_key "tulsa_blotter_inmates", "okc_blotter_bookings", column: "booking_id"
   add_foreign_key "tulsa_blotter_inmates", "rosters"
   add_foreign_key "tulsa_blotter_offenses", "tulsa_blotter_arrests", column: "tulsa_blotter_arrests_id"
   add_foreign_key "warrants", "docket_events"
@@ -818,13 +818,13 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
               WHEN (docket_events.description ~~ '%CLEARED%'::text) THEN true
               ELSE false
           END AS is_cleared,
-      ((( SELECT (regexp_matches(docket_events.description, '[0-9]{1,3}(?:,?[0-9]{3})*\.[0-9]{2}'::text))[1] AS regexp_matches))::money)::numeric AS bond_amount,
-      ( SELECT (regexp_matches((( SELECT regexp_matches(docket_events.description, 'WARRANT RETURNED \d{1,2}/\d{1,2}/\d{4}'::text) AS regexp_matches))[1], '\d{1,2}/\d{1,2}/\d{4}'::text))[1] AS regexp_matches) AS warrant_returned_on,
+      ((( SELECT (regexp_matches(docket_events.description, '[0-9]{1,3}(?:,?[0-9]{3})*.[0-9]{2}'::text))[1] AS regexp_matches))::money)::numeric AS bond_amount,
+      ( SELECT (regexp_matches((( SELECT regexp_matches(docket_events.description, 'WARRANT RETURNED d{1,2}/d{1,2}/d{4}'::text) AS regexp_matches))[1], 'd{1,2}/d{1,2}/d{4}'::text))[1] AS regexp_matches) AS warrant_returned_on,
           CASE
-              WHEN (( SELECT (regexp_matches((( SELECT regexp_matches(docket_events.description, 'WARRANT ISSUED ON \d{1,2}/\d{1,2}/\d{4}'::text) AS regexp_matches))[1], '\d{1,2}/\d{1,2}/\d{4}'::text))[1] AS regexp_matches) IS NULL) THEN docket_events.event_on
-              ELSE (( SELECT (regexp_matches((( SELECT regexp_matches(docket_events.description, 'WARRANT ISSUED ON \d{1,2}/\d{1,2}/\d{4}'::text) AS regexp_matches))[1], '\d{1,2}/\d{1,2}/\d{4}'::text))[1] AS regexp_matches))::date
+              WHEN (( SELECT (regexp_matches((( SELECT regexp_matches(docket_events.description, 'WARRANT ISSUED ON d{1,2}/d{1,2}/d{4}'::text) AS regexp_matches))[1], 'd{1,2}/d{1,2}/d{4}'::text))[1] AS regexp_matches) IS NULL) THEN docket_events.event_on
+              ELSE (( SELECT (regexp_matches((( SELECT regexp_matches(docket_events.description, 'WARRANT ISSUED ON d{1,2}/d{1,2}/d{4}'::text) AS regexp_matches))[1], 'd{1,2}/d{1,2}/d{4}'::text))[1] AS regexp_matches))::date
           END AS warrant_issued_on,
-      ( SELECT (regexp_matches((( SELECT regexp_matches(docket_events.description, 'WARRANT RECALLED \d{1,2}/\d{1,2}/\d{4}'::text) AS regexp_matches))[1], '\d{1,2}/\d{1,2}/\d{4}'::text))[1] AS regexp_matches) AS warrant_recalled_on,
+      ( SELECT (regexp_matches((( SELECT regexp_matches(docket_events.description, 'WARRANT RECALLED d{1,2}/d{1,2}/d{4}'::text) AS regexp_matches))[1], 'd{1,2}/d{1,2}/d{4}'::text))[1] AS regexp_matches) AS warrant_recalled_on,
       docket_events.description
      FROM (((docket_events
        JOIN docket_event_types ON ((docket_event_types.id = docket_events.docket_event_type_id)))

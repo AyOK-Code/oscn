@@ -1,6 +1,9 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'simplecov'
 require 'simplecov-json'
+require 'webmock/rspec'
+
+WebMock.disable_net_connect!
 
 SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new([
                                                                   SimpleCov::Formatter::HTMLFormatter,
@@ -74,4 +77,44 @@ Shoulda::Matchers.configure do |config|
     with.test_framework :rspec
     with.library :rails
   end
+end
+
+VCR.configure do |c|
+  # This is the directory where VCR will store its "cassettes", i.e. its
+  # recorded HTTP interactions.
+  c.cassette_library_dir = "spec/cassettes"
+
+  # This line makes it so VCR and WebMock know how to talk to each other.
+  c.hook_into :webmock
+
+  # This line makes VCR ignore requests to localhost. This is necessary
+  # even if WebMock's allow_localhost is set to true.
+  c.ignore_localhost = true
+
+  # ChromeDriver will make requests to chromedriver.storage.googleapis.com
+  # to (I believe) check for updates. These requests will just show up as
+  # noise in our cassettes unless we tell VCR to ignore these requests.
+  c.ignore_hosts "chromedriver.storage.googleapis.com"
+
+  c.preserve_exact_body_bytes do |http_message|
+    http_message.body.encoding.name == 'ASCII-8BIT' ||
+      !http_message.body.valid_encoding?
+  end
+
+  # Private environment variables must be set during test run to generate real data for the VCR
+  # They then are then hidden
+  env_keys = %w[
+    BUCKETEER_AWS_SECRET_ACCESS_KEY
+    BUCKETEER_BUCKET_NAME
+    OKC_BLOTTER_AUTH_TOKEN
+    OKC_BLOTTER_AUTH_TOKEN
+    BUCKETEER_AWS_ACCESS_KEY_ID
+  ]
+   env_keys.each do |key|
+     if ENV[key]
+      c.filter_sensitive_data(key) { ENV[key] }
+     else
+       ENV[key] = key
+     end
+   end
 end
