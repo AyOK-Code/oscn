@@ -8,7 +8,7 @@ module Importers
       end
 
       def perform
-        download_pdf_from_website
+        download_pdf_from_website unless pdf
         save
       end
 
@@ -17,9 +17,8 @@ module Importers
                              headers: {
                                Authorization: auth_token
                              }).body
-        # This code can be simplified since we're only getting one pdf from the website
         Zip::InputStream.open(StringIO.new(input)) do |io|
-          while entry = io.get_next_entry
+          while entry = io.get_next_entry #note: there is only actually one pdf here
             pdf = io.read
             filename = entry.name
             Bucket.new.put_object("#{s3_path}/#{filename}", pdf)
@@ -30,7 +29,7 @@ module Importers
       def save
         bookings_hash = json
         ::OkcBlotter::Pdf.create!(
-          parsed_on: DateTime.now.to_date,
+          parsed_on: DateTime.now,
           date: @date,
           bookings: bookings_hash.map do |booking_hash|
             build_bookings(booking_hash)
@@ -43,15 +42,24 @@ module Importers
           '/path/hack.pdf' # this is a hack see https://github.com/jnunemaker/httparty/issues/675#issuecomment-590757288
         end
 
-        @json ||= JSON.parse(HTTParty.post(
+        return @json if @json
+
+        response = HTTParty.post(
           "#{url}/parse",
           body: { pdf: pdf },
           headers: { Authorization: auth_token }
-        ).body)
+        )
+        @json = JSON.parse(response.body)
+        return @json if response.success?
+
+        raise StandardError.new "Error parsing pdf: #{@json['message']}"
       end
 
       def pdf
-        @pdf ||= Bucket.new.get_object("#{s3_path}/#{@date}.pdf").body
+        return @pdf if @pdf
+        pdf = Bucket.new.get_object("#{s3_path}/#{@date}.pdf").body rescue false
+        @pdf = pdf if pdf
+        pdf
       end
 
       def build_bookings(booking_hash)
@@ -99,11 +107,30 @@ module Importers
 
       def self.import_since_last_run
         last_run_date = ::OkcBlotter::Pdf.order(date: :desc).first.date
-        (last_run_date..DateTime.now.to_date).each do |date|
+        (last_run_date + 1.day..DateTime.now.to_date).each do |date|
           begin
             perform(date)
-          rescue StandardError
+          rescue StandardError => error
             puts "error processing #{date}. Data not saved" #todo: log these somewhere?
+            puts "error was: #{error}"
+          end
+        end
+      end
+
+      # Note: PDFs only are on the website for 30 days.
+      # If the pdfs have already been saved to s3 you may be able to parse longer
+      def self.import_missing_dates(since_date = (DateTime.now - 1.month).to_date)
+        query = <<-sql
+          SELECT * FROM generate_series('#{since_date}', '#{DateTime.now.to_date}', interval '1 day') AS dates
+          WHERE dates NOT IN (SELECT date FROM okc_blotter_pdfs);
+        sql
+        missing_dates = ActiveRecord::Base.connection.execute(query).to_a.map{|row| row['dates'].to_datetime.to_date}
+        missing_dates.each do |date|
+          begin
+            perform(date)
+          rescue StandardError => error
+            puts "error processing #{date}. Data not saved" #todo: log these somewhere?
+            puts "error was: #{error}"
           end
         end
       end
