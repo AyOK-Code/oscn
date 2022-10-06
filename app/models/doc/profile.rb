@@ -8,23 +8,4 @@ class Doc::Profile < ApplicationRecord
 
   enum status: [:active, :inactive]
   enum sex: [:male, :female]
-
-  def to_roster
-    {
-      birth_year: birth_date.year,
-      birth_month: birth_date.month,
-      birth_day: birth_date.day,
-      sex: sex,
-      race: race,
-      street_address: nil,
-      zip: nil,
-      first_name: first_name,
-      last_name: last_name,
-      middle_name: middle_name
-    }
-  end
-
-  def roster_snapshot_date
-    pdf.created_at #todo: update this
-  end
 end
