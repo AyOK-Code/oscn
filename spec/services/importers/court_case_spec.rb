@@ -16,7 +16,7 @@ RSpec.describe Importers::CourtCase do
       described_class.new(county.id, 'CF-2018-1016').perform
       court_case = CourtCase.find(court_case.id) # Pull updated object
       expect(court_case.parties.count).to eq 4
-      expect(court_case.counts.count).to eq 5
+      expect(court_case.counts.count).to eq 9
       expect(court_case.current_judge.name).to eq 'CF Docket E'
       expect(court_case.events.count).to eq 30
       expect(court_case.counsels.count).to eq 1
@@ -38,12 +38,11 @@ RSpec.describe Importers::CourtCase do
       court_case = CourtCase.find(court_case.id) # Pull updated object
 
       expect(court_case.parties.count).to eq 3
-    
-      expect(court_case.current_judge.name).to eq 'Collins, April'
-      expect(court_case.id).to eq CourtCase.joins(:parties).where("parties.full_name = 'Jackson,  Erin'").first.id
-      expect(court_case.id).to eq CourtCase.joins(:parties).where("parties.full_name = 'Jackson,  John  Jr.'").first.id
-      expect(court_case.id).to eq CourtCase.joins(:parties).where("parties.full_name = 'Bank  Of Oklahoma Na'").first.id
 
+      expect(court_case.current_judge.name).to eq 'Collins, April'
+      expect(court_case.id).to eq CourtCase.joins(:parties).where("parties.full_name = 'Jackson, Erin'").first.id
+      expect(court_case.id).to eq CourtCase.joins(:parties).where("parties.full_name = 'Jackson, John Jr.'").first.id
+      expect(court_case.id).to eq CourtCase.joins(:parties).where("parties.full_name = 'Bank Of Oklahoma Na'").first.id
     end
   end
 end

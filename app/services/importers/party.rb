@@ -22,6 +22,7 @@ module Importers
 
           save_parties_text(party_data)
         else
+          #  binding.pry
           save_parties(party_data)
         end
       end
@@ -67,26 +68,30 @@ module Importers
       return party_type_id if party_type_id
 
       new_party_type = PartyType.create(name: party_type)
+      party_types[party_type] = new_party_type.id
       new_party_type.id
     end
 
     def create_and_save_party_to_case(oscn_id, party_data)
       begin
-        party = ::Party.create(
+        party = ::Party.create!(
           oscn_id: oscn_id,
-          full_name: party_data[:name],
+          full_name: party_data[:name].squish,
           party_type_id: find_or_create_party_type(party_data[:party_type].downcase)
         )
       rescue StandardError
         logs.create_log('parties', "#{court_case.case_number}: error when creating the party", party_data)
       end
+      # binding.pry
+      return if party.nil?
+
       create_case_party(court_case.id, party.id)
     end
 
     def create_and_save_party_to_case_text(party_data)
       begin
         party = ::Party.create!(
-          full_name: party_data[:name],
+          full_name: party_data[:name].squish,
           party_type_id: find_or_create_party_type(party_data[:party_type].downcase)
         )
       rescue StandardError

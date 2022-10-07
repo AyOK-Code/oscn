@@ -36,6 +36,8 @@ group :development, :test do
   gem 'factory_bot_rails'
   gem 'faker'
   gem 'pry-rails'
+  gem 'pry-remote'
+  gem 'pry-nav'
   gem 'rspec-rails'
   gem 'rubocop', '~> 1.12'
   gem 'rubocop-rails', '~> 2.9'
