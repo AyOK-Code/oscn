@@ -97,6 +97,8 @@ module Importers
       rescue StandardError
         logs.create_log('parties', "#{court_case.case_number}: error when creating the party", party_data)
       end
+      return if party.nil?
+
       create_case_party(court_case.id, party.id)
     end
 
