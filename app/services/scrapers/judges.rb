@@ -17,7 +17,7 @@ module Scrapers
       # rubocop:enable Layout/LineLength
 
       html = HTTParty.get(base_url, headers: {
-                            'User-Agent': user_agent,
+                            'User-Agent': ENV.fetch('User_Agent', user_agent),
                             'Accept-Encoding': 'gzip, deflate, br',
                             'Accept-Language': 'en-US,en;q=0.9,es;q=0.8',
                             Accept: accept
