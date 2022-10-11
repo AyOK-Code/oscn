@@ -18,12 +18,10 @@ module Importers
 
     def perform
       parties_json.each do |party_data|
-        if party_data[:link].nil?
-
-          save_parties_text(party_data)
-        else
-          #  binding.pry
+        if party_data[:link].present?
           save_parties(party_data)
+        else
+          save_parties_text(party_data)
         end
       end
     end
