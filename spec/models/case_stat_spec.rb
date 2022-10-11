@@ -29,7 +29,7 @@ RSpec.describe CaseStat, type: :model do
 
     it 'counts the number of defendants on the case' do
       defendant = create(:party, :defendant)
-      plantiff = create(:party, :plantiff)
+      plantiff = create(:party, :plaintiff)
       create(:case_party, party: defendant, court_case: court_case)
       create(:case_party, party: plantiff, court_case: court_case)
 
