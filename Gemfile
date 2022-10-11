@@ -40,13 +40,13 @@ group :development, :test do
   gem 'rubocop', '~> 1.12'
   gem 'rubocop-rails', '~> 2.9'
   gem 'rubocop-rspec'
-  gem 'simplecov'
-  gem 'simplecov-json'
 end
 
 group :test do
   gem 'database_cleaner'
   gem 'shoulda-matchers'
+  gem 'simplecov'
+  gem 'simplecov-json'
 end
 
 group :development do

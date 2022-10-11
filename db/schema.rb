@@ -10,31 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_20_143924) do
+ActiveRecord::Schema.define(version: 2022_10_11_131812) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "bookings", force: :cascade do |t|
-    t.bigint "pdfs_id", null: false
-    t.string "first_name"
-    t.string "last_name"
-    t.date "dob"
-    t.string "sex"
-    t.string "race"
-    t.string "zip"
-    t.boolean "transient", default: false, null: false
-    t.string "inmate_number", null: false
-    t.string "booking_number", null: false
-    t.string "booking_type"
-    t.date "booking_date", null: false
-    t.date "release_date"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.bigint "roster_id"
-    t.index ["pdfs_id"], name: "index_bookings_on_pdfs_id"
-    t.index ["roster_id"], name: "index_bookings_on_roster_id"
-  end
 
   create_table "case_htmls", force: :cascade do |t|
     t.bigint "court_case_id", null: false
@@ -148,6 +127,7 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
     t.jsonb "logs"
     t.bigint "current_judge_id"
     t.boolean "is_error", default: false, null: false
+    t.string "party_string"
     t.index ["case_type_id"], name: "index_court_cases_on_case_type_id"
     t.index ["county_id", "oscn_id"], name: "index_court_cases_on_county_id_and_oscn_id", unique: true
     t.index ["county_id"], name: "index_court_cases_on_county_id"
@@ -365,18 +345,46 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
     t.index ["county_id"], name: "index_judges_on_county_id"
   end
 
-  create_table "offenses", force: :cascade do |t|
-    t.bigint "bookings_id", null: false
-    t.string "type", null: false
-    t.decimal "bond", precision: 2
-    t.string "code"
-    t.string "dispo"
-    t.string "charge", null: false
-    t.string "warrant_number"
-    t.string "citation_number"
+  create_table "okc_blotter_bookings", force: :cascade do |t|
+    t.bigint "pdf_id", null: false
+    t.string "first_name"
+    t.string "last_name"
+    t.date "dob"
+    t.string "sex"
+    t.string "race"
+    t.string "zip"
+    t.boolean "transient", default: false, null: false
+    t.string "inmate_number", null: false
+    t.string "booking_number", null: false
+    t.string "booking_type"
+    t.datetime "booking_date", null: false
+    t.datetime "release_date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["bookings_id"], name: "index_offenses_on_bookings_id"
+    t.bigint "roster_id"
+    t.index ["pdf_id"], name: "index_okc_blotter_bookings_on_pdf_id"
+    t.index ["roster_id"], name: "index_okc_blotter_bookings_on_roster_id"
+  end
+
+  create_table "okc_blotter_offenses", force: :cascade do |t|
+    t.bigint "booking_id"
+    t.string "type"
+    t.decimal "bond", precision: 10, scale: 2
+    t.string "code"
+    t.string "dispo"
+    t.string "charge"
+    t.string "warrant_number"
+    t.string "citation_number"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["id"], name: "okc_blotter_offenses_id_uindex", unique: true
+  end
+
+  create_table "okc_blotter_pdfs", force: :cascade do |t|
+    t.datetime "parsed_on"
+    t.date "date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "oklahoma_statutes", force: :cascade do |t|
@@ -453,13 +461,6 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
     t.index ["name"], name: "index_party_types_on_name", unique: true
   end
 
-  create_table "pdfs", force: :cascade do |t|
-    t.date "parsed_on"
-    t.date "date"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "pleas", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
@@ -503,13 +504,26 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
     t.index ["tulsa_blotter_inmates_id"], name: "index_tulsa_blotter_arrests_on_tulsa_blotter_inmates_id"
   end
 
+  create_table "tulsa_blotter_inmate_details_htmls", force: :cascade do |t|
+    t.bigint "inmate_id"
+    t.datetime "scraped_at", null: false
+    t.text "html"
+    t.index ["inmate_id"], name: "index_tulsa_blotter_inmate_details_htmls_on_inmate_id"
+  end
+
+  create_table "tulsa_blotter_inmate_page_htmls", force: :cascade do |t|
+    t.bigint "html_id"
+    t.bigint "inmate_id"
+    t.index ["html_id"], name: "index_tulsa_blotter_inmate_page_htmls_on_html_id"
+    t.index ["inmate_id"], name: "index_tulsa_blotter_inmate_page_htmls_on_inmate_id"
+  end
+
   create_table "tulsa_blotter_inmates", force: :cascade do |t|
     t.string "first"
     t.string "middle"
     t.string "last"
     t.string "gender"
     t.bigint "roster_id"
-    t.bigint "booking_id"
     t.string "race"
     t.string "address"
     t.string "height"
@@ -519,7 +533,6 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
     t.string "eyes"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["booking_id"], name: "index_tulsa_blotter_inmates_on_booking_id"
     t.index ["roster_id"], name: "index_tulsa_blotter_inmates_on_roster_id"
   end
 
@@ -534,6 +547,12 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["tulsa_blotter_arrests_id"], name: "index_tulsa_blotter_offenses_on_tulsa_blotter_arrests_id"
+  end
+
+  create_table "tulsa_blotter_page_htmls", force: :cascade do |t|
+    t.integer "page_number", null: false
+    t.datetime "scraped_at", null: false
+    t.text "html"
   end
 
   create_table "verdicts", force: :cascade do |t|
@@ -554,55 +573,59 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
     t.index ["judge_id"], name: "index_warrants_on_judge_id"
   end
 
-  add_foreign_key "bookings", "pdfs", column: "pdfs_id"
-  add_foreign_key "bookings", "rosters"
-  add_foreign_key "case_htmls", "court_cases"
-  add_foreign_key "case_parties", "court_cases"
-  add_foreign_key "case_parties", "parties"
+  add_foreign_key "case_htmls", "court_cases", on_update: :cascade
+  add_foreign_key "case_parties", "court_cases", on_update: :cascade
+  add_foreign_key "case_parties", "parties", on_update: :cascade
   add_foreign_key "case_parties", "rosters"
-  add_foreign_key "counsel_parties", "counsels"
-  add_foreign_key "counsel_parties", "court_cases"
-  add_foreign_key "counsel_parties", "parties"
-  add_foreign_key "counts", "count_codes", column: "disposed_statute_code_id"
-  add_foreign_key "counts", "count_codes", column: "filed_statute_code_id"
-  add_foreign_key "counts", "court_cases"
-  add_foreign_key "counts", "parties"
-  add_foreign_key "counts", "pleas"
-  add_foreign_key "counts", "verdicts"
-  add_foreign_key "court_cases", "case_types"
-  add_foreign_key "court_cases", "counties"
-  add_foreign_key "court_cases", "judges", column: "current_judge_id"
-  add_foreign_key "doc_aliases", "doc_profiles"
-  add_foreign_key "doc_profiles", "doc_facilities"
-  add_foreign_key "doc_profiles", "parent_parties"
+  add_foreign_key "counsel_parties", "counsels", on_update: :cascade
+  add_foreign_key "counsel_parties", "court_cases", on_update: :cascade
+  add_foreign_key "counsel_parties", "parties", on_update: :cascade
+  add_foreign_key "counties", "district_attorneys", on_update: :cascade
+  add_foreign_key "counts", "count_codes", column: "disposed_statute_code_id", on_update: :cascade
+  add_foreign_key "counts", "count_codes", column: "filed_statute_code_id", on_update: :cascade
+  add_foreign_key "counts", "court_cases", on_update: :cascade
+  add_foreign_key "counts", "parties", on_update: :cascade
+  add_foreign_key "counts", "pleas", on_update: :cascade
+  add_foreign_key "counts", "verdicts", on_update: :cascade
+  add_foreign_key "court_cases", "case_types", on_update: :cascade
+  add_foreign_key "court_cases", "counties", on_update: :cascade
+  add_foreign_key "court_cases", "judges", column: "current_judge_id", on_update: :cascade
+  add_foreign_key "doc_aliases", "doc_profiles", on_update: :cascade
+  add_foreign_key "doc_historical_sentences", "doc_profiles", on_update: :cascade
+  add_foreign_key "doc_profiles", "doc_facilities", on_update: :cascade
+  add_foreign_key "doc_profiles", "parent_parties", on_update: :cascade
   add_foreign_key "doc_profiles", "rosters"
-  add_foreign_key "doc_sentences", "court_cases"
-  add_foreign_key "doc_sentences", "doc_offense_codes"
-  add_foreign_key "doc_sentences", "doc_profiles"
-  add_foreign_key "doc_sentencing_counties", "counties"
-  add_foreign_key "doc_statuses", "doc_facilities"
-  add_foreign_key "doc_statuses", "doc_profiles"
-  add_foreign_key "docket_event_links", "docket_events"
-  add_foreign_key "docket_events", "court_cases"
-  add_foreign_key "docket_events", "docket_event_types"
-  add_foreign_key "docket_events", "parties"
-  add_foreign_key "events", "court_cases"
-  add_foreign_key "events", "event_types"
-  add_foreign_key "events", "parties"
-  add_foreign_key "judges", "counties"
-  add_foreign_key "offenses", "bookings", column: "bookings_id"
-  add_foreign_key "parties", "doc_profiles"
-  add_foreign_key "parties", "parent_parties"
-  add_foreign_key "parties", "party_types"
-  add_foreign_key "party_addresses", "parties"
-  add_foreign_key "party_aliases", "parties"
-  add_foreign_key "party_htmls", "parties"
+  add_foreign_key "doc_sentences", "court_cases", on_update: :cascade
+  add_foreign_key "doc_sentences", "doc_offense_codes", on_update: :cascade
+  add_foreign_key "doc_sentences", "doc_profiles", on_update: :cascade
+  add_foreign_key "doc_sentencing_counties", "counties", on_update: :cascade
+  add_foreign_key "doc_statuses", "doc_facilities", on_update: :cascade
+  add_foreign_key "doc_statuses", "doc_profiles", on_update: :cascade
+  add_foreign_key "docket_event_links", "docket_events", on_update: :cascade
+  add_foreign_key "docket_events", "court_cases", on_update: :cascade
+  add_foreign_key "docket_events", "docket_event_types", on_update: :cascade
+  add_foreign_key "docket_events", "parties", on_update: :cascade
+  add_foreign_key "events", "court_cases", on_update: :cascade
+  add_foreign_key "events", "event_types", on_update: :cascade
+  add_foreign_key "events", "judges", on_update: :cascade
+  add_foreign_key "events", "parties", on_update: :cascade
+  add_foreign_key "judges", "counties", on_update: :cascade
+  add_foreign_key "okc_blotter_bookings", "okc_blotter_pdfs", column: "pdf_id"
+  add_foreign_key "okc_blotter_bookings", "rosters"
+  add_foreign_key "parties", "doc_profiles", on_update: :cascade
+  add_foreign_key "parties", "parent_parties", on_update: :cascade
+  add_foreign_key "parties", "party_types", on_update: :cascade
+  add_foreign_key "party_addresses", "parties", on_update: :cascade
+  add_foreign_key "party_aliases", "parties", on_update: :cascade
+  add_foreign_key "party_htmls", "parties", on_update: :cascade
   add_foreign_key "tulsa_blotter_arrests", "tulsa_blotter_inmates", column: "tulsa_blotter_inmates_id"
-  add_foreign_key "tulsa_blotter_inmates", "bookings"
+  add_foreign_key "tulsa_blotter_inmate_details_htmls", "tulsa_blotter_inmates", column: "inmate_id"
+  add_foreign_key "tulsa_blotter_inmate_page_htmls", "tulsa_blotter_inmates", column: "inmate_id"
+  add_foreign_key "tulsa_blotter_inmate_page_htmls", "tulsa_blotter_page_htmls", column: "html_id"
   add_foreign_key "tulsa_blotter_inmates", "rosters"
   add_foreign_key "tulsa_blotter_offenses", "tulsa_blotter_arrests", column: "tulsa_blotter_arrests_id"
-  add_foreign_key "warrants", "docket_events"
-  add_foreign_key "warrants", "judges"
+  add_foreign_key "warrants", "docket_events", on_update: :cascade
+  add_foreign_key "warrants", "judges", on_update: :cascade
 
   create_view "case_stats", materialized: true, sql_definition: <<-SQL
       SELECT court_cases.id AS court_case_id,
