@@ -16,7 +16,7 @@ RSpec.describe Importers::Party do
 
       it 'links new party to the case' do
         described_class.perform(test_data, court_case, log)
-        expect(court_case.parties.first.full_name).to eq(test_data.first[:name])
+        expect(court_case.parties.first.full_name.squish).to eq(test_data.first[:name].squish)
       end
     end
 
