@@ -9,7 +9,7 @@ class Party < ApplicationRecord
   has_many :addresses, class_name: 'PartyAddress', dependent: :destroy
   has_many :aliases, class_name: 'PartyAlias', dependent: :destroy
   has_one :party_html, dependent: :destroy
-
+  
   validates :birth_month, inclusion: 1..12, allow_nil: true
   validates :birth_year, inclusion: 1800..DateTime.current.year, allow_nil: true
 
