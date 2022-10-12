@@ -526,8 +526,8 @@ ActiveRecord::Schema.define(version: 2022_10_12_190556) do
     t.string "disposition"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "arrests_id"
-    t.index ["arrests_id"], name: "index_tulsa_blotter_offenses_on_arrests_id"
+    t.bigint "arrest_id"
+    t.index ["arrest_id"], name: "index_tulsa_blotter_offenses_on_arrest_id"
   end
 
   create_table "verdicts", force: :cascade do |t|
@@ -592,7 +592,7 @@ ActiveRecord::Schema.define(version: 2022_10_12_190556) do
   add_foreign_key "party_aliases", "parties"
   add_foreign_key "party_htmls", "parties"
   add_foreign_key "tulsa_blotter_arrests", "rosters"
-  add_foreign_key "tulsa_blotter_offenses", "tulsa_blotter_arrests", column: "arrests_id"
+  add_foreign_key "tulsa_blotter_offenses", "tulsa_blotter_arrests", column: "arrest_id"
   add_foreign_key "warrants", "docket_events"
   add_foreign_key "warrants", "judges"
 
