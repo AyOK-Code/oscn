@@ -16,8 +16,8 @@ FactoryBot.define do
       party_type { PartyType.find_by(name: 'arresting_agency') || create(:party_type, name: 'arresting_agency') }
     end
 
-    trait :plantiff do
-      party_type { create(:party_type, :plantiff) }
+    trait :plaintiff do
+      party_type { create(:party_type, :plaintiff) }
     end
 
     trait :with_case do
