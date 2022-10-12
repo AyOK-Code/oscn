@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_20_143924) do
+ActiveRecord::Schema.define(version: 2022_10_12_190556) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -490,41 +490,34 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
   end
 
   create_table "tulsa_blotter_arrests", force: :cascade do |t|
-    t.bigint "tulsa_blotter_inmates_id"
-    t.string "arrest_date"
-    t.string "arrest_time"
-    t.string "arrested_by"
-    t.string "booking_date"
-    t.string "booking_time"
-    t.string "release_date"
-    t.string "release_time"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["tulsa_blotter_inmates_id"], name: "index_tulsa_blotter_arrests_on_tulsa_blotter_inmates_id"
-  end
-
-  create_table "tulsa_blotter_inmates", force: :cascade do |t|
+    t.string "dlm"
     t.string "first"
     t.string "middle"
     t.string "last"
     t.string "gender"
     t.bigint "roster_id"
-    t.bigint "booking_id"
+    t.string "booking_id", null: false
     t.string "race"
     t.string "address"
     t.string "height"
     t.integer "weight"
-    t.integer "zip"
+    t.string "zip"
     t.string "hair"
     t.string "eyes"
+    t.date "last_scraped_at"
+    t.string "mugshot"
+    t.datetime "arrest_date"
+    t.string "arrested_by"
+    t.string "arresting_agency"
+    t.datetime "booking_date"
+    t.datetime "release_date"
+    t.date "freedom_date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["booking_id"], name: "index_tulsa_blotter_inmates_on_booking_id"
-    t.index ["roster_id"], name: "index_tulsa_blotter_inmates_on_roster_id"
+    t.index ["roster_id"], name: "index_tulsa_blotter_arrests_on_roster_id"
   end
 
   create_table "tulsa_blotter_offenses", force: :cascade do |t|
-    t.bigint "tulsa_blotter_arrests_id"
     t.string "description"
     t.string "case_number"
     t.string "court_date"
@@ -533,7 +526,8 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
     t.string "disposition"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["tulsa_blotter_arrests_id"], name: "index_tulsa_blotter_offenses_on_tulsa_blotter_arrests_id"
+    t.bigint "arrests_id"
+    t.index ["arrests_id"], name: "index_tulsa_blotter_offenses_on_arrests_id"
   end
 
   create_table "verdicts", force: :cascade do |t|
@@ -597,10 +591,8 @@ ActiveRecord::Schema.define(version: 2022_09_20_143924) do
   add_foreign_key "party_addresses", "parties"
   add_foreign_key "party_aliases", "parties"
   add_foreign_key "party_htmls", "parties"
-  add_foreign_key "tulsa_blotter_arrests", "tulsa_blotter_inmates", column: "tulsa_blotter_inmates_id"
-  add_foreign_key "tulsa_blotter_inmates", "bookings"
-  add_foreign_key "tulsa_blotter_inmates", "rosters"
-  add_foreign_key "tulsa_blotter_offenses", "tulsa_blotter_arrests", column: "tulsa_blotter_arrests_id"
+  add_foreign_key "tulsa_blotter_arrests", "rosters"
+  add_foreign_key "tulsa_blotter_offenses", "tulsa_blotter_arrests", column: "arrests_id"
   add_foreign_key "warrants", "docket_events"
   add_foreign_key "warrants", "judges"
 
