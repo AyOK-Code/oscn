@@ -5,7 +5,7 @@ module Matchers
 
     def initialize(party)
       @party = party
-      @split_name = party.full_name.squish.split(' ')
+      @split_name = party.full_name.squish.split
       @split_count = split_name.count
     end
 
