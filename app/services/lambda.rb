@@ -1,15 +1,9 @@
 require 'aws-sdk-lambda'
 
 class Lambda
-  attr_accessor :client
-
-  def initialize
-    @client = client
-  end
-
   def call(function_name, payload)
     payload = JSON.generate(payload)
-    resp = client.invoke ({
+    resp = client.invoke({
                            function_name: function_name,
                            invocation_type: 'RequestResponse',
                            log_type: 'None',
@@ -18,9 +12,7 @@ class Lambda
 
     response = JSON.parse(resp.payload.string)
 
-    if response["statusCode"] == 200 && response["body"]["result"] == "success"
-      return response["body"]["data"]
-    end
+    return response['body']['data'] if response['statusCode'] == 200 && response['body']['result'] == 'success'
 
     raise "Lambda Request Failed. Response: #{response}"
   end
@@ -28,7 +20,9 @@ class Lambda
   private
 
   def client
-    credentials = Aws::Credentials.new(ENV['AWS_LAMBDA_KEY'], ENV['AWS_LAMBDA_SECRET'])
-    Aws::Lambda::Client.new(region: ENV['AWS_LAMBDA_REGION'], credentials: credentials, http_read_timeout: 9000)
+    return @client if @client
+    credentials = Aws::Credentials.new(ENV.fetch('AWS_LAMBDA_KEY', nil), ENV.fetch('AWS_LAMBDA_SECRET', nil))
+    @client = Aws::Lambda::Client.new(region: ENV.fetch('AWS_LAMBDA_REGION', nil), credentials: credentials,
+                            http_read_timeout: 9000)
   end
 end
