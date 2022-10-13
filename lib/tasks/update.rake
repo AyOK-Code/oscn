@@ -25,7 +25,7 @@ namespace :update do
     # TODO: Move to party importer task
     parties.each do |p|
       bar.increment!
-      Matchers::PartyNameSplitter.new(p, p.full_name).perform
+      Matchers::PartyNameSplitter.new(p).perform
     end
   end
 

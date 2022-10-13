@@ -6,13 +6,14 @@ class Bucket
   end
 
   def get_object(filepath)
-    s3.get_object(bucket: ENV['BUCKETEER_BUCKET_NAME'], key: filepath)
+    s3.get_object(bucket: ENV.fetch('BUCKETEER_BUCKET_NAME', nil), key: filepath)
   end
 
   private
 
   def client
-    credentials = Aws::Credentials.new(ENV['BUCKETEER_AWS_ACCESS_KEY_ID'], ENV['BUCKETEER_AWS_SECRET_ACCESS_KEY'])
+    credentials = Aws::Credentials.new(ENV.fetch('BUCKETEER_AWS_ACCESS_KEY_ID', nil),
+                                       ENV.fetch('BUCKETEER_AWS_SECRET_ACCESS_KEY', nil))
     Aws.config.update(
       region: 'us-east-1',
       credentials: credentials

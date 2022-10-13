@@ -4,14 +4,15 @@ namespace :warrants do
   desc 'Pull in attorneys from OK Bar site'
   task update: [:environment] do
     filepath = 'warrants.csv'
-    credentials = Aws::Credentials.new(ENV['BUCKETEER_AWS_ACCESS_KEY_ID'], ENV['BUCKETEER_AWS_SECRET_ACCESS_KEY'])
+    credentials = Aws::Credentials.new(ENV.fetch('BUCKETEER_AWS_ACCESS_KEY_ID', nil),
+                                       ENV.fetch('BUCKETEER_AWS_SECRET_ACCESS_KEY', nil))
     Aws.config.update(
       region: 'us-east-1',
       credentials: credentials
     )
     s3 = Aws::S3::Client.new
 
-    resp = s3.get_object(bucket: ENV['BUCKETEER_BUCKET_NAME'], key: filepath)
+    resp = s3.get_object(bucket: ENV.fetch('BUCKETEER_BUCKET_NAME', nil), key: filepath)
 
     cases = CSV.parse(resp.body.read, headers: true)
     county = County.find_by(name: 'Oklahoma')
@@ -36,14 +37,15 @@ namespace :warrants do
   desc 'Merge data with warrants list'
   task merge: [:environment] do
     filepath = 'warrants.csv'
-    credentials = Aws::Credentials.new(ENV['BUCKETEER_AWS_ACCESS_KEY_ID'], ENV['BUCKETEER_AWS_SECRET_ACCESS_KEY'])
+    credentials = Aws::Credentials.new(ENV.fetch('BUCKETEER_AWS_ACCESS_KEY_ID', nil),
+                                       ENV.fetch('BUCKETEER_AWS_SECRET_ACCESS_KEY', nil))
     Aws.config.update(
       region: 'us-east-1',
       credentials: credentials
     )
     s3 = Aws::S3::Client.new
 
-    resp = s3.get_object(bucket: ENV['BUCKETEER_BUCKET_NAME'], key: filepath)
+    resp = s3.get_object(bucket: ENV.fetch('BUCKETEER_BUCKET_NAME', nil), key: filepath)
     county = County.find_by(name: 'Oklahoma')
     temp = Tempfile.new('warrants_complete.csv')
     court_cases = county.court_cases.pluck(:case_number, :id).to_h
@@ -95,7 +97,7 @@ namespace :warrants do
       end
     end
 
-    s3.put_object(bucket: ENV['BUCKETEER_BUCKET_NAME'],
+    s3.put_object(bucket: ENV.fetch('BUCKETEER_BUCKET_NAME', nil),
                   key: 'warrants_complete.csv',
                   body: File.read(temp))
   end
