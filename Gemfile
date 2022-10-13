@@ -5,6 +5,7 @@ ruby '2.7.2'
 
 gem 'awesome_print'
 gem 'aws-sdk-s3', '~> 1'
+gem 'aws-sdk-lambda'
 gem 'bcrypt', '~> 3.1.7'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'fuzzy_match'
@@ -49,6 +50,8 @@ group :test do
   gem 'shoulda-matchers'
   gem 'simplecov'
   gem 'simplecov-json'
+  gem 'webmock'
+  gem 'vcr'
 end
 
 group :development do

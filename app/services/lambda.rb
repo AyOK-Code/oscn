@@ -7,10 +7,10 @@ class Lambda
     @client = client
   end
 
-  def call(function, payload)
+  def call(function_name, payload)
     payload = JSON.generate(payload)
-    resp = client.invoke({
-                           function_name: function,
+    resp = client.invoke ({
+                           function_name: function_name,
                            invocation_type: 'RequestResponse',
                            log_type: 'None',
                            payload: payload
@@ -22,13 +22,13 @@ class Lambda
       return response["body"]["data"]
     end
 
-    raise StandardError("Lambda Request Failed. Response: #{response}")
+    raise "Lambda Request Failed. Response: #{response}"
   end
 
   private
 
   def client
     credentials = Aws::Credentials.new(ENV['AWS_LAMBDA_KEY'], ENV['AWS_LAMBDA_SECRET'])
-    Aws::Lambda::Client.new(region: ENV['AWS_LAMBDA_REGION'], credentials: credentials)
+    Aws::Lambda::Client.new(region: ENV['AWS_LAMBDA_REGION'], credentials: credentials, http_read_timeout: 9000)
   end
 end
