@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_12_202527) do
+ActiveRecord::Schema.define(version: 2022_10_14_165905) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -497,13 +497,6 @@ ActiveRecord::Schema.define(version: 2022_10_12_202527) do
     t.index ["arrest_id"], name: "index_tulsa_blotter_arrest_details_htmls_on_arrest_id"
   end
 
-  create_table "tulsa_blotter_arrest_page_htmls", force: :cascade do |t|
-    t.bigint "html_id"
-    t.bigint "arrest_id"
-    t.index ["arrest_id"], name: "index_tulsa_blotter_arrest_page_htmls_on_arrest_id"
-    t.index ["html_id"], name: "index_tulsa_blotter_arrest_page_htmls_on_html_id"
-  end
-
   create_table "tulsa_blotter_arrests", force: :cascade do |t|
     t.string "dlm"
     t.string "first"
@@ -516,7 +509,7 @@ ActiveRecord::Schema.define(version: 2022_10_12_202527) do
     t.string "address"
     t.string "height"
     t.integer "weight"
-    t.string "zip"
+    t.string "city_state_zip"
     t.string "hair"
     t.string "eyes"
     t.date "last_scraped_at"
@@ -530,6 +523,13 @@ ActiveRecord::Schema.define(version: 2022_10_12_202527) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["roster_id"], name: "index_tulsa_blotter_arrests_on_roster_id"
+  end
+
+  create_table "tulsa_blotter_arrests_page_htmls", force: :cascade do |t|
+    t.bigint "page_html_id"
+    t.bigint "arrest_id"
+    t.index ["arrest_id"], name: "index_tulsa_blotter_arrests_page_htmls_on_arrest_id"
+    t.index ["page_html_id"], name: "index_tulsa_blotter_arrests_page_htmls_on_page_html_id"
   end
 
   create_table "tulsa_blotter_offenses", force: :cascade do |t|
@@ -615,9 +615,9 @@ ActiveRecord::Schema.define(version: 2022_10_12_202527) do
   add_foreign_key "party_aliases", "parties", on_update: :cascade
   add_foreign_key "party_htmls", "parties", on_update: :cascade
   add_foreign_key "tulsa_blotter_arrest_details_htmls", "tulsa_blotter_arrests", column: "arrest_id"
-  add_foreign_key "tulsa_blotter_arrest_page_htmls", "tulsa_blotter_arrests", column: "arrest_id"
-  add_foreign_key "tulsa_blotter_arrest_page_htmls", "tulsa_blotter_page_htmls", column: "html_id"
   add_foreign_key "tulsa_blotter_arrests", "rosters"
+  add_foreign_key "tulsa_blotter_arrests_page_htmls", "tulsa_blotter_arrests", column: "arrest_id"
+  add_foreign_key "tulsa_blotter_arrests_page_htmls", "tulsa_blotter_page_htmls", column: "page_html_id"
   add_foreign_key "tulsa_blotter_offenses", "tulsa_blotter_arrests", column: "arrests_id"
   add_foreign_key "warrants", "docket_events", on_update: :cascade
   add_foreign_key "warrants", "judges", on_update: :cascade

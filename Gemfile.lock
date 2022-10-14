@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/AyOK-Code/oscn_scraper
-  revision: 262757c845695fc64391c7b20f04e7c21b26d9cb
-  ref: 262757c
+  revision: 480534469fdb03f9006f844d48a625a3d36f6142
+  ref: 4805344
   specs:
     oscn_scraper (0.1.1)
       activesupport (>= 5.0.0)
@@ -409,8 +409,8 @@ DEPENDENCIES
   rails_autoscale_agent
   redis (~> 4.0)
   rspec-rails
-  rubocop (~> 1.12)
-  rubocop-rails (~> 2.9)
+  rubocop
+  rubocop-rails
   rubocop-rspec
   ruby-limiter
   scenic

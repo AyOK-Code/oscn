@@ -8,78 +8,107 @@ module Importers
       def save_pages
         page_number = 1
         incarcerated_ids = []
-        while response = page_json(page_number)
+        while (response = page_json(page_number))
           json = JSON.parse(response)
-          save_page(JSON.parse(json))
+          save_page(json)
           page_number += 1
-          incarcerated_ids << json['Data'].map['Booking ID']
+          incarcerated_ids += (json['Data'].map { |val| val['Booking ID'] })
         end
         track_released(incarcerated_ids)
       end
 
       def track_released(incarcerated_ids)
-        :TulsaBlotter::Arrest.where(release_date: nil).where.not(booking_id: incarcerated_ids).each do |arrest|
+        ::TulsaBlotter::Arrest.where(release_date: nil).where.not(booking_id: incarcerated_ids).each do |arrest|
           arrest.update!(release_date: DateTime.now)
         end
       end
 
       def save_page(json)
-        ::TulsaBlotter::PageHtml.create!(
+        page = ::TulsaBlotter::PageHtml.create!(
           page_number: json['Page Number'],
           html: json['Bookings Html'],
-          scraped_at: DateTime.now,
-          arrests: json['Data'].map { |inmate_json| upsert_arrest(inmate_json) }
+          scraped_at: DateTime.now
         )
+        json['Data'].map { |inmate_json| upsert_arrest(inmate_json, page) }
       end
 
-      def upsert_arrest(json)
-        json = json.merge(json['Arrests'][0]) # merge arrest data to top leve
+      def upsert_arrest(json, page)
+        json = json.merge(json['Arrests'][0])
         arrest = ::TulsaBlotter::Arrest.find_or_initialize_by(booking_id: json['Booking ID'])
+        arrest.page_htmls << page
+        arrest = arrest_attributes_from_json(arrest, json)
+        arrest.save!
+        upsert_arrest_detail_html(arrest, json)
+        upsert_all_offenses(arrest, json)
+        arrest
+      end
+
+      def arrest_attributes_from_json(arrest, json)
         arrest.assign_attributes(
           address: json['Address'],
-          booking_id: json['Booking ID'], # '20221006008',
-          zip: json['City/State/Zip'].delete('^0-9'), # 'TULSA OK 74103',
-          dlm: json['DLM'], # '1191333',
-          eyes: json['Eyes'], # 'BLU',
-          first: json['First'], # 'SANDY',
-          gender: json['Gender'], # 'F',
-          hair: json['Hair'], # 'BRO',
-          height: json['Height'], # '5\'  03"',
-          last: json['Last'], # 'GRAVES',
-          middle: json['Middle'], # 'CARTER',
-          race: json['Race'], # 'W',
-          weight: json['Weight'], # '185',
-          arrest_details_html: ::ArrestDetailsHtml.new(html: json['Details Html'], scraped_at: Time.current), # '<html>...</html>',
-          arrest_date: DateTime.parse("#{json['Arrest Date']} #{json['Arrest Time']}"), # '10/6/2022',
-          arrested_by: json['Arrested By'], # 'TCSO / 4705',
-          booking_date: DateTime.parse("#{json['Booking Date']} #{json['Booking Time']}"), # '10/6/2022',
-          release_date: json['Release Date'] ? DateTime.parse("#{json['Release Date']} #{json['Release Time']}") : nil,
-          offenses: json['Offenses'].map do |_offense|
-            upsert_offenses(arrest, json)
-          end
+          booking_id: json['Booking ID'],
+          city_state_zip: json['City/State/Zip'],
+          dlm: json['DLM'],
+          eyes: json['Eyes'],
+          first: json['First'],
+          gender: json['Gender'],
+          hair: json['Hair'],
+          height: json['Height'],
+          last: json['Last'],
+          middle: json['Middle'],
+          race: json['Race'],
+          weight: json['Weight'],
+          arrest_date: format_datetime(json['Arrest Date'], json['Arrest Time']),
+          arrested_by: json['Arrested By'],
+          booking_date: format_datetime(json['Booking Date'], json['Booking Time']),
+          release_date: format_datetime(json['Release Date'], json['Release Time']),
+          last_scraped_at: DateTime.now
         )
+        arrest
+      end
+
+      def upsert_arrest_detail_html(arrest, json)
+        arrest_details_html = ::TulsaBlotter::ArrestDetailsHtml.find_or_initialize_by(arrest: arrest)
+        arrest_details_html.assign_attributes(
+          html: json['html']['Details Html'],
+          scraped_at: Time.current
+        )
+        arrest_details_html.save!
+      end
+
+      def upsert_all_offenses(arrest, arrest_json)
+        arrest_json['Offenses'].each do |offense_json|
+          upsert_offenses(arrest, offense_json)
+        end
       end
 
       def upsert_offenses(arrest, json)
         if arrest.id
-          offense = ::TulsaBlotter::Offense.find_by(case_number: json['Case Number'], arrest_id: arrest.id)
-          offense ||= ::TulsaBlotter::Offense.find_by(description: json['Description'], arrest_id: arrest.id)
+          offense = ::TulsaBlotter::Offense.find_by(case_number: json['Case Number'], arrests_id: arrest.id)
+          offense ||= ::TulsaBlotter::Offense.find_by(description: json['Description'], arrests_id: arrest.id)
         end
         offense ||= ::TulsaBlotter::Offense.new
         offense.assign_attributes(
-          bond_amount: json['Bond Amt'], # '$250,000.00',
-          bond_type: json['Bond Type'], # 'Surety Bond',
-          case_number: json['Case #'], # 'CF-2022-1272',
-          court_date: json['Court Date'], # '10/22/2022',
-          description: json['Description'], # 'CHILD ENDANGERMENT',
+          arrest: arrest,
+          bond_amount: json['Bond Amt'],
+          bond_type: json['Bond Type'],
+          case_number: json['Case #'],
+          court_date: json['Court Date'],
+          description: json['Description'],
           disposition: json['Disposition']
         )
+        offense.save!
+        offense
       end
 
       def page_json(page_number)
         Lambda.new.call('TulsaJailScraper', { 'page number': page_number })
       rescue StandardError
         false
+      end
+
+      def format_datetime(date, time)
+        DateTime.strptime("#{date} #{time}", '%m/%d/%Y %H:%M %p') if date.present? && time.present?
       end
     end
   end

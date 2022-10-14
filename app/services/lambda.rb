@@ -21,8 +21,9 @@ class Lambda
 
   def client
     return @client if @client
+
     credentials = Aws::Credentials.new(ENV.fetch('AWS_LAMBDA_KEY', nil), ENV.fetch('AWS_LAMBDA_SECRET', nil))
     @client = Aws::Lambda::Client.new(region: ENV.fetch('AWS_LAMBDA_REGION', nil), credentials: credentials,
-                            http_read_timeout: 9000)
+                                      http_read_timeout: 9000)
   end
 end

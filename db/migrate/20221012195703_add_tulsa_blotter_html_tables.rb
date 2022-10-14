@@ -6,8 +6,8 @@ class AddTulsaBlotterHtmlTables < ActiveRecord::Migration[6.0]
       t.text :html
     end
 
-    create_table :tulsa_blotter_arrest_page_htmls do |t|
-      t.references :html, foreign_key: { to_table: :tulsa_blotter_page_htmls }
+    create_table :tulsa_blotter_arrests_page_htmls do |t|
+      t.references :page_html, foreign_key: { to_table: :tulsa_blotter_page_htmls }
       t.references :arrest, foreign_key: { to_table: :tulsa_blotter_arrests }
     end
 
