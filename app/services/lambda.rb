@@ -1,5 +1,8 @@
 require 'aws-sdk-lambda'
 
+class LambdaErrorResponse < StandardError
+end
+
 class Lambda
   def call(function_name, payload)
     payload = JSON.generate(payload)
@@ -14,7 +17,7 @@ class Lambda
 
     return response['body']['data'] if response['statusCode'] == 200 && response['body']['result'] == 'success'
 
-    raise "Lambda Request Failed. Response: #{response}"
+    raise LambdaErrorResponse.new("Lambda Request Failed. Response: #{response}")
   end
 
   private

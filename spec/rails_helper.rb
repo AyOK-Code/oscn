@@ -106,9 +106,9 @@ VCR.configure do |c|
     AWS_LAMBDA_REGION
   ]
   env_keys.each do |key|
-    if ENV[key]
-      c.filter_sensitive_data(key) { ENV[key] }
-    else
+    c.filter_sensitive_data("<#{key}>") { ENV[key] }
+
+    unless ENV[key]
       ENV[key] = key
     end
   end

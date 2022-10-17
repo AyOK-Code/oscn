@@ -103,7 +103,7 @@ module Importers
 
       def page_json(page_number)
         Lambda.new.call('TulsaJailScraper', { 'page number': page_number })
-      rescue StandardError
+      rescue LambdaErrorResponse => _
         false
       end
 

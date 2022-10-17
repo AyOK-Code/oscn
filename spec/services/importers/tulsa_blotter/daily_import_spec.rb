@@ -2,15 +2,20 @@ require 'rails_helper'
 
 RSpec.describe Importers::TulsaBlotter::DailyImport do
   describe '#perform' do
-    it 'imports the data' do
-      VCR.use_cassette 'tulsa_blotter' do
-        Importers::TulsaBlotter::DailyImport.perform
-      end
+    before do
+      ENV['AWS_LAMBDA_REGION']='us-east-2'
+    end
+    context 'when blotter data exists' do
+      it 'imports the data' do
+        VCR.use_cassette 'tulsa_blotter' do
+          Importers::TulsaBlotter::DailyImport.perform
+        end
 
-      expect(::TulsaBlotter::PageHtml.count).to be > 1
-      expect(::TulsaBlotter::Arrest.count).to be > 1
-      expect(::TulsaBlotter::ArrestDetailsHtml.count).to be > 1
-      expect(::TulsaBlotter::Offense.count).to be > 1
+        expect(::TulsaBlotter::PageHtml.count).to be > 1
+        expect(::TulsaBlotter::Arrest.count).to be > 1
+        expect(::TulsaBlotter::ArrestDetailsHtml.count).to be > 1
+        expect(::TulsaBlotter::Offense.count).to be > 1
+      end
     end
 
     context 'when doing another import' do
