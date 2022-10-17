@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Importers::TulsaBlotter::DailyImport do
   describe '#perform' do
     before do
-      ENV['AWS_LAMBDA_REGION']='us-east-2'
+      ENV['AWS_LAMBDA_REGION'] = 'us-east-2'
     end
     context 'when blotter data exists' do
       it 'imports the data' do

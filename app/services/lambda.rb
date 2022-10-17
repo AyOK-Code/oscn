@@ -17,7 +17,7 @@ class Lambda
 
     return response['body']['data'] if response['statusCode'] == 200 && response['body']['result'] == 'success'
 
-    raise LambdaErrorResponse.new("Lambda Request Failed. Response: #{response}")
+    raise LambdaErrorResponse, "Lambda Request Failed. Response: #{response}"
   end
 
   private
