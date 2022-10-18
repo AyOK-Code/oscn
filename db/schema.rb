@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_14_165905) do
+ActiveRecord::Schema.define(version: 2022_10_18_155823) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -513,13 +513,11 @@ ActiveRecord::Schema.define(version: 2022_10_14_165905) do
     t.string "hair"
     t.string "eyes"
     t.date "last_scraped_at"
-    t.string "mugshot"
     t.datetime "arrest_date"
     t.string "arrested_by"
     t.string "arresting_agency"
     t.datetime "booking_date"
     t.datetime "release_date"
-    t.date "freedom_date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["roster_id"], name: "index_tulsa_blotter_arrests_on_roster_id"
@@ -535,13 +533,13 @@ ActiveRecord::Schema.define(version: 2022_10_14_165905) do
   create_table "tulsa_blotter_offenses", force: :cascade do |t|
     t.string "description"
     t.string "case_number"
-    t.string "court_date"
     t.string "bond_type"
-    t.string "bond_amount"
     t.string "disposition"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "arrests_id"
+    t.decimal "bond_amount", precision: 2
+    t.date "court_date"
     t.index ["arrests_id"], name: "index_tulsa_blotter_offenses_on_arrests_id"
   end
 

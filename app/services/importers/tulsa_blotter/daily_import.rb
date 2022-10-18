@@ -59,7 +59,8 @@ module Importers
           race: json['Race'],
           weight: json['Weight'],
           arrest_date: format_datetime(json['Arrest Date'], json['Arrest Time']),
-          arrested_by: json['Arrested By'],
+          arresting_agency: arresting_agency(json['Arrested By']),
+          arrested_by: arresting_officer(json['Arrested By']),
           booking_date: format_datetime(json['Booking Date'], json['Booking Time']),
           release_date: format_datetime(json['Release Date'], json['Release Time']),
           last_scraped_at: DateTime.now
@@ -90,10 +91,10 @@ module Importers
         offense ||= ::TulsaBlotter::Offense.new
         offense.assign_attributes(
           arrest: arrest,
-          bond_amount: json['Bond Amt'],
+          bond_amount: Monetize.parse(json['Bond Amt']).to_f.round(2),
           bond_type: json['Bond Type'],
           case_number: json['Case #'],
-          court_date: json['Court Date'],
+          court_date: format_date(json['Court Date']),
           description: json['Description'],
           disposition: json['Disposition']
         )
@@ -109,6 +110,22 @@ module Importers
 
       def format_datetime(date, time)
         DateTime.strptime("#{date} #{time}", '%m/%d/%Y %H:%M %p') if date.present? && time.present?
+      end
+
+      def format_date(date)
+        Date.strptime(date.to_s, '%m/%d/%Y') if date.present?
+      end
+
+      def arresting_agency(arrested_by_string)
+        arrested_by_string.split('/')[0].strip
+      rescue StandardError
+        nil
+      end
+
+      def arresting_officer(arrested_by_string)
+        arrested_by_string.split('/')[1].strip
+      rescue StandardError
+        nil
       end
     end
   end
