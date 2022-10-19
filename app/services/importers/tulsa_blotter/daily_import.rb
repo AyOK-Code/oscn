@@ -116,16 +116,12 @@ module Importers
         Date.strptime(date.to_s, '%m/%d/%Y') if date.present?
       end
 
-      def arresting_agency(arrested_by_string)
-        arrested_by_string.split('/')[0].strip
-      rescue StandardError
-        nil
+      def arresting_agency(string)
+        string.split('/')[0].present? ? string.split('/')[0].strip : nil
       end
 
-      def arresting_officer(arrested_by_string)
-        arrested_by_string.split('/')[1].strip
-      rescue StandardError
-        nil
+      def arresting_officer(string)
+        string.split('/')[1].present? ? string.split('/')[1].strip : nil
       end
     end
   end
