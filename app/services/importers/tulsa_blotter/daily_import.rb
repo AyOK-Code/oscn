@@ -59,8 +59,8 @@ module Importers
           race: json['Race'],
           weight: json['Weight'],
           arrest_date: format_datetime(json['Arrest Date'], json['Arrest Time']),
-          arresting_agency: arresting_agency(json['Arrested By']),
-          arrested_by: arresting_officer(json['Arrested By']),
+          arresting_agency: json['Arrested By'].split('/')[0].present? ? json['Arrested By'].split('/')[0].strip : nil,
+          arrested_by: json['Arrested By'].split('/')[1].present? ? json['Arrested By'].split('/')[1].strip : nil,
           booking_date: format_datetime(json['Booking Date'], json['Booking Time']),
           release_date: format_datetime(json['Release Date'], json['Release Time']),
           last_scraped_at: DateTime.now
@@ -94,7 +94,7 @@ module Importers
           bond_amount: Monetize.parse(json['Bond Amt']).to_f.round(2),
           bond_type: json['Bond Type'],
           case_number: json['Case #'],
-          court_date: format_date(json['Court Date']),
+          court_date: json['Court Date'].present? ? Date.strptime(json['Court Date'], '%m/%d/%Y') : nil,
           description: json['Description'],
           disposition: json['Disposition']
         )
@@ -110,18 +110,6 @@ module Importers
 
       def format_datetime(date, time)
         DateTime.strptime("#{date} #{time}", '%m/%d/%Y %H:%M %p') if date.present? && time.present?
-      end
-
-      def format_date(date)
-        Date.strptime(date.to_s, '%m/%d/%Y') if date.present?
-      end
-
-      def arresting_agency(string)
-        string.split('/')[0].present? ? string.split('/')[0].strip : nil
-      end
-
-      def arresting_officer(string)
-        string.split('/')[1].present? ? string.split('/')[1].strip : nil
       end
     end
   end
