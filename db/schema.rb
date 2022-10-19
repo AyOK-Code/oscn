@@ -520,6 +520,7 @@ ActiveRecord::Schema.define(version: 2022_10_18_155823) do
     t.datetime "release_date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.date "freedom_date"
     t.index ["roster_id"], name: "index_tulsa_blotter_arrests_on_roster_id"
   end
 
@@ -538,7 +539,7 @@ ActiveRecord::Schema.define(version: 2022_10_18_155823) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "arrests_id"
-    t.decimal "bond_amount", precision: 2
+    t.decimal "bond_amount", precision: 14, scale: 2
     t.date "court_date"
     t.index ["arrests_id"], name: "index_tulsa_blotter_offenses_on_arrests_id"
   end

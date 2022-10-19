@@ -18,8 +18,8 @@ module Importers
       end
 
       def track_released(incarcerated_ids)
-        ::TulsaBlotter::Arrest.where(release_date: nil).where.not(booking_id: incarcerated_ids).each do |arrest|
-          arrest.update!(release_date: DateTime.now)
+        ::TulsaBlotter::Arrest.where(freedom_date: nil).where.not(booking_id: incarcerated_ids).each do |arrest|
+          arrest.update!(freedom_date: DateTime.now)
         end
       end
 
