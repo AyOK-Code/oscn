@@ -16,7 +16,9 @@ module Scrapers
         bar = ProgressBar.new(parties_oscn_ids.count)
 
         parties_oscn_ids.each do |oscn_id|
-          PartyWorker.perform_async(oscn_id)
+          PartyWorker
+            .set(queue: :low)
+            .perform_async(oscn_id)
           bar.increment!
         end
       end
