@@ -3,10 +3,9 @@ module Matchers
   class PartyNameSplitter
     attr_reader :party, :full_name, :split_name, :split_count
 
-    def initialize(party, full_name)
+    def initialize(party)
       @party = party
-      @full_name = full_name
-      @split_name = full_name.split(/\p{Space}\p{Space}/)
+      @split_name = party.full_name.squish.split
       @split_count = split_name.count
     end
 
@@ -49,7 +48,7 @@ module Matchers
     end
 
     def clean_string(string)
-      string.gsub(',', '').squish
+      string.gsub(',', '')
     end
   end
 end

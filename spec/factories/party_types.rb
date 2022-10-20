@@ -6,8 +6,8 @@ FactoryBot.define do
       name { 'defendant' }
     end
 
-    trait :plantiff do
-      name { 'plantiff' }
+    trait :plaintiff do
+      name { 'plaintiff' }
     end
   end
 end

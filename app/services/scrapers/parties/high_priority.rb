@@ -6,13 +6,15 @@ module Scrapers
       end
 
       def perform
-        parties_oscn_ids = ::Party.without_html.limit(parties_high_count).pluck(:oscn_id)
+        parties_oscn_ids = ::Party.without_html.where.not(oscn_id: nil).limit(parties_high_count).pluck(:oscn_id)
 
         bar = ProgressBar.new(parties_oscn_ids.count)
         puts "#{parties_oscn_ids.count} are missing html"
 
         parties_oscn_ids.each do |oscn_id|
-          PartyWorker.perform_async(oscn_id)
+          PartyWorker
+            .set(queue: :high)
+            .perform_async(oscn_id)
           bar.increment!
         end
       end

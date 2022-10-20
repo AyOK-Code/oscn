@@ -1,4 +1,3 @@
 class TulsaBlotter::Offense < ApplicationRecord
-  belongs_to :arrest
-  validates :case_number, :court_date, :bond_type, :disposition, presence: true
+  belongs_to :arrest, class_name: 'TulsaBlotter::Arrest', foreign_key: :arrests_id
 end

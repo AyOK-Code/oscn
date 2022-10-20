@@ -109,12 +109,13 @@ VCR.configure do |c|
     OKC_BLOTTER_AUTH_TOKEN
     OKC_BLOTTER_AUTH_TOKEN
     BUCKETEER_AWS_ACCESS_KEY_ID
+    AWS_LAMBDA_KEY
+    AWS_LAMBDA_SECRET
+    AWS_LAMBDA_REGION
   ]
-   env_keys.each do |key|
-     if ENV[key]
-      c.filter_sensitive_data(key) { ENV[key] }
-     else
-       ENV[key] = key
-     end
-   end
+  env_keys.each do |key|
+    c.filter_sensitive_data("<#{key}>") { ENV.fetch(key, nil) }
+
+    ENV[key] = key unless ENV[key]
+  end
 end
