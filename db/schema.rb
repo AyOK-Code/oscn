@@ -367,7 +367,7 @@ ActiveRecord::Schema.define(version: 2022_10_20_222745) do
     t.string "middle_name"
     t.date "birth_date"
     t.string "case_number"
-    t.decimal "bound_amount"
+    t.decimal "bond_amount", precision: 14, scale: 2
     t.date "issued"
     t.string "counts"
     t.datetime "created_at", precision: 6, null: false
