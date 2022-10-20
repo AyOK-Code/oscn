@@ -12,7 +12,9 @@ module Scrapers
         puts "#{parties_oscn_ids.count} are missing html"
 
         parties_oscn_ids.each do |oscn_id|
-          PartyWorker.perform_async(oscn_id)
+          PartyWorker
+            .set(queue: :high)
+            .perform_async(oscn_id)
           bar.increment!
         end
       end
