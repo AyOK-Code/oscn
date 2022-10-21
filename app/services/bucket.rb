@@ -6,7 +6,7 @@ class Bucket
   end
 
   def put_object(filepath, buffer)
-    s3.put_object(bucket: ENV['BUCKETEER_BUCKET_NAME'], key: filepath, body: buffer)
+    s3.put_object(bucket: ENV.fetch('BUCKETEER_BUCKET_NAME', nil), key: filepath, body: buffer)
   end
 
   def get_object(filepath)

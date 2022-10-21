@@ -7,7 +7,7 @@ RSpec.describe Importers::OkcBlotter::Pdf do
         # to re-record this test you need to have AWS env variables configured
         # most of them are obfuscated in the final vcr (see rails_helper.rb)
         ENV['BUCKETEER_AWS_REGION'] = 'us-west-2'
-        VCR.use_cassette "scrape_pdf" do
+        VCR.use_cassette 'scrape_pdf' do
           expect { Importers::OkcBlotter::Pdf.perform('2022-10-01') }
             .to change { ::OkcBlotter::Pdf.count }
             .and change { ::OkcBlotter::Booking.count }

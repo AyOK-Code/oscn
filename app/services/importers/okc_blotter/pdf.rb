@@ -18,7 +18,7 @@ module Importers
                                Authorization: auth_token
                              }).body
         Zip::InputStream.open(StringIO.new(input)) do |io|
-          while entry = io.get_next_entry #note: there is only actually one pdf here
+          while entry = io.get_next_entry # NOTE: there is only actually one pdf here
             pdf = io.read
             filename = entry.name
             Bucket.new.put_object("#{s3_path}/#{filename}", pdf)
@@ -52,12 +52,17 @@ module Importers
         @json = JSON.parse(response.body)
         return @json if response.success?
 
-        raise StandardError.new "Error parsing pdf: #{@json['message']}"
+        raise StandardError, "Error parsing pdf: #{@json['message']}"
       end
 
       def pdf
         return @pdf if @pdf
-        pdf = Bucket.new.get_object("#{s3_path}/#{@date}.pdf").body rescue false
+
+        pdf = begin
+          Bucket.new.get_object("#{s3_path}/#{@date}.pdf").body
+        rescue StandardError
+          false
+        end
         @pdf = pdf if pdf
         pdf
       end
@@ -102,36 +107,32 @@ module Importers
       end
 
       def auth_token
-        ENV['OKC_BLOTTER_AUTH_TOKEN']
+        ENV.fetch('OKC_BLOTTER_AUTH_TOKEN', nil)
       end
 
       def self.import_since_last_run
         last_run_date = ::OkcBlotter::Pdf.order(date: :desc).first.date
         (last_run_date + 1.day..DateTime.now.to_date).each do |date|
-          begin
-            perform(date)
-          rescue StandardError => error
-            puts "error processing #{date}. Data not saved" #todo: log these somewhere?
-            puts "error was: #{error}"
-          end
+          perform(date)
+        rescue StandardError => e
+          puts "error processing #{date}. Data not saved" # TODO: log these somewhere?
+          puts "error was: #{e}"
         end
       end
 
-      # Note: PDFs only are on the website for 30 days.
+      # NOTE: PDFs only are on the website for 30 days.
       # If the pdfs have already been saved to s3 you may be able to parse longer
       def self.import_missing_dates(since_date = (DateTime.now - 1.month).to_date)
-        query = <<-sql
+        query = <<-SQL
           SELECT * FROM generate_series('#{since_date}', '#{DateTime.now.to_date}', interval '1 day') AS dates
           WHERE dates NOT IN (SELECT date FROM okc_blotter_pdfs);
-        sql
-        missing_dates = ActiveRecord::Base.connection.execute(query).to_a.map{|row| row['dates'].to_datetime.to_date}
+        SQL
+        missing_dates = ActiveRecord::Base.connection.execute(query).to_a.map { |row| row['dates'].to_datetime.to_date }
         missing_dates.each do |date|
-          begin
-            perform(date)
-          rescue StandardError => error
-            puts "error processing #{date}. Data not saved" #todo: log these somewhere?
-            puts "error was: #{error}"
-          end
+          perform(date)
+        rescue StandardError => e
+          puts "error processing #{date}. Data not saved" # TODO: log these somewhere?
+          puts "error was: #{e}"
         end
       end
     end
