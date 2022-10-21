@@ -1,4 +1,11 @@
 GIT
+  remote: https://github.com/AyOK-Code/ocso_scraper
+  revision: ca9a0bafa801c4f9a7aeddf888e86a756abaa6c2
+  ref: ca9a0ba
+  specs:
+    ocso_scraper (0.1.0)
+
+GIT
   remote: https://github.com/AyOK-Code/oscn_scraper
   revision: 480534469fdb03f9006f844d48a625a3d36f6142
   ref: 4805344
@@ -395,6 +402,7 @@ DEPENDENCIES
   kaminari
   listen (~> 3.2)
   monetize
+  ocso_scraper!
   oscn_scraper!
   pg (>= 0.18, < 2.0)
   progress_bar
