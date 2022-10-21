@@ -5,6 +5,7 @@ module Importers
     class Pdf < ApplicationService
       def initialize(date)
         @date = date
+        super()
       end
 
       def perform
@@ -13,12 +14,9 @@ module Importers
       end
 
       def download_pdf_from_website
-        input = HTTParty.get("#{url}/pdfs?date=#{@date}",
-                             headers: {
-                               Authorization: auth_token
-                             }).body
+        input = HTTParty.get("#{url}/pdfs?date=#{@date}", headers: { Authorization: auth_token }).body
         Zip::InputStream.open(StringIO.new(input)) do |io|
-          while entry = io.get_next_entry # NOTE: there is only actually one pdf here
+          while (entry = io.get_next_entry) # NOTE: there is only actually one pdf here
             pdf = io.read
             filename = entry.name
             Bucket.new.put_object("#{s3_path}/#{filename}", pdf)
@@ -120,8 +118,7 @@ module Importers
         end
       end
 
-      # NOTE: PDFs only are on the website for 30 days.
-      # If the pdfs have already been saved to s3 you may be able to parse longer
+      # NOTE: PDFs only are on the website for 30 days but if pdfs are saved to s3 you may be able to parse longer
       def self.import_missing_dates(since_date = (DateTime.now - 1.month).to_date)
         query = <<-SQL
           SELECT * FROM generate_series('#{since_date}', '#{DateTime.now.to_date}', interval '1 day') AS dates
