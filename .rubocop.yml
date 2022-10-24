@@ -40,3 +40,10 @@ Style/CaseEquality:
   AllowOnConstant: true
 Metrics/AbcSize:
   Enabled: false
+Lint/NestedMethodDefinition:
+  Exclude:
+    - 'app/services/importers/okc_blotter/pdf.rb'
+Metrics/ClassLength:
+  Exclude:
+    - 'app/services/importers/okc_blotter/pdf.rb'
+
