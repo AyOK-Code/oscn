@@ -1,6 +1,9 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'simplecov'
 require 'simplecov-json'
+require 'webmock/rspec'
+
+WebMock.disable_net_connect!
 
 SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new([
                                                                   SimpleCov::Formatter::HTMLFormatter,
@@ -101,6 +104,11 @@ VCR.configure do |c|
   # Private environment variables must be set during test run to generate real data for the VCR
   # They then are then hidden
   env_keys = %w[
+    BUCKETEER_AWS_SECRET_ACCESS_KEY
+    BUCKETEER_BUCKET_NAME
+    OKC_BLOTTER_AUTH_TOKEN
+    OKC_BLOTTER_AUTH_TOKEN
+    BUCKETEER_AWS_ACCESS_KEY_ID
     AWS_LAMBDA_KEY
     AWS_LAMBDA_SECRET
     AWS_LAMBDA_REGION
