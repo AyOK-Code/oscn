@@ -1,11 +1,4 @@
 GIT
-  remote: https://github.com/AyOK-Code/ocso_scraper
-  revision: 9bc741d6ec87b97ff31f386e29af9ae9ae035a92
-  ref: 9bc741d
-  specs:
-    ocso_scraper (0.1.0)
-
-GIT
   remote: https://github.com/AyOK-Code/oscn_scraper
   revision: 480534469fdb03f9006f844d48a625a3d36f6142
   ref: 4805344
@@ -19,6 +12,11 @@ GIT
       rake (~> 10.0)
       simplecov (~> 0.21.2)
       yard (~> 0.9.26)
+
+PATH
+  remote: /Users/jwilliams/Desktop/code/ocso_scraper
+  specs:
+    ocso_scraper (0.1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -83,8 +81,8 @@ GEM
     ast (2.4.2)
     awesome_print (1.9.2)
     aws-eventstream (1.2.0)
-    aws-partitions (1.649.0)
-    aws-sdk-core (3.163.0)
+    aws-partitions (1.650.0)
+    aws-sdk-core (3.164.0)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.525.0)
       aws-sigv4 (~> 1.1)
@@ -95,7 +93,7 @@ GEM
     aws-sdk-lambda (1.85.0)
       aws-sdk-core (~> 3, >= 3.127.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-s3 (1.115.0)
+    aws-sdk-s3 (1.116.0)
       aws-sdk-core (~> 3, >= 3.127.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.4)
@@ -282,7 +280,7 @@ GEM
     rspec-expectations (3.11.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.11.0)
-    rspec-mocks (3.11.1)
+    rspec-mocks (3.11.2)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.11.0)
     rspec-rails (5.1.2)
@@ -294,23 +292,23 @@ GEM
       rspec-mocks (~> 3.10)
       rspec-support (~> 3.10)
     rspec-support (3.11.1)
-    rubocop (1.37.0)
+    rubocop (1.37.1)
       json (~> 2.3)
       parallel (~> 1.10)
       parser (>= 3.1.2.1)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml (>= 3.2.5, < 4.0)
-      rubocop-ast (>= 1.22.0, < 2.0)
+      rubocop-ast (>= 1.23.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.22.0)
+    rubocop-ast (1.23.0)
       parser (>= 3.1.1.0)
-    rubocop-rails (2.16.1)
+    rubocop-rails (2.17.1)
       activesupport (>= 4.2.0)
       rack (>= 1.1)
       rubocop (>= 1.33.0, < 2.0)
-    rubocop-rspec (2.13.2)
+    rubocop-rspec (2.14.2)
       rubocop (~> 1.33)
     ruby-graphviz (1.2.5)
       rexml
@@ -404,7 +402,7 @@ DEPENDENCIES
   monetize
   ocso_scraper!
   oscn_scraper!
-  pg (>= 0.18, < 2.0)
+  pg
   progress_bar
   pry-nav
   pry-rails
