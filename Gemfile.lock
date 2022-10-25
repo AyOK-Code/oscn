@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/AyOK-Code/ocso_scraper
-  revision: ca9a0bafa801c4f9a7aeddf888e86a756abaa6c2
-  ref: ca9a0ba
+  revision: 9bc741d6ec87b97ff31f386e29af9ae9ae035a92
+  ref: 9bc741d
   specs:
     ocso_scraper (0.1.0)
 
