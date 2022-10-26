@@ -409,6 +409,7 @@ ActiveRecord::Schema.define(version: 2022_10_20_222745) do
     t.string "counts"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["case_number", "first_name", "last_name", "birth_date"], name: "index_ocso_warrants_on_case_number_etc", unique: true
   end
 
   create_table "parent_parties", force: :cascade do |t|

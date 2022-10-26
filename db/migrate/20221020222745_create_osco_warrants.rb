@@ -13,5 +13,10 @@ class CreateOscoWarrants < ActiveRecord::Migration[6.0]
 
       t.timestamps
     end
+
+    add_index :osco_warrants,
+              [:case_number, :first_name, :last_name, :birth_date],
+              unique: true,
+              name: "index_ocso_warrants_on_case_number_etc"
   end
 end
