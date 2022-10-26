@@ -1,4 +1,11 @@
 GIT
+  remote: https://github.com/AyOK-Code/ocso_scraper
+  revision: 4023411139931557a0a44dda6549b2340e1dc3d2
+  ref: 4023411
+  specs:
+    ocso_scraper (0.1.0)
+
+GIT
   remote: https://github.com/AyOK-Code/oscn_scraper
   revision: 480534469fdb03f9006f844d48a625a3d36f6142
   ref: 4805344
@@ -12,11 +19,6 @@ GIT
       rake (~> 10.0)
       simplecov (~> 0.21.2)
       yard (~> 0.9.26)
-
-PATH
-  remote: ../ocso_scraper
-  specs:
-    ocso_scraper (0.1.0)
 
 GEM
   remote: https://rubygems.org/
