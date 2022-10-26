@@ -14,7 +14,7 @@ GIT
       yard (~> 0.9.26)
 
 PATH
-  remote: /Users/jwilliams/Desktop/code/ocso_scraper
+  remote: ../ocso_scraper
   specs:
     ocso_scraper (0.1.0)
 

@@ -1,36 +1,23 @@
 module Scrapers
-    class OcsoWarrants
-
-        def self.perform
-            
-            html = OcsoScraper::Crawler.request
-            parsed_html = OcsoScraper::CrawlerParser.parser(html)
-          #  puts parsed_html
-            
-            data = parsed_html.css('td font').children
-
-            warrants = []
-
-            data.each_slice(6) do |l,f,m,d,c,o|
-                extra = c.text.split('   ')
-                warrant= {
-                    last:l.text,
-                    first:f.text,
-                    middle:m.text,
-                    dob:d.text,
-                    case:extra[0],
-                    bond:extra[1],
-                    issued:extra[2],
-                    offense:o.text    
-                }
-                warrants << warrant
-            end
-            binding.pry
-            
-            
-        end
-
+  class OcsoWarrants < ApplicationService
+    def perform
+      warrants = OcsoScraper::Crawler.perform
+      warrants.each do |warrant|
+        warrant = ::Osco::Warrant.find_or_initialize_by(
+          first_name: warrant[:first_name],
+          last_name: warrant[:last_name],
+          birth_date: warrant[:birth_date],
+          case_number: warrant[:case_number]
+        )
+        warrant.assign_attributes(
+          middle_name: warrant[:middle_name],
+          case_number: warrant[:case_number],
+          bond_amount: warrant[:bond_amount],
+          issued: warrant[:issued],
+          counts: warrant[:counts]
+        )
+        warrant.save!
+      end
     end
-
-
+  end
 end
