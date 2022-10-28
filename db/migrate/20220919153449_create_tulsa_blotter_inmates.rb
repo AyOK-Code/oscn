@@ -6,7 +6,6 @@ class CreateTulsaBlotterInmates < ActiveRecord::Migration[6.0]
       t.string :last
       t.string :gender
       t.references :roster,null: true, foreign_key: true
-      t.references :booking,null: true, foreign_key: true
       t.string :race
       t.string :address
       t.string :height

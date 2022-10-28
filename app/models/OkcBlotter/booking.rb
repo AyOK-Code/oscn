@@ -1,6 +1,5 @@
 class OkcBlotter::Booking < ApplicationRecord
-  belongs_to :pdf, class_name: 'OkcBlotter::Pdf', foreign_key: 'pdfs_id'
+  belongs_to :pdf, class_name: 'OkcBlotter::Pdf'
   belongs_to :roster, optional: true
-  has_many :offense, dependent: :destroy, foreign_key: 'bookings_id'
-  validates :transient, :inmate_number, :booking_number, :booking_date, presence: true
+  has_many :offenses, class_name: 'OkcBlotter::Offense', dependent: :destroy
 end
