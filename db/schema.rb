@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_18_155823) do
+ActiveRecord::Schema.define(version: 2022_10_20_222745) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -366,6 +366,20 @@ ActiveRecord::Schema.define(version: 2022_10_18_155823) do
     t.string "update_status"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "osco_warrants", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "middle_name"
+    t.date "birth_date"
+    t.string "case_number"
+    t.decimal "bond_amount", precision: 14, scale: 2
+    t.date "issued"
+    t.string "counts"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["case_number", "first_name", "last_name", "birth_date"], name: "index_ocso_warrants_on_case_number_etc", unique: true
   end
 
   create_table "parent_parties", force: :cascade do |t|
