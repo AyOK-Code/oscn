@@ -1,5 +1,5 @@
-module Osco
+module Ocso
   def self.table_name_prefix
-    'osco_'
+    'ocso_'
   end
 end

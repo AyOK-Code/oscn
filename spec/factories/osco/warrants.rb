@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :osco_warrant do
+  factory :ocso_warrant do
     first_name { 'MyString' }
     last_name { 'MyString' }
     middle_name { 'MyString' }
