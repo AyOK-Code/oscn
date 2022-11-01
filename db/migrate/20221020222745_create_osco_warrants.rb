@@ -1,4 +1,4 @@
-class CreateOcsoWarrants < ActiveRecord::Migration[6.0]
+class CreateOscoWarrants < ActiveRecord::Migration[6.0]
   def change
   
     create_table :osco_warrants do |t|
