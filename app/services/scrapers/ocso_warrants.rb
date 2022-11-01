@@ -2,6 +2,7 @@ module Scrapers
   class OcsoWarrants < ApplicationService
     def perform
       warrant_hashes = OcsoScraper::Crawler.perform
+      upserted_warrant_ids = []
       warrant_hashes.each do |warrant_hash|
         warrant = ::Ocso::Warrant.find_or_initialize_by(
           first_name: warrant_hash[:first_name],
@@ -17,6 +18,10 @@ module Scrapers
           counts: warrant_hash[:counts]
         )
         warrant.save!
+        upserted_warrant_ids << warrant.id
+      end
+      ::Ocso::Warrant.where(resolved_at: nil).where.not(id: upserted_warrant_ids).each do |warrant|
+        warrant.update!(resolved_at: Time.current)
       end
     end
   end
