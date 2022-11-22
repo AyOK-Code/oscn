@@ -2,6 +2,7 @@
 # Ex: https://www.oscn.net/dockets/GetPartyRecord.aspx?db=oklahoma&id=5515773
 class PartyWorker
   include Sidekiq::Worker
+  include Sidekiq::Status::Worker
   include Sidekiq::Throttled::Worker
   sidekiq_options retry: 5
   sidekiq_throttle_as :oscn

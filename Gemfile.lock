@@ -7,8 +7,8 @@ GIT
 
 GIT
   remote: https://github.com/AyOK-Code/oscn_scraper
-  revision: 480534469fdb03f9006f844d48a625a3d36f6142
-  ref: 4805344
+  revision: 577cec3f5e70c5cfc95b71ccf82c3e027bc11d47
+  ref: 577cec3
   specs:
     oscn_scraper (0.1.1)
       activesupport (>= 5.0.0)
@@ -110,6 +110,8 @@ GEM
       uniform_notifier (~> 1.11)
     byebug (11.1.3)
     choice (0.2.0)
+    chronic_duration (0.10.6)
+      numerizer (~> 0.1.1)
     coderay (1.1.3)
     concurrent-ruby (1.1.10)
     connection_pool (2.3.0)
@@ -207,6 +209,7 @@ GEM
     nokogiri (1.13.9)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
+    numerizer (0.1.1)
     options (2.3.2)
     parallel (1.22.1)
     parser (3.1.2.1)
@@ -329,6 +332,9 @@ GEM
       connection_pool (>= 2.2.5)
       rack (~> 2.0)
       redis (>= 4.5.0, < 5)
+    sidekiq-status (2.1.3)
+      chronic_duration
+      sidekiq (>= 5.0)
     sidekiq-throttled (0.17.0)
       concurrent-ruby
       redis-prescription
@@ -426,6 +432,7 @@ DEPENDENCIES
   scenic
   shoulda-matchers
   sidekiq
+  sidekiq-status
   sidekiq-throttled
   simplecov
   simplecov-json
