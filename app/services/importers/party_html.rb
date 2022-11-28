@@ -5,6 +5,7 @@ module Importers
 
     def initialize(oscn_id)
       @party = ::Party.find_by(oscn_id: oscn_id)
+      @oscn_id = oscn_id
       @county_name = @party.court_cases.first.county.name
     end
 
