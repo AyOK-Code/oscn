@@ -46,4 +46,10 @@ Lint/NestedMethodDefinition:
 Metrics/ClassLength:
   Exclude:
     - 'app/services/importers/okc_blotter/pdf.rb'
+Metrics/PerceivedComplexity:
+  Exclude:
+    - 'app/services/importers/pd/offense.rb'
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - 'app/services/importers/pd/offense.rb'
 
