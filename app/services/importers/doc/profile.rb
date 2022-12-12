@@ -4,6 +4,7 @@ module Importers
       attr_accessor :file, :fields, :field_pattern, :bar
 
       def initialize(dir)
+        @profiles = []
         @file = Bucket.new.get_object("doc/#{dir}/Vendor_Profile_Extract_Text.dat")
         @fields = field_spacing(dir)
         @field_pattern = "A#{fields.join('A')}"
@@ -15,22 +16,17 @@ module Importers
           bar.increment!
           data = line.unpack(field_pattern).map(&:squish)
 
-          save_profile(data)
+          @profiles << save_profile(data)
         end
+
+        ::Doc::Profile.upsert_all(@profiles, unique_by: :doc_number)
       end
 
       private
 
-      def find_profile(data)
-        ::Doc::Profile.find_or_initialize_by(
-          doc_number: data[0]
-        )
-      end
-
       def save_profile(data)
-        profile = find_profile(data)
-
-        profile.assign_attributes(
+        {
+          doc_number: data[0],
           last_name: data[1],
           first_name: data[2],
           middle_name: data[3],
@@ -46,8 +42,8 @@ module Importers
           weight: data[13],
           eye: data[14],
           status: parse_status(data[15])
-        )
-        profile.save!
+
+        }
       end
 
       def parse_date(date)
