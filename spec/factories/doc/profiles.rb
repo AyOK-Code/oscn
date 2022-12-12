@@ -8,13 +8,13 @@ FactoryBot.define do
     last_move_date { '2022-01-24' }
     facility { 'MyString' }
     birth_date { '2022-01-24' }
-    sex { 'MyString' }
+    sex { 'male' }
     race { 'MyString' }
     hair { 'MyString' }
     height_ft { 'MyString' }
     height_in { 'MyString' }
     weight { 'MyString' }
     eye { 'MyString' }
-    status { 'MyString' }
+    status { 'active' }
   end
 end

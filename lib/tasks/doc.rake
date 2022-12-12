@@ -30,6 +30,7 @@ namespace :doc do
   desc 'Import aliases'
   task :aliases, [:dir] => [:environment] do |_t, args|
     dir = args.dir
+
     Importers::Doc::Alias.new(dir).perform
   end
 
