@@ -19,7 +19,7 @@ module Importers
           @statutes << save_statute(data)
         end
         @statutes.compact!
-        ::Doc::OffenseCode.upsert_all(@statutes ,unique_by: [:statute_code,:description,:is_violent])
+        ::Doc::OffenseCode.upsert_all(@statutes, unique_by: [:statute_code, :description, :is_violent])
       end
 
       private

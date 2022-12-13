@@ -18,11 +18,11 @@ module Importers
         @file.body.string.split("\r\n").each do |line|
           bar.increment!
           data = line.unpack(field_pattern).map(&:squish)
-           @statuses << save_status(data)
+          @statuses << save_status(data)
         end
-       
+
         @statuses.compact!
-        ::Doc::Status.upsert_all(@statuses ,unique_by: :status_index)
+        ::Doc::Status.upsert_all(@statuses, unique_by: :status_index)
       end
 
       private
