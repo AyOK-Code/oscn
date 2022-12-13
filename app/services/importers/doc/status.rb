@@ -4,6 +4,7 @@ module Importers
       attr_accessor :filename, :fields, :field_pattern, :bar, :doc_mapping, :dir
 
       def initialize(dir)
+        @statuses = []
         @dir = dir
         @file = Bucket.new.get_object("doc/#{dir}/Vendor_Profile_Extract_Text.dat")
         @fields = field_spacing(dir)
@@ -17,9 +18,11 @@ module Importers
         @file.body.string.split("\r\n").each do |line|
           bar.increment!
           data = line.unpack(field_pattern).map(&:squish)
-
-          save_status(data)
+           @statuses << save_status(data)
         end
+       
+        @statuses.compact!
+        ::Doc::Status.upsert_all(@statuses ,unique_by: :status_index)
       end
 
       private
@@ -28,18 +31,18 @@ module Importers
         profile = doc_mapping[data[0].to_i]
         return if profile.nil?
 
-        ::Doc::Status.find_or_initialize_by(
+        {
           doc_profile_id: doc_mapping[data[0].to_i],
           date: parse_date("#{dir}-01"),
           facility: data[6]
-        )
+        }
       end
 
       def save_status(data)
         status = find_status(data)
         return if status.nil?
 
-        status.save
+        status
       end
 
       def parse_date(date)

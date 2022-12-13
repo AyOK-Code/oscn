@@ -18,12 +18,15 @@ module Importers
           data = line.unpack(field_pattern).map(&:squish)
           profile_id = doc_mapping[data[0].to_i]
 
+
           next if profile_id.blank?
+          
+
 
           @aliases << save_alias(data)
         end
-
-        ::Doc::Alias.upsert_all(@aliases)
+        @aliases.compact!
+        ::Doc::Alias.upsert_all(@aliases ,unique_by: :alias_index )
       end
 
       private

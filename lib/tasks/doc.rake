@@ -56,4 +56,12 @@ namespace :doc do
   task link_offense_codes: [:environment] do
     Importers::Doc::LinkOffenseCodes.new.perform
   end
+  desc 'Delete All'
+  task delete: [:environment] do
+    Doc::OffenseCode.delete_all
+    Doc::Status.delete_all
+    Doc::Sentence.delete_all
+    Doc::Alias.delete_all
+    Doc::Profile.delete_all
+  end
 end
