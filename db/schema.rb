@@ -390,11 +390,11 @@ ActiveRecord::Schema.define(version: 2022_12_19_171622) do
 
   create_table "parcels", force: :cascade do |t|
     t.string "geoid20", null: false
-    t.string "zip", null: false
+    t.string "zip"
     t.integer "tract", null: false
     t.string "block", null: false
-    t.decimal "lat"
-    t.decimal "long"
+    t.string "lat"
+    t.string "long"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
