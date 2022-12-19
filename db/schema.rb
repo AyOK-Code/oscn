@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_08_222212) do
+ActiveRecord::Schema.define(version: 2022_12_19_171622) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -149,6 +149,7 @@ ActiveRecord::Schema.define(version: 2022_12_08_222212) do
     t.string "suffix"
     t.datetime "created_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.index ["doc_profile_id", "doc_number", "last_name", "first_name", "middle_name", "suffix"], name: "alias_index", unique: true
     t.index ["doc_profile_id"], name: "index_doc_aliases_on_doc_profile_id"
   end
 
@@ -165,6 +166,7 @@ ActiveRecord::Schema.define(version: 2022_12_08_222212) do
     t.boolean "is_violent", default: false, null: false
     t.datetime "created_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.index ["statute_code", "description", "is_violent"], name: "offense_code_index", unique: true
   end
 
   create_table "doc_profiles", force: :cascade do |t|
@@ -213,7 +215,7 @@ ActiveRecord::Schema.define(version: 2022_12_08_222212) do
     t.bigint "doc_sentencing_county_id"
     t.index ["court_case_id"], name: "index_doc_sentences_on_court_case_id"
     t.index ["doc_offense_code_id"], name: "index_doc_sentences_on_doc_offense_code_id"
-    t.index ["doc_profile_id", "sentence_id"], name: "index_doc_sentences_on_doc_profile_id_and_sentence_id"
+    t.index ["doc_profile_id", "sentence_id"], name: "index_doc_sentences_on_doc_profile_id_and_sentence_id", unique: true
     t.index ["doc_profile_id"], name: "index_doc_sentences_on_doc_profile_id"
     t.index ["doc_sentencing_county_id"], name: "index_doc_sentences_on_doc_sentencing_county_id"
   end
@@ -235,7 +237,8 @@ ActiveRecord::Schema.define(version: 2022_12_08_222212) do
     t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.bigint "doc_facility_id"
     t.index ["doc_facility_id"], name: "index_doc_statuses_on_doc_facility_id"
-    t.index ["doc_profile_id", "doc_facility_id"], name: "index_doc_statuses_on_doc_profile_id_and_doc_facility_id"
+    t.index ["doc_profile_id", "date", "facility"], name: "status_index", unique: true
+    t.index ["doc_profile_id", "doc_facility_id"], name: "index_doc_statuses_on_doc_profile_id_and_doc_facility_id", unique: true
     t.index ["doc_profile_id"], name: "index_doc_statuses_on_doc_profile_id"
   end
 
@@ -381,6 +384,17 @@ ActiveRecord::Schema.define(version: 2022_12_08_222212) do
     t.text "description"
     t.date "effective_on"
     t.string "update_status"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "parcels", force: :cascade do |t|
+    t.string "geoid20", null: false
+    t.string "zip", null: false
+    t.integer "tract", null: false
+    t.string "block", null: false
+    t.decimal "lat"
+    t.decimal "long"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
