@@ -59,9 +59,10 @@ namespace :update do
     end
   end
 
-  desc 'Update full database from stored html'
+  desc 'Update database from stored html'
   task database: [:environment] do
-    court_cases = CourtCase.with_error.joins(:case_html).pluck('county_id', :case_number, 'case_htmls.id')
+    case_ids = DocketEvent.where("description ILIKE '%PDF%'").pluck(:court_case_id)
+    court_cases = CourtCase.where(id: case_ids).joins(:case_html).pluck('county_id', :case_number, 'case_htmls.id')
     bar = ProgressBar.new(court_cases.count)
 
     court_cases.each do |c|
