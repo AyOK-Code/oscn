@@ -22,7 +22,6 @@ module Importers
         end
         @sentences.compact!
         ::Doc::Sentence.upsert_all(@sentences, unique_by: [:doc_profile_id, :sentence_id])
-
       end
 
       private
