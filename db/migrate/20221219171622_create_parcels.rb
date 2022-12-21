@@ -9,6 +9,10 @@ class CreateParcels < ActiveRecord::Migration[6.0]
       t.string :long , null:true
 
       t.timestamps
+
+  
     end
+    change_column_default :parcels, :created_at, from: nil, to: ->{ 'current_timestamp' }
+    change_column_default :parcels, :updated_at, from: nil, to: ->{ 'current_timestamp' }
   end
 end

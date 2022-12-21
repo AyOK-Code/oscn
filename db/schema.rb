@@ -395,8 +395,8 @@ ActiveRecord::Schema.define(version: 2022_12_19_171622) do
     t.string "block", null: false
     t.string "lat"
     t.string "long"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
   create_table "parent_parties", force: :cascade do |t|
