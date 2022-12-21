@@ -21,7 +21,7 @@ module Importers
           @sentences << find_and_save_sentence(data)
         end
         @sentences.compact!
-        ::Doc::Sentence.upsert_all(@sentences)
+        ::Doc::Sentence.upsert_all(@sentences, unique_by: [:doc_profile_id, :sentence_id])
       end
 
       private

@@ -18,7 +18,7 @@ module Importers
 
           @profiles << save_profile(data)
         end
-
+        @profiles.compact!
         ::Doc::Profile.upsert_all(@profiles, unique_by: :doc_number)
       end
 
