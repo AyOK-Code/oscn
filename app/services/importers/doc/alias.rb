@@ -23,7 +23,8 @@ module Importers
           @aliases << save_alias(data)
         end
 
-        ::Doc::Alias.upsert_all(@aliases)
+        @aliases.compact!
+        ::Doc::Alias.upsert_all(@aliases, unique_by: :alias_index)
       end
 
       private
