@@ -1,3 +1,4 @@
+require 'json'
 module Importers
   module Doc
     class Sentence
@@ -20,8 +21,10 @@ module Importers
 
           @sentences << find_and_save_sentence(data)
         end
-        @sentences.compact!
-        ::Doc::Sentence.upsert_all(@sentences, unique_by: [:doc_profile_id, :sentence_id])
+        non_empty = @sentences.reject { |x| !x || x.empty? }
+        grouped = non_empty.group_by { |x| [x[:doc_profile_id], x[:sentence_id]] }
+        unique = grouped.map { |k, v| v[-1] }
+        ::Doc::Sentence.upsert_all(unique, unique_by: [:doc_profile_id, :sentence_id])
       end
 
       private
@@ -34,12 +37,17 @@ module Importers
       end
 
       def save_sentence(data)
+        js_date = begin
+                    Date.parse(data[5])
+                  rescue
+                    nil
+                  end
         {
           doc_profile_id: doc_mapping[data[0].to_i],
           sentence_id: data[1],
           sentencing_county: data[4],
           consecutive_to_sentence_id: data[2],
-          js_date: data[5].present? ? Date.parse(data[5]) : '',
+          js_date: js_date,
           crf_number: data[6],
           statute_code: data[3],
           incarcerated_term_in_years: data[7].to_f,

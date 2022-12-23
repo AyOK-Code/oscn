@@ -15,6 +15,16 @@ namespace :doc do
     Importers::Doc::Alias.new('2022-01').perform
   end
 
+  desc 'Import all'
+  task :all, [:dir] => [:environment] do |_t, args|
+    dir = args.dir
+    Importers::Doc::OffenseCode.new(dir).perform
+    Importers::Doc::Profile.new(dir).perform
+    Importers::Doc::Sentence.new(dir).perform
+    Importers::Doc::Alias.new(dir).perform
+    Importers::Doc::Status.new(dir).perform
+  end
+
   desc 'Import profiles'
   task :profiles, [:dir] => [:environment] do |_t, args|
     dir = args.dir
