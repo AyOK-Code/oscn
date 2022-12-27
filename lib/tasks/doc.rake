@@ -1,5 +1,8 @@
 require 'open-uri'
 
+# Source downloaded from:
+# https://web.archive.org/web/20220000000000*/https://oklahoma.gov/doc/communications/odoc-public-inmate-data.html
+
 namespace :doc do
   desc 'Reset database and run all tasks'
   task reset: [:environment] do
