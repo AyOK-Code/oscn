@@ -23,7 +23,7 @@ module Importers
         end
         non_empty = @sentences.reject { |x| !x || x.empty? }
         grouped = non_empty.group_by { |x| [x[:doc_profile_id], x[:sentence_id]] }
-        unique = grouped.map { |k, v| v[-1] }
+        unique = grouped.map { |_k, v| v[-1] }
         ::Doc::Sentence.upsert_all(unique, unique_by: [:doc_profile_id, :sentence_id])
       end
 
@@ -38,10 +38,10 @@ module Importers
 
       def save_sentence(data)
         js_date = begin
-                    Date.parse(data[5])
-                  rescue
-                    nil
-                  end
+          Date.parse(data[5])
+        rescue StandardError
+          nil
+        end
         {
           doc_profile_id: doc_mapping[data[0].to_i],
           sentence_id: data[1],

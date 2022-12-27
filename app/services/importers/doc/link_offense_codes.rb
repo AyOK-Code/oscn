@@ -3,7 +3,7 @@ module Importers
     class LinkOffenseCodes
       attr_accessor :sentences, :bar, :offense_code_mapping
 
-      def initialize(relink = false)
+      def initialize(relink: false)
         @sentences = relink ? ::Doc::Sentence.all : ::Doc::Sentence.where(doc_offense_code_id: nil)
         @bar = ProgressBar.new(@sentences.count)
         @offense_code_mapping = ::Doc::OffenseCode.all.pluck(:statute_code, :id).to_h
