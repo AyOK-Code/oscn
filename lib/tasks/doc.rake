@@ -1,5 +1,8 @@
 require 'open-uri'
 
+# Source downloaded from:
+# https://web.archive.org/web/20220000000000*/https://oklahoma.gov/doc/communications/odoc-public-inmate-data.html
+
 namespace :doc do
   desc 'Reset database and run all tasks'
   task reset: [:environment] do
@@ -13,6 +16,16 @@ namespace :doc do
     Importers::Doc::Profile.new('2022-01').perform
     Importers::Doc::Sentence.new('2022-01').perform
     Importers::Doc::Alias.new('2022-01').perform
+  end
+
+  desc 'Import all'
+  task :all, [:dir] => [:environment] do |_t, args|
+    dir = args.dir
+    Importers::Doc::OffenseCode.new(dir).perform
+    Importers::Doc::Profile.new(dir).perform
+    Importers::Doc::Sentence.new(dir).perform
+    Importers::Doc::Alias.new(dir).perform
+    Importers::Doc::Status.new(dir).perform
   end
 
   desc 'Import profiles'
