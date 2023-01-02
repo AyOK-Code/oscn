@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.7.2'
+ruby '3.1.3'
 
 gem 'awesome_print'
 gem 'aws-sdk-s3', '~> 1'
@@ -16,7 +16,6 @@ gem 'jwt'
 gem 'kaminari'
 gem 'monetize'
 gem 'oscn_scraper', git: 'https://github.com/AyOK-Code/oscn_scraper', ref: 'ae9de58'
-gem 'ocso_scraper', git: 'https://github.com/AyOK-Code/ocso_scraper', ref: '4023411'
 gem 'pg'
 gem 'progress_bar'
 gem 'puma', '~> 4.1'
@@ -32,6 +31,10 @@ gem 'sidekiq-throttled'
 gem 'slack-ruby-client'
 gem 'slowweb'
 gem 'rubyzip'
+gem 'psych', '< 4'
+gem 'net-smtp', require: false
+gem 'net-imap', require: false
+gem 'net-pop', require: false
 
 group :development, :test do
   gem 'bullet'
