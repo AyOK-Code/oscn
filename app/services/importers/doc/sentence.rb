@@ -24,6 +24,7 @@ module Importers
         non_empty = @sentences.reject { |x| !x || x.empty? }
         grouped = non_empty.group_by { |x| [x[:doc_profile_id], x[:sentence_id]] }
         unique = grouped.map { |_k, v| v[-1] }
+        binding.pry
         ::Doc::Sentence.upsert_all(unique, unique_by: [:doc_profile_id, :sentence_id])
       end
 
