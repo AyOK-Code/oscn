@@ -1,11 +1,4 @@
 GIT
-  remote: https://github.com/AyOK-Code/ocso_scraper
-  revision: 4023411139931557a0a44dda6549b2340e1dc3d2
-  ref: 4023411
-  specs:
-    ocso_scraper (0.1.0)
-
-GIT
   remote: https://github.com/AyOK-Code/oscn_scraper
   revision: ae9de5867fda75ae02957a4d2dca2584c14b1eb6
   ref: ae9de58
@@ -122,6 +115,7 @@ GEM
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
     database_cleaner-core (2.0.1)
+    date (3.3.3)
     diff-lcs (1.5.0)
     docile (1.4.0)
     dotenv (2.8.1)
@@ -203,6 +197,15 @@ GEM
     msgpack (1.6.0)
     multi_xml (0.6.0)
     multipart-post (2.2.3)
+    net-imap (0.3.4)
+      date
+      net-protocol
+    net-pop (0.1.2)
+      net-protocol
+    net-protocol (0.2.1)
+      timeout
+    net-smtp (0.3.3)
+      net-protocol
     nio4r (2.5.8)
     nokogiri (1.13.9)
       mini_portile2 (~> 2.8.0)
@@ -225,6 +228,7 @@ GEM
     pry-remote (0.1.8)
       pry (~> 0.9)
       slop (~> 3.0)
+    psych (3.3.4)
     public_suffix (5.0.0)
     puma (4.3.12)
       nio4r (~> 2.0)
@@ -364,6 +368,7 @@ GEM
       sprockets (>= 3.0.0)
     thor (1.2.1)
     thread_safe (0.3.6)
+    timeout (0.3.1)
     tzinfo (1.2.10)
       thread_safe (~> 0.1)
     unicode-display_width (2.3.0)
@@ -403,13 +408,16 @@ DEPENDENCIES
   kaminari
   listen (~> 3.2)
   monetize
-  ocso_scraper!
+  net-imap
+  net-pop
+  net-smtp
   oscn_scraper!
   pg
   progress_bar
   pry-nav
   pry-rails
   pry-remote
+  psych (< 4)
   puma (~> 4.1)
   pundit
   rack-cors
@@ -438,7 +446,7 @@ DEPENDENCIES
   webmock
 
 RUBY VERSION
-   ruby 2.7.2p137
+   ruby 3.1.3p185
 
 BUNDLED WITH
    2.1.4

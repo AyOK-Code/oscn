@@ -2,6 +2,10 @@ require 'open-uri'
 
 # Source downloaded from:
 # https://web.archive.org/web/20220000000000*/https://oklahoma.gov/doc/communications/odoc-public-inmate-data.html
+# DOC publishes data quarterly retroactively for the previous quarter.
+# (So on 2022-10-31 the data on the site will be from 2022-03 to 2022-06)
+
+# Import may benefit from scaling server and database resources
 
 namespace :doc do
   desc 'Reset database and run all tasks'
