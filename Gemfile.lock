@@ -274,6 +274,11 @@ GEM
       thor (>= 0.20.3, < 2.0)
     rainbow (3.1.1)
     rake (10.5.0)
+    raygun4ruby (3.2.6)
+      concurrent-ruby
+      httparty (> 0.13.7)
+      json
+      rack
     rb-fsevent (0.11.2)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
@@ -424,6 +429,7 @@ DEPENDENCIES
   rails (~> 6.0.3)
   rails-erd
   rails_autoscale_agent
+  raygun4ruby
   redis (~> 4.0)
   rspec-rails
   rubocop
