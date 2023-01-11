@@ -113,8 +113,9 @@ module Importers
         (last_run_date + 1.day..DateTime.now.to_date).each do |date|
           perform(date)
         rescue StandardError => e
-          puts "error processing #{date}. Data not saved" # TODO: log these somewhere?
-          puts "error was: #{e}"
+          error = StandardError.new("Error processing #{date}. Data not saved. Message was: #{e}")
+          puts error
+          Raygun.track_exception(error)
         end
       end
 
@@ -128,8 +129,9 @@ module Importers
         missing_dates.each do |date|
           perform(date)
         rescue StandardError => e
-          puts "error processing #{date}. Data not saved" # TODO: log these somewhere?
-          puts "error was: #{e}"
+          error = StandardError.new("Error processing #{date}. Data not saved. Error was: #{e}")
+          puts error
+          Raygun.track_exception(error)
         end
       end
     end
