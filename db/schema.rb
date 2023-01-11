@@ -10,10 +10,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_02_222124) do
+ActiveRecord::Schema.define(version: 2023_01_10_223826) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.bigint "byte_size", null: false
+    t.string "checksum", null: false
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
 
   create_table "case_htmls", force: :cascade do |t|
     t.bigint "court_case_id", null: false
@@ -147,8 +168,9 @@ ActiveRecord::Schema.define(version: 2022_12_02_222124) do
     t.string "first_name"
     t.string "middle_name"
     t.string "suffix"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.index ["doc_profile_id", "doc_number", "last_name", "first_name", "middle_name", "suffix"], name: "alias_index", unique: true
     t.index ["doc_profile_id"], name: "index_doc_aliases_on_doc_profile_id"
   end
 
@@ -163,8 +185,9 @@ ActiveRecord::Schema.define(version: 2022_12_02_222124) do
     t.string "statute_code", null: false
     t.string "description", null: false
     t.boolean "is_violent", default: false, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.index ["statute_code", "description", "is_violent"], name: "offense_code_index", unique: true
   end
 
   create_table "doc_profiles", force: :cascade do |t|
@@ -184,8 +207,8 @@ ActiveRecord::Schema.define(version: 2022_12_02_222124) do
     t.string "weight"
     t.string "eye"
     t.integer "status"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.bigint "doc_facility_id"
     t.bigint "roster_id"
     t.index ["doc_facility_id"], name: "index_doc_profiles_on_doc_facility_id"
@@ -205,14 +228,15 @@ ActiveRecord::Schema.define(version: 2022_12_02_222124) do
     t.boolean "is_death_sentence", default: false, null: false
     t.boolean "is_life_sentence", default: false, null: false
     t.boolean "is_life_no_parole_sentence", default: false, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.bigint "court_case_id"
     t.string "sentence_id", null: false
     t.string "consecutive_to_sentence_id"
     t.bigint "doc_sentencing_county_id"
     t.index ["court_case_id"], name: "index_doc_sentences_on_court_case_id"
     t.index ["doc_offense_code_id"], name: "index_doc_sentences_on_doc_offense_code_id"
+    t.index ["doc_profile_id", "sentence_id"], name: "index_doc_sentences_on_doc_profile_id_and_sentence_id", unique: true
     t.index ["doc_profile_id"], name: "index_doc_sentences_on_doc_profile_id"
     t.index ["doc_sentencing_county_id"], name: "index_doc_sentences_on_doc_sentencing_county_id"
   end
@@ -230,10 +254,12 @@ ActiveRecord::Schema.define(version: 2022_12_02_222124) do
     t.string "facility", null: false
     t.date "date"
     t.string "reason"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.bigint "doc_facility_id"
     t.index ["doc_facility_id"], name: "index_doc_statuses_on_doc_facility_id"
+    t.index ["doc_profile_id", "date", "facility"], name: "status_index", unique: true
+    t.index ["doc_profile_id", "doc_facility_id"], name: "index_doc_statuses_on_doc_profile_id_and_doc_facility_id", unique: true
     t.index ["doc_profile_id"], name: "index_doc_statuses_on_doc_profile_id"
   end
 
@@ -381,6 +407,17 @@ ActiveRecord::Schema.define(version: 2022_12_02_222124) do
     t.string "update_status"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "parcels", force: :cascade do |t|
+    t.string "geoid20", null: false
+    t.string "zip"
+    t.integer "tract", null: false
+    t.string "block", null: false
+    t.string "lat"
+    t.string "long"
+    t.datetime "created_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
   create_table "parent_parties", force: :cascade do |t|
@@ -637,6 +674,7 @@ ActiveRecord::Schema.define(version: 2022_12_02_222124) do
     t.index ["name"], name: "index_verdicts_on_name", unique: true
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "case_htmls", "court_cases"
   add_foreign_key "case_parties", "court_cases"
   add_foreign_key "case_parties", "parties"
