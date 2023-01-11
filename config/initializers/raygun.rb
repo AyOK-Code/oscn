@@ -1,4 +1,5 @@
 if ENV.fetch('RAYGUN_API_KEY', false)
+  require 'raygun/sidekiq'
   Raygun.setup do |config|
     config.api_key = ENV['RAYGUN_API_KEY']
     config.filter_parameters = Rails.application.config.filter_parameters
