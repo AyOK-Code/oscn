@@ -1,4 +1,11 @@
 GIT
+  remote: https://github.com/AyOK-Code/ocso_scraper
+  revision: 4023411139931557a0a44dda6549b2340e1dc3d2
+  ref: 4023411
+  specs:
+    ocso_scraper (0.1.0)
+
+GIT
   remote: https://github.com/AyOK-Code/oscn_scraper
   revision: ae9de5867fda75ae02957a4d2dca2584c14b1eb6
   ref: ae9de58
@@ -416,6 +423,7 @@ DEPENDENCIES
   net-imap
   net-pop
   net-smtp
+  ocso_scraper!
   oscn_scraper!
   pg
   progress_bar
