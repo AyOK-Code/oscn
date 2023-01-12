@@ -19,7 +19,6 @@ namespace :s3 do
 
       event_link.pdf.attach(io: open(event_link[:link]), filename: name, content_type: 'application/pdf')
       sleep 2
-      binding.pry
     end
   end
 end
