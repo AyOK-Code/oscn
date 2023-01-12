@@ -2,7 +2,7 @@ require 'open-uri'
 require 'aws-sdk-s3'
 
 namespace :s3 do
-  desc 'Pull judges for a county'
+  desc 'Upload pdf to S3'
   task docket_event_links: :environment do
     credentials = Aws::Credentials.new(ENV.fetch('ASPIRING_AWS_KEY_ID', nil),
                                        ENV.fetch('ASPIRING_SECRET_ACCESS_KEY', nil))
@@ -19,6 +19,7 @@ namespace :s3 do
 
       event_link.pdf.attach(io: open(event_link[:link]), filename: name, content_type: 'application/pdf')
       sleep 2
+      binding.pry
     end
   end
 end
