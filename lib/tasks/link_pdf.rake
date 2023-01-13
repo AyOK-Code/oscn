@@ -17,7 +17,7 @@ namespace :s3 do
 
       next if event_link.pdf.attached?
 
-      event_link.pdf.attach(io: open(event_link[:link]), filename: name, content_type: 'application/pdf')
+      event_link.pdf.attach(io: URI.parse(event_link[:link]).open, filename: name, content_type: 'application/pdf')
       sleep 2
     end
   end
