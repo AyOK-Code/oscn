@@ -19,8 +19,8 @@ class CreateTulsaCityInmates < ActiveRecord::Migration[6.0]
       t.string :courtDate
       t.string :releasedDateTime
       t.string :courtDivision
-      t.string :prisonerID
-      t.string :IncidentRecordID
+      t.string :prisonerID, index: {unique: true}
+      t.string :IncidentRecordID, index: {unique: true}
       t.string :active
 
       t.timestamps

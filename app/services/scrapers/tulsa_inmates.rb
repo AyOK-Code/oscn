@@ -8,6 +8,10 @@ module Scrapers
       @inmates = nil
       @inmates_json = []
     end
+    def self.perform
+      new().perform
+    end
+
 
     def self.perform_inmates
       new().perform_inmates
@@ -17,6 +21,27 @@ module Scrapers
       new().perform_offense(dataId)
     end
 
+    def self.perform_inmate(dataId)
+      new().perform_inmate(dataId)
+    end
+
+    def perform
+      inmate_json = perform_inmates
+      inmate_json.each do |inmate|
+        offense_json = perform_offense(inmate["IncidentRecordID"])
+        offense_json.each do |offense|
+           #inmate_record= ::TulsaCity::Inmate.new(inmate)
+          binding.pry
+        end
+        binding.pry
+      end
+
+      
+     
+
+
+    end
+
     def perform_inmates
       headers = {'Content-Type' => "application/json", 'charset'=>'UTF-8','Accept'=> '*/*'}
       inmates_url = "https://www.cityoftulsa.org/apps/InmateInformationCenter/AjaxReference/CompleteInmates.aspx/ServiceReference"
@@ -24,7 +49,7 @@ module Scrapers
       inmates = HTTParty.post(inmates_url,:headers => headers)
       
       inmates_json = JSON.parse(inmates["d"]["ReturnCode"])
-      binding.pry
+      
      
 
 
@@ -38,7 +63,21 @@ module Scrapers
       offenses = HTTParty.post(offense_url,:headers => headers)
       
       offense_json = JSON.parse(offenses["d"]["ReturnCode"])
-      binding.pry
+      
+     
+
+
+    end
+
+    def perform_inmate(dataId)
+      #30010
+      headers = {'Content-Type' => "application/json", 'charset'=>'UTF-8','Accept'=> '*/*'}
+      inmate_url = "https://www.cityoftulsa.org/apps/InmateInformationCenter/AjaxReference/InmateInfo.aspx/ServiceReference?dataId=#{dataId}"
+      
+      inmate = HTTParty.post(inmate_url,:headers => headers)
+      
+      inmate_json = JSON.parse(inmate["d"]["ReturnCode"])
+      
      
 
 
