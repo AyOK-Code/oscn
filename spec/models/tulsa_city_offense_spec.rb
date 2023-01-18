@@ -1,5 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe TulsaCity::Offense, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe 'associations' do
+    it { should belong_to(:tulsa_city_inmates).class_name('TulsaCity::Inmate') }
+  end
 end

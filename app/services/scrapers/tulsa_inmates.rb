@@ -28,8 +28,10 @@ module Scrapers
     def perform
       inmate_json = perform_inmates
       inmate_json.each do |inmate|
+       inmate = inmate.map{|k,v| [k,v.strip]}.to_h
         offense_json = perform_offense(inmate["IncidentRecordID"])
         offense_json.each do |offense|
+          offense = offense.map{|k,v| [k,v.strip]}.to_h
            #inmate_record= ::TulsaCity::Inmate.new(inmate)
           binding.pry
         end
@@ -49,6 +51,7 @@ module Scrapers
       inmates = HTTParty.post(inmates_url,:headers => headers)
       
       inmates_json = JSON.parse(inmates["d"]["ReturnCode"])
+  
       
      
 
