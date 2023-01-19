@@ -1,6 +1,7 @@
 require 'byebug'
 require 'json'
 module Scrapers
+module TulsaCity
   class TulsaInmates
     attr_reader :inmates_json
 
@@ -27,20 +28,17 @@ module Scrapers
     end
 
     def perform
+      binding.pry
+      
       inmate_json = perform_inmates
+      binding.pry
+      bar = ProgressBar.new(cases.count)
       inmate_json.each do |inmate|
-       inmate = inmate.map{|k,v| [k,v.strip]}.to_h
-       tulsa_inmate =save_inmate(inmate)
-       
-        offense_json = perform_offense(tulsa_inmate.IncidentRecordID)
-        offense_json.each do |offense|
-          offense = offense.map{|k,v| [k,v.strip]}.to_h
-            tulsa_offense = save_offense(offense,tulsa_inmate)
-            
-           #inmate_record= ::TulsaCity::Inmate.new(inmate)
+        TulsaCityWorker
+          .set(queue: :high)
+          .perform_async(inmate['IncidentRecordID'])
           
-        end
-        
+        bar.increment!
       end
 
       
@@ -109,4 +107,5 @@ module Scrapers
 
     end
    end
+end
 end
