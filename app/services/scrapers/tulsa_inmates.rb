@@ -5,7 +5,8 @@ module Scrapers
     attr_reader :inmates_json
 
     def initialize()
-      @inmates = nil
+      @inmates =[]
+      
       @inmates_json = []
     end
     def self.perform
@@ -29,13 +30,17 @@ module Scrapers
       inmate_json = perform_inmates
       inmate_json.each do |inmate|
        inmate = inmate.map{|k,v| [k,v.strip]}.to_h
-        offense_json = perform_offense(inmate["IncidentRecordID"])
+       tulsa_inmate =save_inmate(inmate)
+       
+        offense_json = perform_offense(tulsa_inmate.IncidentRecordID)
         offense_json.each do |offense|
           offense = offense.map{|k,v| [k,v.strip]}.to_h
+            tulsa_offense = save_offense(offense,tulsa_inmate)
+            
            #inmate_record= ::TulsaCity::Inmate.new(inmate)
-          binding.pry
+          
         end
-        binding.pry
+        
       end
 
       
@@ -44,6 +49,23 @@ module Scrapers
 
     end
 
+    def save_inmate(inmate_json)
+      inmate = ::TulsaCity::Inmate.find_or_create_by(prisonerID: inmate_json["prisonerID"])
+      inmate.assign_attributes(inmate_json)
+      inmate.save!
+      inmate
+
+    end
+
+    def save_offense(offense_json,inmate)
+      offense = ::TulsaCity::Offense.find_or_create_by(docketId: offense_json["docketId"])
+      offense.assign_attributes(offense_json)
+      offense.tulsa_city_inmates_id = inmate.id
+      offense.save!
+      offense
+
+
+    end
     def perform_inmates
       headers = {'Content-Type' => "application/json", 'charset'=>'UTF-8','Accept'=> '*/*'}
       inmates_url = "https://www.cityoftulsa.org/apps/InmateInformationCenter/AjaxReference/CompleteInmates.aspx/ServiceReference"
@@ -66,6 +88,7 @@ module Scrapers
       offenses = HTTParty.post(offense_url,:headers => headers)
       
       offense_json = JSON.parse(offenses["d"]["ReturnCode"])
+      
       
      
 

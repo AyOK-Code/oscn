@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_17_182057) do
+ActiveRecord::Schema.define(version: 2023_01_19_193728) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -697,7 +697,7 @@ ActiveRecord::Schema.define(version: 2023_01_17_182057) do
   end
 
   create_table "tulsa_city_offenses", force: :cascade do |t|
-    t.bigint "tulsa_city_inmates_id"
+    t.bigint "inmate_id"
     t.string "bond"
     t.string "courtDate"
     t.string "caseNumber"
@@ -711,7 +711,7 @@ ActiveRecord::Schema.define(version: 2023_01_17_182057) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["docketId"], name: "index_tulsa_city_offenses_on_docketId", unique: true
-    t.index ["tulsa_city_inmates_id"], name: "index_tulsa_city_offenses_on_tulsa_city_inmates_id"
+    t.index ["inmate_id"], name: "index_tulsa_city_offenses_on_inmate_id"
   end
 
   create_table "verdicts", force: :cascade do |t|
@@ -770,7 +770,7 @@ ActiveRecord::Schema.define(version: 2023_01_17_182057) do
   add_foreign_key "tulsa_blotter_arrests_page_htmls", "tulsa_blotter_arrests", column: "arrest_id"
   add_foreign_key "tulsa_blotter_arrests_page_htmls", "tulsa_blotter_page_htmls", column: "page_html_id"
   add_foreign_key "tulsa_blotter_offenses", "tulsa_blotter_arrests", column: "arrests_id"
-  add_foreign_key "tulsa_city_offenses", "tulsa_city_inmates", column: "tulsa_city_inmates_id"
+  add_foreign_key "tulsa_city_offenses", "tulsa_city_inmates", column: "inmate_id"
 
   create_view "payments", sql_definition: <<-SQL
       SELECT court_cases.id AS court_case_id,
