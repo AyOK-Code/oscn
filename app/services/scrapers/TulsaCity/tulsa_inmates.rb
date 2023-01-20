@@ -28,17 +28,16 @@ module TulsaCity
     end
 
     def perform
-      binding.pry
+      
       
       inmate_json = perform_inmates
-      binding.pry
-      bar = ProgressBar.new(cases.count)
+      bar = ProgressBar.new(inmate_json.count)
       inmate_json.each do |inmate|
         TulsaCityWorker
-          .set(queue: :high)
-          .perform_async(inmate['IncidentRecordID'])
-          
+        .set(queue: :high)
+        .perform_async(inmate['IncidentRecordID'],inmate['active'])
         bar.increment!
+        
       end
 
       

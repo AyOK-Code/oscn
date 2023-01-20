@@ -1,7 +1,7 @@
 class CreateTulsaCityInmates < ActiveRecord::Migration[6.0]
   def change
     create_table :tulsa_city_inmates do |t|
-      t.string :inmateId
+      t.string :inmateId, index: {unique: true}
       t.string :firstName
       t.string :middleName
       t.string :lastName
@@ -19,7 +19,6 @@ class CreateTulsaCityInmates < ActiveRecord::Migration[6.0]
       t.string :courtDate
       t.string :releasedDateTime
       t.string :courtDivision
-      t.string :prisonerID, index: {unique: true}
       t.string :IncidentRecordID, index: {unique: true}
       t.string :active
 
