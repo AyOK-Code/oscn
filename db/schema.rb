@@ -669,46 +669,46 @@ ActiveRecord::Schema.define(version: 2023_01_19_193728) do
   end
 
   create_table "tulsa_city_inmates", force: :cascade do |t|
-    t.string "inmateId"
-    t.string "firstName"
-    t.string "middleName"
-    t.string "lastName"
+    t.string "inmate_id"
+    t.string "first_name"
+    t.string "middle_name"
+    t.string "last_name"
     t.string "dob"
     t.string "height"
     t.string "weight"
-    t.string "hairColor"
-    t.string "eyeColor"
+    t.string "hair_color"
+    t.string "eye_color"
     t.string "race"
     t.string "gender"
-    t.string "arrestDate"
-    t.string "arrestingOfficer"
-    t.string "arrestingAgency"
-    t.string "bookingDateTime"
-    t.string "courtDate"
-    t.string "releasedDateTime"
-    t.string "courtDivision"
-    t.string "incidentRecordID"
+    t.string "arrest_date"
+    t.string "arresting_officer"
+    t.string "arresting_agency"
+    t.string "booking_date_time"
+    t.string "court_date"
+    t.string "released_date_time"
+    t.string "court_division"
+    t.string "incident_record_id"
     t.string "active"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["incidentRecordID"], name: "index_tulsa_city_inmates_on_incidentRecordID", unique: true
+    t.index ["incident_record_id"], name: "index_tulsa_city_inmates_on_incident_record_id", unique: true
   end
 
   create_table "tulsa_city_offenses", force: :cascade do |t|
     t.bigint "inmate_id"
     t.string "bond"
-    t.string "courtDate"
-    t.string "caseNumber"
-    t.string "courtDivision"
+    t.string "court_date"
+    t.string "case_number"
+    t.string "court_division"
     t.string "hold"
-    t.string "docketId"
+    t.string "docket_id"
     t.string "title"
     t.string "section"
     t.string "paragraph"
     t.string "crime"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["docketId"], name: "index_tulsa_city_offenses_on_docketId", unique: true
+    t.index ["docket_id"], name: "index_tulsa_city_offenses_on_docket_id", unique: true
     t.index ["inmate_id"], name: "index_tulsa_city_offenses_on_inmate_id"
   end
 

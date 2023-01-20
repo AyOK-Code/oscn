@@ -1,25 +1,25 @@
 class CreateTulsaCityInmates < ActiveRecord::Migration[6.0]
   def change
     create_table :tulsa_city_inmates do |t|
-      t.string :inmateId
-      t.string :firstName
-      t.string :middleName
-      t.string :lastName
+      t.string :inmate_id
+      t.string :first_name
+      t.string :middle_name
+      t.string :last_name
       t.string :dob
       t.string :height
       t.string :weight
-      t.string :hairColor
-      t.string :eyeColor
+      t.string :hair_color
+      t.string :eye_color
       t.string :race
       t.string :gender
-      t.string :arrestDate
-      t.string :arrestingOfficer
-      t.string :arrestingAgency
-      t.string :bookingDateTime
-      t.string :courtDate
-      t.string :releasedDateTime
-      t.string :courtDivision
-      t.string :incidentRecordID, index: {unique: true}
+      t.string :arrest_date
+      t.string :arresting_officer
+      t.string :arresting_agency
+      t.string :booking_date_time
+      t.string :court_date
+      t.string :released_date_time
+      t.string :court_division
+      t.string :incident_record_id, index: {unique: true}
       t.string :active
 
       t.timestamps

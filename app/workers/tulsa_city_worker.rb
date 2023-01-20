@@ -16,7 +16,7 @@ class TulsaCityWorker
     inmate = inmate.transform_values(&:strip)
     tulsa_inmate = save_inmate(inmate, incidentrecordid, active)
 
-    offense_json = perform_offense(tulsa_inmate.incidentRecordID)
+    offense_json = perform_offense(tulsa_inmate.incident_record_id)
     offense_json.each do |offense|
       offense = offense.transform_values(&:strip)
       save_offense(offense, tulsa_inmate)
@@ -24,24 +24,25 @@ class TulsaCityWorker
   end
 
   def save_inmate(inmate_json, incidentrecordid, active)
-    inmate = ::TulsaCity::Inmate.find_or_create_by(incidentRecordID: incidentrecordid)
-    inmate.inmateId = inmate_json['inmateId']
-    inmate.firstName = inmate_json['firstName']
-    inmate.middleName = inmate_json['middleName']
-    inmate.lastName = inmate_json['lastName']
+    inmate = ::TulsaCity::Inmate.find_or_create_by(incident_record_id: incidentrecordid)
+    inmate.inmate_id = inmate_json['inmateId']
+    inmate.first_name = inmate_json['firstName']
+    inmate.middle_name = inmate_json['middleName']
+    inmate.last_name = inmate_json['lastName']
     inmate.height = inmate_json['height']
     inmate.weight = inmate_json['weight']
-    inmate.hairColor = inmate_json['hairColor']
-    inmate.eyeColor = inmate_json['eyeColor']
+    inmate.hair_color = inmate_json['hairColor']
+    inmate.eye_color = inmate_json['eyeColor']
     inmate.race = inmate_json['race']
     inmate.gender = inmate_json['gender']
-    inmate.arrestDate = inmate_json['arrestDate']
-    inmate.arrestingOfficer = inmate_json['arrestingOfficer']
-    inmate.arrestingAgency = inmate_json['arrestingAgency']
-    inmate.bookingDateTime = inmate_json['bookingDateTime']
-    inmate.releasedDateTime = inmate_json['releasedDateTime']
-    inmate.courtDivision = inmate_json['courtDivision']
-    inmate.incidentRecordID = incidentrecordid
+    inmate.arrest_date = inmate_json['arrestDate']
+    inmate.arresting_officer = inmate_json['arrestingOfficer']
+    inmate.arresting_agency = inmate_json['arrestingAgency']
+    inmate.booking_date_time = inmate_json['bookingDateTime']
+    inmate.court_date = inmate_json['CourtDate']
+    inmate.released_date_time = inmate_json['releasedDateTime']
+    inmate.court_division = inmate_json['courtDivision']
+    inmate.incident_record_id = incidentrecordid
     inmate.dob = inmate_json['DOB']
     inmate.active = active
     inmate.save!
@@ -49,8 +50,18 @@ class TulsaCityWorker
   end
 
   def save_offense(offense_json, inmate)
-    offense = ::TulsaCity::Offense.find_or_create_by(docketId: offense_json['docketId'])
-    offense.assign_attributes(offense_json)
+    offense = ::TulsaCity::Offense.find_or_create_by(docket_id: offense_json['docketId'])
+    offense.bond = offense_json['bond']
+    offense.court_date = offense_json['courtDate']
+    offense.case_number = offense_json['caseNumber']
+    offense.court_division = offense_json['courtDivision']
+    offense.hold = offense_json['hold']
+    offense.docket_id = offense_json['docketId']
+    offense.title = offense_json['title']
+    offense.section = offense_json['section']
+    offense.paragraph = offense_json['paragraph']
+    offense.crime = offense_json['crime']
+
     offense.inmate_id = inmate.id
     offense.save!
     offense
