@@ -673,7 +673,7 @@ ActiveRecord::Schema.define(version: 2023_01_19_193728) do
     t.string "firstName"
     t.string "middleName"
     t.string "lastName"
-    t.string "DOB"
+    t.string "dob"
     t.string "height"
     t.string "weight"
     t.string "hairColor"
@@ -687,12 +687,11 @@ ActiveRecord::Schema.define(version: 2023_01_19_193728) do
     t.string "courtDate"
     t.string "releasedDateTime"
     t.string "courtDivision"
-    t.string "IncidentRecordID"
+    t.string "incidentRecordID"
     t.string "active"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["IncidentRecordID"], name: "index_tulsa_city_inmates_on_IncidentRecordID", unique: true
-    t.index ["inmateId"], name: "index_tulsa_city_inmates_on_inmateId", unique: true
+    t.index ["incidentRecordID"], name: "index_tulsa_city_inmates_on_incidentRecordID", unique: true
   end
 
   create_table "tulsa_city_offenses", force: :cascade do |t|
