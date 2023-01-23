@@ -1,4 +1,3 @@
-
 require 'json'
 module Scrapers
   module TulsaCity
