@@ -1,4 +1,4 @@
-require 'byebug'
+
 require 'json'
 module Scrapers
   module TulsaCity

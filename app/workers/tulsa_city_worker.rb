@@ -6,15 +6,15 @@ class TulsaCityWorker
   include Sidekiq::Throttled::Worker
   sidekiq_options retry: 5, queue: :high
   sidekiq_throttle_as :tulsa_city
-  def self.perform(recordid, active)
-    new.perform(recordid, active)
+  def self.perform(record_id, active)
+    new.perform(record_id, active)
   end
 
-  def perform(incidentrecordid, active)
-    inmate = perform_inmate(incidentrecordid)
+  def perform(incident_record_id, active)
+    inmate = perform_inmate(incident_record_id)
 
     inmate = inmate.transform_values(&:strip)
-    tulsa_inmate = save_inmate(inmate, incidentrecordid, active)
+    tulsa_inmate = save_inmate(inmate, incident_record_id, active)
 
     offense_json = perform_offense(tulsa_inmate.incident_record_id)
     offense_json.each do |offense|
@@ -23,8 +23,8 @@ class TulsaCityWorker
     end
   end
 
-  def save_inmate(inmate_json, incidentrecordid, active)
-    inmate = ::TulsaCity::Inmate.find_or_create_by(incident_record_id: incidentrecordid)
+  def save_inmate(inmate_json, incident_record_id, active)
+    inmate = ::TulsaCity::Inmate.find_or_create_by(incident_record_id: incident_record_id)
     inmate.inmate_id = inmate_json['inmateId']
     inmate.first_name = inmate_json['firstName']
     inmate.middle_name = inmate_json['middleName']
@@ -35,24 +35,57 @@ class TulsaCityWorker
     inmate.eye_color = inmate_json['eyeColor']
     inmate.race = inmate_json['race']
     inmate.gender = inmate_json['gender']
-    inmate.arrest_date = inmate_json['arrestDate']
+    inmate.arrest_date =  assign_datetime(inmate_json['arrestDate'],inmate_json['inmateId']) 
     inmate.arresting_officer = inmate_json['arrestingOfficer']
     inmate.arresting_agency = inmate_json['arrestingAgency']
-    inmate.booking_date_time = inmate_json['bookingDateTime']
-    inmate.court_date = inmate_json['CourtDate']
-    inmate.released_date_time = inmate_json['releasedDateTime']
+    inmate.booking_date_time = assign_datetime(inmate_json['bookingDateTime'],inmate_json['inmateId']) 
+    inmate.court_date = assign_datetime(inmate_json['CourtDate'],inmate_json['inmateId']) 
+    inmate.released_date_time = assign_datetime(inmate_json['releasedDateTime'],inmate_json['inmateId'])
     inmate.court_division = inmate_json['courtDivision']
-    inmate.incident_record_id = incidentrecordid
-    inmate.dob = inmate_json['DOB']
+    inmate.incident_record_id = incident_record_id
+    inmate.dob =  assign_date(inmate_json['DOB'],inmate_json['inmateId']) 
     inmate.active = active
     inmate.save!
     inmate
   end
 
+  def assign_datetime(datetime,inmate_number)
+    if datetime.nil?
+        return nil
+    else
+        begin
+            return DateTime.strptime(datetime , '%m/%d/%Y %H:%M:%S')
+          rescue
+            puts "Invalid Date on Offense or Inmate, Inmate number: " +inmate_number
+            return nil
+            
+          end
+    end
+    
+
+  end
+
+  def assign_date(date,inmate_number)
+    if date.nil?
+        return nil
+    else
+        begin
+            return Date.strptime(date, "%m/%d/%Y")
+          rescue
+            puts "Invalid Date on Offense or Inmate, Inmate number: " +inmate_number
+            return nil
+            
+          end
+    end
+    
+
+  end
+
+
   def save_offense(offense_json, inmate)
-    offense = ::TulsaCity::Offense.find_or_create_by(docket_id: offense_json['docketId'])
+    offense = ::TulsaCity::Offense.find_or_create_by(docket_id: offense_json['docketId'],inmate_id:inmate.id)
     offense.bond = offense_json['bond']
-    offense.court_date = offense_json['courtDate']
+    offense.court_date = assign_datetime(offense_json['CourtDate'],inmate.inmate_id) 
     offense.case_number = offense_json['caseNumber']
     offense.court_division = offense_json['courtDivision']
     offense.hold = offense_json['hold']
@@ -62,13 +95,13 @@ class TulsaCityWorker
     offense.paragraph = offense_json['paragraph']
     offense.crime = offense_json['crime']
 
-    offense.inmate_id = inmate.id
+    
     offense.save!
     offense
   end
 
   def perform_offense(dataid)
-    # 30010
+    
     headers = { 'Content-Type' => 'application/json', 'charset' => 'UTF-8', 'Accept' => '*/*' }
     offense_url = "https://www.cityoftulsa.org/apps/InmateInformationCenter/AjaxReference/Incident.aspx/ServiceReference?dataId=#{dataid}"
 
