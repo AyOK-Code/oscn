@@ -20,4 +20,13 @@ Sidekiq::Throttled::Registry.add(:oscn, **{
   }
 })
 
+Sidekiq::Throttled::Registry.add(:tulsa_city, **{
+  threshold: {
+    :limit => ->(*_) {
+      Time.now.utc.between?(OKLAHOMA_DAY_START, OKLAHOMA_DAY_END) ? ENV.fetch('TULSA_CITY_THROTTLE', 60).to_i .to_i : 1_000
+    },
+    :period => 1.minute
+  }
+})
+
 Sidekiq::Throttled.setup!
