@@ -680,7 +680,7 @@ ActiveRecord::Schema.define(version: 2023_01_19_193728) do
     t.string "eye_color"
     t.string "race"
     t.string "gender"
-    t.date "arrest_date"
+    t.datetime "arrest_date"
     t.string "arresting_officer"
     t.string "arresting_agency"
     t.datetime "booking_date_time"
@@ -697,7 +697,7 @@ ActiveRecord::Schema.define(version: 2023_01_19_193728) do
   create_table "tulsa_city_offenses", force: :cascade do |t|
     t.bigint "inmate_id"
     t.string "bond"
-    t.date "court_date"
+    t.datetime "court_date"
     t.string "case_number"
     t.string "court_division"
     t.string "hold"

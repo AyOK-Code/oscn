@@ -56,8 +56,12 @@ class TulsaCityWorker
       begin
         DateTime.strptime(datetime, '%m/%d/%Y %H:%M:%S')
       rescue StandardError
-        puts "Invalid Date on Offense or Inmate, Inmate number: #{inmate_number}"
-        nil
+        begin
+          DateTime.strptime(datetime, '%m/%d/%Y %H:%M')
+        rescue StandardError
+          puts "Invalid Date on Offense or Inmate, Inmate number: #{inmate_number} , Date:#{datetime}"
+          nil
+        end
       end
     end
   end
@@ -69,7 +73,7 @@ class TulsaCityWorker
       begin
         Date.strptime(date, '%m/%d/%Y')
       rescue StandardError
-        puts "Invalid Date on Offense or Inmate, Inmate number: #{inmate_number}"
+        puts "Invalid Date on Offense or Inmate, Inmate number: #{inmate_number} , Date:#{date}"
         nil
       end
     end
@@ -78,7 +82,7 @@ class TulsaCityWorker
   def save_offense(offense_json, inmate)
     offense = ::TulsaCity::Offense.find_or_create_by(docket_id: offense_json['docketId'], inmate_id: inmate.id)
     offense.bond = offense_json['bond']
-    offense.court_date = assign_datetime(offense_json['CourtDate'], inmate.inmate_id)
+    offense.court_date = assign_datetime(offense_json['courtDate'], inmate.inmate_id)
     offense.case_number = offense_json['caseNumber']
     offense.court_division = offense_json['courtDivision']
     offense.hold = offense_json['hold']

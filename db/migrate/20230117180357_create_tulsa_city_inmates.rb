@@ -12,7 +12,7 @@ class CreateTulsaCityInmates < ActiveRecord::Migration[6.0]
       t.string :eye_color
       t.string :race
       t.string :gender
-      t.date :arrest_date
+      t.datetime :arrest_date
       t.string :arresting_officer
       t.string :arresting_agency
       t.datetime :booking_date_time
