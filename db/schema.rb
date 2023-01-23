@@ -708,7 +708,7 @@ ActiveRecord::Schema.define(version: 2023_01_19_193728) do
     t.string "crime"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["docket_id"], name: "index_tulsa_city_offenses_on_docket_id", unique: true
+    t.index ["docket_id", "inmate_id"], name: "index_tulsa_city_offenses_on_docket_id_and_inmate_id", unique: true
     t.index ["inmate_id"], name: "index_tulsa_city_offenses_on_inmate_id"
   end
 

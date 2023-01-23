@@ -7,7 +7,7 @@ class CreateTulsaCityOffenses < ActiveRecord::Migration[6.0]
       t.string :case_number
       t.string :court_division
       t.string :hold
-      t.string :docket_id, index: {unique: true}
+      t.string :docket_id
       t.string :title
       t.string :section
       t.string :paragraph
@@ -15,5 +15,6 @@ class CreateTulsaCityOffenses < ActiveRecord::Migration[6.0]
 
       t.timestamps
     end
+   
   end
 end
