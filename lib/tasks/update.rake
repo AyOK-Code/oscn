@@ -61,7 +61,8 @@ namespace :update do
 
   desc 'Update database from stored html'
   task database: [:environment] do
-    court_cases = CourtCase.joins(:case_html).where.not(case_htmls: { id: nil }).pluck('county_id', :case_number, 'case_htmls.id')
+    court_cases = CourtCase.joins(:case_html).where.not(case_htmls: { id: nil }).pluck('county_id', :case_number,
+                                                                                       'case_htmls.id')
     bar = ProgressBar.new(court_cases.count)
 
     court_cases.each do |c|
