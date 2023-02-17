@@ -61,12 +61,12 @@ namespace :update do
 
   desc 'Update database from stored html'
   task database: [:environment] do
-    case_ids = DocketEvent.where("description ILIKE '%PDF%'").pluck(:court_case_id)
-    court_cases = CourtCase.where(id: case_ids).joins(:case_html).pluck('county_id', :case_number, 'case_htmls.id')
+    court_cases = CourtCase.joins(:case_html).where.not(case_htmls: { id: nil }).pluck('county_id', :case_number, 'case_htmls.id')
     bar = ProgressBar.new(court_cases.count)
 
     court_cases.each do |c|
       bar.increment!
+
       next if c[2].nil?
 
       DatabaseUpdateWorker.perform_in(1.minutes, { county_id: c[0], case_number: c[1] })

@@ -51,6 +51,7 @@ module Importers
       disposed_statute_code_id = find_or_create_count_code(count_data[:disposed_statute_code]&.squish)
 
       {
+        number: count_data[:number],
         filed_statute_violation: count_data[:filed_statute_violation],
         filed_statute_code_id: filed_statute_code_id,
         disposition: count_data[:disposition],
