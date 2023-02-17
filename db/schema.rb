@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_19_193728) do
+ActiveRecord::Schema.define(version: 2023_02_17_162941) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -128,6 +128,7 @@ ActiveRecord::Schema.define(version: 2023_01_19_193728) do
     t.string "charge"
     t.bigint "filed_statute_code_id"
     t.bigint "disposed_statute_code_id"
+    t.integer "number"
     t.index ["court_case_id"], name: "index_counts_on_court_case_id"
     t.index ["disposed_statute_code_id"], name: "index_counts_on_disposed_statute_code_id"
     t.index ["filed_statute_code_id"], name: "index_counts_on_filed_statute_code_id"
