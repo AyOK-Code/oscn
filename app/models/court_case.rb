@@ -10,6 +10,7 @@ class CourtCase < ApplicationRecord
   has_many :counsel_parties, dependent: :destroy
   has_many :counsels, -> { distinct }, through: :counsel_parties
   has_many :docket_events, dependent: :destroy
+  has_many :issues, dependent: :destroy
   has_one :case_html, dependent: :destroy
   has_one :case_stat
 

@@ -10,6 +10,7 @@ RSpec.describe Party, type: :model do
     it { should have_many(:counsels).through(:counsel_parties) }
     it { should have_many(:docket_events).dependent(:destroy) }
     it { should have_many(:addresses).class_name('PartyAddress').dependent(:destroy) }
+    it { should have_many(:issue_parties).dependent(:destroy) }
     it { should have_one(:party_html).dependent(:destroy) }
   end
 

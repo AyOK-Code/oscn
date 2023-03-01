@@ -25,6 +25,7 @@ module Importers
         save_judges
         save_attorneys
         save_counts
+        save_issues
         save_events
         save_docket_events
         logs.update_logs
@@ -42,6 +43,10 @@ module Importers
 
     def save_counts
       ::Importers::Count.perform(data[:counts], court_case, logs)
+    end
+
+    def save_issues
+      ::Importers::Issue.perform(data[:issues], court_case, logs)
     end
 
     def save_judges
