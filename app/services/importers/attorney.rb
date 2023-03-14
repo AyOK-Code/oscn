@@ -53,7 +53,7 @@ module Importers
         data = {
           court_case_id: court_case.id,
           counsel_id: counsel.id,
-          party_id: party_matcher.party_id_from_name(party.squish)
+          party_id: party_matcher.party_id_from_name(party.squish.chomp(','))
         }
         CounselParty.find_or_create_by(data)
       end
