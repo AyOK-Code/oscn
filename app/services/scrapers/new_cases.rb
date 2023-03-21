@@ -28,7 +28,7 @@ module Scrapers
     end
 
     def save_case(row, date)
-      params = OscnScraper::Parsers::Link.parse(row)
+      params = OscnScraper::Parsers::Link.parse(row.at('a'))
 
       case_number = params[:case_number]
       case_type_id = case_types[case_type(case_number)]
