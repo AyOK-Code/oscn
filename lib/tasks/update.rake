@@ -74,6 +74,19 @@ namespace :update do
     end
   end
 
+  desc 'Queue up cases missing html'
+  task missing_html: [:environment] do
+    court_cases = CourtCase.without_html.pluck(:county_id, :case_number)
+    bar = ProgressBar.new(court_cases.count)
+
+    court_cases.each do |c|
+      bar.increment!
+      CourtCaseWorker
+        .set(queue: :high)
+        .perform_async(c[0], c[1], true)
+    end
+  end
+  
   desc 'Set the is_error flag on court_cases'
   task is_error: [:environment] do
     associations = [:parties, :current_judge, :counsels, :counts, :events, :docket_events]
