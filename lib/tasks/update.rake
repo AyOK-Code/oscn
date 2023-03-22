@@ -86,7 +86,7 @@ namespace :update do
         .perform_async(c[0], c[1], true)
     end
   end
-  
+
   desc 'Set the is_error flag on court_cases'
   task is_error: [:environment] do
     associations = [:parties, :current_judge, :counsels, :counts, :events, :docket_events]
