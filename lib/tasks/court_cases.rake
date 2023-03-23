@@ -11,6 +11,7 @@ namespace :scrape do
     counties = County.pluck(:name, :id).to_h
 
     dates.each do |date|
+      sleep(rand(3))
       scraper = OscnScraper::Requestor::Report.new({ county: county, date: date })
       html = scraper.fetch_daily_filings
       data = Nokogiri::HTML(html.body)
