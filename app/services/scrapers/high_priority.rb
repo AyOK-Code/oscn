@@ -21,14 +21,13 @@ module Scrapers
         court_case = ::CourtCase.find_by!(county_id: @county.id, case_number: case_number)
         if court_case.enqueued == false
           court_case.update(enqueued: true)
-        CourtCaseWorker
-          .set(queue: :high)
-          .perform_async(@county.id, case_number, true)
-        bar.increment!
+          CourtCaseWorker
+            .set(queue: :high)
+            .perform_async(@county.id, case_number, true)
+          bar.increment!
         else
           next
         end
-      
       end
     end
 
