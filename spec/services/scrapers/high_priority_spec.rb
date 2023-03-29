@@ -5,7 +5,7 @@ Sidekiq::Testing.fake!
 RSpec.describe Scrapers::HighPriority do
   describe '#perform' do
     # let(:test_case) {create(:court_case, closed_on: 7.days.ago, county: county)}
-    before(:all) do
+    before(:each) do
       @county =  create(:county, name: 'Tulsa')
       @test_case = create(:court_case, closed_on: 7.days.ago, county: @county)
       @data = nil

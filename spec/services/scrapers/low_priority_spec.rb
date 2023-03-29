@@ -4,7 +4,7 @@ Sidekiq::Testing.fake!
 
 RSpec.describe Scrapers::LowPriority do
   describe '#perform' do
-    before(:all) do
+    before(:each) do
       @test_case = create(:court_case, :with_html, closed_on: 7.months.ago)
       @test_case.case_html.update(scraped_at: 7.months.ago)
       @data = nil
