@@ -11,9 +11,15 @@ RSpec.describe Scrapers::HighPriority do
       create(:court_case, closed_on: 2.days.ago, county: county)
 
       data = described_class.perform('Tulsa')
+
       expect do
         described_class.perform.to change(CourtCaseWorker.jobs, :size).by(1)
       end
+
+      expect do
+        described_class.perform.to change(CourtCaseWorker.jobs, :size).by(0)
+      end
+
       expect(data.first).to eq test_case.case_number
     end
   end
