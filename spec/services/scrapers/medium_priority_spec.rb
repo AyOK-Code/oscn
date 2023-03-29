@@ -13,10 +13,6 @@ RSpec.describe Scrapers::MediumPriority do
       expect do
         described_class.perform.to change(CourtCaseWorker.jobs, :size).by(1)
       end
-
-      expect do
-        described_class.perform.to change(CourtCaseWorker.jobs, :size).by(0)
-      end
     end
 
     it 'no duplicates in worker' do
