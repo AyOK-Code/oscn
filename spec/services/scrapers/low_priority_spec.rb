@@ -9,7 +9,6 @@ RSpec.describe Scrapers::LowPriority do
       test_case.case_html.update(scraped_at: 7.months.ago)
       data = nil
 
-
       expect do
         data = described_class.perform
       end.to change(CourtCaseWorker.jobs, :size).by(1)
