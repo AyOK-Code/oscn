@@ -23,20 +23,17 @@ namespace :warrants do
       bar.increment!
       case_id = court_cases[c['Case #']]
       next if case_id.nil?
+
       court_case = ::CourtCase.find_by!(county_id: county.id, case_number: case_number)
-      if court_case.enqueued == false
-        court_case.update(enqueued: true)
+      next unless court_case.enqueued == false
+
+      court_case.update(enqueued: true)
       CourtCaseWorker
         .set(queue: :default)
         .perform_async(county.id, c['Case #'], true)
-      else
-        next
-      end
 
       CaseParty.where(court_case_id: case_id).each do |cp|
         PartyWorker.perform_in(1.hour, cp.party.oscn_id)
-
-      
       end
     end
   end

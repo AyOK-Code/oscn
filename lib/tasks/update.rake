@@ -82,14 +82,12 @@ namespace :update do
     court_cases.each do |c|
       bar.increment!
       court_case = ::CourtCase.find_by!(county_id: c.county_id, case_number: c.case_number)
-      if court_case.enqueued == false
-          court_case.update(enqueued: true)
+      next unless court_case.enqueued == false
+
+      court_case.update(enqueued: true)
       CourtCaseWorker
         .set(queue: :high)
         .perform_async(c[0], c[1], true)
-      else
-        next
-      end
     end
   end
 

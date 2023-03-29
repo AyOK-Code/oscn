@@ -31,20 +31,17 @@ namespace :update do
     data.each_value do |case_number|
       bar.increment!
       court_case = ::CourtCase.find_by!(county_id: county.id, case_number: case_number)
-      if court_case.enqueued == false
-          court_case.update(enqueued: true)
+      next unless court_case.enqueued == false
+
+      court_case.update(enqueued: true)
       CourtCaseWorker
         .set(queue: :default)
         .perform_async(county.id, case_number, true)
 
       case_id = CourtCase.find_by(case_number: case_number)&.id
-      else
-      next
-      end
+
       CaseParty.where(court_case_id: case_id).each do |cp|
         PartyWorker.perform_in(1.hour, cp.party.oscn_id)
-      
-
       end
     end
   end
