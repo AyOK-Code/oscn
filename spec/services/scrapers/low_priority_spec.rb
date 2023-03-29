@@ -4,13 +4,11 @@ Sidekiq::Testing.fake!
 
 RSpec.describe Scrapers::LowPriority do
   describe '#perform' do
-    it 'add specs' do
+    it 'adds jobs to the CourtCaseWorker' do
       test_case = create(:court_case, :with_html, closed_on: 7.months.ago)
       test_case.case_html.update(scraped_at: 7.months.ago)
       data = nil
-      # create(:court_case,:with_html, closed_on: 1.months.ago)
 
-      # data = described_class.perform
 
       expect do
         data = described_class.perform
