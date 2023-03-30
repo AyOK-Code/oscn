@@ -17,6 +17,10 @@ module Scrapers
       bar = ProgressBar.new(cases.count)
 
       cases.each do |c|
+        court_case = ::CourtCase.find_by!(county_id: c.county_id, case_number: c.case_number)
+        next unless court_case.enqueued == false
+
+        court_case.update(enqueued: true)
         CourtCaseWorker
           .set(queue: :medium)
           .perform_async(c.county_id, c.case_number, true)

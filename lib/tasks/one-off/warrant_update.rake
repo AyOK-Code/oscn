@@ -24,6 +24,10 @@ namespace :warrants do
       case_id = court_cases[c['Case #']]
       next if case_id.nil?
 
+      court_case = ::CourtCase.find_by!(county_id: county.id, case_number: case_number)
+      next unless court_case.enqueued == false
+
+      court_case.update(enqueued: true)
       CourtCaseWorker
         .set(queue: :default)
         .perform_async(county.id, c['Case #'], true)

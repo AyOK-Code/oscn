@@ -30,6 +30,10 @@ namespace :update do
 
     data.each_value do |case_number|
       bar.increment!
+      court_case = ::CourtCase.find_by!(county_id: county.id, case_number: case_number)
+      next unless court_case.enqueued == false
+
+      court_case.update(enqueued: true)
       CourtCaseWorker
         .set(queue: :default)
         .perform_async(county.id, case_number, true)
