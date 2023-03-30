@@ -22,17 +22,4 @@ namespace :copy do
 
     end
   end
-  desc 'copy data from doc_sentence'
-  task doc_sentences: :environment do
-    sentences = Doc::Sentence.all
-    sentences.each  do |sentence|
-        roster = ::Roster.new()
-        
-        puts "Saving roster record: " +roster.first_name + " " +roster.middle_name + " "+ roster.last_name 
-        
-        
-
-
-    end
-  end
 end
