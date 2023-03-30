@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_02_17_162941) do
+ActiveRecord::Schema.define(version: 2023_03_28_153746) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -149,6 +149,7 @@ ActiveRecord::Schema.define(version: 2023_02_17_162941) do
     t.jsonb "logs"
     t.bigint "current_judge_id"
     t.boolean "is_error", default: false, null: false
+    t.boolean "enqueued", default: false, null: false
     t.index ["case_type_id"], name: "index_court_cases_on_case_type_id"
     t.index ["county_id", "oscn_id"], name: "index_court_cases_on_county_id_and_oscn_id", unique: true
     t.index ["county_id"], name: "index_court_cases_on_county_id"
@@ -785,64 +786,6 @@ ActiveRecord::Schema.define(version: 2023_02_17_162941) do
     WHERE ((party_types.name)::text = 'defendant'::text)
     GROUP BY docket_events.party_id, court_cases.id;
   SQL
-  create_view "report_fines_and_fees", materialized: true, sql_definition: <<-SQL
-      SELECT court_cases.id AS court_case_id,
-      case_types.id AS case_type_id,
-      docket_event_types.id AS docket_event_types_id,
-      docket_events.event_on,
-      docket_events.amount,
-      docket_events.payment,
-      docket_events.adjustment,
-          CASE
-              WHEN (( SELECT count(*) AS count
-                 FROM (docket_events docket_events_1
-                   JOIN docket_event_types docket_event_types_1 ON ((docket_events_1.docket_event_type_id = docket_event_types_1.id)))
-                WHERE ((docket_events_1.court_case_id = court_cases.id) AND ((docket_event_types_1.code)::text = 'CTRS'::text))) > 0) THEN true
-              ELSE false
-          END AS is_tax_intercepted
-     FROM (((docket_events
-       JOIN docket_event_types ON ((docket_event_types.id = docket_events.docket_event_type_id)))
-       JOIN court_cases ON ((court_cases.id = docket_events.court_case_id)))
-       JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
-    WHERE ((docket_events.amount <> (0)::numeric) OR (docket_events.adjustment <> (0)::numeric) OR (docket_events.payment <> (0)::numeric));
-  SQL
-  add_index "report_fines_and_fees", ["case_type_id"], name: "index_report_fines_and_fees_on_case_type_id"
-  add_index "report_fines_and_fees", ["court_case_id"], name: "index_report_fines_and_fees_on_court_case_id"
-  add_index "report_fines_and_fees", ["docket_event_types_id"], name: "index_report_fines_and_fees_on_docket_event_types_id"
-  add_index "report_fines_and_fees", ["event_on"], name: "index_report_fines_and_fees_on_event_on"
-
-  create_view "report_arresting_agencies", materialized: true, sql_definition: <<-SQL
-      SELECT court_cases.id AS court_case_id,
-      court_cases.case_number,
-      a.parent_party_id AS arresting_agency_id,
-          CASE
-              WHEN (a.parent_parties_name IS NULL) THEN 'NOT PROVIDED'::character varying
-              ELSE a.parent_parties_name
-          END AS arresting_agency,
-      case_types.abbreviation AS case_type,
-      court_cases.filed_on,
-      COALESCE(counts.as_filed, 'No Charges Filed'::character varying) AS charges_as_filed,
-      COALESCE(counts.filed_statute_violation, 'No Charges Filed'::character varying) AS filed_statute_violation,
-      ( SELECT (regexp_matches(split_part((counts.filed_statute_violation)::text, 'O.S.'::text, 1), '[0-9]{2}[A-Z]?'::text))[1] AS title_code
-             FROM counts c2
-            WHERE ((counts.court_case_id = court_cases.id) AND (counts.id = c2.id))) AS title_code
-     FROM (((court_cases
-       LEFT JOIN ( SELECT case_parties.court_case_id,
-              parent_parties.id AS parent_party_id,
-              parent_parties.name AS parent_parties_name
-             FROM (((case_parties
-               JOIN parties ON ((case_parties.party_id = parties.id)))
-               JOIN party_types ON ((parties.party_type_id = party_types.id)))
-               JOIN parent_parties ON ((parties.parent_party_id = parent_parties.id)))
-            WHERE ((party_types.name)::text = 'arresting agency'::text)) a ON ((court_cases.id = a.court_case_id)))
-       LEFT JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
-       LEFT JOIN counts ON ((counts.court_case_id = court_cases.id)))
-    WHERE ((case_types.abbreviation)::text <> 'CPC'::text);
-  SQL
-  add_index "report_arresting_agencies", ["arresting_agency_id"], name: "index_report_arresting_agencies_on_arresting_agency_id"
-  add_index "report_arresting_agencies", ["filed_on"], name: "index_report_arresting_agencies_on_filed_on"
-  add_index "report_arresting_agencies", ["title_code"], name: "index_report_arresting_agencies_on_title_code"
-
   create_view "party_stats", materialized: true, sql_definition: <<-SQL
       SELECT parties.id AS party_id,
       ( SELECT count(*) AS count
@@ -1009,9 +952,96 @@ ActiveRecord::Schema.define(version: 2023_02_17_162941) do
   SQL
   add_index "report_warrants", ["party_id", "code"], name: "index_report_warrants_on_party_id_and_code"
 
+  create_view "case_stats", materialized: true, sql_definition: <<-SQL
+      SELECT court_cases.id AS court_case_id,
+      (court_cases.closed_on - court_cases.filed_on) AS length_of_case_in_days,
+      ( SELECT count(*) AS count
+             FROM counts
+            WHERE (court_cases.id = counts.court_case_id)) AS counts_count,
+      ( SELECT count(*) AS count
+             FROM ((case_parties
+               JOIN parties ON ((case_parties.party_id = parties.id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+            WHERE ((court_cases.id = case_parties.court_case_id) AND ((party_types.name)::text = 'defendant'::text))) AS defendant_count,
+          CASE
+              WHEN (( SELECT count(*) AS count
+                 FROM (docket_events
+                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
+                WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = 'CTRS'::text))) > 0) THEN true
+              ELSE false
+          END AS is_tax_intercepted,
+      ( SELECT count(*) AS count
+             FROM (docket_events
+               JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
+            WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'BWIFAR'::character varying])::text[])))) AS warrants_count
+     FROM court_cases;
+  SQL
+  add_index "case_stats", ["court_case_id"], name: "index_case_stats_on_court_case_id"
+
+  create_view "report_arresting_agencies", materialized: true, sql_definition: <<-SQL
+      SELECT court_cases.id AS court_case_id,
+      court_cases.county_id,
+      court_cases.case_number,
+      a.parent_party_id AS arresting_agency_id,
+          CASE
+              WHEN (a.parent_parties_name IS NULL) THEN 'NOT PROVIDED'::character varying
+              ELSE a.parent_parties_name
+          END AS arresting_agency,
+      case_types.abbreviation AS case_type,
+      court_cases.filed_on,
+      COALESCE(counts.as_filed, 'No Charges Filed'::character varying) AS charges_as_filed,
+      COALESCE(counts.filed_statute_violation, 'No Charges Filed'::character varying) AS filed_statute_violation,
+      ( SELECT (regexp_matches(split_part((counts.filed_statute_violation)::text, 'O.S.'::text, 1), '[0-9]{2}[A-Z]?'::text))[1] AS title_code
+             FROM counts c2
+            WHERE ((counts.court_case_id = court_cases.id) AND (counts.id = c2.id))) AS title_code
+     FROM (((court_cases
+       LEFT JOIN ( SELECT case_parties.court_case_id,
+              parent_parties.id AS parent_party_id,
+              parent_parties.name AS parent_parties_name
+             FROM (((case_parties
+               JOIN parties ON ((case_parties.party_id = parties.id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+               JOIN parent_parties ON ((parties.parent_party_id = parent_parties.id)))
+            WHERE ((party_types.name)::text = 'arresting agency'::text)) a ON ((court_cases.id = a.court_case_id)))
+       LEFT JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
+       LEFT JOIN counts ON ((counts.court_case_id = court_cases.id)))
+    WHERE ((case_types.abbreviation)::text <> 'CPC'::text);
+  SQL
+  add_index "report_arresting_agencies", ["arresting_agency_id"], name: "index_report_arresting_agencies_on_arresting_agency_id"
+  add_index "report_arresting_agencies", ["filed_on"], name: "index_report_arresting_agencies_on_filed_on"
+  add_index "report_arresting_agencies", ["title_code"], name: "index_report_arresting_agencies_on_title_code"
+
+  create_view "report_fines_and_fees", materialized: true, sql_definition: <<-SQL
+      SELECT court_cases.id AS court_case_id,
+      court_cases.county_id,
+      case_types.id AS case_type_id,
+      docket_event_types.id AS docket_event_types_id,
+      docket_events.event_on,
+      docket_events.amount,
+      docket_events.payment,
+      docket_events.adjustment,
+          CASE
+              WHEN (( SELECT count(*) AS count
+                 FROM (docket_events docket_events_1
+                   JOIN docket_event_types docket_event_types_1 ON ((docket_events_1.docket_event_type_id = docket_event_types_1.id)))
+                WHERE ((docket_events_1.court_case_id = court_cases.id) AND ((docket_event_types_1.code)::text = 'CTRS'::text))) > 0) THEN true
+              ELSE false
+          END AS is_tax_intercepted
+     FROM (((docket_events
+       JOIN docket_event_types ON ((docket_event_types.id = docket_events.docket_event_type_id)))
+       JOIN court_cases ON ((court_cases.id = docket_events.court_case_id)))
+       JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
+    WHERE ((docket_events.amount <> (0)::numeric) OR (docket_events.adjustment <> (0)::numeric) OR (docket_events.payment <> (0)::numeric));
+  SQL
+  add_index "report_fines_and_fees", ["case_type_id"], name: "index_report_fines_and_fees_on_case_type_id"
+  add_index "report_fines_and_fees", ["court_case_id"], name: "index_report_fines_and_fees_on_court_case_id"
+  add_index "report_fines_and_fees", ["docket_event_types_id"], name: "index_report_fines_and_fees_on_docket_event_types_id"
+  add_index "report_fines_and_fees", ["event_on"], name: "index_report_fines_and_fees_on_event_on"
+
   create_view "report_searchable_cases", materialized: true, sql_definition: <<-SQL
       SELECT court_cases.case_number,
       court_cases.filed_on,
+      court_cases.county_id,
       parties.full_name,
       parties.first_name,
       parties.last_name,
@@ -1048,31 +1078,5 @@ ActiveRecord::Schema.define(version: 2023_02_17_162941) do
   add_index "report_searchable_cases", ["filed_on"], name: "index_report_searchable_cases_on_filed_on"
   add_index "report_searchable_cases", ["first_name"], name: "index_report_searchable_cases_on_first_name"
   add_index "report_searchable_cases", ["last_name"], name: "index_report_searchable_cases_on_last_name"
-
-  create_view "case_stats", materialized: true, sql_definition: <<-SQL
-      SELECT court_cases.id AS court_case_id,
-      (court_cases.closed_on - court_cases.filed_on) AS length_of_case_in_days,
-      ( SELECT count(*) AS count
-             FROM counts
-            WHERE (court_cases.id = counts.court_case_id)) AS counts_count,
-      ( SELECT count(*) AS count
-             FROM ((case_parties
-               JOIN parties ON ((case_parties.party_id = parties.id)))
-               JOIN party_types ON ((parties.party_type_id = party_types.id)))
-            WHERE ((court_cases.id = case_parties.court_case_id) AND ((party_types.name)::text = 'defendant'::text))) AS defendant_count,
-          CASE
-              WHEN (( SELECT count(*) AS count
-                 FROM (docket_events
-                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = 'CTRS'::text))) > 0) THEN true
-              ELSE false
-          END AS is_tax_intercepted,
-      ( SELECT count(*) AS count
-             FROM (docket_events
-               JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-            WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'BWIFAR'::character varying])::text[])))) AS warrants_count
-     FROM court_cases;
-  SQL
-  add_index "case_stats", ["court_case_id"], name: "index_case_stats_on_court_case_id"
 
 end
