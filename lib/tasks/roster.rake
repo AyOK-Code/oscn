@@ -5,7 +5,7 @@ namespace :roster do
   task empty_doc_profiles: :environment do
     profiles = Doc::Profile.where(roster: nil)
     profiles.each do |profile|
-      roster = ::Roster.new()
+      roster = ::Roster.new
       roster.sex = profile.sex
       roster.race = profile.race
       roster.birth_day = profile.birth_date.day
@@ -18,7 +18,6 @@ namespace :roster do
       profile.roster = roster
       profile.save!
       puts "Saving roster record: #{roster.first_name} #{roster.middle_name} #{roster.last_name}"
-     
     end
   end
 end
