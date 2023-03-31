@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :doc_profile, class: 'Doc::Profile' do
-    doc_number { 1 }
+    doc_number { Faker::Number.number(digits: 5) }
     last_name { Faker::Name.last_name }
     first_name { Faker::Name.first_name }
     middle_name { Faker::Name.middle_name }
