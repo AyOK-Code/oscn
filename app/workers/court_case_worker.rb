@@ -10,7 +10,7 @@ class CourtCaseWorker
   def perform(county_id, oscn, scrape_case)
     ::Importers::CaseHtml.perform(county_id, oscn) if scrape_case
     ::Importers::CourtCase.perform(county_id, oscn)
-    court_case = ::CourtCase.find_by!(county_id: county.id, case_number: oscn)
+    court_case = ::CourtCase.find_by!(county_id: county_id, case_number: oscn)
     court_case.update(enqueued: false)
   end
 end
