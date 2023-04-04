@@ -21,8 +21,6 @@ module Scrapers
         case_number = c.case_number
         court_case = ::CourtCase.find_by!(county_id: c.county_id, case_number: c.case_number)
 
-        
-
         next unless court_case.enqueued == false
 
         court_case.update(enqueued: true)
