@@ -19,7 +19,7 @@ module Scrapers
         county = c.county
 
         case_number = c.case_number
-        court_case = ::CourtCase.find_by!(county_id: c.county_id, case_number: c.case_number)
+        court_case = ::CourtCase.find_by!(county_id: county.id, case_number: c.case_number)
 
         next if court_case.enqueued
 
