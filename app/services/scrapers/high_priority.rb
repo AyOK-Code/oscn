@@ -18,9 +18,8 @@ module Scrapers
       bar = ProgressBar.new(cases.count)
       puts "#{cases.count} are high priority for update for #{county.name} county"
       cases.each do |case_number|
-        court_case = ::CourtCase.find_by!(county_id: @county.id, case_number: case_number)
-
-        next unless court_case.enqueued == false
+        court_case = ::CourtCase.find_by!(county_id: county.id, case_number: case_number)
+        next if court_case.enqueued
 
         court_case.update(enqueued: true)
         CourtCaseWorker
