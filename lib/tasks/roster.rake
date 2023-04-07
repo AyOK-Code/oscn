@@ -15,7 +15,7 @@ namespace :roster do
       roster.last_name = profile.last_name
       roster.middle_name = profile.middle_name
       roster.save!
-      profile.roster = roster
+      profile.roster_id = roster.id
       profile.save!
       puts "Saving roster record: #{roster.first_name} #{roster.middle_name} #{roster.last_name}"
     end
