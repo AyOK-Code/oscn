@@ -1,12 +1,12 @@
 module Scrapers
   class DailyFiling
     attr_accessor :county, :date, :case_types, :counties
-    
+
     def initialize(county, date)
       @county = county
       @date = date
-      @case_types = CaseType.pluck(:abbreviation, :id).to_h
-      @counties = County.pluck(:name, :id).to_h
+      @case_types = CaseType.oscn_id_mapping
+      @counties = County.name_id_mapping
     end
 
     def self.perform(county, date)
@@ -43,5 +43,3 @@ module Scrapers
     end
   end
 end
-
-

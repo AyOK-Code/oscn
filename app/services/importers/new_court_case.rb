@@ -7,7 +7,7 @@ module Importers
     def initialize(link)
       @case_number = link.text
       @case_types = CaseType.oscn_id_mapping
-      @counties = County.pluck(:name, :id).to_h
+      @counties = County.name_id_mapping
       @params = CGI.parse(URI(link['href']).query).to_h { |k, v| [k.downcase, v.first] }
     end
 
