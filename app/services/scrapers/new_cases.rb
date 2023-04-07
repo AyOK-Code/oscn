@@ -26,7 +26,7 @@ module Scrapers
         end
       end
     end
-
+    
     def save_case(row, date)
       params = OscnScraper::Parsers::Link.parse(row)
 
