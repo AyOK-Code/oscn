@@ -81,7 +81,7 @@ namespace :update do
 
     court_cases.each do |c|
       bar.increment!
-      
+
       CourtCaseWorker
         .set(queue: :high)
         .perform_async(c.county_id, c.case_number, true)
