@@ -77,12 +77,12 @@ namespace :update do
   desc 'Queue up cases missing html'
   task missing_html: [:environment] do
     court_cases = CourtCase.without_html.select(:county_id, :case_number)
-    bar = ProgressBar.new(court_cases.count)
+    bar = ProgressBar.new(court_cases.length)
 
     court_cases.each do |c|
       bar.increment!
       court_case = ::CourtCase.find_by!(county_id: c.county_id, case_number: c.case_number)
-      next unless court_case.enqueued == false
+      next if court_case.enqueued
 
       court_case.update(enqueued: true)
       CourtCaseWorker
