@@ -76,7 +76,7 @@ namespace :update do
 
   desc 'Queue up cases missing html'
   task missing_html: [:environment] do
-    court_cases = CourtCase.without_html.pluck(:county_id, :case_number)
+    court_cases = CourtCase.without_html.select(:county_id, :case_number)
     bar = ProgressBar.new(court_cases.count)
 
     court_cases.each do |c|
