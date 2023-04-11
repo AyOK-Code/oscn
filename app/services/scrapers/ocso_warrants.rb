@@ -15,7 +15,8 @@ module Scrapers
           bond_amount: warrant_hash[:bond_amount],
           issued: warrant_hash[:issued],
           counts: warrant_hash[:counts],
-          updated_at: DateTime.now
+          updated_at: DateTime.now,
+          resolved_at: nil
         )
         warrant.save!
       end
