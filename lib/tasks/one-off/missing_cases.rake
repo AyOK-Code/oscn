@@ -6,7 +6,9 @@ namespace :update do
     data = CSV.parse(resp.body.read, headers: true)
 
     data.each do |row|
-      Scrapers::OneOffCase.new('Oklahoma', row[0]).perform   
+      OneOffCaseWorker
+          .set(queue: :high)
+          .perform_async('Oklahoma', row[0])
     end
   end
 end
