@@ -20,7 +20,7 @@ module Scrapers
         )
         warrant.save!
       end
-      ::Ocso::Warrant.where(resolved_at: nil).where('updated_at > ?', 7.days.ago).each do |warrant|
+      ::Ocso::Warrant.where(resolved_at: nil).where('updated_at < ?', 7.days.ago).each do |warrant|
         warrant.update!(resolved_at: warrant.updated_at + 1.day)
       end
     end
