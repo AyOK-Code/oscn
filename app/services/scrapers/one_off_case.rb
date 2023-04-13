@@ -27,13 +27,10 @@ module Scrapers
         c.case_type_id = case_types[case_type]
         c.case_number = row[:case_number]
         c.save!
-        
+
         ::Importers::CaseHtml.perform(county_id, c.case_number)
         ::Importers::CourtCase.perform(county_id, c.case_number)
       end
     end
   end
 end
-
-
-    
