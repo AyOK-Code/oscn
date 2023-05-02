@@ -18,9 +18,13 @@ module Importers
       personal_columns = personal_html(parsed_html)
       aliases_column = aliases_html(parsed_html)
 
-      save_aliases(aliases_column)
-      save_personal(personal_columns)
-      save_addresses(parsed_html)
+      begin
+        save_aliases(aliases_column)
+        save_personal(personal_columns)
+        save_addresses(parsed_html)
+      rescue StandardError
+        Raygun.track_exception(e, custom_data: {error_type: 'Data Error'})
+      end
     end
 
     def save_addresses(parsed_html)

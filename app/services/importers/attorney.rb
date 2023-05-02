@@ -16,7 +16,11 @@ module Importers
 
     def perform
       attorney_object.each do |attorney_data|
-        save_attorneys(attorney_data)
+        begin
+          save_attorneys(attorney_data)
+        rescue => e
+          Raygun.track_exception(e, custom_data: {error_type: 'Data Error'})
+        end
       end
     end
 
