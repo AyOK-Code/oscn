@@ -1,0 +1,1251 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://<BUCKETEER_BUCKET_NAME>.s3.amazonaws.com/doc/2023-01/Vendor_Offense_Extract_Text.dat
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.164.0 ruby/3.1.3 x86_64-darwin19 aws-sdk-s3/1.116.0
+      Host:
+      - "<BUCKETEER_BUCKET_NAME>.s3.amazonaws.com"
+      X-Amz-Date:
+      - 20230427T214028Z
+      X-Amz-Content-Sha256:
+      - e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=<BUCKETEER_AWS_ACCESS_KEY_ID>/20230427/us-east-1/s3/aws4_request,
+        SignedHeaders=host;user-agent;x-amz-content-sha256;x-amz-date, Signature=6c0f6b24d1bb92798aebfac6ce7a7e7cb0ac941963e615b0922bbd14361ead8e
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - hlxBuxobFCZJ8Zc1OjyXnh74ft5pZ1h/QWM0LPGtg48cjvdkzylwf64eODFJoJMXN1CJXlvRIj4=
+      X-Amz-Request-Id:
+      - 8TW077ZKECZKP7XX
+      Date:
+      - Thu, 27 Apr 2023 21:41:14 GMT
+      Last-Modified:
+      - Thu, 27 Apr 2023 19:37:09 GMT
+      Etag:
+      - '"e99105c0afcf8951d016bba9209c6d27"'
+      X-Amz-Server-Side-Encryption:
+      - AES256
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - binary/octet-stream
+      Server:
+      - AmazonS3
+      Content-Length:
+      - '96957'
+    body:
+      encoding: UTF-8
+      string: "0-0                                   UNKNOWN - FOR WARRANTS ONLY             N\r\n10-1144
+        \                              ACTS CAUSING JUVENILE DELINQUENCY       N\r\n10-1627
+        \                              DEPRIVATION OF LAWFUL CUSTODY           N\r\n10-26
+        \                                UNLAWFUL ASSUMPTION OF CUSTODY OF CHILD N\r\n10-404.1
+        \                             SEX OFFENDER PROVIDING SERVICES TO CHILDN\r\n10-410
+        \                               OPERATING CHILD CARE FACILITY W/O LICENSN\r\n10-71
+        \                                PATERNITY COMPLAINT                     N\r\n10-7103
+        \                              FAILURE TO REPORT CHILD                 N\r\n10-7115
+        \                              CHILD ABUSE                             Y\r\n10-7303-1.1B
+        \                         REFUSE TO ASSUME CUSTODY OF CHILD IN DETN\r\n10A-2-7-611.B
+        \                        PROHIBITED ITEMS JUVENILE FACILITIES    N\r\n13-176.3
+        \                             VIOLATING SECURITY OF COMMUNICATIONS    N\r\n13-176.3.8
+        \                           UNLAWFUL USE OF COMMUNICATION FACILITY  N\r\n13-176.7
+        \                             USE OF COMMUNICATION FACILITY TO COMMIT N\r\n15-751
+        \                               CONSUMER PROTECTION ACT VIOLATION       N\r\n15-753
+        \                               CONSUMER PROTECTION ACT VIOLATION       N\r\n15-765.3
+        \                             HOME REPAIR FRAUD                       N\r\n15-767
+        \                               CONDUCT CLOSING OUT SALE W/O LICENSE    N\r\n18-1020.F
+        \                            CORP. FAILING TO FILE REAL ESTATE STATEMN\r\n18-552.11
+        \                            FRAUDULENT USE OF NAME IN CHARITY       N\r\n18-552.18
+        \                            UNLAWFUL SOLICIT CHARITABLE CONTRIBUTIONN\r\n18-553.3
+        \                             FAILURE TO REGISTER AS PROF FUND RAISER N\r\n18-951
+        \                               FOREIGN CORPORATION ENGAGED IN FARMING/RN\r\n19-1610
+        \                              TRANSIENT MERCHANT W/O LICENSE          N\r\n19-641
+        \                               EMBEZZLEMENT OF PUBLIC MONEY            N\r\n19-682
+        \                               COUNTY OFF/FAILING TO MAKE DAILY DEPOSITN\r\n19-863.28
+        \                            ZONING VIOLATION                        N\r\n19-863.45
+        \                            VIOLATION OF COUNTY BLDG/INSP/RULES & REN\r\n19-863.48
+        \                            MOVING HOUSE W/O PERMIT                 N\r\n19-865.67
+        \                            COUNTY ZONING VIOLATION                 N\r\n19-866.32
+        \                            VIOLATION OF ZONING REGULATIONS         N\r\n19-868.21
+        \                            VIOLATION OF ZONING CODE                N\r\n2-11-10
+        \                              THEFT/TAMPER WITH ANHYDROUS AMMONIA     N\r\n2-11-94
+        \                              SCRAP METAL DEALERS ACT VIOLATION       N\r\n2-1301-205
+        \                           UNLAWFUL BURNING                        N\r\n2-1301-206
+        \                           BURNING IN DROUGHT EMERGENCY CONDITION  N\r\n2-1301-310
+        \                           CUT DOWN/INJURE/DESTROY TREES           N\r\n2-16-34
+        \                              ILLEGAL POSSESSION OF INCENDIARY DEVICE Y\r\n2-16-63
+        \                              FALSE AGREEMENT/CONTRACT FOR TIMBER     N\r\n2-3-86
+        \                               PEST CONTROL LICENSE VIOLATION          N\r\n2-6-100
+        \                              FAILURE TO PRESENT CATTLE FOR TESTING   N\r\n2-6-102
+        \                              UNLAWFUL SALE OF BOVINE ANIMALS         N\r\n2-6-104
+        \                              FAIL TO COMPLY - BRUCELLOSIS ERADICATIONN\r\n2-6-125
+        \                              MOVING QUARANTINED LIVESTOCK            N\r\n2-6-151
+        \                              TRANSPORTING LIVESTOCK W/O HEALTH PERMITN\r\n2-6-155
+        \                              UNLAWFUL TRANSPORTATION OF LIVESTOCK    N\r\n2-6-190
+        \                              MEAT INSPECTION REQUIREMENTS VIOLATION  N\r\n2-6-283
+        \                              FAILURE TO COMPLY WITH EIA ERADICATION  N\r\n2-6-94
+        \                               REMOVING TAG FROM BRUCELLOSIS LIVESTOCK N\r\n2-746
+        \                                CAUSING WOOD/MARSH/PRAIRIE FIRE         N\r\n2-8-71
+        \                               POSS HAZARDOUS MATERIAL IN IMP CONTAINERN\r\n2-9-132D
+        \                             CONDUCT LIVESTOCK AUCTION W/O LICENSE   N\r\n2-9-34
+        \                               PUBLIC WAREHOUSE/COMMODITY STOCK FRAUD  N\r\n21-1021.2
+        \                            PROCURE/PRODUCE/DIST/POSS JUV PORNOGRAPHY\r\n21-1021.2T
+        \                           PROCURE/PROD/DIST/POSS JUV PORN (85 PCT)Y\r\n21-1021.3
+        \                            PARENT CONSENT TO JUVENILE PORNOGRAPHY  Y\r\n21-1021.3T
+        \                           PARENT CONSENT TO JUVENILE PORN (85 PCT)Y\r\n21-1021.4
+        \                            FILM PROCESSOR FAIL TO REPORT CHILD PORNN\r\n21-1021.5
+        \                            SOLICIT MINOR FOR INDECENT EXPOSE/PHOTOSN\r\n21-1021.A
+        \                            INDECENT EXPOSURE                       N\r\n21-1021.A2
+        \                           ASST LEWD EXHIBITION                    N\r\n21-1021.A3
+        \                           PREPARE/DIST/EXHIBIT OBSCENE MATERIAL   N\r\n21-1021.A4
+        \                           RECORD/DIST/TRANSMIT OBSCENITY          N\r\n21-1021.B1
+        \                           SOLICIT MINOR FOR INDECENT EXPOSURE ETC N\r\n21-1021.B2
+        \                           SHOWING OBSCENE MATERIAL TO MINOR       N\r\n21-1024.1T
+        \                           CHILD PORNOGRAPHY (85PCT)               Y\r\n21-1024.2
+        \                            CHILD PORNOGRAPHY                       Y\r\n21-1024.2(1981)
+        \                      POSS OF OBSCENE MATERIAL                Y\r\n21-1025
+        \                              OPERATING A BAWDY HOUSE                 N\r\n21-1026
+        \                              DISORDERLY HOUSE                        N\r\n21-1027
+        \                              LEASING BUILDING FOR INDECENT PURPOSES  N\r\n21-1028
+        \                              OPERATING PLACE/SOLICITING PROSTITUTION N\r\n21-1029
+        \                              ENGAGING IN PROSTITUTION ETC            N\r\n21-1029.C
+        \                            FREQUENTING HOUSE OF PROSTITUTION       N\r\n21-1030
+        \                              CHILD PROSTITUTION                      Y\r\n21-1030.T
+        \                            CHILD PROSTITUTION (85 PCT)             Y\r\n21-1031.B
+        \                            Knowingly Engaging in Prostitution/HIV  N\r\n21-1031.D
+        \                            LEWDNESS W/I 1000' OF SCHOOL/CHURCH     N\r\n21-1040.12AT
+        \                         AGG POSS CHILD PORN (85% 7/1/08)        Y\r\n21-1040.13
+        \                           IMPORTING/DISTRIBUTING OBSCENE MATERIAL N\r\n21-1040.13A
+        \                          SOLICITING SEXUAL CONDUCT/COMM W/ MINOR N\r\n21-1040.51
+        \                           DISTRIBUTING OBSCENE MOVIES             N\r\n21-1040.76
+        \                           MATERIAL/PERFORMANCE HARMFUL TO MINOR   N\r\n21-1040.8
+        \                            PUBL/DIST/PARTIC OBSCENE MATERIAL       N\r\n21-1041
+        \                              JUNK DEALERS FAILING TO KEEP RECORDS    N\r\n21-1043
+        \                              JUNK DEALER PURCHASING MERCHANDISE FROM N\r\n21-1045
+        \                              FAILURE KEEP RECORD OF COPPER PURCHASES N\r\n21-1053
+        \                              PREPARING OR DRAWING LOTTERY            N\r\n21-1054
+        \                              SELL OR FURNISH LOTTERY TICKETS         N\r\n21-1057
+        \                              OFFERING PROPERTY DEPENDENT UPON LOTTERYN\r\n21-1066
+        \                              ENGAGING IN SALES PLAN LOTTERY          N\r\n21-1073
+        \                              PROMOTING PYRAMID PROMOTIONAL SCHEME    N\r\n21-1081
+        \                              PROCURING FOR PROSTITUTION              N\r\n21-1085
+        \                              RESTRAIN FEMALE IN HOUSE OF PROSTITUTIONN\r\n21-1086
+        \                              ALLOWING OFFENSE OF PROSTITUTION ON PREMN\r\n21-1087
+        \                              PROCURE MINOR FOR PROSTITUTION/OTHER LEWY\r\n21-1087.3
+        \                            TRANS CHILD U/18 FOR PURPOSE OF PROSTITUY\r\n21-1088
+        \                              INDUCING MINOR TO ENGAGE IN PROSTITUTIONY\r\n21-1092
+        \                              REFUSING TO EXHIBIT STOLEN GOODS        N\r\n21-1102
+        \                              OPERATE POOL/BILLIARD TABLE W/O LICENSE N\r\n21-1111
+        \                              RAPE                                    Y\r\n21-1111.1
+        \                            RAPE BY INSTRUMENTATION                 Y\r\n21-1111.1T
+        \                           RAPE BY INSTRUMENTATION (EFF 11-1-2017) Y\r\n21-1114
+        \                              RAPE                                    Y\r\n21-1115
+        \                              RAPE - FIRST DEGREE                     Y\r\n21-1115.T
+        \                            RAPE - FIRST DEGREE (85 PCT)            Y\r\n21-1116
+        \                              RAPE - SECOND DEGREE                    Y\r\n21-1117
+        \                              COMPELLING WOMAN TO MARRY               N\r\n21-1118
+        \                              INTENT TO COMPEL WOMAN TO MARRY         N\r\n21-1119
+        \                              ABDUCTION OF PERSON UNDER 15            N\r\n21-1120
+        \                              SEDUCTION UNDER PROMISE OF MARRIAGE     N\r\n21-1122
+        \                              ABANDONMENT AFTER SEDUCTION & MARRIAGE  N\r\n21-1123.A
+        \                            LEWD OR INDECENT PROPOSALS/ACTS TO CHILDY\r\n21-1123.A5
+        \                           PERFORMING LEWD ACT IN PRESENCE OF MINORY\r\n21-1123.A5T
+        \                          PERFORMING LEWD ACT IN PRESENCE OF MINORY\r\n21-1123.AT
+        \                           LEWD/INDECNT PROP/ACTS TO CHILD (85 PCT)Y\r\n21-1123.B
+        \                            SEXUAL BATTERY OF PERSON OVER 16        N\r\n21-1125
+        \                              ZONE OF SAFETY VIOLATION BY SEX OFF     N\r\n21-1141.3
+        \                            FUGITIVE FROM JUSTICE - EXTRADITION DEMAN\r\n21-1141.7
+        \                            FUGITIVE FROM JUSTICE - GOVERNOR'S WARRAN\r\n21-1159
+        \                              NEGLECT OF BURIAL                       N\r\n21-1161
+        \                              UNLAWFUL REMOVAL OF THE DEAD            N\r\n21-1161.1
+        \                            DESECRATION OF HUMAN CORPSE             N\r\n21-1162
+        \                              PURCHASING DEAD BODY                    N\r\n21-1163
+        \                              INTERFERENCE W/PLACES OF BURIAL         N\r\n21-1167
+        \                              INJURY TO CEMETERY/GRAVESTONE/TOMB      N\r\n21-1168.4
+        \                            FAILURE TO REPORT DISC REMAINS          N\r\n21-1171
+        \                              PEEPING TOM                             N\r\n21-1171.B
+        \                            USE VIDEO EQUIP FOR ILLEGAL/LEWD PURPOSEN\r\n21-1172
+        \                              OBSCENE/THREATENING OR HARASSING PHONE CN\r\n21-1173
+        \                              STALKING                                N\r\n21-1191
+        \                              PUBLIC NUISANCE                         N\r\n21-1192
+        \                              SPREAD OF INFECTIOUS DISEASES           N\r\n21-1192.1
+        \                            EXPOSING OTHERS TO AIDS                 N\r\n21-1197
+        \                              LAYING OUT POISON IN OPEN RANGE         N\r\n21-1198
+        \                              INTERFERING W/FIREMAN REFUSING TO AID   N\r\n21-1204
+        \                              MAINTAINING ILLEGAL DUMP                N\r\n21-1205
+        \                              DUMPING TRASH NEAR HIGHWAY              N\r\n21-1208
+        \                              ABANDONING REFRIGERATOR UNLAWFULLY      N\r\n21-1212
+        \                              DISTURBING DISASTER AREA                N\r\n21-1214
+        \                              UNLAWFUL USE OF POLICE RADIO            N\r\n21-1215
+        \                              MINOR IN POSSESSION OF ALC BEV          N\r\n21-1217
+        \                              INTERFERING WITH FIREMAN                N\r\n21-1220
+        \                              TRANSPORTING OPEN CONTAINER - BEER      N\r\n21-1221
+        \                              FAIL TO KEEP CONTAGIOUS ANIMALS ISOLATEDN\r\n21-1223
+        \                              LEAVING CARCASS W/IN 1/4 MILE OF HWY    N\r\n21-1230.3
+        \                            UNLAWFUL HAZARDOUS WASTE TRANSPORTATION N\r\n21-1230.6
+        \                            UNLAWFUL DISPOSAL OF HAZARDOUS WASTE    N\r\n21-1230.7
+        \                            UNLAWFUL CONCEALMENT OF HAZARDOUS WASTE N\r\n21-1241
+        \                              SALE OF TOBACCO TO MINOR                N\r\n21-1247
+        \                              SMOKING IN A NO SMOKING AREA            N\r\n21-1261
+        \                              CRIMINAL SYNDICALISM                    Y\r\n21-1262
+        \                              SABOTAGE                                Y\r\n21-1263
+        \                              ADVOCATING CRIME SYNDICALISM OR SABOTAGEY\r\n21-1265.2
+        \                            DESTR/INTERF W/PROP HINDER DEF PREP WAR N\r\n21-1265.3
+        \                            CAUSE DEFECT ART TO BE USED DEFENSE/WAR N\r\n21-1265.4
+        \                            ATTEMPT TO SABOTAGE                     Y\r\n21-1265.5
+        \                            CONSPIRACIES TO SABOTAGE                Y\r\n21-1266
+        \                              ADVOCATE OVERTHROW OF GOVT. BY FORCE    N\r\n21-1266.4
+        \                            COMMIT/ATT COMMIT ACT TO OVERTHROW GOVT.Y\r\n21-1267.1
+        \                            ORGANIZE/ASST TO/GROUP TO OVERTHROW GOVTN\r\n21-1268.2
+        \                            ACT OF TERRORISM                        Y\r\n21-1268.4
+        \                            TERRORISM HOAX                          Y\r\n21-1272
+        \                              CARRYING WEAPONS                        N\r\n21-1272.1
+        \                            CARRYING WEAPON WHERE ALC IS SERVED     N\r\n21-1273
+        \                              SELL OR GIVE WEAPON TO MINOR            N\r\n21-1277
+        \                              CARRYING WEAPON TO PUBLIC ASSEMBLY      N\r\n21-1278
+        \                              CARRYING WEAPON W/UNLAWFUL INTENT       N\r\n21-1279
+        \                              POINTING WEAPON AT ANOTHER              N\r\n21-1280.1
+        \                            POSS OF WEAPON ON SCHOOL PROPERTY       N\r\n21-1281
+        \                              MANUFACTURE/SALE OF SLINGSHOT           N\r\n21-1282
+        \                              CARRYING/USING SLINGSHOT                N\r\n21-1283
+        \                              CON/FELONS PROHIB/CARRY FIREARMS        N\r\n21-1287
+        \                              USING OFFENSIVE WEAPON IN FELONY        Y\r\n21-1288
+        \                              ILLEGAL PURCHASE OF FIREARM             N\r\n21-1289.10
+        \                           TRANSFER FIREARM TO INCOMPETENT/INSANE PN\r\n21-1289.11
+        \                           RECKLESS CONDUCT WITH FIREARM           N\r\n21-1289.12
+        \                           TRANSFER OF F/A TO FELON/DISTURBED/INTOXN\r\n21-1289.13
+        \                           TRANSPORTING LOADED FIREARM IN MOTOR VEHN\r\n21-1289.14
+        \                           TRANSPORTING LOADED FIREARM IN BOAT     N\r\n21-1289.16
+        \                           POINTING FIREARM                        Y\r\n21-1289.17A
+        \                          DISCHARGING FIREARM INTO DWELLING       N\r\n21-1289.18
+        \                           POSS. SAWED-OFF SHOTGUN/RIFLE           N\r\n21-1289.21
+        \                           POSSESSION OF RESTRICTED BULLET         N\r\n21-1289.26
+        \                           WEARING BODY ARMOR IN COMMITTING FELONY N\r\n21-1289.6
+        \                            CARRYING A LOADED FIREARM               N\r\n21-1289.8
+        \                            CARRYING CONCEALED WEAPON               N\r\n21-1289.9
+        \                            CARRYING FIREARMS WHILE UNDER THE INFLUEN\r\n21-1290.21(B)
+        \                        CARRYING STOLEN HANDGUN                 N\r\n21-1290.8C
+        \                           FAIL TO NOT. POLICY OF CONC WEAPON BY LIN\r\n21-1301
+        \                              UNLAWFULLY WEARING MASK OR HOOD         N\r\n21-1302
+        \                              ENTERING PREMISES WHILE MASKED          N\r\n21-1303
+        \                              ASSAULT WHILE MASKED OR DISGUISED       Y\r\n21-1304
+        \                              TRANSMIT THREATENING LETTER             N\r\n21-1311
+        \                              RIOT                                    Y\r\n21-1314
+        \                              UNLAWFUL ASSEMBLY                       N\r\n21-1316
+        \                              REMAINING AFTER LAWFUL ORDER TO DISPERSEN\r\n21-1319
+        \                              RESISTING EXECUTION OF LEGAL PROCESS    N\r\n21-1320.2
+        \                            INCITEMENT TO RIOT                      Y\r\n21-1320.3
+        \                            UNLAWFUL ASSEMBLY TO RIOT               Y\r\n21-1321.7
+        \                            ENDANGER REAL/PERS PROP/MALICIOUS INJURYN\r\n21-1321.8
+        \                            RIOT                                    Y\r\n21-1327
+        \                              ADVOCATING SYNDICALISM ON SCHOOL GROUNDSY\r\n21-1351
+        \                              FORCIBLE ENTRY ON REAL ESTATE           N\r\n21-1352
+        \                              RETURNING AFTER LAWFUL REMOVAL          N\r\n21-1353
+        \                              UNLAWFUL INTRUSION ON CITY PROPERTY     N\r\n21-1362
+        \                              DISTURBING THE PEACE                    N\r\n21-1363
+        \                              BREACH OF PEACE                         N\r\n21-1364
+        \                              DISCHARGING FIREARMS IN PUBLIC PLACE    N\r\n21-1365
+        \                              TRESPASSING ON RAILWAY TRAIN            N\r\n21-1368
+        \                              POSS OF EXPLOSIVES BY CONV FELON        N\r\n21-1376
+        \                              INTERFERING WITH SCHOOL ACTIVITIES      N\r\n21-1377
+        \                              PROJECTING OBJECT AT PUBLIC EVENT       N\r\n21-1378.A
+        \                            ACT VIOLENCE/BODILY HARM-THREATS        Y\r\n21-1378.B
+        \                            Act Violence/Bodily Harm -Threat        Y\r\n21-1401
+        \                              ARSON - FIRST DEGREE                    Y\r\n21-1401.T
+        \                            ARSON - FIRST DEGREE (85 PCT)           Y\r\n21-1402
+        \                              ARSON - SECOND DEGREE                   N\r\n21-1403
+        \                              ARSON - THIRD DEGREE                    N\r\n21-1404
+        \                              ARSON - FOURTH DEGREE                   N\r\n21-1405
+        \                              ENDANGER HUMAN LIFE DURING ARSON        N\r\n21-1411
+        \                              FRAUDULENT BILL OF LADING               N\r\n21-1412
+        \                              FRAUDULENT WAREHOUSE RECEIPTS           N\r\n21-1414
+        \                              DUPLICATION OF RECEIPTS OR VOUCHERS     N\r\n21-1415
+        \                              SELL GOODS W/O CONSENT HOLDER/BILL OF LAN\r\n21-1416
+        \                              UNLAWFUL DELIVERY OF GOODS              N\r\n21-1431
+        \                              BURGLARY - FIRST DEGREE                 Y\r\n21-1431.T
+        \                            BURGLARY - FIRST DEGREE (85 PCT)        Y\r\n21-1435
+        \                              BURGLARY - SECOND DEGREE                N\r\n21-1435.B
+        \                            BURGLARY - THIRD DEGREE                 N\r\n21-1437
+        \                              POSSESSION OF BURGLAR IMPLEMENTS        N\r\n21-1438
+        \                              BREAKING AND ENTERING                   N\r\n21-1441
+        \                              BURGLARY WITH EXPLOSIVES                Y\r\n21-1442
+        \                              POSSESSION OF TOOLS BY PREVIOUS BURGLAR N\r\n21-1451
+        \                              EMBEZZLEMENT                            N\r\n21-1452
+        \                              EMBEZZLEMENT BY OFFICER OF CORPORATION  N\r\n21-1453
+        \                              EMBEZZLEMENT BY CARRIER                 N\r\n21-1454
+        \                              EMBEZZLEMENT BY TRUSTEE - CONTRACTOR    N\r\n21-1455
+        \                              EMBEZZLEMENT BY BAILEE                  N\r\n21-1456
+        \                              EMBEZZLEMENT BY CLERK OR SERVANT        N\r\n21-1463
+        \                              DIVERSION OF STATE FUNDS                N\r\n21-1464
+        \                              FAILURE TO RETURN RENTED PROPERTY       N\r\n21-1481
+        \                              EXTORTION                               Y\r\n21-1485
+        \                              OBTAIN SIGNATURE BY EXTORTION           Y\r\n21-1486
+        \                              EXTORTION BY THREATENING LETTER         Y\r\n21-1487
+        \                              ATTEMPTING TO EXTORT MONEY              N\r\n21-1488
+        \                              BLACKMAIL                               N\r\n21-1500
+        \                              SECURING REAL PROPERTY LOAN W/FALSE INSTN\r\n21-1501
+        \                              SECURING CREDIT FRAUDULENTLY            N\r\n21-1502
+        \                              FRAUDULENT ADVERTISING                  N\r\n21-1503
+        \                              DEFRAUDING AN INNKEEPER                 N\r\n21-1506
+        \                              MOCK AUCTION                            N\r\n21-1509
+        \                              GIVING FALSE PEDIGREE OF ANIMAL         N\r\n21-1515
+        \                              UNLAWFUL PROCUREMENT TELEPHONE SERVICE  N\r\n21-1518
+        \                              MISREPRESENTING AGE BY FALSE DOCUMENT   N\r\n21-1521
+        \                              RENTING MV WITH BOGUS CHECK             N\r\n21-1522
+        \                              PUBLISH TELEPHONE CREDIT CARD INFO TO DEN\r\n21-1524
+        \                              FALSELY PERFORMING NOTARIAL ACT         N\r\n21-1531
+        \                              FALSE PERSONATION                       N\r\n21-1532
+        \                              REC MONEY/PROP BY IMPERSONATING ANOTHER N\r\n21-1533
+        \                              IMPERSONATING PUBLIC OFFICER BY UNIFORM N\r\n21-1533.1
+        \                            FRAUDULENTLY OBT ID OF OTHER            N\r\n21-1541
+        \                              FALSE PRETENSES; TRICK OR DECEPTION     N\r\n21-1541.1
+        \                            FALSE PRET OR BOGUS CHECK UNDER $50/CON N\r\n21-1541.2
+        \                            FALSE PRET OR BOGUS CHECK OVER $50/CON GN\r\n21-1541.3
+        \                            2 OR MORE BOGUS CHECKS TOGETHER OVER $50N\r\n21-1541.6
+        \                            OBTAINING REFUND BY FALSE INFORMATION   N\r\n21-1542
+        \                              OBTAINING PROP OR SIGN UNDER FALSE PRET N\r\n21-1543
+        \                              OBTAIN CONTRIB FOR CHARITY BY FALSE PRETN\r\n21-1544
+        \                              OBTAIN MONEY/PROPERTY W/FALSE NEGOTIABLEN\r\n21-1545
+        \                              USING FALSE CHECK                       N\r\n21-1546
+        \                              REMOVE ID FROM APPARATUS W/INTENT TO SELN\r\n21-1547
+        \                              POSSESSION OF EQUIPMENT W/ALTERED ID    N\r\n21-1550.2
+        \                            UNAUTHORIZED USE OF CREDIT CARD         N\r\n21-1550.22
+        \                           TAKING/RECEIVING TAKEN CREDIT CARD      N\r\n21-1550.23
+        \                           USE OF LOST CREDIT CARD                 N\r\n21-1550.24
+        \                           BUYING/SELLING CREDIT CARD              N\r\n21-1550.25
+        \                           FRAUDULENT USE OF CREDIT CARD NUMBER    N\r\n21-1550.26
+        \                           RECEIVE CASH/PROP/W/STOLEN CREDIT CARD  N\r\n21-1550.27
+        \                           MAKE/POSSESS FALSE CREDIT CARD          N\r\n21-1550.28
+        \                           POSS OF CREDIT CARD BELONGING TO ANOTHERN\r\n21-1550.29
+        \                           USE OF FORGED/REVOKED/STOLEN CREDIT CARDN\r\n21-1550.30
+        \                           FAIL TO FURNISH GOODS REPORTED FURNISHEDN\r\n21-1550.31
+        \                           POSSESSING INCOMPLETE CREDIT CARD       N\r\n21-1550.32
+        \                           REC $, GOODS, SVCS BY FORGD/REVOKED CARDN\r\n21-1550.39
+        \                           USE OF DEVICE TO ACCESS CREDIT CARD     N\r\n21-1550.41
+        \                           MAKE/SELL/POSS/DISPLAY FALSE ID         N\r\n21-1550.A
+        \                            COMMIT FELONY W/FIREARM W/DEFACED ID NUMN\r\n21-1550.B
+        \                            ALTERATION OF FIREARM SERIAL NUMBER     N\r\n21-1561
+        \                              FORGERY OF WILLS, DEEDS, ETC.           N\r\n21-1562
+        \                              FORGERY OF PUBLIC SECURITIES            N\r\n21-1571
+        \                              FORGERY OF PUB/CORP SEALS               N\r\n21-1572
+        \                              FORGERY OF RECORDS                      N\r\n21-1573
+        \                              MAKING FALSE ENTRY IN RECORDS           N\r\n21-1574
+        \                              MAKING FALSE CERTIFICATE OF ACKNOWLEDGE N\r\n21-1575
+        \                              FALSE BANK NOTE PLATES                  N\r\n21-1577
+        \                              FORGERY 2ND - NOTES, CHECKS, BILLS, DRAFN\r\n21-1578
+        \                              POSSESSION OF FORGED EVIDENCES OF DEBT  N\r\n21-1579
+        \                              POSSESSION OF OTHER FORGED INSTRUMENTS  N\r\n21-1580
+        \                              ISSUING SPURIOUS CERTIFICATE OF STOCK   N\r\n21-1581
+        \                              REISSUING CANCELLED CERTIFICATE OF STOCKN\r\n21-1582
+        \                              FALSE EVIDENCES OF DEBT                 N\r\n21-1583
+        \                              COUNTERFEITING OF COIN                  N\r\n21-1584
+        \                              COUNTERFEITING OF COIN FOR EXPORTATION  N\r\n21-1585
+        \                              ALTERING/FORGING WRITTEN INSTRUMENTS    N\r\n21-1585.2
+        \                            ALTERING/FORGING WRITTEN INSTRUMENT     N\r\n21-1586
+        \                              MAKING FALSE ENTRIES IN PUBLIC BOOK     N\r\n21-1587
+        \                              FORGING TICKET OF PASSAGE               N\r\n21-1588
+        \                              FORGING POSTAGE STAMPS                  N\r\n21-1589
+        \                              FALSIFICATION OF CORPORATE RECORDS      N\r\n21-1590
+        \                              EMPLOYEE MAKING FALSE ENTRIES           N\r\n21-1591
+        \                              POSS COUNTERFEIT COIN W/INTENT TO CIRCULN\r\n21-1592
+        \                              UTTERING FORGED INSTRUMENTS             N\r\n21-1593
+        \                              FALSELY OBTAINING SIGNATURE             N\r\n21-1621(1)
+        \                           FORGERY FIRST DEGREE                    N\r\n21-1621(2)
+        \                           FORGERY SECOND DEGREE                   N\r\n21-1621(3)(B)
+        \                        FORGERY THIRD DEG ($1000-$1999)         N\r\n21-1621(3)(C)
+        \                        FORGERY THIRD DEG ($2000 OR MORE)       N\r\n21-1622
+        \                              UTTER SIGNATURE OF ANOTHER/SAME NAME    N\r\n21-1623
+        \                              FRAUD UTT ONE'S ENDORSEMENT AS ANOTHER  N\r\n21-1624
+        \                              ERASURE/ALTERATIONS W/INTENT TO DEFRAUD N\r\n21-1626
+        \                              SIGN FICTITIOUS NAME AS OFFICER OF CORP N\r\n21-1627
+        \                              FALSE ORDER DIRECTING PYMT OF MONEY     N\r\n21-1632
+        \                              FRAUD IN PROCUR ORGAN OF STOCK COMPANY  N\r\n21-1635
+        \                              DESTROYING OR FALSIFYING BOOKS          N\r\n21-1662
+        \                              FRAUD ON INSURANCE COMPANY              N\r\n21-1663
+        \                              WORK COMPENSATION FRAUD                 N\r\n21-1671
+        \                              FRAUDULENT CONVEYANCE                   N\r\n21-1672
+        \                              FRAUDULENT REMOVAL OF PROPERTY          N\r\n21-1681
+        \                              WILLFULLY POISONING ANIMAL              N\r\n21-1682
+        \                              INSTIGATING FIGHTS BETWEEN ANIMALS      N\r\n21-1683
+        \                              KEEPING PLACE FOR FIGHTING ANIMALS      N\r\n21-1685
+        \                              CRUELTY TO ANIMALS                      N\r\n21-1686
+        \                              ABANDONMENT OF INFIRM ANIMAL            N\r\n21-1689
+        \                              UNJUSTIFIABLY ADMINISTER POISON TO ANIMAN\r\n21-1691
+        \                              ABANDONMENT OF DOMESTIC ANIMAL ON ROAD  N\r\n21-1692.5
+        \                            OWN/POSS/KEEP/TRAIN BIRD FOR FIGHTING   N\r\n21-1694
+        \                              INSTIGATING OR ENCOURAGING DOGFIGHT     N\r\n21-1695
+        \                              KEEP PLACE, EQUIP, FAC FOR DOG FIGHTING N\r\n21-1696
+        \                              SERVICING OR FACILITATING A DOGFIGHT    N\r\n21-1697
+        \                              OWN, POSSESS, KEEP, OR TRAIN DOG FOR FIGN\r\n21-1698
+        \                              ATTENDING A DOGFIGHT                    N\r\n21-1701
+        \                              LARCENY                                 N\r\n21-1702
+        \                              LARCENY OF LOST PROPERTY                N\r\n21-1704
+        \                              GRAND AND PETIT LARCENY DEFINED         N\r\n21-1705
+        \                              GRAND LARCENY                           N\r\n21-1706
+        \                              PETIT LARCENY                           N\r\n21-1707
+        \                              GRAND LARCENY IN HOUSE OR VESSEL        N\r\n21-1708
+        \                              GRAND LARCENY FROM PERSON AT NIGHT      N\r\n21-1709
+        \                              LARCENY OF WRITTEN INSTRUMENT           N\r\n21-1712
+        \                              LARCENY OF SEVERED FIXTURE              N\r\n21-1713
+        \                              REC/POSS/CONC STOLEN PROPERTY           N\r\n21-1713.1
+        \                            REC/PURCH STOLEN FARM/CONSTR EQUIP      N\r\n21-1714
+        \                              FRAUDULENT CONSUMPTION OF GAS           N\r\n21-1715
+        \                              TRANSPORTING STOLEN PROPERTY INTO STATE N\r\n21-1716
+        \                              LARCENY OF DOMESTIC ANIMALS             N\r\n21-1718
+        \                              LARCENY OF DOGS                         N\r\n21-1719
+        \                              LARCENY OF DOMESTIC FOWL                N\r\n21-1719.1
+        \                            LARCENY OF DOMESTICATED FISH OR GAME    N\r\n21-1720
+        \                              LARCENY - AUTO AIRCRAFT OR OTHER MOTOR VN\r\n21-1721
+        \                              TAPPING OIL/GAS TANK/PIPELINE           N\r\n21-1722
+        \                              TAKING OIL/GAS/GASOLINE OR OIL FIELD EQUN\r\n21-1723
+        \                              LARCENY FROM THE HOUSE                  N\r\n21-1726
+        \                              POSSESSION OF MERCURY                   N\r\n21-1727
+        \                              ENTERING W/INTENT TO STEAL COPPER       N\r\n21-1728
+        \                              REC/POSS/TRANSP STOLEN COPPER           N\r\n21-173
+        \                               ACCESSORY                               N\r\n21-1730
+        \                              LARCENY - CUMULATIVE                    N\r\n21-1731
+        \                              LARCENY OF MERCH FROM RETAILER          N\r\n21-1732
+        \                              LARCENY OF TRADE SECRETS                N\r\n21-1737
+        \                              LARCENY OF CABLE TV SERVICES            N\r\n21-1739
+        \                              LIBRARY THEFT                           N\r\n21-1740
+        \                              LARCENY OF SERVICE STATION GASOLINE-PUMPN\r\n21-1740.2
+        \                            LARCENY - PORCH PIRACY                  N\r\n21-175
+        \                               ACCESSORY TO FELONY - MURDER            N\r\n21-1751
+        \                              INJURY TO/OBSTRUCTION OF RAILROAD       N\r\n21-1752
+        \                              DEATH FROM DISPLACE OF RAILROAD EQUIPMENN\r\n21-1752.1B
+        \                           TRESPASS UPON RAILROAD PROPERTY         N\r\n21-1753
+        \                              INJURY TO HIGHWAY                       N\r\n21-1753.3
+        \                            THROWING LIT SUBSTANCES/LITTER ON HWY   N\r\n21-1753.8
+        \                            DEFACE/STEAL/POSSESS ROAD/MARKER        N\r\n21-1754
+        \                              OBSTRUCTING PUBLIC ROAD                 N\r\n21-1755
+        \                              INJURE/DESTROY TURNPIKE GATE            N\r\n21-1757
+        \                              REMOVE/INJURE/OBSTRUCT TELEPHONE LINES  N\r\n21-1758
+        \                              INTERFERING W/DITCH CANAL, WATER LINE   N\r\n21-1760
+        \                              MALICIOUS INJURY/DESTRUCTION OF PROPERTYN\r\n21-1760.A.2
+        \                          MALICIOUS INJURY TO PROPERTY - OVER $250N\r\n21-1761.1
+        \                            DUMPING TRASH ON PUBLIC/PRIVATE PROPERTYN\r\n21-1765
+        \                              INJURING CHURCH OR CONTENTS             N\r\n21-1767.1
+        \                            POSS/USE/MFG OR TEL THREAT OF INCENDIARYY\r\n21-1767.1T
+        \                           POS/USE/MFG OR TEL THRT INCNDRY (85 PCT)Y\r\n21-1768
+        \                              MALICIOUS INJURY TO FREEHOLD            N\r\n21-1770
+        \                              INJURY TO STANDING CROP                 N\r\n21-1771
+        \                              INJURY TO FRUIT/MELONS/FLOWERS - DAYTIMEN\r\n21-1772
+        \                              INJURY TO FRUIT/MELONS/FLOWERS - NIGHT TN\r\n21-1773
+        \                              INJURING FRUIT OR ORNAMENTAL TREES      N\r\n21-1774
+        \                              REMOVING/ALTERING LANDMARKS             N\r\n21-1777
+        \                              REMOVING OR INJURING PILES              N\r\n21-1778
+        \                              REMOVE/ALTER TRAIN SIGNAL LIGHT         N\r\n21-1779
+        \                              INJ WRITTEN INST-FALSE MAKE OF IS FORG  N\r\n21-1781
+        \                              OPENING AND READING LETTERS OF ANOTHER  N\r\n21-1784
+        \                              INJURING ORNAMENTAL IMPROVEMENTS        N\r\n21-1785
+        \                              INJURING WKS OF LIT/ART IN PUBLIC PLACESN\r\n21-1786
+        \                              INJURING PIPES OR WIRES                 N\r\n21-1787
+        \                              JOY RIDE/MOLEST, INJURE, LOITER MOTOR VEN\r\n21-1831
+        \                              TAKING/INJURING SAW LOGS                N\r\n21-1834
+        \                              REMOVAL/DESTRUCTION MORTGAGED PROPERTY  N\r\n21-1835
+        \                              TRESPASSING AFTER BEING FORBIDDEN       N\r\n21-1837
+        \                              PLACE HARD/SOLID SUBSTANCES IN GRAIN    N\r\n21-1838
+        \                              UNAUTHORIZED USE OF UTILITY POLE        N\r\n21-1841
+        \                              DEFACE SERIAL NUMBER ON FARM MACHINERY  N\r\n21-1849
+        \                              USE OF SPURIOUS COIN TO OPERATE MACHINE N\r\n21-1851
+        \                              FALSE REPORT OF A FIRE                  N\r\n21-1861
+        \                              UNLAWFUL TELEPHONE SOLICITATION         N\r\n21-1866
+        \                              UNAUTH. REPROD. OF RECORDINGS FOR SALE  N\r\n21-1872
+        \                              POSS UNLAWFUL COMMUNICATION DEVICE      N\r\n21-1903
+        \                              BUS HIJACKING                           Y\r\n21-1903.A
+        \                            BUS HIJACKING FORCE-INC. ATTEMPT        Y\r\n21-1903.B
+        \                            BUS HIJACKING BY THREAT/A&B             Y\r\n21-1903.C
+        \                            BUS HIJACKING W/WEAPON                  Y\r\n21-1903.D
+        \                            BOARDING BUS W/DEADLY/DANGEROUS WEAPON  N\r\n21-1903.E
+        \                            DISCHARGE FIREARM AT/INTO/WITHIN BUS    Y\r\n21-1904
+        \                              REMOVAL OF CARGO FROM BUS W/O AUTHORITY N\r\n21-1951
+        \                              COMPUTER CRIMES                         N\r\n21-1953
+        \                              COMPUTER FRAUD                          N\r\n21-1953.2
+        \                            UNLAWFUL USE OF COMPUTER TO OBTAIN MONEYN\r\n21-1958
+        \                              USE OF COMPUTER TO COMMIT CRIME         N\r\n21-1977
+        \                              UNLAWFUL SALE/REPRODUCED SOUND RECORDINGN\r\n21-1979
+        \                              UNLAW/SALE/RENT/REPRO/SOUND/VIDEO RECORDN\r\n21-1980
+        \                              UNAUTH. REPROD. OF RECORDINGS FOR SALE  N\r\n21-1990.2
+        \                            VIOL. TRADEMARK ANT-COUNTERFEITING ACT  N\r\n21-1993
+        \                              TAMPER W/SURVEILLANCE EQUIP TO COM CRIMEN\r\n21-2001.B
+        \                            GIVE/SELL ITEM OF VALUE FOR USE IN CRIMEN\r\n21-22
+        \                                OUTRAGING PUBLIC DECENCY                N\r\n21-241
+        \                               REPEALED BY LAW 1961                    N\r\n21-264
+        \                               IMPERSONATING POLICE OFFICER            N\r\n21-265
+        \                               OFFERING BRIBE TO EXECUTIVE OFFICER     N\r\n21-266
+        \                               ASKING OR RECEIVING BRIBES              N\r\n21-267
+        \                               INTERFERING WITH AN OFFICER             N\r\n21-268
+        \                               RESISTING EXECUTIVE OFFICER             N\r\n21-269
+        \                               ASKING/RECEIVING REWARD FOR OFFICIAL ACTN\r\n21-270
+        \                               OFFICER RECEIVING REWARD FOR INACTION   N\r\n21-28
+        \                                AIDING IN A MISDEMEANOR                 N\r\n21-301
+        \                               PREVENTING MEETING OF LEGISLATURE       N\r\n21-303
+        \                               COMPELLING ADJOURNMENT OF LEGISLATURE   N\r\n21-305
+        \                               COMPEL LEGISLATURE TO PERFORM/OMIT ACT  N\r\n21-306
+        \                               ALTERING DRAFT BILL                     N\r\n21-307
+        \                               ALTERING ENGROSSED COPY OF BILL         N\r\n21-308
+        \                               BRIBERY OF OR INFLUENCING LEGISLATIVE   N\r\n21-309
+        \                               SOLICITING BRIBES-TRADING VOTES         N\r\n21-318
+        \                               BRIBERY OF STATE LEGISLATOR             N\r\n21-321
+        \                               MEMBER LEG. SOL/SCREEN EMPLOY W/ST./INSTN\r\n21-341
+        \                               EMBEZZLEMENT OF OFFICER                 N\r\n21-343
+        \                               VIOLATION OF OFFICIAL CONDUCT           N\r\n21-344
+        \                               FRAUD BY OFFICER IN SALE/LEASE/CONTRACT N\r\n21-345
+        \                               REFUSAL BY OFFICER TO PERFORM DUTIES    N\r\n21-349
+        \                               INJURING OR BURNING PUBLIC BUILDING     Y\r\n21-350
+        \                               SEIZING MILITARY STORES                 N\r\n21-351
+        \                               FALSE STATEMENT REGARDING TAXES         N\r\n21-355
+        \                               FURNISHING PUBLIC SUPPLIES FOR PROFIT   N\r\n21-358
+        \                               FALSE CLAIMS AGAINST STATE              N\r\n21-372
+        \                               MULTILATE/TREAT S/INDIGNITY/DESTROY FLAGN\r\n21-374
+        \                               DISPLAYING RED FLAG OF DISLOYALITY      N\r\n21-380
+        \                               BRIBERY OF FIDUCIARY                    N\r\n21-381
+        \                               BRIBING/ATTEMPTING TO BRIBE AN OFFICER  N\r\n21-382
+        \                               OFFICER ACCEPTING A BRIBE               N\r\n21-383
+        \                               BRIBING JURORS OR REFEREES              N\r\n21-384
+        \                               RECEIVING BRIBES BY JUROR OR REFEREE    N\r\n21-388
+        \                               JURY TAMPERING                          N\r\n21-399
+        \                               ATH.CONTEST-BRIBE PARTICIPANTS, OFF, ETCN\r\n21-400
+        \                               ACCEPTING BRIBE IN ATHLETIC CONTEST     N\r\n21-42
+        \                                ATTEMPT TO COMMIT CRIME                 N\r\n21-421
+        \                               CONSPIRACY                              N\r\n21-422
+        \                               CONSPIRACY OUT/STATE AGAINST PEACE OF STN\r\n21-424
+        \                               CONSPIRACY AGAINST STATE OR SUBDIVISION N\r\n21-425
+        \                               PATTERN OF CRIMINAL OFFENSES            N\r\n21-434
+        \                               ATTEMPT TO ESCAPE FROM PENITENTIARY     N\r\n21-435
+        \                               ESCAPE FROM JAIL                        N\r\n21-436
+        \                               ATTEMPT TO ESCAPE FROM JAIL             N\r\n21-437
+        \                               ASSISTING PRISONER TO ESCAPE            N\r\n21-438
+        \                               CARRY INTO PRISON THINGS TO AID ESCAPE  N\r\n21-439
+        \                               CONCEALING ESCAPED PRISONER             N\r\n21-440
+        \                               HARBORING FUGITIVE                      N\r\n21-441
+        \                               ASST ESCAPE FROM OFFICER                N\r\n21-443
+        \                               ESCAPE FROM CONFINEMENT                 N\r\n21-444
+        \                               ESCAPE AFTER LAWFUL ARREST              N\r\n21-445
+        \                               UNAUTHORIZED ENTRY INTO JAIL/PRISON     N\r\n21-446
+        \                               TRANSPORT/MOVE/CONCEAL ILLEGAL ALIEN    N\r\n21-451
+        \                               OFFERING FALSE EVIDENCE                 N\r\n21-452
+        \                               DECEIVING WITNESS                       N\r\n21-453
+        \                               PREPARING FALSE EVIDENCE                N\r\n21-454
+        \                               DESTROYING EVIDENCE                     N\r\n21-455
+        \                               PREVENTING WITNESS FROM ATTENDING COURT N\r\n21-456
+        \                               BRIBING WITNESS/SUBORNATION OF PERJURY  N\r\n21-461
+        \                               LARCENY/DESTRUCT OF RECORDS BY OFFICER  N\r\n21-462
+        \                               LARCENY/DESTRUCTION OF RECORDS BY OTHER N\r\n21-463
+        \                               OFFERING FORGED/FALSE INSTRUMENT FOR RECN\r\n21-464
+        \                               FORGING NAME TO PETITION                N\r\n21-485
+        \                               NEPOTISM                                N\r\n21-491
+        \                               PERJURY                                 N\r\n21-496
+        \                               CONTRADICTORY STATEMENTS AS PERJURY     N\r\n21-499
+        \                               PERJURY                                 N\r\n21-504
+        \                               PERJURY BY SUBORNATION                  N\r\n21-51
+        \                                SECOND AND SUBSEQUENT OFFENSES          N\r\n21-51.3
+        \                              PETIT LARCENY AFCF                      N\r\n21-521
+        \                               RESCUING PRISONERS                      N\r\n21-522
+        \                               TAKING GOODS FROM LEGAL CUSTODY         N\r\n21-531
+        \                               FALSIFY PUBLIC RECORD                   N\r\n21-532
+        \                               ALLOWING PRISONER TO ESCAPE             N\r\n21-535
+        \                               ARREST W/O PROPER AUTHORITY             N\r\n21-536
+        \                               MISCONDUCT IN EXECUTING SEARCH WARRANT  N\r\n21-537
+        \                               REFUSING TO AID OFFICER                 N\r\n21-539
+        \                               RESIST EXEC OF PROCESS/INSURRECTION     N\r\n21-540
+        \                               OBSTRUCTING OFFICER                     N\r\n21-540A
+        \                              ELUDING POLICE OFFICER                  N\r\n21-540A.C
+        \                            CAUSE GREAT BODILY HARM WHILE ELUDING PON\r\n21-540AX
+        \                             ELUDING PO (NO EC'S, DEATH OF LE OFFICERN\r\n21-540B
+        \                              RUNNING A ROADBLOCK                     N\r\n21-543
+        \                               COMPOUNDING A CRIME                     N\r\n21-544
+        \                               COMPOUNDING PROSECUTION                 N\r\n21-545
+        \                               ATTEMPTING TO INTIMIDATE AN OFFICER     N\r\n21-546
+        \                               SUPPRESSING EVIDENCE                    N\r\n21-565
+        \                               CONTEMPT OF COURT                       N\r\n21-567A
+        \                              VIOLATION CHILD CUSTODY ORDER           N\r\n21-573
+        \                               FRAUDULENT CONCEALMENT OF PROPERTY      N\r\n21-578
+        \                               INHERIT BY FRAUD PRODUCTION OF INFANT   N\r\n21-579
+        \                               SUBSTITUTING CHILD                      N\r\n21-580
+        \                               PUBLIC OFFICIAL NEGLECTING DUTY         N\r\n21-581
+        \                               OMISSION OF DUTY BY PUBLIC OFFICIAL     N\r\n21-587
+        \                               FALSE CERTIFICATE BY PUBLIC OFFICER     N\r\n21-589
+        \                               FALSE REPORTING OF CRIME                N\r\n21-641
+        \                               ASSAULT                                 Y\r\n21-642
+        \                               BATTERY                                 N\r\n21-644.1
+        \                             DOMESTIC ABUSE AFC2+F                   Y\r\n21-644.D1
+        \                            DOM A&B W/DANG WEAPON                   Y\r\n21-644.D2
+        \                            DOM A&B W/DEADLY WEAPON                 Y\r\n21-644.E
+        \                             DOM A&B AGAINST PREG WOMAN              Y\r\n21-644.F
+        \                             DOM A&B W/GREAT BODILY INJ              Y\r\n21-644.G
+        \                             DOM ABUSE IN PRESENCE OF CHILD          Y\r\n21-644.J
+        \                             DOMESTIC ABUSE BY STRANGULATION         Y\r\n21-644V1
+        \                             DOMESTIC ASSAULT AND BATTERY            N\r\n21-644V1.C
+        \                           DOMESTIC ABUSE                          N\r\n21-645
+        \                               ASSAULT &/OR BATTERY W/DANGEROUS WEAPON Y\r\n21-646
+        \                               AGGRAVATED ASSAULT AND BATTERY          Y\r\n21-646.B
+        \                             AGGRAVATED ASSAULT AND BATTERY          N\r\n21-649
+        \                               ASSAULT AND BATTERY ON A POLICE OFFICER N\r\n21-649.1
+        \                             MISTREATING POLICE DOG                  N\r\n21-649.2
+        \                             KILLING POLICE DOG OR HORSE             N\r\n21-650
+        \                               AGG A&B ON POLICE OFFICER               Y\r\n21-650.1
+        \                             ASSAULT AND BATTERY ON REFEREE ETC      N\r\n21-650.11
+        \                            MEDICAL BATTERY                         N\r\n21-650.2B
+        \                            A&B ON PRIVATE PRISON CONTRACTOR EMPL   N\r\n21-650.2C
+        \                            AGG A&B ON HUMAN SERVICES EMPLOYEE      N\r\n21-650.2V1
+        \                           A&B ON CORRECTIONS EMPLOYEE             N\r\n21-650.3
+        \                             INTERFERE W/EMERGENCY MEDICAL TECHNICIANN\r\n21-650.4
+        \                             ASSAULT &/OR BATT ON EMERGENCY MED TECH Y\r\n21-650.5
+        \                             AGG A&B ON EMERGENCY MEDICAL TECHNICIAN N\r\n21-650.6.A
+        \                           ASSAULT ON WITNESS/JUROR/COURT WORKER   N\r\n21-650.6.B
+        \                           A&B ON WITNESS/JUROR/COURT WORKER       N\r\n21-650.7
+        \                             ASSAULT AND/OR BATT ON SCHOOL EMPLOYEE/SN\r\n21-650.7C
+        \                            AGG A&B ON SCHOOL EMPLOYEE              N\r\n21-650.8
+        \                             A&B ON OFFICE OF JUV AFFAIRS EMPLOYEE   N\r\n21-650.9
+        \                             PRISONER PLACING BODY FLUID ON GOV'T EMPN\r\n21-651
+        \                               ATTEMPT TO KILL BY POISON               Y\r\n21-651T
+        \                              POISONING W/INT TO KILL (85PCT 7/1/01)  Y\r\n21-652
+        \                               ASSAULT &/OR BATTERY W/DEADLY WEAPON    Y\r\n21-652.A
+        \                             SHOOTING WITH INTENT TO KILL            Y\r\n21-652.B
+        \                             USE OF VEHICLE IN DISCHARGE OF WEAPON   Y\r\n21-652.BT
+        \                            USE/VEHICLE IN DISCH OF WEAP(85% 7/1/01)Y\r\n21-652.C
+        \                             A AND B W/DEADLY WEAPON (85 Percent)    Y\r\n21-652T
+        \                              SHOOTING W/INT TO KILL(85PCT 7/1/01)    Y\r\n21-653
+        \                               ASSAULT WITH INTENT TO KILL             Y\r\n21-653T
+        \                              ASSAULT W/INT TO KILL (85PCT 7/1/01)    Y\r\n21-662
+        \                               DUELING                                 N\r\n21-681
+        \                               ASSAULT W/INTENT TO COMMIT A FELONY     Y\r\n21-681.4
+        \                             ASSAULT WITH INTENT COM SEX OFFENSE     Y\r\n21-701.16
+        \                            SOLICITING FOR MURDER FIRST DEGREE      Y\r\n21-701.7
+        \                             MURDER FIRST DEGREE                     Y\r\n21-701.7T
+        \                            MURDER FIRST DEGREE (85 PERCENT)        Y\r\n21-701.8
+        \                             MURDER SECOND DEGREE                    Y\r\n21-701.8T
+        \                            MURDER SECOND DEGREE(85PCT 7/1/01)      Y\r\n21-701.8X
+        \                            MURDER II (NO EC'S, DEATH OF LE OFFICER)Y\r\n21-711
+        \                               MANSLAUGHTER FIRST DEGREE               Y\r\n21-711T
+        \                              MANSLAUGHTER FIRST DEGREE (85PCT 7/1/01)Y\r\n21-712
+        \                               MANSLAUGHTER FIRST DEGREE - INTOX. DR.  Y\r\n21-713
+        \                               KILLING QUICK UNBORN CHILD/MANSLTR. I DEY\r\n21-714
+        \                               PROCURE DESTRUCT-UNBORN CHILD-MANSLTR. IY\r\n21-716
+        \                               MANSLAUGHTER SECOND DEGREE              Y\r\n21-717
+        \                               OWNER OF KILLER ANIMAL - MANSLTR. II DEGY\r\n21-741
+        \                               KIDNAPPING                              Y\r\n21-741S
+        \                              KIDNAPPING INVOLVING SEX CRIME          Y\r\n21-745
+        \                               KIDNAPPING FOR EXTORTION                Y\r\n21-748
+        \                               HUMAN TRAFFICKING                       Y\r\n21-748T
+        \                              HUMAN TRAFFICKING (85%)                 Y\r\n21-748TS
+        \                             HUMAN TRAFFICKING (INVOL SEX) (85%)     Y\r\n21-751
+        \                               MAIMING                                 Y\r\n21-752
+        \                               MAIMING ONESELF                         Y\r\n21-759
+        \                               MAIMING                                 Y\r\n21-773
+        \                               LIBEL                                   N\r\n21-779
+        \                               IMPUTING UNCHASTITY TO FEMALE           N\r\n21-781
+        \                               SLANDER                                 N\r\n21-791
+        \                               ROBBERY                                 Y\r\n21-797
+        \                               ROBBERY                                 Y\r\n21-797T
+        \                              ROBBERY FIRST DEGREE (85PCT 7/1/01)     Y\r\n21-798
+        \                               ROBBERY, FIRST DEGREE                   Y\r\n21-799
+        \                               ROBBERY SECOND DEGREE                   Y\r\n21-800
+        \                               CONJOINT ROBBERY                        Y\r\n21-800T
+        \                              COJOINT ROBBERY (85PCT 7/1/01)          Y\r\n21-801
+        \                               ROBBERY/ATT W/DANG WEAP(3RD CONVICTION) Y\r\n21-801.A
+        \                             ROBBERY OR ATTEMPTED W/DANGEROUS WEAPON Y\r\n21-801.T
+        \                             ROBBERY OR ATT. W/DANG WEAPON (85 PCT)  Y\r\n21-812
+        \                               ATTEMPTED SUICIDE (REPEALED 1976)       N\r\n21-813
+        \                               AIDING SUICIDE                          N\r\n21-814
+        \                               FURNISHING WEAPON OR DRUG IN SUICIDE    N\r\n21-815
+        \                               AID IN ATTEMPTED SUICIDE                N\r\n21-817
+        \                               AIDING SUICIDE (VALID PRIOR TO 1/1/83)  N\r\n21-832
+        \                               POISONING FOOD/WATER SUPPLY             N\r\n21-837
+        \                               INTIMIDATING LABORERS                   N\r\n21-842
+        \                               UNLAWFUL TATTOOING/OR OFFERING          N\r\n21-843.1
+        \                             CARETAKER ABUSE/FINANCIAL EXPLOITATION  Y\r\n21-843.1B
+        \                            CARETAKER  ABUSE (85% 6/5/2001)         Y\r\n21-843.1B2
+        \                           CARETAKER SEXUAL ABUSE (85% 6/2/2008)   Y\r\n21-843.1V1A
+        \                          CARETAKER SEXUAL ABUSE OR SEXUAL EXPLOITY\r\n21-843.3
+        \                             ABUSE/NEGLECT OF VULNERABLE ADULT       Y\r\n21-843.3T
+        \                            ABUSE VULNERABLE ADULT/NURSING FAC (85%)Y\r\n21-843.4
+        \                             FINANCIAL EXPLOITATION OF ELDERLY ADULT N\r\n21-843.5
+        \                             CHILD ABUSE (85%)                       Y\r\n21-843.5(C)
+        \                          CHILD NEGLECT (85%)                     N\r\n21-843.5(C)S
+        \                         CHILD NEGLECT (INVOLVING SEX) (85%)     N\r\n21-843.5(D)
+        \                          ENABLING/PERMIT CHILD NEGLECT (85%)     N\r\n21-843.5S
+        \                            CHILD ABUSE (INV SEX ABUSE) (85%)       Y\r\n21-849
+        \                               BOOBY-TRAPPING CAR OR STRUCTURE         Y\r\n21-850
+        \                               RACIAL/ETHNIC/RELIGIOUS HARASSMENT      N\r\n21-851
+        \                               DESERTION OF CHILDREN UNDER 10          N\r\n21-852
+        \                               OMITTING TO PROVIDE FOR A CHILD         N\r\n21-852.1
+        \                             CHILD ENDANGERMENT                      N\r\n21-853
+        \                               DESERTION OF WIFE AND CHILD UNDER 15    N\r\n21-856
+        \                               CONTRIBUTING TO DELINQUENCY OF MINORS   N\r\n21-856.1
+        \                             CAUSE/AID/ABET MINOR IN DRUG CRIME      N\r\n21-856.3
+        \                             GANG RELATED OFFENSE                    N\r\n21-856.C
+        \                             Cause/Encourage Minor to Commit a FelonyN\r\n21-856.D
+        \                             RECRUIT MINOR INTO CRIMINAL STREET GANG N\r\n21-858.1
+        \                             AID/ABET MINOR IN NEED OF SUPERVISION   N\r\n21-858.2
+        \                             FAILURE TO GIVE PARENTAL CARE/CT ORDEREDN\r\n21-861
+        \                               PROCURING AN ABORTION                   N\r\n21-863
+        \                               CONCEALING STILLBIRTH OR DEATH OF CHILD N\r\n21-866
+        \                               TRAFFICKING IN CHILDREN                 Y\r\n21-871
+        \                               ADULTERY                                N\r\n21-881
+        \                               BIGAMY                                  N\r\n21-884
+        \                               PERSON KNOWINGLY MARRYING A BIGAMIST    N\r\n21-885
+        \                               INCEST                                  N\r\n21-886
+        \                               CRIME AGAINST NATURE/SODOMY             N\r\n21-888
+        \                               FORCIBLE SODOMY                         Y\r\n21-888.T
+        \                             FORCIBLE SODOMY (85 PCT)                Y\r\n21-891
+        \                               CHILD STEALING                          N\r\n21-891S
+        \                              CHILD STEALING INVOLVING SEX            N\r\n21-901
+        \                               BLASPHEMY                               N\r\n21-904
+        \                               PROFANE SWEARING                        N\r\n21-906
+        \                               OBSCENE LANGUAGE                        N\r\n21-915
+        \                               DISTURBING RELIGIOUS MEETING            N\r\n21-931
+        \                               FORTUNE TELLING FOR FEE                 N\r\n21-941
+        \                               CONDUCTING GAMBLING GAME                N\r\n21-942
+        \                               COMMON GAMBLING                         N\r\n21-944
+        \                               OPERATING/PERMITTING SLOT MACHINE       N\r\n21-945
+        \                               UNLAWFUL USE OF BUILDING FOR GAMBLING   N\r\n21-946
+        \                               USE OF BUILDING FOR GAMBLING            N\r\n21-947
+        \                               ALLOW GAME OF CHANCE AT PLACE OF BUSINESN\r\n21-948
+        \                               OFFICER ENGAGING IN/ENCOURAGING GAMBLINGN\r\n21-950
+        \                               OFF. RECG. CONSID.F/PROTECT FROM ARR/CONN\r\n21-954
+        \                               CONFIDENCE GAME BY CARDS                N\r\n21-956
+        \                               PERMITTING GAMBLING                     N\r\n21-969
+        \                               POSS/SALE/LEASE SLOT MACHINE/PUNCH CARDSN\r\n21-970
+        \                               SETUP COIN OPERATED AMUSEMENT MACH. NEARN\r\n21-971
+        \                               ENGAGING IN PUNCH BOARD OPERATION       N\r\n21-982
+        \                               COMMERCIAL GAMBLING                     N\r\n21-983
+        \                               PERMIT COMMERCIAL GAMBLING ON PREMISES  N\r\n21-984
+        \                               DEALING IN GAMBLING DEVICES             N\r\n21-985
+        \                               POSSESSION OF A GAMBLING DEVICE         N\r\n21-986
+        \                               INSTALL COMMUNICATIONS FOR GAMBLERS     N\r\n21-987
+        \                               DISSEMINATING GAMBLING INFORMATION      N\r\n21-988
+        \                               CONSPIRACY TO VIOLATE GAMBLING STATUTES N\r\n21-991
+        \                               BETTING ON RACES                        N\r\n21-995.15
+        \                            UNLAWFUL BINGO GAME OPERATION           N\r\n22-1110
+        \                              BAIL JUMPING                            N\r\n22-1141.13
+        \                           FUGITIVE FROM JUSTICE - JUDGE'S WARRANT N\r\n22-1141.14
+        \                           FUGITIVE FROM JUSTICE - WITHOUT WARRANT N\r\n22-1263
+        \                              DISPOSAL OF SEIZED LIQUOR BY OFFICER    N\r\n22-1403
+        \                              RACKETEERING                            N\r\n22-60.6
+        \                              PROTECTIVE ORDER VIOLATION              N\r\n22-606
+        \                               VIOLATION OF PROTECTION ORDER           N\r\n22-719
+        \                               MATERIAL WITNESS                        N\r\n24-17
+        \                                DEBT POOLING                            N\r\n25-314
+        \                               OPEN MEETING ACT VIOLATION              N\r\n26-16-102
+        \                            VOTING ILLEGALLY                        N\r\n26-16-103
+        \                            FALSE AFFIDAVIT IN VOTING REGISTRATION  N\r\n26-16-104
+        \                            FALSE NOTARIZATION OF ABSENTEE BALLOT   N\r\n26-16-105
+        \                            PERPETRATE FRAUD/THEFT TO AFFECT ELECTION\r\n26-16-107
+        \                            OFFER BRIBE TO WITHDRAW AS CANDIDATE    N\r\n26-16-113
+        \                            INTERFERENCE W/VOTER OR VOTING          N\r\n26-16-119
+        \                            USE OF PUBLIC FUNDS TO INFLUENCE VOTERS N\r\n26-9-118
+        \                             INTERFERING WITH VOTING MACHINE         N\r\n27A-2-10-602
+        \                         UNLAWFUL COLLECTION/DISPOSAL WASTE TIRESN\r\n27A-2-5-116
+        \                          VIOLATION OF CLEAN AIR ACT              N\r\n27A-2-6-206
+        \                          POLLUTING/DAMAGING WATER SUPPLY         N\r\n29-1001
+        \                              ILLEGAL USE OF MECHANICAL FISHING DEVICEN\r\n29-1002
+        \                              FISHING/HUNTING BY HABITUAL WILDLIFE VION\r\n29-3-201.D
+        \                           FAIL TO OBEY GAME WARDEN                N\r\n29-4-101
+        \                             FISHING W/O LICENSE ON PERSON           N\r\n29-4-103
+        \                             COMMERCIAL FISHING W/O LICENSE          N\r\n29-4-107
+        \                             BREEDING/RAISING WILDLIFE W/O LICENSE   N\r\n29-4-110
+        \                             FISHING W/O A LICENSE                   N\r\n29-4-112
+        \                             HUNTING WITHOUT LICENSE                 N\r\n29-4-116
+        \                             ILLEGALLY SEINE/TRAP/TRANSPORT/SALE MINNN\r\n29-4-119
+        \                             TRAPPING W/O LICENSE                    N\r\n29-4-121
+        \                             BREEDING WILDLIFE W/O PERMIT            N\r\n29-4-130
+        \                             HUNTING WATERFOWL W/O STAMP             N\r\n29-4-201
+        \                             LICENSE AGENT FAILING TO REMIT RECEIPTS N\r\n29-4-202
+        \                             VIOLATION OF LICENSING AGENT LAW        N\r\n29-5-102
+        \                             FAILURE TO TAG HUNTED ANIMAL AFTER KILL N\r\n29-5-201
+        \                             ILLEGAL MEANS OF TAKING WILDLIFE        N\r\n29-5-202
+        \                             FISHING OR HUNTING UPON LAND OF ANOTHER N\r\n29-5-203
+        \                             HUNTING FROM MOTOR VEHICLE/HEAD LIGHTINGN\r\n29-5-204
+        \                             SHOOT FROM HIGHWAY/RR/NEAR PUBLIC BLDG  N\r\n29-5-205
+        \                             IMPROPER DRESS FOR DEER/ELK HUNTING     N\r\n29-5-212
+        \                             OBSTRUCTING HUNTING, FISHING, OR TRAPPINN\r\n29-5-401
+        \                             GAME SEASONS & BAG LIMITS               N\r\n29-5-405
+        \                             ILLEGAL POSSESSION OF FUR BEARING ANIMALN\r\n29-5-406
+        \                             VIOLATION OF MIGRATORY BIRD LAWS        N\r\n29-5-407
+        \                             ILLEGALLY HUNTING QUAIL                 N\r\n29-5-409
+        \                             HUNTING SQUIRRELS OUT OF SEASON         N\r\n29-5-410
+        \                             MOLEST/INJUR/KILL HAWK/FALCON/OWL/EAGLE N\r\n29-5-411
+        \                             POSSESSION OF ILLEGAL GAME/SALE OF GAME N\r\n29-5-501
+        \                             TRAPPING W/O WRITTEN PERMISSION         N\r\n29-5-502
+        \                             UNLAWFUL USE OF TRAPS                   N\r\n29-5-504
+        \                             UNLAWFUL DEALING IN FURS                N\r\n29-6-201
+        \                             ILLEGAL COMMERCIAL FISHING              N\r\n29-6-301
+        \                             ILLEGALLY TAKING FISH                   N\r\n29-6-302
+        \                             ILLEGALLY TAKING GAME FISH              N\r\n29-6-303
+        \                             ILLEGALLY TAKING NON-GAME FISH          N\r\n29-6-304
+        \                             FISHING W/O PERMISSION                  N\r\n29-6-401
+        \                             ILLEGAL DEALING IN MINNOWS              N\r\n29-6-502
+        \                             FISHING IN AREA CLOSED BY WILDLIFE COMM N\r\n29-7-101
+        \                             ENTERING INTO SAFETY ZONE OF DAM        N\r\n29-7-203
+        \                             AIDING/ABETTING VIOLATION GAME/FISH LAWSN\r\n29-7-205
+        \                             WANTON WASTE OF GAME ANIMAL             N\r\n29-7-304
+        \                             ENTERING FED/STATE GAME REFUGE W GUN/DOGN\r\n29-7-401
+        \                             DEPOSIT NOXIOUS MATERIAL IN STATE STREAMN\r\n29-7-502
+        \                             UNLAWFUL POSSESSION OF WILDLIFE         N\r\n29-7-503
+        \                             UNLAWFUL SALE OF WILDLIFE               N\r\n29-7-602
+        \                             ILLEGAL TRANSPORTATION OF WILDLIFE      N\r\n29-8-104
+        \                             VIOLATION OF WILDLIFE COMM RULE/REG     N\r\n34-23
+        \                                INITIATIVE PETITION FRAUD               N\r\n36-1204.12
+        \                           FRAUDULENT STATEMENT/INSURANCE APPLICATIN\r\n36-1425
+        \                              SELLING INSURANCE W/O LICENSE           N\r\n36-6103
+        \                              TRANSACT INSURANCE BUSINESS W/O LICENSE N\r\n37-163.11
+        \                            SALE OF BEER W/O PERMIT/PERMIT VIOLATIONN\r\n37-163.19
+        \                            IMPROPER LABEL ON BEER SOLD OR DISPENSEDN\r\n37-213
+        \                               SALE OF BEER AFTER HOURS                N\r\n37-213.1
+        \                             ALLOW LEWD ACT/PERFORMANCE AT BEER BAR  N\r\n37-213.2
+        \                             SALE OF BEER WHERE PERSONS ARE UNCLOTHEDN\r\n37-241
+        \                               SALE OF BEER TO MINOR/ALLOW ON PREMISES N\r\n37-243
+        \                               EMPLOYING MINOR IN PLACE SELLING ALCOHOLN\r\n37-246
+        \                               MINOR DRINKING BEER IN PUBLIC PLACE     N\r\n37-505
+        \                               UNLAWFUL SALE OF ALCOHOLIC BEVERAGE     N\r\n37-516
+        \                               UNLAWFULLY ADVERTISING LIQUOR           N\r\n37-521.H
+        \                             SALE OF MIXED DRINKS W/O LICENSE        N\r\n37-534.A
+        \                             LIQUOR STORE NOT SEPARATED FROM OTHER   N\r\n37-534.B
+        \                             DELIVERING LIQUOR OFF PREMISES          N\r\n37-537.1.1
+        \                           EMPLOYEE INTOXICATED WHILE ON DUTY      N\r\n37-537.1.2
+        \                           PERMIT OFFENSE CONDUCT IN/NEAR CLUB     N\r\n37-537.1.4
+        \                           PERMIT CRIMINAL CONDUCT IN CLUB PREMISESN\r\n37-537.1.5
+        \                           REFUSAL TO PROMPTLY OPEN DOOR           N\r\n37-537.2
+        \                             ALLOW LEWD ACT/PERFORMANCE AT CLUB      N\r\n37-537.A.1
+        \                           SELL/FURNISH ALCOHOLIC BEV TO MINOR     N\r\n37-537.A.11
+        \                          CONSUME ALC BEV IN BOTTLE CLUB W/O CARD N\r\n37-537.A.2
+        \                           SELL/FURNISH ALC TO MENTALLY DEFICIENT  N\r\n37-537.A.3
+        \                           OPEN/CONSUME ALC BEV IN RETAIL PKG STOREN\r\n37-537.A.6
+        \                           INTERSTATE TRANSPORTATION OF UNTAXED LIQN\r\n37-537.A.7
+        \                           TRANSPORTING OPEN CONTAINER - LIQUOR    N\r\n37-537.B.2
+        \                           EMPLOYING MINOR TO SELL ALCOHOLIC BEVERAN\r\n37-537.B.4
+        \                           OFFER INDUCEMENTS TO INC. CONSUMPTION OFN\r\n37-537.B.5
+        \                           ALLOWING OPEN CONTAINER TO BE REMOVED   N\r\n37-537.C.2
+        \                           PERMIT LIQUOR USE IN PACKAGE STORE      N\r\n37-537.C.3
+        \                           KEEPING LIQUOR STORE OPEN AFTER HOURS   N\r\n37-537.C.5
+        \                           SELLING ALCOHOL ON CREDIT               N\r\n37-537.C.7
+        \                           PERMITTING MINOR TO ENTER LIQUOR STORE  N\r\n37-537.D.2
+        \                           SALE OF LIQUOR ON HOLIDAY/ELECTION DAY  N\r\n37-537.F.5
+        \                           SALE OF ALC BEVERAGE BY BOTTLE CLUB     N\r\n37-537.F.7
+        \                           SALE ALC BEV TO ONE W/O MEMBERSHIP CARD N\r\n37-538.A
+        \                             OPERATING A WHISKEY STILL               N\r\n37-538.C
+        \                             SALE OF LIQUOR W/O LICENSE              N\r\n37-538.D
+        \                             UNLAWFUL BUY/SELL/POSS W/INTENT ALC BEV N\r\n37-538.E
+        \                             MINOR MISREP AGE-BUY LIQUOR/ENTER BAR/PKN\r\n37-538.F
+        \                             SELL/FURNISH ALCOHOL TO PERSON UNDER 21 N\r\n37-538.G
+        \                             SALE OF ALCOHOL TO INTOXICATED PERSON   N\r\n37-538.H
+        \                             OPEN SALOON                             N\r\n37-538.I
+        \                             ALLOW INTOX PERSON IN PLACE OF BUSINESS N\r\n37-549
+        \                               POSS OF UN-STAMPED LIQUOR               N\r\n37-553
+        \                               FAILURE TO PAY LIQUOR EXCISE TAX        N\r\n37-568
+        \                               POSS OF ALC BEV W/INTENT TO SELL        N\r\n37-577.A
+        \                             SALE OF MIXED DRINKS W/O TAX PERMIT     N\r\n37-582.A
+        \                             POSS OF LIQUOR W/O TAX PERMIT NUMBER    N\r\n37-583.A
+        \                             FAIL TO INVALIDATE TAX STAMP AFTER USE  N\r\n37-584
+        \                               REFILLING ALCOHOLIC BEVERAGE BOTTLES    N\r\n37-591
+        \                               PERMITTING DRINKING AFTER 2AM           N\r\n37-592
+        \                               OPERATING PRIVATE CLUB AFTER LEGAL HOURSN\r\n37-598
+        \                               ALLOWING MINOR ON PREMISES OF BAR       N\r\n37-600.4
+        \                             MINOR IN POSSESSION OF TOBACCO          N\r\n37-8
+        \                                 PUBLIC DRUNK                            N\r\n3A-205
+        \                               CHARGE ADMISSION HORSE RACE W/O LICENSE N\r\n3A-208.7
+        \                             HORSE RACING/STIMULATING DEVICES        N\r\n3A-505
+        \                               AMUSEMENT/CARNIVAL GAMES ACT VIOLATION  N\r\n4-132
+        \                                REMOVAL OF STOCK FROM DISTRAINT         N\r\n4-268
+        \                                FRAUDULENT BRANDING                     N\r\n4-32
+        \                                 REFUSAL TO FURNISH BREEDING CERTIFICATE
+        N\r\n4-42.4C                               RELEASE DOG ON LAW ENFORCEMENT
+        OFFICER  N\r\n4-47                                  POSS OF DANGEROUS DOG
+        \                  N\r\n4-85.11                               ESTRAY ANIMAL
+        ACT VIOLATION             N\r\n4-99                                  ALLOWING
+        DOMESTIC ANIMALS TO RUN AT LARGN\r\n40-165.11                             FAILURE
+        TO PAY EMPLOYMENT BENEFITS      N\r\n40-165.2                              FAILURE
+        TO PAY WAGES ON PAY DAYS        N\r\n40-165.3                              FAILURE
+        TO PAY WAGES ON SEPARATION/SUSP N\r\n40-165.4                              FAILURE
+        TO PAY AGREED WAGES             N\r\n40-165.8                              FAILURE
+        TO PAY WAGES DUE                N\r\n40-167                                FALSE
+        STATEMENT/CONDITIONS OF EMPLOYMENTN\r\n40-196.11                             FAIL
+        TO PAY PREVAILING WAGE/PUBLIC WORKSN\r\n40-226                                VIOLATION
+        OF EMPLOYMENT SECURITY ACT    N\r\n40-50.1.2                             OBTAIN
+        UNEMPLOYMENT BENEFITS UNLAWFULLY N\r\n40-53                                 OPERATING
+        EMPLOYMENT AGENCY W/O LICENSE N\r\n40-57                                 UNLAWFUL
+        OPERATION OF EMPLOYMENT AGENCY N\r\n40-88                                 UNLAWFUL
+        EMPLOYMENT OF CHILD UNDER 16   N\r\n41-115                                MISAPPROPRIATION
+        OF SECURITY DEPOSIT    N\r\n42-101                                SALE OR
+        DISPOSAL OF PROPERTY UNDER LIEN N\r\n42-142.4                              FALSE
+        STATEMENT ABOUT LIEN BY CONTRACTORN\r\n42-153                                EMBEZZLEMENT
+        OF BUILDING TRUST          N\r\n43-134                                COHABITATION
+        BY FORMER SPOUSE           N\r\n43-527                                DEPRIVATION
+        OF LAWFUL CUSTODY           N\r\n43A-2-219                             ASSAULT,
+        BEAT, ABUSE PATIENT            N\r\n43A-7-108                             AIDING
+        ESCAPE FROM MENTAL INSTITUTION   N\r\n44-3032.B                             FAILURE
+        TO RETURN MILITARY PROPERTY     N\r\n47-10-102                             LEAVING
+        SCENE OF ACCIDENT INVOLVING INJUN\r\n47-10-102.1                           LEAVING
+        SCENE OF ACCIDENT INV/DEATH     N\r\n47-10-103                             LEAVING
+        SCENE OF ACCIDENT INVOLVING DAMAN\r\n47-10-104                             DUTY
+        TO GIVE INFORMATION OR RENDER AID  N\r\n47-10-105                             LEAVING
+        SCENE OF ACCIDENT UNATT VEHCLE  N\r\n47-10-106                             LEAVING
+        SCENE OF ACCIDENT DMGD FIXTURE  N\r\n47-10-107                             FAILURE
+        TO REPORT PERSON INJURY ACCIDENTN\r\n47-10-108                             FAILURE
+        TO FILE ACCIDENT REPORT         N\r\n47-10-112                             FALSE
+        INFORMATION ON ACCIDENT REPORT    N\r\n47-11-1001                            IMPROPER
+        STOPPING                       N\r\n47-11-1003                            ILLEGAL
+        PARKING                         N\r\n47-11-1007                            IMPROPER
+        PARKING - HANDICAP SPACE       N\r\n47-11-103                             FAILURE
+        TO COMPLY WITH LAWFUL ORDER     N\r\n47-11-1101                            IMPROPERLY
+        LEAVING MV UNATTENDED        N\r\n47-11-1102                            IMPROPER
+        BACKING                        N\r\n47-11-1103                            TOO
+        MANY PASSENGERS ON MOTORCYCLE       N\r\n47-11-1104                            OBSTRUCTING
+        DRIVER'S VIEW OR CONTROL    N\r\n47-11-1107                            COASTING
+        IN NEUTRAL                     N\r\n47-11-1108                            FOLLOWING/PARKING
+        NEAR EMERGENCY VEHICLEN\r\n47-11-1109                            CROSSING
+        FIRE HOSE W/O CONSENT          N\r\n47-11-1110                            LITTERING
+        HIGHWAY                       N\r\n47-11-1111                            THROW
+        OR DROP OBJECT ON MOTOR VEHICLE   N\r\n47-11-1112                            FAILURE
+        TO USE CHILD RESTRAINT SYSTEM   N\r\n47-11-1114                            ALLOW
+        PASSENGER TO RIDE OUTSIDE VEHICLE N\r\n47-11-1201                            UNLAWFUL
+        USE OF BICYCLE                 N\r\n47-11-1302                            DRIVING
+        THROUGH CONSTRUCTION/REPAIR/SAFEN\r\n47-11-1401                            TURNPIKE
+        OFFENSES - HITCHHIKING ETC     N\r\n47-11-201                             FAILURE
+        TO STOP AT STOP SIGN            N\r\n47-11-202                             FAILURE
+        TO STOP AT RED LIGHT            N\r\n47-11-207                             INTERFERENCE
+        WITH TRAFFIC CONTROL DEVICEN\r\n47-11-301                             FAILURE
+        TO KEEP TO RIGHT                N\r\n47-11-302                             FAILURE
+        TO GIVE WAY TO RIGHT WHEN MEETINN\r\n47-11-303                             IMPROPER
+        PASSING - TECHNIQUE            N\r\n47-11-304                             IMPROPER
+        PASSING - ON RIGHT             N\r\n47-11-305                             IMPROPER
+        PASSING - INSUFFICIENT CLEARANCN\r\n47-11-306                             IMPROPER
+        PASSING - UNSAFE PLACE         N\r\n47-11-307                             IMPROPER
+        PASSING - NO PASSING ZONE      N\r\n47-11-308                             WRONG
+        WAY ON ONE WAY ROAD               N\r\n47-11-309                             UNSAFE
+        LANE USE                         N\r\n47-11-310                             FOLLOWING
+        TOO CLOSELY                   N\r\n47-11-311                             IMPROPER
+        DRIVING ON DIVIDED HIGHWAY     N\r\n47-11-312                             IMPROPER
+        USE OF CONTROLLED ACCESS ROAD  N\r\n47-11-401                             INTERSECTION
+        VIOLATION                  N\r\n47-11-402                             FAILURE
+        TO YIELD/TURNING LEFT           N\r\n47-11-403                             INTERSECTION
+        VIOLATION - STOP OR YIELD  N\r\n47-11-404                             FAILURE
+        TO YIELD FROM PRIVATE DRIVE     N\r\n47-11-405                             FAILURE
+        TO YIELD TO EMERGENCY VEHICLE   N\r\n47-11-503                             PEDESTRIAN
+        FAILING TO YIELD             N\r\n47-11-506                             WALKING
+        IMPROPERLY ON ROADWAY           N\r\n47-11-507                             IMPROPER
+        STANDING ON ROADWAY            N\r\n47-11-601                             REQUIRED
+        POSITION & METHOD OF TURNING   N\r\n47-11-602                             U
+        TURN ON CURVE OR CREST OF HILL        N\r\n47-11-603                             IMPROPER
+        STARTING OF A STOPPED VEHICLE  N\r\n47-11-604                             FAILURE
+        TO SIGNAL ON TURNING            N\r\n47-11-605                             FAILURE
+        TO SIGNAL ON TURN               N\r\n47-11-701                             DRIVING
+        THRU A RAILROAD BARRICADE       N\r\n47-11-702                             FAIL
+        TO STOP BUS AT RR CROSSING         N\r\n47-11-703                             FAILURE
+        TO STOP/YIELD AT PROPER PLACE   N\r\n47-11-704                             FAILURE
+        TO STOP BEFORE LEAVING ALLEY    N\r\n47-11-705                             UNLAWFUL
+        PASSING SCHOOL BUS             N\r\n47-11-801                             CARELESS
+        DRIVING                        N\r\n47-11-802                             SPEEDING
+        - POSTED ZONE                  N\r\n47-11-804                             MINIMUM
+        SPEED LIMIT                     N\r\n47-11-808                             OPERATE
+        MV W/RADAR INTERFERENCE DEVICE  N\r\n47-11-901                             RECKLESS
+        DRIVING                        N\r\n47-11-902                             DUI
+        - LIQUOR OR DRUGS/APCV              N\r\n47-11-902.C                           DUI
+        (AFCF) - LIQUOR OR DRUGS/APCV       N\r\n47-11-902CM                           DUI
+        - LIQUOR OR DRUG/APCV               N\r\n47-11-903                             NEGLIGENT
+        HOMICIDE - MOTOR VEHICLE      N\r\n47-11-904                             PERSONAL
+        INJ ACCIDENT WHILE DUI         N\r\n47-11-905.B                           PERSONAL
+        INJ ACCIDENT W/O DRIVER LICENSEN\r\n47-11-905.C                           CAUSE
+        ACCIDENT WITH DEATH W/O LICENSE   N\r\n47-1107                               SALE
+        OF MOTOR VEHICLE W/O TITLE TRANSFERN\r\n47-1111                               FAILURE
+        TO RETURN TAG - SALVAGE CAR     N\r\n47-1124                               NO
+        TEMPORARY PERMIT FOR VEH REGISTRATIONN\r\n47-1137                               IMPROPER
+        LICENSING NEW/USED CARS        N\r\n47-1137.1                             UNLAWFUL
+        SALE OF USED MOTOR VEHICLE     N\r\n47-1141                               FALSELY
+        ADVERTISE/ACT AS TAG AGENT      N\r\n47-1151                               OPERATING
+        VEHICLE W/O PROPER TAG/DECAL  N\r\n47-1151.2                             ALTERING
+        LICENSE PLATE/DECAL            N\r\n47-1151.7                             MISSTATEMENT
+        OF FACT IN APP/CERTIFICATE N\r\n47-1151.A13                           COMMERCIAL
+        VEHICLE REGISTRATION W/O LETTN\r\n47-1151.C                             FAIL
+        TO REG. VEHICLE W/IN 30 DAYS OF PURN\r\n47-1151.E                             OPERATING
+        GO-CART/GOLFCART ON HIGHWAY   N\r\n47-12-101                             OPERATING
+        MV IN UNSAFE CONDITION        N\r\n47-12-201                             FAILURE
+        TO DISPLAY HEADLIGHTS           N\r\n47-12-202                             IMPROPERLY
+        MOUNTED HEADLIGHTS           N\r\n47-12-203                             DRIVING
+        W/O HEADLIGHTS                  N\r\n47-12-204                             IMPROPER
+        TAIL LAMPS/TAG LAMPS           N\r\n47-12-206                             SALE/OPERATION
+        OF MV W/O STOP/TURN LAMPSN\r\n47-12-208                             FAIL TO
+        HAVE REQD TRUCK/TRAILER LAMPS/REN\r\n47-12-213                             LAMP/FLAG
+        ON PROJECTING LOAD            N\r\n47-12-214                             FAILURE
+        TO USE PARKING LIGHTS           N\r\n47-12-217                             IMPROPER
+        SPOT LAMPS                     N\r\n47-12-219                             FAILURE
+        TO DISPLAY SIGNAL LAMPS/DEVICES N\r\n47-12-222                             FAILURE
+        TO DIM HEADLIGHTS               N\r\n47-12-227                             IMPROPER
+        DISPLAY OF FLASHING RED LIGHT  N\r\n47-12-301                             DEFECTIVE
+        BRAKES                        N\r\n47-12-401                             UNLAWFUL
+        USE OF HORNS/WARNING DEVICES   N\r\n47-12-402                             IMPROPER
+        MUFFLER                        N\r\n47-12-404                             OBSTRUCTING
+        DRIVERS VIEW                N\r\n47-12-405                             MISC
+        REQUIRED VEHICLE EQUIPMENT         N\r\n47-12-408                             DISABLED
+        VEHICLE W/O WARNING DEVICES    N\r\n47-12-409                             UNLAWFUL
+        TRANSPORT EXPLOSIVES/FLAMMABLESN\r\n47-12-411                             OPERATING
+        MV WITH TV IMPROPERLY LOCATED N\r\n47-12-418                             FAILURE
+        TO WEAR SEAT BELT               N\r\n47-12-421                             EXCESSIVE
+        WINDOW TINTING                N\r\n47-12-506                             ODOMETER
+        SETTING VIOLATION              N\r\n47-13-101                             DEFECTIVE
+        VEHICLE                       N\r\n47-13-103                             FAILURE
+        TO SUBMIT VEHICLE FOR INSPECTIONN\r\n47-14-103                             OVERSIZED
+        VEHICLE                       N\r\n47-14-105                             FAILURE
+        TO PROPERLY SECURE LOAD         N\r\n47-14-106                             TOWING
+        WITH IMPROPER TOWING DEVICE      N\r\n47-14-109                             OVERWEIGHT
+        VEHICLE ON HIGHWAY           N\r\n47-14-110                             FAILURE
+        TO CARRY REGISTRATION CERTIFICATN\r\n47-14-111                             REFUSAL
+        TO WEIGH VEHICLE                N\r\n47-14-113                             OVERWEIGHT
+        VEHICLE ON BRIDGE            N\r\n47-14-116                             TRANSPORT
+        MANUFACTURED HOME W/O PERMIT  N\r\n47-14-117                             VIOLATION
+        OF OVERLOAD PERMIT            N\r\n47-1503                               OWNERSHIP
+        & OPERATION OF CHOP SHOP      N\r\n47-1503.A                             OPERATING/DEALING
+        WITH A CHOP SHOP      N\r\n47-1503.B                             ALTER/REMOVE
+        VIN                        N\r\n47-1503.C                             POSS
+        MOTOR VEHICLE PARTS W/ALTERED VIN  N\r\n47-1503.E                             CONSPIRACY
+        TO VIOLATE CHOP SHOP LAWS    N\r\n47-1503.G                             AIDING/ABETTING
+        CHOP SHOP VIOLATION     N\r\n47-1503.H                             ACCESSORY
+        TO VIOLATION OF CHOP SHOP LAWSN\r\n47-156.1                              UNLAWFUL
+        USE STATE OWNED MOTOR VEHICLE  N\r\n47-16-102                             PERMITTING
+        UNLAWFUL OPERATION OF VEHICLEN\r\n47-16-112                             FAILURE
+        TO OBEY NOTICE TO APPEAR        N\r\n47-166                                OPERATING
+        COMMON CARRIER W/O CERT/PERMITN\r\n47-170                                ADVERTISING
+        AS CARRIER W/O CERT/PERMIT  N\r\n47-177.3                              UNLAWFUL
+        DUMPING DELETERIOUS SUBSTANCES N\r\n47-180                                FAIL
+        TO DISPLAY ID PLATE - MOTOR CARRIERN\r\n47-2-129                              DISSEMINATING
+        CONFIDENTIAL INFORMATION  N\r\n47-4-102                              UNAUTHORIZED
+        USE OF A VEHICLE           N\r\n47-4-103                              REC/POSS/CONC
+        STOLEN VEHICLE            N\r\n47-4-104                              DAMAGING
+        OR TAMPERING WITH VEHICLE      N\r\n47-4-105                              FAIL
+        TO REPORT STORED VEHICLE AS UNCLAIMN\r\n47-4-106                              FALSE
+        REPORT OF VEHICLE THEFT           N\r\n47-4-107                              REMOVED/FALSIFIED
+        OR UNAUTHORIZED IDENT N\r\n47-4-108                              FALSE STATEMENT
+        OF MATERIAL FACTS       N\r\n47-4-109                              ALTERING/FORGING
+        CERTIFICATE OF TITLE   N\r\n47-4-110                              MISUSE OF
+        VEHICLE TITLE/NUMBER PLATE    N\r\n47-40-103                             ILLEGAL
+        OPERATION OF MOTORCYCLE         N\r\n47-40-105                             OPERATING
+        MOTORCYCLE W/O REQUIRED EQUIPMN\r\n47-422                                ITINERANT
+        MERCHANT W/O MV LICENSE       N\r\n47-583                                SALE
+        OF USED MV W/O LICENSE             N\r\n47-591.13                             UNLAWFUL
+        DEALING IN SALVAGED AUTO PARTS N\r\n47-6-101                              NO
+        VALID DRIVERS LICENSE                N\r\n47-6-106                              FALSE
+        STATEMENT ON APPLICAITON FOR DL   N\r\n47-6-106.4                            DUI
+        - DRIVER UNDER 21                   N\r\n47-6-107                              VIOLATION
+        OF LEARNERS PERMIT            N\r\n47-6-112                              DRIVERS
+        LICENSE TO BE CARRIED           N\r\n47-6-113                              VIOLATION
+        OF DL RESTRICTIONS            N\r\n47-6-116                              FAIL
+        TO REPORT ADDRESS CHANGE TO DPS    N\r\n47-6-209                              FAILURE
+        TO SURRENDER & RETURN DRIVER LICN\r\n47-6-210                              USING
+        FOREIGN LICENSE DURING SUSPENSION N\r\n47-6-301                              MISUSE
+        OF FORGED/COUNTERFEIT/SUSPENDED DN\r\n47-6-302                              PERJURY
+        THRU FALSE AFFIDAVIT            N\r\n47-6-303                              DRIVING
+        W/LICENSE CANC/SUSP/REVOKED     N\r\n47-6-304                              PERMITTING
+        UNAUTH MINOR TO OPERATE MV   N\r\n47-6-305                              PERMITTING
+        UNAUTH PERSON TO OPERATE MV  N\r\n47-6-306                              EMPLOYING
+        UNLICENCED CHAUFFEUR          N\r\n47-7-402                              FAILURE
+        TO SURRENDER LICENSE & REG      N\r\n47-7-403                              FORGED
+        PROOF OF FINANCIAL RESPONSIBILITYN\r\n47-7-507                              OPERATING
+        MV IN ACCIDENT W/O INSURANCE  N\r\n47-7-602                              FAILURE
+        TO CARRY SECURITY VERIFICATION  N\r\n47-7-602.A                            PROMULGATE
+        FALSE SECURITY VERIFICATION  N\r\n47-7-602.B                            FALSE
+        SECURITY VERIFICATION FORM        N\r\n47-7-606                              FAILURE
+        TO MAINTAIN SECURITY            N\r\n47-761                                DRIVING
+        WHILE IMPAIRED                  N\r\n47-851                                FAILURE
+        TO DISPLAY INSPECTION CERT      N\r\n47-853                                FAIL
+        TO SUBMIT VEHICLE FOR INSPECTION   N\r\n47-854                                SELLING
+        NEW/USED CARS W/O INSPECTION    N\r\n47-856                                INSPECTION
+        STATION VIOLATION            N\r\n47-858                                FAILURE
+        TO COLLECT PROPER INSPECTION FEEN\r\n47-859                                IMPROPER
+        DISPLAY OF INSPECTION STICKER  N\r\n47-901                                ABANDONMENT
+        OF MOTOR VEHICLE            N\r\n47-953                                OPERATE
+        WRECKER SERVICE W/O LICENSE     N\r\n49-5                                  IMPROPER
+        AUTHENTICATION OF DOCUMENT BY NN\r\n52-420.8                              VIOLATION
+        OF LP GAS SAFETY RULES/REGS   N\r\n53-361                                DEFACE/INJURE
+        ARCHEOLOGICAL SITE        N\r\n56-1006                               MEDICAID
+        FRAUD                          N\r\n56-185                                FALSE
+        REPRESENTATION IN OBTAINING ASSISTN\r\n56-243                                FALSE
+        REPRESENTATION IN OBT FOOD STAMPS N\r\n57-21                                 CARRYING
+        WEAPON/DRUGS/ALCOHOL INTO JAIL N\r\n57-222                                USE
+        OF CONVICT LABOR ON PRIVATE PROPERTYN\r\n57-55                                 NEGLECT
+        OF DUTY BY SHERIFF OR JAILER    N\r\n57-56                                 ESCAPE
+        FROM COUNTY JAIL                 N\r\n57-583                                FAILURE
+        TO REGISTER AS SEX OFFENDER-FELON\r\n57-584                                FAILURE
+        TO REGISTER AS SEX OFFENDER     N\r\n57-587                                VIOLATION
+        OF SEX OFFENDERS REGISTRATION N\r\n57-590                                VIOLATION
+        OF SOR RESIDENCY RESTRICTION  N\r\n57-599                                FAILURE
+        TO REGISTER AS VIOLENT OFFENDER N\r\n57-9                                  CRUELTY
+        TO PRISONER                     N\r\n59-1012                               PLUMBING
+        W/O LICENSE                    N\r\n59-1310.A14                           BONDSMAN
+        SOLICITING BUSINESS IN JAIL    N\r\n59-1314                               BAIL
+        BONDSMAN FAILING TO FILE REPORT    N\r\n59-1320                               WRITING
+        UNAUTHORIZED BAIL BONDS         N\r\n59-1334                               FAILURE
+        TO COMPLY WITH PR               N\r\n59-1335                               BAIL
+        JUMPING                            N\r\n59-1374                               PRACTICE
+        PSYCHOLOGY W/O LICENSE         N\r\n59-1408                               DEALING
+        IN JUNK METALS W/O LICENSE      N\r\n59-143                                PRACTICE
+        CHIROPODY/PODIATRY W/O LICENSE N\r\n59-1474                               ADMINISTERING
+        POLYGRAPH W/O LICENSE     N\r\n59-15.25                              CPA/PA
+        W/O CERTIFICATE/LICENSE          N\r\n59-1503                               OPERATING
+        AS PAWNBROKER W/O LICENSE     N\r\n59-1512                               FALSE
+        DECLARATION OF OWNERSHIP IN PAWN SN\r\n59-1512.C3                            FAILURE
+        TO REPAY PAWNBROKER             N\r\n59-1529                               UNLAWFUL
+        DEALING IN PRECIOUS METALS & GEN\r\n59-164.F                              PRACTICING
+        CHIROPRACTIC W/O LICENSE     N\r\n59-1690                               ELECTRICIAN
+        OF CONTRACTOR W/O LICENSE   N\r\n59-1750.11                            SECURITY
+        GUARD/PRIVATE INVEST W/O LICENSN\r\n59-1750.11B                           FALSE
+        STATEMENT APP SECURITY GUARD LICENN\r\n59-1800.6                             SALE
+        OF SECURITY ALARMS W/O LICENSE     N\r\n59-1850.11                            ENGAGE
+        IN MECHANICAL WORK W/O LICENSE   N\r\n59-328.21                             PRACTICING
+        DENTISTRY W/O LICENSE        N\r\n59-328.49                             UNLAWFUL
+        PRACTICE OF DENTISTRY          N\r\n59-328.50                             UNLAWFUL
+        ADVERTISING OF DENTAL SERVICES N\r\n59-353.18                             SALE
+        OF DRUGS W/O LICENSE               N\r\n59-353.24                             ALTERATION
+        OF RX/UNLAWFUL DISPENSING OF N\r\n59-46.17                              UNAUTHORIZED
+        PRACTICE AS ARCHITECT      N\r\n59-491                                PRACTICING
+        MEDICINE W/O LICENSE         N\r\n59-495                                PRACTICING
+        MEDICINE W/O CERTIFICATE     N\r\n59-567.14                             PRACTICING
+        NURSING W/O LICENSE          N\r\n59-588                                PRACTICING
+        OPTOMETRY W/O LICENSE        N\r\n59-61.6                               BARBERING
+        W/O LICENSE                   N\r\n59-698.18                             PRACTICE
+        VETERINARY MEDICINE W/O LICENSEN\r\n59-858-301                            REAL
+        ESTATE BROKERING W/O LICENSE       N\r\n59-989                                CONDUCT
+        AUCTION W/O LICENSE             N\r\n6-1405                                UNLAWFUL
+        COMPENSATION OF BANK OFFICER   N\r\n6-1409                                CONCEALING
+        BANK TRANSACTION             N\r\n6-1412                                EMBEZZLEMENT
+        OF BANK FUNDS              N\r\n62-303                                ALLOWING
+        FALSE CLAIM/UNLAWFUL CONTRACT  N\r\n63-1-1009                             CESSPOOL/SEPTIC
+        TANK CLEANING W/O LICENSN\r\n63-1-1011                             MAINTAINING
+        PUBLIC HEALTH NUISANCE      N\r\n63-1-1012                             DUMPING
+        ON PROPERTY OF ANOTHER          N\r\n63-1-1102                             ADULTERATION/MISBRANDING
+        OF FOOD OFFENSEN\r\n63-1-1118                             SELLING FOOD/DRINK
+        W/O HEALTH LICENSE   N\r\n63-1-1402                             MANUFACTURE/SALE
+        OF MISBRANDED/ADULTERATN\r\n63-1-1701                             VIOLATION
+        OF PUBLIC HEALTH CODE         N\r\n63-1-1916                             OPERATING
+        NURSING HOME UNLAWFULLY       N\r\n63-1-213                              HEALTH
+        NUISANCE                         N\r\n63-1-2414                             DISPOSAL
+        OF WASTE W/O PERMIT            N\r\n63-1-403                              EXPOSING
+        OTHERS TO TUBERCULOSIS         N\r\n63-1-508                              FAIL
+        TO COMPLY WITH RABIES QUARANTINE   N\r\n63-1-519                              EXPOSING
+        PERSON TO VENEREAL DISEASE     N\r\n63-1-832                              OPERATE
+        RESIDENTIAL CARE HOME W/O LICENSN\r\n63-1-908                              OPERATING
+        SEWAGE SYSTEM W/O PERMIT      N\r\n63-1-909                              UNLAWFUL
+        DISCHARGE OF SEWAGE INTO LAKE  N\r\n63-1-910                              SEWAGE
+        SYSTEM NOT IN COMPLIANCE         N\r\n63-141.9                              VIOLATION
+        OF EXPLOSIVES RULES/REGS      N\r\n63-2-101                              MANUFACTURER
+        OF CONTROLLED DANGEROUS SUBN\r\n63-2-301                              FILLING
+        A PRESCRIPTION UNLAWFULLY       N\r\n63-2-307                              FAILURE
+        TO KEEP/FURNISH CDS RECORDS     N\r\n63-2-309                              DISPENSING
+        CDS W/O PRESCRIPTION         N\r\n63-2-314                              TAMPER
+        WITH RX LABEL                    N\r\n63-2-328                              POSSESS/FURNISH
+        PRECURSO SUBSTANCE      N\r\n63-2-332                              POSS PRECURSOR
+        W/INT TO MANUFACTURE     N\r\n63-2-333                              SELL PRECURSOR
+        USED TO MANF METH        N\r\n63-2-401                              DIST OF
+        CDS/POSS W/INTENT               N\r\n63-2-401.B                            DIST
+        OF IMITATION CONTROLLED SUBSTANCE  N\r\n63-2-401.D                            DIST
+        CDS TO MINOR                       N\r\n63-2-401.E                            DIST
+        CDS W/IN 1000 FT PARK/SCHOOL       N\r\n63-2-401.E2                           DIST
+        CDS - 1000FT PARK/SCH (85PERCENT)  N\r\n63-2-401.F.1                          DIST/CDS
+        W/IN 2000 FT PARK/SCHOOL(50%)  N\r\n63-2-401.F2                           DIST
+        CDS W/2000' SCH/PARK SEC&SUB (85%) N\r\n63-2-401.G                            MANUFACTURE
+        OF CDS                      N\r\n63-2-401.G3                           AGGRAVATED
+        MANUFACTURE OF CDS(85Percent)N\r\n63-2-401.G4                           AGG
+        MANUFACTURE OF CDS, SEC AND SUB(85%)N\r\n63-2-402                              POSS
+        OF CONTROLLED SUBSTANCE            N\r\n63-2-402.B1                           POSS
+        OF CDS (METH) AFCF                 N\r\n63-2-402.B2                           POSS
+        OF CDS (MARIJUANA) AFCF            N\r\n63-2-402.C                            POSS/CDS
+        1000' SCHOOL/PARK/CHILD (50%)  N\r\n63-2-402.C2                           POSS
+        CDS 1000' SCHOOL/PARK/CHILD (90%)  N\r\n63-2-403                              LARCENY/BURGLARY
+        OF CDS                 N\r\n63-2-403.B                            ROBBERY
+        OF CDS FROM PHARMACY            Y\r\n63-2-404                              MAINT
+        PLACE FOR KEEPING/SELLING CDS     N\r\n63-2-405                              UNLAWFUL
+        POSSESSION OF PARAPHERNALIA    N\r\n63-2-406                              DIST
+        CDS NOT IN COURSE OF LEGIT BUSINESSN\r\n63-2-407                              OBTAIN
+        OR ATTEMPT CDS BY FORGERY/FRAUD  N\r\n63-2-407.1                            POSS/USE
+        OF NITRITE INHALANTS           N\r\n63-2-407.B                            UNLAWFUL
+        CREATE/DELIVER/POSSESS PRESCRIPN\r\n63-2-415                              TRAFFICKING
+        IN ILLEGAL DRUGS            N\r\n63-2-415.A                            TRAFFICKING
+        (PRE 1989)                  N\r\n63-2-415.D                            AGG
+        TRAFFICKING IN ILLEGAL DRUGS (85%)  N\r\n63-2-415.V2018                        TRAFFICKING
+        IN ILLEGAL DRUGS (11-1-2018)N\r\n63-2-419                              USE
+        OF MINOR IN SALE OF CDS             N\r\n63-2-503                              ACQUIRE
+        PROCEEDS FROM DRUG ACTIVITY     N\r\n63-2-509                              CULTIVATION
+        OF CONTROLLED SUBSTANCE     N\r\n63-2-701.B                            VIOLATE
+        METH REGISTRY BY POSS/PURC      N\r\n63-2819                               CALLING
+        911 WITH FALSE ALARM            N\r\n63-4030                               FAIL
+        TO DISPLAY NUMBER ASSIGNED TO VESSEN\r\n63-4032.A4                            FAILURE
+        TO DISPLAY VESSEL NUMBER        N\r\n63-4032.A6                            FAILURE
+        TO POSSESS CURRENT LICENSE - VESN\r\n63-4032.A8                            UNLAWFUL
+        ALTERING OF VESSEL NUMBER      N\r\n63-4207                               FAIL
+        TO HAVE REQUIRED EQUIPMENT - VESSELN\r\n63-4208                               OPERATING
+        VESSEL WITH IMPROPER MUFFLER  N\r\n63-4209                               UNLAWFUL
+        POSS OF VESSEL OR MOTOR        N\r\n63-4210.A                             RECKLESS
+        OPERATION OF VESSEL            N\r\n63-4210.B                             OPERATING
+        VESSEL WHILE INTOXICATED      N\r\n63-4212                               UNLAWFUL
+        TOWING ON WATER SKIS           N\r\n63-4253.A                             OPERATING
+        VESSEL/MOTOR CHOP SHOP        N\r\n63-4253.B                             ALTER/REMOVE
+        VESSEL/MOTOR ID#           N\r\n63-4253.C                             POSS
+        VESSEL/MOTOR/PARTS W/ALTERED ID#   N\r\n63-4253.E                             CONSPIRACY
+        TO VIO. VESSEL/MOTOR CHOP SHON\r\n63-4253.G                             AIDING/ABETTING
+        VESSEL/MOTOR CHOP SHOP VN\r\n63-4253.H                             ACCESSORY
+        TO VESSEL/MOTOR CHOP SHOP VIO.N\r\n63-465.20                             INHALING
+        TOXIC VAPORS                   N\r\n63-7002                               FOIL/DEFEAT
+        URINE/DRUG/ALCOHOL TEST     N\r\n64-88                                 INJURY
+        TO/WRONGFUL POSS OF PUBLIC LANDS N\r\n68-1013                               TRANSPORTING
+        OIL/GAS W/O LOAD TICKET    N\r\n68-1017                               OIL
+        INDUSTRY OPERATION W/O TAX PERMIT   N\r\n68-1361                               FAIL
+        TO COLLECT/EMBEZZ SALES TAX        N\r\n68-1364                               SALES
+        BY VENDOR W/O VALID TAX PERMIT    N\r\n68-1508                               COIN-OP
+        MUSIC/AMUSEMENT DEVICE W/O LICENN\r\n68-1624                               SALE/USE
+        OF BOTTLEROCKETS               N\r\n68-1627                               UNLAWFUL
+        SALE/DISCHARGE OF FIREWORKS    N\r\n68-218                                FALSE
+        & BOGUS CHECK FOR TAX             N\r\n68-218.1                              SUBMITTING
+        BOGUS CHECK FOR STATE TAX    N\r\n68-2376                               FAIL
+        TO FILE/PAY OR FILE FALSE INCOME TAN\r\n68-238                                CONDUCTING
+        BUSINESS W/O LICENSE         N\r\n68-2385.3                             EMBEZZLEMENT
+        OF WITHHOLDING TAXES       N\r\n68-240                                FAIL/REFUSE
+        TO FILE TAX REPORT          N\r\n68-241                                FILING
+        FALSE SALES TAX REPORT           N\r\n68-2702                               EMBEZZLEMENT
+        OF CITY SALES TAXES        N\r\n68-316                                VIOLATION
+        OF CIGARETTE TAX STAMP REGS   N\r\n68-412                                TOBACCO
+        TAX VIOLATION                   N\r\n68-418                                POSS
+        UNSTAMPED TOBACCO                  N\r\n68-450.8                              FAILURE
+        TO DISPLAY TAX STAMP ON CDS     N\r\n68-506                                EMBEZZLEMENT
+        OF MOTOR FUEL TAXES        N\r\n69-1211                               CONSTRUCTION
+        OF STATE/FED RIGHT-OF-WAY  N\r\n69-1213                               OBSTRUCTING
+        PUBLIC RIGHT OF WAY         N\r\n69-1213.A                             DAMAGE
+        OR REMOVE TRAFFIC CONTROL DEVICE N\r\n7-19.1                                DENIAL
+        OF SERVICES TO BLIND W/GUIDE DOG N\r\n70-1-105                              COMPULSORY
+        EDUCATION ACT                N\r\n70-24-131                             REFUSING
+        TO LEAVE SCHOOL PREMISES       N\r\n71-101                                SECURITIES
+        FRAUD                        N\r\n71-201                                ACTING
+        AS REGISTERED SECURITIES AGENT   N\r\n71-301                                SELLING
+        UNREGISTERED SECURITIES         N\r\n71-402                                UNLAWFUL
+        DIST OF SECURITIES LITERATURE  N\r\n71-823                                VIOLATE
+        BUSINESS OPPORTUNITY SALES ACT  N\r\n74-1812                               UNLAWFUL
+        USE OF MV IN STATE PARK        N\r\n74-1846.1                             ALLOWING
+        DOG TO RUN LOOSE AT STATE PARK N\r\n74-1846.2                             INJURY
+        TO STRUCTURE/TREES ETC. AT ST PARN\r\n74-1847.1                             VIOLATION
+        OF ST PARK RULES AND REGULATION\r\n74-3404                               MAKING/RECEIVING
+        KICKBACK               N\r\n74-4211                               FAILURE
+        TO FILE CAMPAIGN CONTRIBUTIONS  N\r\n74-4220                               ANONYMOUS
+        CAMPAIGN LITERATURE           N\r\n74-4221                               VIOL
+        OF CAMPAIGN & ETHICAL STANDARDS ACTN\r\n74-841.23                             VIOLATION
+        STATE MERIT SYSTEM            N\r\n74-85.7                               EVADING
+        COMPETITIVE BID/SPLIT PURCHASES N\r\n74-924                                FILE
+        FALSE STATEMENT PUBLIC EMPLOYEE RETN\r\n76-23                                 TAMPERING
+        WITH UTILITIES                N\r\n82-1020.22                            VIOLATION
+        OF WATER RESOURCES RULES/REGS N\r\n82-105.2                              UNAUTHORIZED
+        USE OF WATER               N\r\n82-1455                               LITTERING
+        A SCENIC RIVER AREA           N\r\n"
+  recorded_at: Thu, 27 Apr 2023 21:40:28 GMT
+recorded_with: VCR 6.1.0
