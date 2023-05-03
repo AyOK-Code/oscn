@@ -15,6 +15,5 @@ RSpec.describe "scrape:court_cases" do
     expect do
       Rake::Task["scrape:court_cases"].invoke(2020, 'Oklahoma', 1)
     end.to change(DailyFilingWorker.jobs, :size).by(31)
-
   end
 end
