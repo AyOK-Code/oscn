@@ -22,7 +22,7 @@ module Importers
       begin
         create_party_address(address_columns)
       rescue StandardError
-        # TODO: Create log on the Parties table
+        Raygun.track_exception(e, custom_data: { error_type: 'Data Error' })
       end
     end
 

@@ -5,7 +5,7 @@ class DailyFilingWorker
   sidekiq_options retry: 5
   sidekiq_throttle_as :oscn
 
-  def perform(county, date)
-    ::Scrapers::DailyFiling.perform(county, date)
+  def perform(county_name, date)
+    ::Scrapers::DailyFiling.perform(county_name, date)
   end
 end

@@ -1,16 +1,16 @@
 module Scrapers
   class DailyFiling
-    attr_accessor :county, :date, :case_types, :counties
+    attr_accessor :county_name, :date, :case_types, :counties
 
-    def initialize(county, date)
-      @county = county
+    def initialize(county_name, date)
+      @county_name = county_name
       @date = date
       @case_types = CaseType.oscn_id_mapping
       @counties = County.name_id_mapping
     end
 
-    def self.perform(county, date)
-      new(county, date).perform
+    def self.perform(county_name, date)
+      new(county_name, date).perform
     end
 
     def perform
@@ -37,7 +37,7 @@ module Scrapers
     private
 
     def fetch_html
-      scraper = OscnScraper::Requestor::Report.new({ county: county, date: date })
+      scraper = OscnScraper::Requestor::Report.new({ county: county_name, date: date })
       html = scraper.fetch_daily_filings
       Nokogiri::HTML(html.body)
     end
