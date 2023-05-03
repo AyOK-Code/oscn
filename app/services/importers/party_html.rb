@@ -14,13 +14,11 @@ module Importers
     end
 
     def perform
-      begin
-        data = OscnScraper::Requestor::Party.fetch_party(county_name, oscn_id)
-      rescue StandardError
-        Raygun.track_exception(e, custom_data: {error_type: 'Request Error'})
-      else
-        save_html(party, data)
-      end
+      data = OscnScraper::Requestor::Party.fetch_party(county_name, oscn_id)
+    rescue StandardError
+      Raygun.track_exception(e, custom_data: { error_type: 'Request Error' })
+    else
+      save_html(party, data)
     end
 
     private

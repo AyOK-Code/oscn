@@ -6,6 +6,7 @@ namespace :scrape do
     raise StandardError, 'Missing required param: year' if args.year.nil?
     raise StandardError, 'Missing required param: months' if args.months.nil?
     raise StandardError, 'Missing required param: county_name' if args.county_name.nil?
+
     year = args.year.to_i
     months = args.months.to_i
     county_name = args.county_name

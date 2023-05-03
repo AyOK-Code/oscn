@@ -19,11 +19,9 @@ module Importers
     def perform
       expected_events = docket_event_json.count
       docket_event_json.each_with_index do |docket_event, index|
-        begin
-          save_docket_event(docket_event, index)
-        rescue => e
-          Raygun.track_exception(e, custom_data: {error_type: 'Data Error'})
-        end
+        save_docket_event(docket_event, index)
+      rescue StandardError => e
+        Raygun.track_exception(e, custom_data: { error_type: 'Data Error' })
       end
       docket_events = @court_case.docket_events.count
 
