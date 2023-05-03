@@ -11,10 +11,10 @@ namespace :scrape do
     months = args.months.to_i
     county_name = args.county_name
     dates = (Date.new(year, 1, 1)..Date.new(year, months, 31)).to_a
-    bar = ProgressBar.new(dates.count)
+    bar = ProgressBar.new(dates.count) unless Rails.env.test?
 
     dates.each do |date|
-      bar.increment!
+      bar.increment! unless Rails.env.test?
 
       DailyFilingWorker
         .set(queue: :high)

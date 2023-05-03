@@ -657,9 +657,7 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
   add_foreign_key "counts", "count_codes", column: "filed_statute_code_id"
   add_foreign_key "counts", "pleas"
   add_foreign_key "counts", "verdicts"
-  add_foreign_key "court_cases", "case_types"
   add_foreign_key "court_cases", "case_types", on_update: :cascade
-  add_foreign_key "court_cases", "counties"
   add_foreign_key "court_cases", "counties", on_update: :cascade
   add_foreign_key "court_cases", "judges", column: "current_judge_id"
   add_foreign_key "doc_historical_sentences", "doc_profiles", on_update: :cascade
