@@ -1,9 +1,7 @@
 require 'rails_helper'
 require 'rake'
 
-Rails.application.load_tasks
-
-RSpec.describe 'update' do
+RSpec.describe 'update', type: :task do
   describe 'is_error' do
     after(:each) do
       Rake::Task['update:is_error'].reenable
