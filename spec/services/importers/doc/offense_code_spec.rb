@@ -7,6 +7,13 @@ RSpec.describe Importers::Doc::OffenseCode do
     let(:file) do
       '10-1144                               ACTS CAUSING JUVENILE DELINQUENCY       N'
     end
+    let(:expected_attributes) do
+      {
+        statute_code: '10-1144',
+        description: 'ACTS CAUSING JUVENILE DELINQUENCY',
+        is_violent: false
+      }
+    end
     let(:invalid_spacing_file) do
       '10-1144                ACTS CAUSING JUVENILE DELINQUENCY       N'
     end
