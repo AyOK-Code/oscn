@@ -44,3 +44,6 @@ sample.dump
 
 # Ignore ide specific files
 .idea
+
+# Ignore data files
+*.csv

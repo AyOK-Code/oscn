@@ -37,7 +37,6 @@ gem 'net-smtp', require: false
 gem 'net-imap', require: false
 gem 'net-pop', require: false
 gem 'raygun4ruby'
-gem 'diffy'
 
 group :development, :test do
   gem 'bullet'
@@ -70,5 +69,3 @@ group :development do
 end
 
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
-
-gem "yard", "~> 0.9.32"

@@ -22,11 +22,6 @@ namespace :doc do
     Importers::Doc::Alias.new('2022-01').perform
   end
 
-  desc 'Scrape DOC for most recent file and import'
-  task scrape: [:environment] do
-    Scrapers::Doc::perform('2023-04')
-  end
-
   desc 'Import all'
   task :all, [:dir] => [:environment] do |_t, args|
     dir = args.dir

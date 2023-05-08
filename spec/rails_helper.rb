@@ -69,6 +69,9 @@ RSpec.configure do |config|
 
   # Configure FactoryBot
   config.include FactoryBot::Syntax::Methods
+  config.before(:suite, type: :task) do
+    Rails.application.load_tasks
+  end
 end
 
 # Configure Shoula matchers

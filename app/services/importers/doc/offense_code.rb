@@ -1,6 +1,6 @@
 module Importers
   module Doc
-    class OffenseCode < BaseDocImporter
+    class OffenseCode
       attr_accessor :file, :fields, :field_pattern, :bar
 
       def initialize(dir)
@@ -12,7 +12,6 @@ module Importers
       end
 
       def perform
-        validate
         @file.body.string.split("\r\n").each do |line|
           bar.increment!
           data = line.unpack(field_pattern).map(&:squish)
