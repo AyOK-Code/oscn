@@ -33,7 +33,8 @@ module Scrapers
         Please ensure no schema changes were made and update the supported_version_ReadMe.txt file. 
 
         Diff Was:
-        #{diff}TXT
+        #{diff}
+        TXT
     end
 
     def download_link
