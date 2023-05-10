@@ -19,9 +19,9 @@ Schedule A - Profile Data Layout
  FIRST_NAME                               VARCHAR2(30)
  MIDDLE_NAME                              VARCHAR2(30)
  SUFFIX                                   VARCHAR2(5)
- LAST_MOVE_DATE                           DATE 'DD-MMM-YY' (9)
+ LAST_MOVE_DATE                           DATE 'YYYYMMDD' (8)
  FACILITY                                 VARCHAR2(40)
- BIRTH_DATE                               DATE 'DD-MMM-YY' (9)
+ BIRTH_DATE                               DATE 'YYYYMMDD' (8)
  SEX                                      VARCHAR2(1)
  RACE                                     VARCHAR2(40)
  HAIR                                     VARCHAR2(40)
@@ -56,6 +56,8 @@ ence
  Name                            Null?    Type
  ------------------------------- -------- ----
  DOC_NUM                         NOT NULL NUMBER(10)
+ SENTENCE_ID                     NOT NULL VARCHAR2(20)
+ CONSEC_TO_SENTENCE_ID                    VARCHAR2(20)
  STATUTE_CODE                    NOT NULL VARCHAR2(40)
  SENTENCING_COUNTY                        VARCHAR2(40)
  JS_DATE                                  DATE 'YYYYMMDD' (8)
