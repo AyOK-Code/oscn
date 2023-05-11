@@ -18,8 +18,8 @@ namespace :doc do
       Importers::Doc::Sentence.new(dir).perform
       Importers::Doc::Alias.new(dir).perform
       Importers::Doc::Status.new(dir).perform
-      Importers::Doc::LinkCases.new(county).perform
-      Importers::Doc::LinkOffenseCodes.new.perform
+      # Importers::Doc::LinkCases.new(county).perform # uncommented once we add support for multiple counties
+      # Importers::Doc::LinkOffenseCodes.new.perform # uncomment once this is confirmed to be working
     end
   end
 end
