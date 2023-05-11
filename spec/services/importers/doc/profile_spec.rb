@@ -13,14 +13,14 @@ RSpec.describe Importers::Doc::Profile do
     end
     let(:expected_attributes) do
       {
-        doc_number: '27399',
+        doc_number: 27399,
         last_name: 'GARCIA',
         first_name: 'JOSE',
         middle_name: 'L',
         suffix: '',
-        last_move_date: 'Mon, 11 Jul 2016',
+        last_move_date: Date.parse('Mon, 11 Jul 2016'),
         facility: 'NORTH FORK CORRECTIONAL CENTER ESCAPE',
-        birth_date: 'Sat, 11 Sep 1943',
+        birth_date: Date.parse('Sat, 11 Sep 1943'),
         sex: 'male',
         race: 'HISPANIC',
         hair: 'BLACK',
