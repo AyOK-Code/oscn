@@ -13,7 +13,7 @@ RSpec.describe Importers::Doc::Profile do
     end
     let(:expected_attributes) do
       {
-        doc_number: 27399,
+        doc_number: 27_399,
         last_name: 'GARCIA',
         first_name: 'JOSE',
         middle_name: 'L',
