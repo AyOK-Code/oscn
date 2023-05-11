@@ -31,6 +31,9 @@ oscn.tar
 # Ignore Data Files
 /lib/data/*
 
+# Ignore large cassetts for testing
+/spec/cassettes/large
+
 .DS_Store
 erd.pdf
 sample.dump

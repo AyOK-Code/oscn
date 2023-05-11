@@ -4,7 +4,7 @@ RSpec.shared_examples 'doc_importer' do
   describe '#perform' do
     context 'when connecting to aws' do
       xit 'imports the file' do
-        VCR.use_cassette("#{described_class}_doc_2023_04") do
+        VCR.use_cassette("large/#{described_class}_doc_2023_04") do
           original_count = class_to_import.count
           described_class.new('2023-04').perform
           expect(class_to_import.count).to be > original_count
