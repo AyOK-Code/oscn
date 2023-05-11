@@ -1,18 +1,17 @@
 module Importers
   module Doc
-    class OffenseCode < BaseDocImporter
+    class OffenseCode
       attr_accessor :file, :fields, :field_pattern, :bar
 
       def initialize(dir)
         @statutes = []
-        @file = Bucket.new.get_object("doc/#{dir}/Vendor_Offense_Extract_Text.dat")
+        @file = Bucket.new.get_object("doc/#{dir}/vendor_offense_extract_text.dat")
         @fields = [38, 40, 1]
         @field_pattern = "A#{fields.join('A')}"
         @bar = ProgressBar.new(@file.body.string.split("\r\n").size)
       end
 
       def perform
-        validate
         @file.body.string.split("\r\n").each do |line|
           bar.increment!
           data = line.unpack(field_pattern).map(&:squish)

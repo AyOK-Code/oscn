@@ -4,7 +4,7 @@ module Importers
       attr_accessor :file, :fields, :field_pattern, :bar, :doc_mapping, :dir
 
       def initialize(dir)
-        @file = Bucket.new.get_object("doc/#{dir}/Vendor_Alias_Extract_Text.dat")
+        @file = Bucket.new.get_object("doc/#{dir}/vendor_alias_extract_text.dat")
         @fields = [11, 30, 30, 30, 5]
         @field_pattern = "A#{fields.join('A')}"
         @bar = ProgressBar.new(@file.body.string.split("\r\n").size)

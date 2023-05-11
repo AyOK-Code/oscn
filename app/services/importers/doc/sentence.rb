@@ -6,7 +6,7 @@ module Importers
 
       def initialize(dir)
         @sentences = []
-        @file = Bucket.new.get_object("doc/#{dir}/Vendor_sentence_Extract_Text.dat")
+        @file = Bucket.new.get_object("doc/#{dir}/vendor_sentence_extract_text.dat")
         @fields = [11, 20, 20, 40, 40, 8, 40, 13, 13]
         @field_pattern = "A#{fields.join('A')}"
         @bar = ProgressBar.new(file.body.string.split("\r\n").size)
