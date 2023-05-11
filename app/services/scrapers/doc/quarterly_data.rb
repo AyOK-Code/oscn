@@ -46,5 +46,4 @@ module Scrapers
       end
     end
   end
-  # Save detailed Party information
 end

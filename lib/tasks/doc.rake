@@ -9,8 +9,8 @@ require 'open-uri'
 
 namespace :doc do
   desc 'Scrape DOC for most recent file and import'
-  task scrape: [:environment] do
-    dir = '2023-04'
+  task :scrape, [:dir] => [:environment] do |_t, args|
+    dir = args.dir
     Scrapers::Doc::QuarterlyData.perform(dir)
     ActiveRecord::Base.transaction do
       Importers::Doc::OffenseCode.new(dir).perform
