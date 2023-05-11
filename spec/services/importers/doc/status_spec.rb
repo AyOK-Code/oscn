@@ -5,9 +5,9 @@ RSpec.describe Importers::Doc::Status do
   it_behaves_like('doc_importer') do
     let(:class_to_import) { ::Doc::Status }
     let(:sample_file) do
-      ' 0000027399GARCIA                        JOSE                          L                                  20160711NORTH FORK CORRECTIONAL CENTER ESCAPE   19430911MHISPANIC                                BLACK                                   5 8 165 BROWN                                   Active   '
+      ' 0000027398GARCIA                        ROSE                          L                                  20160711NORTH FORK CORRECTIONAL CENTER ESCAPE   19430911MHISPANIC                                BLACK                                   5 8 165 BROWN                                   Active   '
     end
-    let!(:profile) { create(:doc_profile, doc_number: '0000027399') }
+    let!(:profile) { create(:doc_profile, doc_number: '0000027398') }
     let(:expected_attributes) do
       {
         doc_profile_id: profile.id,
