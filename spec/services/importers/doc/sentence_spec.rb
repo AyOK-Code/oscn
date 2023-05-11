@@ -4,7 +4,7 @@ require 'services/importers/doc/shared_specs'
 RSpec.describe Importers::Doc::Sentence do
   it_behaves_like('doc_importer') do
     let(:class_to_import) { ::Doc::Sentence }
-    let(:file) do
+    let(:sample_file) do
       ' 0000704102440992-5                                21-1283                                 TULSA COUNTY COURT                      20210930CF-2021-3456                                          000000003.00'
     end
     let!(:profile) { create(:doc_profile, doc_number: '0000704102') }

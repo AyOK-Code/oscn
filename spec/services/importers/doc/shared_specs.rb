@@ -16,7 +16,7 @@ RSpec.shared_examples 'doc_importer' do
       let(:bucket) { instance_double(Bucket) }
 
       before do
-        response = double('response', { body: double('body', { string: file }) })
+        response = double('response', { body: double('body', { string: sample_file }) })
         allow(Bucket).to receive(:new).and_return(bucket)
         allow(bucket).to receive(:get_object).and_return(response)
       end

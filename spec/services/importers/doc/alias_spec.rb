@@ -4,7 +4,7 @@ require 'services/importers/doc/shared_specs'
 RSpec.describe Importers::Doc::Alias do
   it_behaves_like('doc_importer') do
     let(:class_to_import) { ::Doc::Alias }
-    let(:file) do
+    let(:sample_file) do
       ' 0000122482BENTON                        RICHARD                       LOUIS                         JR'
     end
     let!(:profile) { create(:doc_profile, doc_number: '0000122482') }

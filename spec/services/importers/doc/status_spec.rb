@@ -4,7 +4,7 @@ require 'services/importers/doc/shared_specs'
 RSpec.describe Importers::Doc::Status do
   it_behaves_like('doc_importer') do
     let(:class_to_import) { ::Doc::Status }
-    let(:file) do
+    let(:sample_file) do
       ' 0000027399GARCIA                        JOSE                          L                                  20160711NORTH FORK CORRECTIONAL CENTER ESCAPE   19430911MHISPANIC                                BLACK                                   5 8 165 BROWN                                   Active   '
     end
     let!(:profile) { create(:doc_profile, doc_number: '0000027399') }

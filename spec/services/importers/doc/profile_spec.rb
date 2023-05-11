@@ -4,7 +4,7 @@ require 'services/importers/doc/shared_specs'
 RSpec.describe Importers::Doc::Profile do
   it_behaves_like('doc_importer') do
     let(:class_to_import) { ::Doc::Profile }
-    let(:file) { file_2023_01_format }
+    let(:sample_file) { file_2023_01_format }
     let(:file_2023_01_format) do
       ' 0000027399GARCIA                        JOSE                          L                                  20160711NORTH FORK CORRECTIONAL CENTER ESCAPE   19430911MHISPANIC                                BLACK                                   5 8 165 BROWN                                   Active   '
     end
