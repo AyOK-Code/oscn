@@ -6,7 +6,7 @@ module Importers
       def initialize(dir)
         @statuses = []
         @dir = dir
-        @file = Bucket.new.get_object("doc/#{dir}/Vendor_Profile_Extract_Text.dat")
+        @file = Bucket.new.get_object("doc/#{dir}/vendor_profile_extract_text.dat")
         @fields = field_spacing(dir)
         @field_pattern = "A#{fields.join('A')}"
         @doc_mapping = ::Doc::Profile.pluck(:doc_number, :id).to_h
