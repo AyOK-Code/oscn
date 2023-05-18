@@ -33,7 +33,7 @@ module Importers
 
       if party
         party.update(full_name: party_data[:name])
-        save_existing_party_to_case(party, oscn_id)
+        save_existing_party_to_case(party)
       else
         create_and_save_party_to_case(oscn_id, party_data)
       end
