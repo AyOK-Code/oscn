@@ -17,7 +17,7 @@ class OneOffCaseWorker
     if cc.blank?
       ::Scrapers::OneOffCase.perform(county, case_number)
     else
-      CourtCaseWorker.set(queue: :default).perform(county.id, case_number, true)
+      CourtCaseWorker.new.perform(county.id, case_number, true)
     end
   end
 
