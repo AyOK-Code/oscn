@@ -29,7 +29,7 @@ module Importers
 
     def save_parties(party_data)
       oscn_id = parse_id(party_data[:link])
-      party = Party.find_by(oscn_id: oscn_id)
+      party = ::Party.find_by(oscn_id: oscn_id)
 
       if party
         party.update(full_name: party_data[:name])
