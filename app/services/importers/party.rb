@@ -49,7 +49,7 @@ module Importers
       params['id'].first.to_i
     end
 
-    def save_existing_party_to_case(party, oscn_id)
+    def save_existing_party_to_case(party)
       create_case_party(court_case.id, party.id)
     end
 
