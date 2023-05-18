@@ -7,7 +7,7 @@ namespace :update do
     data.each do |row|
       OneOffCaseWorker
         .set(queue: :high)
-        .perform_async(arg.county_name, row[0])
+        .perform_async(args.county_name, row[0])
     end
   end
 end
