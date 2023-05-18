@@ -8,7 +8,20 @@ class OneOffCaseWorker
   sidekiq_options retry: 5, queue: :medium
   sidekiq_throttle_as :oscn
 
-  def perform(county, case_number)
-    ::Scrapers::OneOffCase.perform(county, case_number)
+  def perform(county_name, case_number)
+    county = find_county(county_name)
+    raise StandardError, 'County not found' if county.nil?
+
+    cc = CourtCase.find_by(county_id: county.id, case_number: case_number)
+
+    if cc.blank?
+      ::Scrapers::OneOffCase.perform(county, case_number)
+    else
+      CourtCaseWorker.set(queue: :default).perform(county.id, case_number, true)
+    end
+  end
+
+  def find_county(county_name)
+    County.find_by(name: county_name)
   end
 end
