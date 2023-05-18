@@ -15,7 +15,7 @@ class OneOffCaseWorker
     cc = CourtCase.find_by(county_id: county.id, case_number: case_number)
 
     if cc.blank?
-      ::Scrapers::OneOffCase.perform(county, case_number)
+      ::Scrapers::OneOffCase.perform(county_name, case_number)
     else
       CourtCaseWorker.new.perform(county.id, case_number, true)
     end
