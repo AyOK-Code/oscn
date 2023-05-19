@@ -33,6 +33,10 @@ namespace :warrants do
         .perform_async(county.id, c['Case #'], true)
 
       CaseParty.where(court_case_id: case_id).each do |cp|
+        party = ::CourtCase.find_by!(oscn_id: cp.party.oscn_id)
+        next if party.enqueued
+
+        party.update(enqueued: true)
         PartyWorker.perform_in(1.hour, cp.party.oscn_id)
       end
     end

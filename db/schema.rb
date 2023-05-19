@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_03_28_153746) do
+ActiveRecord::Schema.define(version: 2023_05_17_212721) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -455,6 +455,7 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.string "suffix"
     t.bigint "parent_party_id"
     t.bigint "doc_profile_id"
+    t.boolean "enqueued"
     t.index ["doc_profile_id"], name: "index_parties_on_doc_profile_id"
     t.index ["oscn_id"], name: "index_parties_on_oscn_id", unique: true
     t.index ["parent_party_id"], name: "index_parties_on_parent_party_id"
