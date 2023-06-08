@@ -455,7 +455,7 @@ ActiveRecord::Schema.define(version: 2023_05_17_212721) do
     t.string "suffix"
     t.bigint "parent_party_id"
     t.bigint "doc_profile_id"
-    t.boolean "enqueued"
+    t.boolean "enqueued", default: false
     t.index ["doc_profile_id"], name: "index_parties_on_doc_profile_id"
     t.index ["oscn_id"], name: "index_parties_on_oscn_id", unique: true
     t.index ["parent_party_id"], name: "index_parties_on_parent_party_id"
