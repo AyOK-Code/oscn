@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_05_17_212721) do
+ActiveRecord::Schema.define(version: 2023_06_21_122027) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -198,6 +198,8 @@ ActiveRecord::Schema.define(version: 2023_05_17_212721) do
     t.boolean "is_violent", default: false, null: false
     t.datetime "created_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.index ["statute_code", "description", "is_violent"], name: "doc_offense_codes_index", unique: true
+    t.index ["statute_code", "description", "is_violent"], name: "offense_code_index", unique: true
   end
 
   create_table "doc_profiles", force: :cascade do |t|
@@ -292,6 +294,7 @@ ActiveRecord::Schema.define(version: 2023_05_17_212721) do
     t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.bigint "doc_facility_id"
     t.index ["doc_facility_id"], name: "index_doc_statuses_on_doc_facility_id"
+    t.index ["doc_profile_id", "date", "facility"], name: "status_index", unique: true
     t.index ["doc_profile_id"], name: "index_doc_statuses_on_doc_profile_id"
   end
 
