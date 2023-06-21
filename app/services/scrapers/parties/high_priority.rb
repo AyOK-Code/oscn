@@ -12,6 +12,10 @@ module Scrapers
         puts "#{parties_oscn_ids.count} are missing html"
 
         parties_oscn_ids.each do |oscn_id|
+          party = ::Party.find_by!(oscn_id: oscn_id)
+          next if party.enqueued
+
+          party.update(enqueued: true)
           PartyWorker
             .set(queue: :high)
             .perform_async(oscn_id)

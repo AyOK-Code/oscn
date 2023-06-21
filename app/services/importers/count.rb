@@ -21,6 +21,8 @@ module Importers
     def perform
       counts_json.each do |count_data|
         save_counts(count_data)
+      rescue StandardError => e
+        Raygun.track_exception(e, custom_data: { error_type: 'Data Error' })
       end
     end
 

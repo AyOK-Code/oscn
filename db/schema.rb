@@ -2,54 +2,33 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# This file is the source Rails uses to define your schema when running `rails
-# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
 # be faster and is potentially less error prone than running all of your
 # migrations from scratch. Old migrations may fail to apply correctly if those
 # migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_03_28_153746) do
-
+ActiveRecord::Schema[7.0].define(version: 2023_06_21_153902) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
-
-  create_table "active_storage_attachments", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "record_type", null: false
-    t.bigint "record_id", null: false
-    t.bigint "blob_id", null: false
-    t.datetime "created_at", null: false
-    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
-    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
-  end
-
-  create_table "active_storage_blobs", force: :cascade do |t|
-    t.string "key", null: false
-    t.string "filename", null: false
-    t.string "content_type"
-    t.text "metadata"
-    t.bigint "byte_size", null: false
-    t.string "checksum", null: false
-    t.datetime "created_at", null: false
-    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
-  end
 
   create_table "case_htmls", force: :cascade do |t|
     t.bigint "court_case_id", null: false
-    t.datetime "scraped_at"
+    t.datetime "scraped_at", precision: nil
     t.text "html"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["court_case_id"], name: "index_case_htmls_on_court_case_id"
   end
 
   create_table "case_parties", force: :cascade do |t|
     t.bigint "court_case_id", null: false
     t.bigint "party_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "roster_id"
     t.index ["court_case_id", "party_id"], name: "index_case_parties_on_court_case_id_and_party_id", unique: true
     t.index ["court_case_id"], name: "index_case_parties_on_court_case_id"
@@ -62,16 +41,16 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.integer "oscn_id", null: false
     t.string "name", null: false
     t.string "abbreviation", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "counsel_parties", force: :cascade do |t|
     t.bigint "court_case_id", null: false
     t.bigint "party_id", null: false
     t.bigint "counsel_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["counsel_id"], name: "index_counsel_parties_on_counsel_id"
     t.index ["court_case_id"], name: "index_counsel_parties_on_court_case_id"
     t.index ["party_id"], name: "index_counsel_parties_on_party_id"
@@ -81,8 +60,8 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.string "name"
     t.string "address"
     t.integer "bar_number"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "first_name"
     t.string "middle_name"
     t.string "last_name"
@@ -98,16 +77,16 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
   create_table "count_codes", force: :cascade do |t|
     t.string "code", null: false
     t.string "description"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["code"], name: "index_count_codes_on_code", unique: true
   end
 
   create_table "counties", force: :cascade do |t|
     t.string "name", null: false
     t.string "fips_code", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "district_attorney_id"
     t.index ["district_attorney_id"], name: "index_counties_on_district_attorney_id"
   end
@@ -123,8 +102,8 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.string "disposed_statute_violation"
     t.bigint "plea_id"
     t.bigint "verdict_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "charge"
     t.bigint "filed_statute_code_id"
     t.bigint "disposed_statute_code_id"
@@ -144,8 +123,8 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.string "case_number"
     t.date "filed_on"
     t.date "closed_on"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.jsonb "logs"
     t.bigint "current_judge_id"
     t.boolean "is_error", default: false, null: false
@@ -159,8 +138,8 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
   create_table "district_attorneys", force: :cascade do |t|
     t.string "name", null: false
     t.integer "number", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "doc_aliases", force: :cascade do |t|
@@ -170,8 +149,8 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.string "first_name"
     t.string "middle_name"
     t.string "suffix"
-    t.datetime "created_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["doc_profile_id", "doc_number", "last_name", "first_name", "middle_name", "suffix"], name: "alias_index", unique: true
     t.index ["doc_profile_id"], name: "index_doc_aliases_on_doc_profile_id"
   end
@@ -179,16 +158,16 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
   create_table "doc_facilities", force: :cascade do |t|
     t.string "name"
     t.boolean "is_prison", default: false, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "doc_offense_codes", force: :cascade do |t|
     t.string "statute_code", null: false
     t.string "description", null: false
     t.boolean "is_violent", default: false, null: false
-    t.datetime "created_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["statute_code", "description", "is_violent"], name: "doc_offense_codes_index", unique: true
     t.index ["statute_code", "description", "is_violent"], name: "offense_code_index", unique: true
   end
@@ -210,8 +189,8 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.string "weight"
     t.string "eye"
     t.integer "status"
-    t.datetime "created_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.bigint "doc_facility_id"
     t.bigint "roster_id"
     t.index ["doc_facility_id"], name: "index_doc_profiles_on_doc_facility_id"
@@ -231,8 +210,8 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.boolean "is_death_sentence", default: false, null: false
     t.boolean "is_life_sentence", default: false, null: false
     t.boolean "is_life_no_parole_sentence", default: false, null: false
-    t.datetime "created_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.bigint "court_case_id"
     t.string "sentence_id", null: false
     t.string "consecutive_to_sentence_id"
@@ -247,8 +226,8 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
   create_table "doc_sentencing_counties", force: :cascade do |t|
     t.string "name", null: false
     t.bigint "county_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["county_id"], name: "index_doc_sentencing_counties_on_county_id"
   end
 
@@ -257,12 +236,11 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.string "facility", null: false
     t.date "date"
     t.string "reason"
-    t.datetime "created_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.bigint "doc_facility_id"
     t.index ["doc_facility_id"], name: "index_doc_statuses_on_doc_facility_id"
     t.index ["doc_profile_id", "date", "facility"], name: "status_index", unique: true
-    t.index ["doc_profile_id", "doc_facility_id"], name: "index_doc_statuses_on_doc_profile_id_and_doc_facility_id", unique: true
     t.index ["doc_profile_id"], name: "index_doc_statuses_on_doc_profile_id"
   end
 
@@ -271,15 +249,15 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.integer "oscn_id", null: false
     t.string "title", null: false
     t.string "link", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["docket_event_id"], name: "index_docket_event_links_on_docket_event_id"
   end
 
   create_table "docket_event_types", force: :cascade do |t|
     t.string "code"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["code"], name: "index_docket_event_types_on_code", unique: true
     t.index ["id", "code"], name: "index_docket_event_types_on_id_and_code"
   end
@@ -290,8 +268,8 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.bigint "docket_event_type_id", null: false
     t.text "description"
     t.decimal "amount"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "party_id"
     t.integer "count"
     t.decimal "payment", default: "0.0", null: false
@@ -311,19 +289,19 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.integer "oscn_id", null: false
     t.string "code", null: false
     t.string "name", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["oscn_id"], name: "index_event_types_on_oscn_id", unique: true
   end
 
   create_table "events", force: :cascade do |t|
     t.bigint "court_case_id", null: false
     t.bigint "party_id"
-    t.datetime "event_at", null: false
+    t.datetime "event_at", precision: nil, null: false
     t.string "event_name"
     t.string "docket"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "judge_id"
     t.bigint "event_type_id"
     t.index ["court_case_id"], name: "index_events_on_court_case_id"
@@ -336,8 +314,8 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.string "name", null: false
     t.string "courthouse"
     t.bigint "county_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "oscn_id", null: false
     t.string "first_name"
     t.string "last_name"
@@ -353,9 +331,10 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.decimal "bond_amount", precision: 14, scale: 2
     t.date "issued"
     t.string "counts"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.datetime "resolved_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "resolved_at", precision: nil
+    t.virtual "clean_case_number", type: :string, as: "\nCASE\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN ((((\"substring\"((case_number)::text, 1, 2) || '-'::text) ||\n    CASE\n        WHEN ((\"substring\"((case_number)::text, 3, 2))::integer <= 23) THEN ('20'::text || \"substring\"((case_number)::text, 3, 2))\n        ELSE ('19'::text || \"substring\"((case_number)::text, 3, 2))\n    END) || '-'::text) || regexp_replace(\"substring\"((case_number)::text, 5), '^0+'::text, ''::text))\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2}-[0-9]{1,}'::text) THEN ((((\"substring\"((case_number)::text, 1, 2) || '-'::text) ||\n    CASE\n        WHEN ((split_part((case_number)::text, '-'::text, 2))::integer <= 23) THEN ('20'::text || split_part((case_number)::text, '-'::text, 2))\n        ELSE ('19'::text || split_part((case_number)::text, '-'::text, 2))\n    END) || '-'::text) || split_part((case_number)::text, '-'::text, 3))\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2}-[0-9]{4}-[0-9]{1,}'::text) THEN (case_number)::text\n    ELSE NULL::text\nEND", stored: true
     t.index ["case_number", "first_name", "last_name", "birth_date"], name: "index_ocso_warrants_on_case_number_etc", unique: true
   end
 
@@ -371,10 +350,10 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.string "inmate_number", null: false
     t.string "booking_number", null: false
     t.string "booking_type"
-    t.datetime "booking_date", null: false
-    t.datetime "release_date"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "booking_date", precision: nil, null: false
+    t.datetime "release_date", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "roster_id"
     t.index ["pdf_id"], name: "index_okc_blotter_bookings_on_pdf_id"
     t.index ["roster_id"], name: "index_okc_blotter_bookings_on_roster_id"
@@ -389,16 +368,16 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.string "charge", null: false
     t.string "warrant_number"
     t.string "citation_number"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["booking_id"], name: "index_okc_blotter_offenses_on_booking_id"
   end
 
   create_table "okc_blotter_pdfs", force: :cascade do |t|
-    t.datetime "parsed_on"
+    t.datetime "parsed_on", precision: nil
     t.date "date"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "oklahoma_statutes", force: :cascade do |t|
@@ -408,33 +387,22 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.text "description"
     t.date "effective_on"
     t.string "update_status"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "parcels", force: :cascade do |t|
-    t.string "geoid20", null: false
-    t.string "zip"
-    t.integer "tract", null: false
-    t.string "block", null: false
-    t.string "lat"
-    t.string "long"
-    t.datetime "created_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "parent_parties", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "parties", force: :cascade do |t|
     t.integer "oscn_id"
     t.string "full_name"
     t.bigint "party_type_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "first_name"
     t.string "middle_name"
     t.string "last_name"
@@ -442,6 +410,7 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.integer "birth_year"
     t.string "suffix"
     t.bigint "parent_party_id"
+    t.boolean "enqueued", default: false
     t.index ["oscn_id"], name: "index_parties_on_oscn_id", unique: true
     t.index ["parent_party_id"], name: "index_parties_on_parent_party_id"
     t.index ["party_type_id"], name: "index_parties_on_party_type_id"
@@ -449,142 +418,45 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
 
   create_table "party_addresses", force: :cascade do |t|
     t.bigint "party_id", null: false
-    t.datetime "record_on"
+    t.datetime "record_on", precision: nil
     t.string "city"
     t.string "state"
     t.integer "zip"
     t.string "address_type"
     t.string "status"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["party_id"], name: "index_party_addresses_on_party_id"
   end
 
   create_table "party_aliases", force: :cascade do |t|
     t.bigint "party_id", null: false
     t.string "name", default: "", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["party_id"], name: "index_party_aliases_on_party_id"
   end
 
   create_table "party_htmls", force: :cascade do |t|
     t.bigint "party_id", null: false
-    t.datetime "scraped_at"
+    t.datetime "scraped_at", precision: nil
     t.text "html"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["party_id"], name: "index_party_htmls_on_party_id"
   end
 
   create_table "party_types", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["name"], name: "index_party_types_on_name", unique: true
-  end
-
-  create_table "pd_bookings", force: :cascade do |t|
-    t.string "jailnet_inmate_id"
-    t.string "initial_docket_id"
-    t.string "inmate_name"
-    t.string "inmate_aka"
-    t.datetime "birth_date"
-    t.string "city_of_birth"
-    t.string "state_of_birth"
-    t.integer "current_age"
-    t.string "race"
-    t.string "gender"
-    t.integer "height"
-    t.float "weight"
-    t.string "hair_color"
-    t.string "eye_color"
-    t.string "build"
-    t.string "complexion"
-    t.string "facial_hair"
-    t.string "martial_status"
-    t.string "emergency_contact"
-    t.string "emergency_phone"
-    t.string "drivers_state"
-    t.string "drivers_license"
-    t.string "address1"
-    t.string "address2"
-    t.string "city"
-    t.string "state"
-    t.string "zip_code"
-    t.string "home_phone"
-    t.string "fbi_nbr"
-    t.string "osbi_nbr"
-    t.string "tpd_nbr"
-    t.integer "age_at_booking"
-    t.integer "age_at_release"
-    t.string "arrest_date"
-    t.string "arrest_by"
-    t.string "agency"
-    t.string "booking_date"
-    t.string "booking_by"
-    t.string "otn_nbr"
-    t.string "estimated_release_date"
-    t.string "release_date"
-    t.string "release_by"
-    t.string "release_reason"
-    t.string "weekend_server"
-    t.string "custody_level"
-    t.string "assigned_cell_id"
-    t.string "current_location"
-    t.string "booking_notes"
-    t.string "booking_alerts"
-    t.string "booking_trustees"
-  end
-
-  create_table "pd_offense_minutes", force: :cascade do |t|
-    t.bigint "offense_id", null: false
-    t.datetime "minute_date"
-    t.string "minute"
-    t.string "minute_by"
-    t.string "judge"
-    t.string "next_proceeding"
-    t.index ["offense_id"], name: "index_pd_offense_minutes_on_offense_id"
-  end
-
-  create_table "pd_offenses", force: :cascade do |t|
-    t.bigint "booking_id", null: false
-    t.string "docket_id"
-    t.integer "offense_seq"
-    t.string "case_number"
-    t.string "offense_code"
-    t.string "offense_special_code"
-    t.string "offense_description"
-    t.string "offense_category"
-    t.string "court"
-    t.string "judge"
-    t.datetime "court_date"
-    t.float "bond_amount"
-    t.string "bond_type"
-    t.integer "jail_term"
-    t.string "jail_sentence_term_type"
-    t.datetime "jail_conviction_date"
-    t.datetime "jail_start_date"
-    t.string "form41_filed"
-    t.string "docsentence_term"
-    t.string "docsentence_term_type"
-    t.datetime "docsentence_date"
-    t.string "docnotified"
-    t.string "sentence_agent"
-    t.string "narative"
-    t.string "disposition"
-    t.datetime "disposition_date"
-    t.datetime "entered_date"
-    t.string "entered_by"
-    t.datetime "modified_date"
-    t.string "modified_by"
-    t.index ["booking_id"], name: "index_pd_offenses_on_booking_id"
   end
 
   create_table "pleas", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["name"], name: "index_pleas_on_name", unique: true
   end
 
@@ -599,20 +471,20 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.string "first_name"
     t.string "last_name"
     t.string "middle_name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "titles", force: :cascade do |t|
     t.string "code"
     t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "tulsa_blotter_arrest_details_htmls", force: :cascade do |t|
     t.bigint "arrest_id"
-    t.datetime "scraped_at", null: false
+    t.datetime "scraped_at", precision: nil, null: false
     t.text "html"
     t.index ["arrest_id"], name: "index_tulsa_blotter_arrest_details_htmls_on_arrest_id"
   end
@@ -633,14 +505,14 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.string "hair"
     t.string "eyes"
     t.date "last_scraped_at"
-    t.datetime "arrest_date"
+    t.datetime "arrest_date", precision: nil
     t.string "arrested_by"
     t.string "arresting_agency"
-    t.datetime "booking_date"
-    t.datetime "release_date"
+    t.datetime "booking_date", precision: nil
+    t.datetime "release_date", precision: nil
     t.date "freedom_date"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["roster_id"], name: "index_tulsa_blotter_arrests_on_roster_id"
   end
 
@@ -656,8 +528,8 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.string "case_number"
     t.string "bond_type"
     t.string "disposition"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "arrests_id"
     t.decimal "bond_amount", precision: 14, scale: 2
     t.date "court_date"
@@ -666,7 +538,7 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
 
   create_table "tulsa_blotter_page_htmls", force: :cascade do |t|
     t.integer "page_number", null: false
-    t.datetime "scraped_at", null: false
+    t.datetime "scraped_at", precision: nil, null: false
     t.text "html"
   end
 
@@ -682,24 +554,24 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.string "eye_color"
     t.string "race"
     t.string "gender"
-    t.datetime "arrest_date"
+    t.datetime "arrest_date", precision: nil
     t.string "arresting_officer"
     t.string "arresting_agency"
-    t.datetime "booking_date_time"
+    t.datetime "booking_date_time", precision: nil
     t.date "court_date"
-    t.datetime "released_date_time"
+    t.datetime "released_date_time", precision: nil
     t.string "court_division"
     t.string "incident_record_id"
     t.string "active"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["incident_record_id"], name: "index_tulsa_city_inmates_on_incident_record_id", unique: true
   end
 
   create_table "tulsa_city_offenses", force: :cascade do |t|
     t.bigint "inmate_id"
     t.string "bond"
-    t.datetime "court_date"
+    t.datetime "court_date", precision: nil
     t.string "case_number"
     t.string "court_division"
     t.string "hold"
@@ -708,20 +580,19 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
     t.string "section"
     t.string "paragraph"
     t.string "crime"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["docket_id", "inmate_id"], name: "index_tulsa_city_offenses_on_docket_id_and_inmate_id", unique: true
     t.index ["inmate_id"], name: "index_tulsa_city_offenses_on_inmate_id"
   end
 
   create_table "verdicts", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["name"], name: "index_verdicts_on_name", unique: true
   end
 
-  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "case_htmls", "court_cases"
   add_foreign_key "case_parties", "court_cases"
   add_foreign_key "case_parties", "parties"
@@ -763,8 +634,6 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
   add_foreign_key "party_addresses", "parties"
   add_foreign_key "party_aliases", "parties"
   add_foreign_key "party_htmls", "parties"
-  add_foreign_key "pd_offense_minutes", "pd_offenses", column: "offense_id"
-  add_foreign_key "pd_offenses", "pd_bookings", column: "booking_id"
   add_foreign_key "tulsa_blotter_arrest_details_htmls", "tulsa_blotter_arrests", column: "arrest_id"
   add_foreign_key "tulsa_blotter_arrests", "rosters"
   add_foreign_key "tulsa_blotter_arrests_page_htmls", "tulsa_blotter_arrests", column: "arrest_id"
@@ -830,6 +699,7 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
   create_view "report_warrants", materialized: true, sql_definition: <<-SQL
       SELECT docket_events.id,
       docket_events.court_case_id,
+      court_cases.county_id,
       case_types.name,
       case_types.abbreviation,
       docket_events.party_id,
@@ -1079,4 +949,177 @@ ActiveRecord::Schema.define(version: 2023_03_28_153746) do
   add_index "report_searchable_cases", ["first_name"], name: "index_report_searchable_cases_on_first_name"
   add_index "report_searchable_cases", ["last_name"], name: "index_report_searchable_cases_on_last_name"
 
+  create_view "report_ocso_oscn_joins", sql_definition: <<-SQL
+      WITH clean_ocso AS (
+           SELECT ocso_warrants.id AS ocso_id,
+              ocso_warrants.first_name AS ocso_first_name,
+              ocso_warrants.last_name AS ocso_last_name,
+              ocso_warrants.middle_name AS ocso_middle_name,
+              ocso_warrants.birth_date AS ocso_birth_date,
+              ocso_warrants.bond_amount AS ocso_bond_amount,
+              ocso_warrants.issued AS ocso_issued,
+              ocso_warrants.counts AS ocso_counts,
+              ocso_warrants.resolved_at AS ocso_resolved_at,
+              ocso_warrants.case_number AS ocso_case_number,
+                  CASE
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN "substring"((ocso_warrants.case_number)::text, 1, 2)
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2,}-[0-9]{1,}'::text) THEN "substring"((ocso_warrants.case_number)::text, '[A-Za-z]{1,}'::text)
+                      ELSE NULL::text
+                  END AS case_type,
+                  CASE
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN (
+                      CASE
+                          WHEN (("substring"((ocso_warrants.case_number)::text, 3, 2))::integer <= 23) THEN ('20'::text || "substring"((ocso_warrants.case_number)::text, 3, 2))
+                          ELSE ('19'::text || "substring"((ocso_warrants.case_number)::text, 3, 2))
+                      END)::integer
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2}-[0-9]{1,}'::text) THEN (
+                      CASE
+                          WHEN ((split_part((ocso_warrants.case_number)::text, '-'::text, 2))::integer <= 23) THEN ('20'::text || split_part((ocso_warrants.case_number)::text, '-'::text, 2))
+                          ELSE ('19'::text || split_part((ocso_warrants.case_number)::text, '-'::text, 2))
+                      END)::integer
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{4}-[0-9]{1,}'::text) THEN (split_part((ocso_warrants.case_number)::text, '-'::text, 2))::integer
+                      ELSE NULL::integer
+                  END AS full_year,
+                  CASE
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN regexp_replace("substring"((ocso_warrants.case_number)::text, 5), '^0+'::text, ''::text)
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2,}-[0-9]{1,}'::text) THEN split_part((ocso_warrants.case_number)::text, '-'::text, 3)
+                      ELSE NULL::text
+                  END AS last_case_number,
+                  CASE
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN (((("substring"((ocso_warrants.case_number)::text, 1, 2) || '-'::text) ||
+                      CASE
+                          WHEN (("substring"((ocso_warrants.case_number)::text, 3, 2))::integer <= 23) THEN ('20'::text || "substring"((ocso_warrants.case_number)::text, 3, 2))
+                          ELSE ('19'::text || "substring"((ocso_warrants.case_number)::text, 3, 2))
+                      END) || '-'::text) || regexp_replace("substring"((ocso_warrants.case_number)::text, 5), '^0+'::text, ''::text))
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2}-[0-9]{1,}'::text) THEN (((("substring"((ocso_warrants.case_number)::text, 1, 2) || '-'::text) ||
+                      CASE
+                          WHEN ((split_part((ocso_warrants.case_number)::text, '-'::text, 2))::integer <= 23) THEN ('20'::text || split_part((ocso_warrants.case_number)::text, '-'::text, 2))
+                          ELSE ('19'::text || split_part((ocso_warrants.case_number)::text, '-'::text, 2))
+                      END) || '-'::text) || split_part((ocso_warrants.case_number)::text, '-'::text, 3))
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{4}-[0-9]{1,}'::text) THEN (ocso_warrants.case_number)::text
+                      ELSE NULL::text
+                  END AS clean_case_number,
+                  CASE
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN ((((('https://www.oscn.net/dockets/GetCaseInformation.aspx?db=oklahoma&number='::text || "substring"((ocso_warrants.case_number)::text, 1, 2)) || '-'::text) || "substring"((ocso_warrants.case_number)::text, 3, 2)) || '-'::text) || regexp_replace("substring"((ocso_warrants.case_number)::text, 5), '^0+'::text, ''::text))
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2,}-[0-9]{1,}'::text) THEN ('https://www.oscn.net/dockets/GetCaseInformation.aspx?db=oklahoma&number='::text || (ocso_warrants.case_number)::text)
+                      ELSE NULL::text
+                  END AS link
+             FROM ocso_warrants
+          ), added_defendant_counts AS (
+           SELECT clean_ocso.ocso_id,
+              clean_ocso.ocso_first_name,
+              clean_ocso.ocso_last_name,
+              clean_ocso.ocso_middle_name,
+              clean_ocso.ocso_birth_date,
+              clean_ocso.ocso_bond_amount,
+              clean_ocso.ocso_issued,
+              clean_ocso.ocso_counts,
+              clean_ocso.ocso_resolved_at,
+              clean_ocso.ocso_case_number,
+              clean_ocso.case_type,
+              clean_ocso.full_year,
+              clean_ocso.last_case_number,
+              clean_ocso.clean_case_number,
+              clean_ocso.link,
+              ( SELECT count(DISTINCT parties.id) AS count
+                     FROM ((((case_parties
+                       JOIN parties ON ((case_parties.party_id = parties.id)))
+                       JOIN court_cases ON ((court_cases.id = case_parties.court_case_id)))
+                       JOIN counties ON ((court_cases.county_id = counties.id)))
+                       JOIN party_types ON ((parties.party_type_id = party_types.id)))
+                    WHERE (((party_types.name)::text = 'defendant'::text) AND ((court_cases.case_number)::text = clean_ocso.clean_case_number) AND ((counties.name)::text = 'Oklahoma'::text))) AS defendant_count
+             FROM clean_ocso
+            WHERE (clean_ocso.ocso_resolved_at IS NULL)
+          )
+   SELECT added_defendant_counts.ocso_id,
+      added_defendant_counts.ocso_first_name,
+      added_defendant_counts.ocso_last_name,
+      added_defendant_counts.ocso_middle_name,
+      added_defendant_counts.ocso_birth_date,
+      added_defendant_counts.ocso_bond_amount,
+      added_defendant_counts.ocso_issued,
+      added_defendant_counts.ocso_counts,
+      added_defendant_counts.ocso_resolved_at,
+      added_defendant_counts.ocso_case_number,
+      added_defendant_counts.case_type,
+      added_defendant_counts.full_year,
+      added_defendant_counts.last_case_number,
+      added_defendant_counts.clean_case_number,
+      added_defendant_counts.link,
+      added_defendant_counts.defendant_count,
+          CASE
+              WHEN (added_defendant_counts.defendant_count = 0) THEN NULL::bigint
+              WHEN (added_defendant_counts.defendant_count = 1) THEN ( SELECT count(*) AS count
+                 FROM (((docket_events
+                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
+                   JOIN counties ON ((court_cases.county_id = counties.id)))
+                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
+                         FROM ((case_parties
+                           JOIN parties ON ((case_parties.party_id = parties.id)))
+                           JOIN party_types ON ((parties.party_type_id = party_types.id)))
+                        WHERE (((party_types.name)::text = 'defendant'::text) AND (case_parties.court_case_id = court_cases.id))) = 1)))
+              WHEN (added_defendant_counts.defendant_count > 1) THEN ( SELECT count(*) AS count
+                 FROM ((((docket_events
+                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
+                   JOIN counties ON ((court_cases.county_id = counties.id)))
+                   JOIN parties ON ((docket_events.party_id = parties.id)))
+                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2))))
+              ELSE NULL::bigint
+          END AS warrant_count,
+          CASE
+              WHEN (added_defendant_counts.defendant_count = 0) THEN NULL::bigint
+              WHEN (added_defendant_counts.defendant_count = 1) THEN ( SELECT count(*) AS count
+                 FROM (((docket_events
+                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
+                   JOIN counties ON ((court_cases.county_id = counties.id)))
+                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['RETBW'::character varying, 'RETWA'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
+                         FROM ((case_parties
+                           JOIN parties ON ((case_parties.party_id = parties.id)))
+                           JOIN party_types ON ((parties.party_type_id = party_types.id)))
+                        WHERE (((party_types.name)::text = 'defendant'::text) AND (case_parties.court_case_id = court_cases.id))) = 1)))
+              WHEN (added_defendant_counts.defendant_count > 1) THEN ( SELECT count(*) AS count
+                 FROM ((((docket_events
+                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
+                   JOIN counties ON ((court_cases.county_id = counties.id)))
+                   JOIN parties ON ((docket_events.party_id = parties.id)))
+                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['RETBW'::character varying, 'RETWA'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2))))
+              ELSE NULL::bigint
+          END AS return_warrant_count,
+          CASE
+              WHEN (added_defendant_counts.defendant_count = 0) THEN NULL::character varying
+              WHEN (added_defendant_counts.defendant_count = 1) THEN ( SELECT docket_event_types.code
+                 FROM (((docket_events
+                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
+                   JOIN counties ON ((court_cases.county_id = counties.id)))
+                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
+                         FROM ((case_parties
+                           JOIN parties ON ((case_parties.party_id = parties.id)))
+                           JOIN party_types ON ((parties.party_type_id = party_types.id)))
+                        WHERE (((party_types.name)::text = 'defendant'::text) AND (case_parties.court_case_id = court_cases.id))) = 1))
+                ORDER BY docket_events.event_on DESC
+               LIMIT 1)
+              WHEN (added_defendant_counts.defendant_count > 1) THEN ( SELECT docket_event_types.code
+                 FROM ((((docket_events
+                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
+                   JOIN counties ON ((court_cases.county_id = counties.id)))
+                   JOIN parties ON ((docket_events.party_id = parties.id)))
+                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2)))
+                ORDER BY docket_events.event_on DESC
+               LIMIT 1)
+              ELSE NULL::character varying
+          END AS most_recent_warrant_type,
+      ( SELECT case_htmls.scraped_at
+             FROM ((court_cases
+               JOIN counties ON ((court_cases.county_id = counties.id)))
+               JOIN case_htmls ON ((case_htmls.court_case_id = court_cases.id)))
+            WHERE (((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((counties.name)::text = 'Oklahoma'::text))
+           LIMIT 1) AS scraped_at
+     FROM added_defendant_counts;
+  SQL
 end

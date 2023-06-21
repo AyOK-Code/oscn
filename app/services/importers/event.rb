@@ -19,6 +19,8 @@ module Importers
     def perform
       events_json.each do |event_data|
         save_events(event_data)
+      rescue StandardError => e
+        Raygun.track_exception(e, custom_data: { error_type: 'Data Error' })
       end
     end
 

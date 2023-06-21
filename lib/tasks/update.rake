@@ -76,14 +76,17 @@ namespace :update do
 
   desc 'Queue up cases missing html'
   task missing_html: [:environment] do
-    court_cases = CourtCase.without_html.pluck(:county_id, :case_number)
-    bar = ProgressBar.new(court_cases.count)
+    court_cases = CourtCase.without_html.not_in_queue.select(:id, :county_id, :case_number)
+    bar = ProgressBar.new(court_cases.length)
 
     court_cases.each do |c|
       bar.increment!
+
       CourtCaseWorker
         .set(queue: :high)
-        .perform_async(c[0], c[1], true)
+        .perform_async(c.county_id, c.case_number, true)
+      court_case = CourtCase.find(c.id)
+      court_case.update(enqueued: true)
     end
   end
 
