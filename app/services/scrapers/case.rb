@@ -15,6 +15,7 @@ module Scrapers
 
       Scrapers::MediumPriority.perform
       Scrapers::LowPriority.perform
+      
     end
 
     def counties
