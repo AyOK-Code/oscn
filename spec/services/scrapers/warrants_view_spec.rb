@@ -20,6 +20,5 @@ RSpec.describe Scrapers::WarrantsView do
         described_class.perform.to change(OneOffCaseWorker.jobs, :size).by(1)
       end
     end
-
   end
 end
