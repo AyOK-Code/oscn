@@ -1,6 +1,6 @@
 class AddCleanCaseNumberToOcsoWarrants < ActiveRecord::Migration[7.0]
   def change
-    sql = "CASE WHEN case_number ~ '^[A-Za-z]{2}[0-9]{5,}' THEN (SUBSTRING(case_number, 1, 2) || '-' || (
+    sql = "(CASE WHEN case_number ~ '^[A-Za-z]{2}[0-9]{5,}' THEN (SUBSTRING(case_number, 1, 2) || '-' || (
  			CASE WHEN SUBSTRING(case_number, 3, 2)::INT <= 23 THEN
  				'20' || SUBSTRING(case_number, 3, 2)
  			ELSE
@@ -14,7 +14,7 @@ class AddCleanCaseNumberToOcsoWarrants < ActiveRecord::Migration[7.0]
 	 				'19' || SPLIT_PART(case_number, '-', 2)
  				END) || '-' || SPLIT_PART(case_number, '-', 3)
  		 WHEN case_number ~ '^[A-Za-z]{2}-[0-9]{4}-[0-9]{1,}' THEN case_number
- 	  ELSE NULL END"
+ 	  ELSE NULL END)"
     
     add_column :ocso_warrants,
       :clean_case_number,
