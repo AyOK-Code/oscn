@@ -7,10 +7,10 @@ module Scrapers
 
     def perform
       data = ReportOcsoOscnJoin.three_days_old.pluck(:clean_case_number)
-      data.each do |row|
+      data.each do |case_number|
         OneOffCaseWorker
           .set(queue: :high)
-          .perform_async('Oklahoma', row[0])
+          .perform_async('Oklahoma', case_number)
       end
     end
   end
