@@ -17,6 +17,7 @@ module Scrapers
       html = OscnScraper::Requestor::Search.fetch_cases({ db: 'all', number: case_number })
       parsed_html = Nokogiri::HTML(html.body)
       data = OscnScraper::Parsers::Search.parse(parsed_html, county.downcase)
+      # TODO: DEV-1144 Log if case was not found
       county_id = counties[county]
 
       data.each do |row|
