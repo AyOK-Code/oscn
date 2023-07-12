@@ -41,7 +41,7 @@ module Scrapers
     end
 
     def parse_html(html)
-      OscnScraper::Parsers::Search.parse(html, county.downcase)
+      OscnScraper::Parsers::Search.parse(html, county.name.downcase)
     end
 
     def create_missing_case
