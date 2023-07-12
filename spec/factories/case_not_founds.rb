@@ -1,10 +1,6 @@
 FactoryBot.define do
   factory :case_not_found do
-    county { nil }
-<<<<<<< Updated upstream
-    case_number { "MyString" }
-=======
-    case_number { 'MyString' }
->>>>>>> Stashed changes
+    county
+    case_number { "CF-#{Faker::Number.between(from: 1990, to: 2025)}-#{Faker::Number.between(from: 1, to: 1000)}" }
   end
 end
