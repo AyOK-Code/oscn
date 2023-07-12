@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_21_153902) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_03_210127) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -22,6 +22,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_21_153902) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["court_case_id"], name: "index_case_htmls_on_court_case_id"
+  end
+
+  create_table "case_not_founds", force: :cascade do |t|
+    t.bigint "county_id", null: false
+    t.string "case_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["county_id"], name: "index_case_not_founds_on_county_id"
   end
 
   create_table "case_parties", force: :cascade do |t|
@@ -594,6 +602,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_21_153902) do
   end
 
   add_foreign_key "case_htmls", "court_cases"
+  add_foreign_key "case_not_founds", "counties"
   add_foreign_key "case_parties", "court_cases"
   add_foreign_key "case_parties", "parties"
   add_foreign_key "case_parties", "rosters"
