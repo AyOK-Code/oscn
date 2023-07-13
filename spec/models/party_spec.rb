@@ -10,12 +10,15 @@ RSpec.describe Party, type: :model do
     it { should have_many(:counsels).through(:counsel_parties) }
     it { should have_many(:docket_events).dependent(:destroy) }
     it { should have_many(:addresses).class_name('PartyAddress').dependent(:destroy) }
+    it { should have_many(:aliases).class_name('PartyAlias').dependent(:destroy) }
     it { should have_many(:issue_parties).dependent(:destroy) }
     it { should have_one(:party_html).dependent(:destroy) }
   end
 
   describe 'validations' do
     subject { FactoryBot.build(:party) }
+    it { should validate_inclusion_of(:birth_month).in_range(1..12).allow_nil }
+    it { should validate_inclusion_of(:birth_year).in_range(1800..DateTime.current.year).allow_nil }
   end
 
   describe 'scopes' do
@@ -52,7 +55,7 @@ RSpec.describe Party, type: :model do
     describe '#without_parent' do
       let!(:parent_party) { create(:parent_party) }
       it 'Filter to parties without parent party' do
-        party_bad = create(:party, birth_month: 12, parent_party:)
+        party_bad = create(:party, birth_month: 12, parent_party: parent_party)
         create(:party)
         expect(described_class.without_parent.size).to eq(1)
         expect(described_class.without_parent.first.id).not_to eq(party_bad.id)
@@ -62,7 +65,7 @@ RSpec.describe Party, type: :model do
     describe '#with_parent' do
       let(:parent_party) { create(:parent_party) }
       it 'Filter to parties with parent party' do
-        party_good = create(:party, birth_month: 12, parent_party:)
+        party_good = create(:party, birth_month: 12, parent_party: parent_party)
         create(:party)
         expect(described_class.with_parent.size).to eq(1)
         expect(described_class.with_parent.first.id).to eq(party_good.id)

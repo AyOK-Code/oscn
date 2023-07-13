@@ -33,7 +33,7 @@ module Scrapers
         headers = { 'Content-Type' => 'application/json', 'charset' => 'UTF-8', 'Accept' => '*/*' }
         inmates_url = 'https://www.cityoftulsa.org/apps/InmateInformationCenter/AjaxReference/CompleteInmates.aspx/ServiceReference'
 
-        inmates = HTTParty.post(inmates_url, headers:)
+        inmates = HTTParty.post(inmates_url, headers: headers)
 
         JSON.parse(inmates['d']['ReturnCode'])
       end

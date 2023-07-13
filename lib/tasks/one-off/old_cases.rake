@@ -30,7 +30,7 @@ namespace :update do
 
     data.each_value do |case_number|
       bar.increment!
-      court_case = ::CourtCase.find_by!(county_id: county.id, case_number:)
+      court_case = ::CourtCase.find_by!(county_id: county.id, case_number: case_number)
       next unless court_case.enqueued == false
 
       court_case.update(enqueued: true)
@@ -38,7 +38,7 @@ namespace :update do
         .set(queue: :default)
         .perform_async(county.id, case_number, true)
 
-      case_id = CourtCase.find_by(case_number:)&.id
+      case_id = CourtCase.find_by(case_number: case_number)&.id
 
       CaseParty.where(court_case_id: case_id).each do |cp|
         party = ::CourtCase.find_by!(oscn_id: cp.party.oscn_id)

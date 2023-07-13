@@ -26,7 +26,7 @@ module Scrapers
         case_type = case_number.split('-').first
         next if case_types[case_type].blank?
 
-        c = ::CourtCase.find_or_initialize_by(oscn_id:, county_id: counties[county])
+        c = ::CourtCase.find_or_initialize_by(oscn_id: oscn_id, county_id: counties[county])
         c.case_type_id = case_types[case_type]
         c.case_number = row.text
         c.filed_on = date
@@ -37,7 +37,7 @@ module Scrapers
     private
 
     def fetch_html
-      scraper = OscnScraper::Requestor::Report.new({ county: county_name, date: })
+      scraper = OscnScraper::Requestor::Report.new({ county: county_name, date: date })
       html = scraper.fetch_daily_filings
       Nokogiri::HTML(html.body)
     end

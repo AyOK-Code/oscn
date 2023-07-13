@@ -12,7 +12,7 @@ class OneOffCaseWorker
     county = find_county(county_name)
     raise StandardError, 'County not found' if county.nil?
 
-    cc = CourtCase.find_by(county_id: county.id, case_number:)
+    cc = CourtCase.find_by(county_id: county.id, case_number: case_number)
 
     if cc.blank?
       ::Scrapers::OneOffCase.perform(county_name, case_number)

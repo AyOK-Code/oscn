@@ -58,7 +58,7 @@ module Importers
 
       return count_code_id if count_code_id
 
-      new_count_code = CountCode.create(code:)
+      new_count_code = CountCode.create(code: code)
       @count_codes = CountCode.pluck(:code, :id).to_h
       new_count_code.id
     end

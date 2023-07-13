@@ -45,7 +45,7 @@ module Importers
         .find_or_initialize_by({
                                  court_case_id: court_case.id,
                                  event_at: event_data[:date],
-                                 party_id:
+                                 party_id: party_id
                                })
     end
   end

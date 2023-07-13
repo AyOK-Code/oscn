@@ -50,4 +50,7 @@ Lint/NestedMethodDefinition:
 Metrics/ClassLength:
   Exclude:
     - 'app/services/importers/okc_blotter/pdf.rb'
-
+Style/HashSyntax:
+  EnforcedShorthandSyntax: 'never'
+Style/ArgumentsForwarding:
+  Enabled: false

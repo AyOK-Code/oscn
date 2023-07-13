@@ -23,10 +23,10 @@ FactoryBot.define do
     end
 
     trait :with_error do
-      logs do 
+      logs do
         {
-          "events": {
-            "message": "Error"
+          events: {
+            message: 'Error'
           }
         }
       end

@@ -11,7 +11,7 @@ RSpec.describe Importers::DocketEvents::Link do
     end
 
     it 'ignores duplicates' do
-      create(:docket_event_link, docket_event:, oscn_id: 1_050_827_996, title: 'TIFF',
+      create(:docket_event_link, docket_event: docket_event, oscn_id: 1_050_827_996, title: 'TIFF',
                                  link: 'GetDocument.aspx?ct=tulsa&cn=CF-2020-49&bc=1050827996&fmt=tif')
       described_class.perform(test_data.first[:links], docket_event)
       expect(docket_event.links.count).to eq(2)

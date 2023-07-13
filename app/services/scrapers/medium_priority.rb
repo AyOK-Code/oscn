@@ -9,7 +9,7 @@ module Scrapers
     end
 
     def self.perform(days_ago: 14)
-      new(days_ago:).perform
+      new(days_ago: days_ago).perform
     end
 
     def perform

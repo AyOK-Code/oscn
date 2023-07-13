@@ -16,7 +16,7 @@ RSpec.describe Importers::Attorney do
       attorney_object = parsed.map(&:with_indifferent_access)
 
       party = create(:party, full_name: 'THREADGILL,   GEORGE  HOWARD  III')
-      case_party = create(:case_party, party:)
+      case_party = create(:case_party, party: party)
       court_case = case_party.court_case
 
       expect(court_case.counsels.count).to eq 0

@@ -17,7 +17,7 @@ module Matchers
       judge = fz.find(name, threshold: 0.8)
       judge_id = judges_hash[judge]
       if judge_id.nil?
-        judge = ::Judge.create!(name:, county_id:, judge_type: 'Inactive')
+        judge = ::Judge.create!(name: name, county_id: county_id, judge_type: 'Inactive')
         judge.id
       else
         judge_id

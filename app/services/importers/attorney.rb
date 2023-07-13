@@ -31,9 +31,9 @@ module Importers
       c = find_by_bar_or_name(bar_number, name)
 
       c.assign_attributes({
-                            name:,
+                            name: name,
                             address: attorney_data[:address],
-                            bar_number:
+                            bar_number: bar_number
                           })
       if c.save
         save_counsel_party(attorney_data, c)
@@ -44,9 +44,9 @@ module Importers
 
     def find_by_bar_or_name(bar_number, name)
       if bar_number.present?
-        Counsel.find_or_initialize_by(bar_number:)
+        Counsel.find_or_initialize_by(bar_number: bar_number)
       else
-        Counsel.find_or_initialize_by(name:)
+        Counsel.find_or_initialize_by(name: name)
       end
     end
 

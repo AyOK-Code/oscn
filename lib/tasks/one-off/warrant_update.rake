@@ -8,7 +8,7 @@ namespace :warrants do
                                        ENV.fetch('BUCKETEER_AWS_SECRET_ACCESS_KEY', nil))
     Aws.config.update(
       region: 'us-east-1',
-      credentials:
+      credentials: credentials
     )
     s3 = Aws::S3::Client.new
 
@@ -24,7 +24,7 @@ namespace :warrants do
       case_id = court_cases[c['Case #']]
       next if case_id.nil?
 
-      court_case = ::CourtCase.find_by!(county_id: county.id, case_number:)
+      court_case = ::CourtCase.find_by!(county_id: county.id, case_number: case_number)
       next unless court_case.enqueued == false
 
       court_case.update(enqueued: true)
@@ -49,7 +49,7 @@ namespace :warrants do
                                        ENV.fetch('BUCKETEER_AWS_SECRET_ACCESS_KEY', nil))
     Aws.config.update(
       region: 'us-east-1',
-      credentials:
+      credentials: credentials
     )
     s3 = Aws::S3::Client.new
 
@@ -90,7 +90,7 @@ namespace :warrants do
         warrant << { oscn_id: party&.oscn_id }
         warrant << { birth_month: party&.birth_month }
         warrant << { birth_year: party&.birth_year }
-        warrant << { age: }
+        warrant << { age: age }
         warrant << { zip: address&.zip }
 
         if counts.present?

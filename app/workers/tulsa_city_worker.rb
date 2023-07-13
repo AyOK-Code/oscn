@@ -24,7 +24,7 @@ class TulsaCityWorker
   end
 
   def save_inmate(inmate_json, incident_record_id, active)
-    inmate = ::TulsaCity::Inmate.find_or_create_by(incident_record_id:)
+    inmate = ::TulsaCity::Inmate.find_or_create_by(incident_record_id: incident_record_id)
     inmate.inmate_id = inmate_json['inmateId']
     inmate.first_name = inmate_json['firstName']
     inmate.middle_name = inmate_json['middleName']
@@ -100,7 +100,7 @@ class TulsaCityWorker
     headers = { 'Content-Type' => 'application/json', 'charset' => 'UTF-8', 'Accept' => '*/*' }
     offense_url = "https://www.cityoftulsa.org/apps/InmateInformationCenter/AjaxReference/Incident.aspx/ServiceReference?dataId=#{dataid}"
 
-    offenses = HTTParty.post(offense_url, headers:)
+    offenses = HTTParty.post(offense_url, headers: headers)
 
     JSON.parse(offenses['d']['ReturnCode'])
   end
@@ -109,7 +109,7 @@ class TulsaCityWorker
     headers = { 'Content-Type' => 'application/json', 'charset' => 'UTF-8', 'Accept' => '*/*' }
     inmate_url = "https://www.cityoftulsa.org/apps/InmateInformationCenter/AjaxReference/InmateInfo.aspx/ServiceReference?dataId=#{dataid}"
 
-    inmate = HTTParty.post(inmate_url, headers:)
+    inmate = HTTParty.post(inmate_url, headers: headers)
 
     JSON.parse(inmate['d']['ReturnCode'])
   end

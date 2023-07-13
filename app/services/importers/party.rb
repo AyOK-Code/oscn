@@ -29,7 +29,7 @@ module Importers
 
     def save_parties(party_data)
       oscn_id = parse_id(party_data[:link])
-      party = ::Party.find_by(oscn_id:)
+      party = ::Party.find_by(oscn_id: oscn_id)
 
       if party
         party.update(full_name: party_data[:name])
@@ -65,7 +65,7 @@ module Importers
     def create_and_save_party_to_case(oscn_id, party_data)
       begin
         party = ::Party.create!(
-          oscn_id:,
+          oscn_id: oscn_id,
           full_name: party_data[:name].squish,
           party_type_id: find_or_create_party_type(party_data[:party_type].downcase)
         )
@@ -85,8 +85,8 @@ module Importers
 
       begin
         party = ::Party.create!(
-          full_name:,
-          party_type_id:
+          full_name: full_name,
+          party_type_id: party_type_id
         )
       rescue StandardError
         logs.create_log('parties', "#{court_case.case_number}: error when creating the party", party_data)
@@ -98,14 +98,14 @@ module Importers
 
     def text_only_party_exists?(full_name, party_type_id)
       ::Party.joins(:case_parties).where(
-        full_name:,
-        party_type_id:,
+        full_name: full_name,
+        party_type_id: party_type_id,
         case_parties: { court_case_id: court_case.id }
       ).present?
     end
 
     def create_case_party(court_case_id, party_id)
-      data = { court_case_id:, party_id: }
+      data = { court_case_id: court_case_id, party_id: party_id }
       CaseParty.find_or_create_by!(data)
     rescue StandardError
       logs.create_log('case_parties', "#{court_case.case_number}: error when creating case party relationship",

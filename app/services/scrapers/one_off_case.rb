@@ -14,7 +14,7 @@ module Scrapers
     end
 
     def perform
-      check_not_found = CaseNotFound.find_by(county_id: county.id, case_number:)
+      check_not_found = CaseNotFound.find_by(county_id: county.id, case_number: case_number)
 
       return if check_not_found.present?
 
@@ -45,7 +45,7 @@ module Scrapers
     end
 
     def create_missing_case
-      CaseNotFound.find_or_create_by(county_id: county.id, case_number:)
+      CaseNotFound.find_or_create_by(county_id: county.id, case_number: case_number)
     end
 
     def find_case_type(row)

@@ -11,7 +11,7 @@ RSpec.describe Scrapers::DistrictAttorney do
                   'Greer', 'Harmon', 'Jackson', 'Kiowa', 'Tillman']
 
       counties.each do |name|
-        create(:county, name:)
+        create(:county, name: name)
       end
 
       parser = OscnScraper::Parsers::DistrictAttorney.new(html)
