@@ -37,7 +37,8 @@ module Importers
         ip.save!
         # TODO: Send data to IssueParty Importer
       rescue StandardError
-        logs.create_log('issues', "#{court_case.case_number} skipped issue due to missing information.", issue_party_attributes)
+        message = "#{court_case.case_number} skipped issue due to missing information."
+        logs.create_log('issues', message, issue_party_attributes)
       end
     end
 
@@ -45,14 +46,14 @@ module Importers
       code_id = find_or_create_count_code(issue_party_attributes[:issue_code]&.squish)
 
       {
-        name: issue_party_attributes[:issue_name]
+        name: issue_party_attributes[:issue_name],
         filed_by: party_matcher.party_id_from_name(issue_party_attributes[:filed_by]),
         filed_on: issue_party_attributes[:filed_on],
         count_code_id: code_id
       }
     end
 
-    def issue_party_attributes(issue_party)
+    def issue_attributes(issue_party)
       verdict_id = find_or_create_verdict(issue_party[:verdict]&.downcase)
 
       {
