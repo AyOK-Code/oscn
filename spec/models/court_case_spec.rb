@@ -141,7 +141,25 @@ RSpec.describe CourtCase, type: :model do
 
   describe '.for_county_name(name)' do
     it 'filters by the county name' do
+      skip
+    end
+  end
 
+  describe '.not_in_queue' do
+    context 'when court case is in queue' do
+      it 'does not return the case' do
+        court_case = create(:court_case, enqueued: true)
+
+        expect(CourtCase.not_in_queue.count).to eq 0
+      end
+    end
+
+    context 'when court case not in queue' do
+      it 'returns the case' do
+        court_case = create(:court_case, enqueued: false)
+
+        expect(CourtCase.not_in_queue.count).to eq 1
+      end
     end
   end
 

@@ -15,6 +15,9 @@ module Importers
 
     def perform
       html = case_search.fetch_case_by_number
+    rescue StandardError => e
+      Raygun.track_exception(e, custom_data: { error_type: 'Request Error' })
+    else
       save_html(court_case, html)
     end
 

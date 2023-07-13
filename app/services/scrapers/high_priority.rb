@@ -15,13 +15,22 @@ module Scrapers
 
     def perform
       cases = fetch_case_list
-
       bar = ProgressBar.new(cases.count)
       puts "#{cases.count} are high priority for update for #{county.name} county"
       cases.each do |case_number|
-        CourtCaseWorker
-          .set(queue: :high)
-          .perform_async(@county.id, case_number, true)
+        begin
+          court_case = ::CourtCase.find_by!(county_id: @county.id, case_number: case_number)
+        rescue ActiveRecord::RecordNotFound => e
+          Raygun.track_exception(e, custom_data: { error_type: 'CaseNotFound' })
+          next
+        else
+          next if court_case.enqueued
+
+          court_case.update(enqueued: true)
+          CourtCaseWorker
+            .set(queue: :high)
+            .perform_async(@county.id, case_number, true)
+        end
         bar.increment!
       end
     end

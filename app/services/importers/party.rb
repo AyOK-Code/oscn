@@ -1,13 +1,12 @@
 module Importers
   # Saves Party information to the database
   class Party
-    attr_reader :parties_json, :parties, :party_types
+    attr_reader :parties_json, :party_types
     attr_accessor :court_case, :logs
 
     def initialize(parties_json, court_case, logs)
       @parties_json = parties_json
       @court_case = court_case
-      @parties = ::Party.pluck(:oscn_id, :id).to_h
       @party_types = ::PartyType.pluck(:name, :id).to_h
       @logs = logs
     end
@@ -30,10 +29,11 @@ module Importers
 
     def save_parties(party_data)
       oscn_id = parse_id(party_data[:link])
+      party = ::Party.find_by(oscn_id: oscn_id)
 
-      if parties[oscn_id]
-        update_party(parties[oscn_id], party_data)
-        save_existing_party_to_case(oscn_id)
+      if party
+        party.update(full_name: party_data[:name])
+        save_existing_party_to_case(party)
       else
         create_and_save_party_to_case(oscn_id, party_data)
       end
@@ -49,16 +49,8 @@ module Importers
       params['id'].first.to_i
     end
 
-    def update_party(party_id, party_data)
-      party = ::Party.find(party_id)
-      party.update(
-        full_name: party_data[:name]
-      )
-    end
-
-    def save_existing_party_to_case(oscn_id)
-      party_id = parties[oscn_id]
-      create_case_party(court_case.id, party_id)
+    def save_existing_party_to_case(party)
+      create_case_party(court_case.id, party.id)
     end
 
     def find_or_create_party_type(party_type)
@@ -86,10 +78,15 @@ module Importers
     end
 
     def create_and_save_party_to_case_text(party_data)
+      full_name = party_data[:name].squish
+      party_type_id = find_or_create_party_type(party_data[:party_type].downcase)
+
+      return if text_only_party_exists?(full_name, party_type_id)
+
       begin
         party = ::Party.create!(
-          full_name: party_data[:name].squish,
-          party_type_id: find_or_create_party_type(party_data[:party_type].downcase)
+          full_name: full_name,
+          party_type_id: party_type_id
         )
       rescue StandardError
         logs.create_log('parties', "#{court_case.case_number}: error when creating the party", party_data)
@@ -97,6 +94,14 @@ module Importers
       return if party.nil?
 
       create_case_party(court_case.id, party.id)
+    end
+
+    def text_only_party_exists?(full_name, party_type_id)
+      ::Party.joins(:case_parties).where(
+        full_name: full_name,
+        party_type_id: party_type_id,
+        case_parties: { court_case_id: court_case.id }
+      ).present?
     end
 
     def create_case_party(court_case_id, party_id)

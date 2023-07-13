@@ -1,6 +1,7 @@
 SELECT
 	docket_events.id,
 	docket_events.court_case_id,
+	court_cases.county_id as county_id,
 	case_types.name,
 	case_types.abbreviation,
 	docket_events.party_id,

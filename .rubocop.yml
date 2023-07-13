@@ -22,6 +22,9 @@ Metrics/BlockLength:
     - 'spec/**/*'
     - 'lib/tasks/update.rake'
     - 'lib/tasks/doc.rake'
+Layout/LineLength:
+  Exclude:
+    - 'spec/services/importers/doc/*'
 Style/Documentation:
   Enabled: false
 Style/FrozenStringLiteralComment:

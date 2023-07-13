@@ -8,6 +8,16 @@ RSpec.describe County, type: :model do
 
   describe 'associations' do
     it { should have_many(:court_cases).dependent(:destroy) }
+    it { should have_many(:case_not_founds).dependent(:destroy) }
     it { should belong_to(:district_attorney).class_name('DistrictAttorney').optional }
+  end
+
+  describe '#name_id_mapping' do
+    it 'returns a hash of the name to id' do
+      county = create(:county)
+      mapping = County.name_id_mapping
+
+      expect(mapping[county.name]).to eq county.id
+    end
   end
 end

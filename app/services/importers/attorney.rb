@@ -17,6 +17,8 @@ module Importers
     def perform
       attorney_object.each do |attorney_data|
         save_attorneys(attorney_data)
+      rescue StandardError => e
+        Raygun.track_exception(e, custom_data: { error_type: 'Data Error' })
       end
     end
 
@@ -53,7 +55,7 @@ module Importers
         data = {
           court_case_id: court_case.id,
           counsel_id: counsel.id,
-          party_id: party_matcher.party_id_from_name(party.squish)
+          party_id: party_matcher.party_id_from_name(party.squish.chomp(','))
         }
         CounselParty.find_or_create_by(data)
       end

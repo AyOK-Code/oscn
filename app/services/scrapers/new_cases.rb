@@ -5,7 +5,7 @@ module Scrapers
 
     def initialize(county, days_ago: 7)
       @case_types = CaseType.oscn_id_mapping
-      @counties = County.pluck(:name, :id).to_h
+      @counties = County.name_id_mapping
       @county = county
       @days_ago = days_ago
     end
@@ -28,7 +28,7 @@ module Scrapers
     end
 
     def save_case(row, date)
-      params = OscnScraper::Parsers::Link.parse(row)
+      params = OscnScraper::Parsers::Link.parse(row.at('a'))
 
       case_number = params[:case_number]
       case_type_id = case_types[case_type(case_number)]
