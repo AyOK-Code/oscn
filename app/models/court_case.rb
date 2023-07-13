@@ -31,7 +31,7 @@ class CourtCase < ApplicationRecord
   scope :older_than, ->(date) { joins(:case_html).where('case_htmls.scraped_at < ?', date) }
   # TODO: Make scope more dynamic to search for different errors
   scope :with_error, -> { where.not('logs @> ?', { events: nil }.to_json) }
-  scope :for_county_name, ->(name) { joins(:county).where(counties: { name: }) }
+  scope :for_county_name, ->(name) { joins(:county).where(counties: { name: name }) }
   scope :not_in_queue, -> { where(enqueued: false) }
 
   delegate :html, to: :case_html

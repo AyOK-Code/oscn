@@ -135,13 +135,20 @@ RSpec.describe CourtCase, type: :model do
 
   describe '.with_error' do
     it 'filters based on the DocketEventCountError' do
-      skip
+      create(:court_case, :with_error)
+      create(:court_case)
+
+      expect(described_class.with_error.count).to eq 1
     end
   end
 
   describe '.for_county_name(name)' do
     it 'filters by the county name' do
-      skip
+      county = create(:county, name: 'Tulsa')
+      create(:county, name: 'Oklahoma')
+      create(:court_case, county: county)
+
+      expect(described_class.for_county_name('Tulsa').count).to eq 1
     end
   end
 

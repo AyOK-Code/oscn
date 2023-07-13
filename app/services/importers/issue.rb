@@ -46,7 +46,7 @@ module Importers
 
       {
         name: issue_data[:issue_name],
-        filed_by: party_matcher.party_id_from_name(issue_data[:filed_by]),
+        filed_by_id: party_matcher.party_id_from_name(issue_data[:filed_by]),
         filed_on: issue_data[:filed_on],
         count_code_id: code_id
       }
