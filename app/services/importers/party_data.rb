@@ -4,7 +4,7 @@ module Importers
     attr_accessor :party
 
     def initialize(oscn_id)
-      @party = ::Party.find_by(oscn_id: oscn_id)
+      @party = ::Party.find_by(oscn_id:)
     end
 
     def self.perform(oscn_id)
@@ -49,7 +49,7 @@ module Importers
       aliases_column.each do |row|
         next if row.class != Nokogiri::XML::Text
 
-        PartyAlias.find_or_create_by(party: party, name: row.text.squish)
+        PartyAlias.find_or_create_by(party:, name: row.text.squish)
       end
     end
 

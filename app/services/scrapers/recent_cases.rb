@@ -47,9 +47,9 @@ module Scrapers
 
     def fetch_data(county, date, case_type_oscn_id)
       scraper = OscnScraper::Requestor::Report.new({
-                                                     county: county,
+                                                     county:,
                                                      case_type_id: case_type_oscn_id,
-                                                     date: date
+                                                     date:
                                                    })
       request = scraper.events_scheduled
       case_changes.new(Nokogiri::HTML.parse(request.body)).parse

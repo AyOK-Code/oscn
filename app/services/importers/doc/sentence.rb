@@ -47,7 +47,7 @@ module Importers
           sentence_id: data[1],
           sentencing_county: data[4],
           consecutive_to_sentence_id: data[2],
-          js_date: js_date,
+          js_date:,
           crf_number: data[6],
           statute_code: data[3],
           incarcerated_term_in_years: data[7].to_f,

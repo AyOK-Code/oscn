@@ -5,7 +5,7 @@ RSpec.describe Importers::PartyData do
     it 'saves aliases' do
       path = 'spec/fixtures/party_example.html'
       html = File.read(path)
-      party_html = create(:party_html, html: html)
+      party_html = create(:party_html, html:)
       party = party_html.party
 
       described_class.perform(party.oscn_id)

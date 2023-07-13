@@ -10,14 +10,14 @@ module Importers
 
     def update_logs
       if logs.present?
-        court_case.update(logs: logs)
+        court_case.update(logs:)
       else
         court_case.update(logs: nil)
       end
     end
 
     def create_log(table, message, data)
-      logs[table.to_s] = { message: message, data: data }
+      logs[table.to_s] = { message:, data: }
     end
   end
 end

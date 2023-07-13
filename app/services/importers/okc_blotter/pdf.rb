@@ -44,7 +44,7 @@ module Importers
 
         response = HTTParty.post(
           "#{url}/parse",
-          body: { pdf: pdf },
+          body: { pdf: },
           headers: { Authorization: auth_token }
         )
         @json = JSON.parse(response.body)

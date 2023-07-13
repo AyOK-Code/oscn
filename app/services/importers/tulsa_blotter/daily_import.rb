@@ -69,7 +69,7 @@ module Importers
       end
 
       def upsert_arrest_detail_html(arrest, json)
-        arrest_details_html = ::TulsaBlotter::ArrestDetailsHtml.find_or_initialize_by(arrest: arrest)
+        arrest_details_html = ::TulsaBlotter::ArrestDetailsHtml.find_or_initialize_by(arrest:)
         arrest_details_html.assign_attributes(
           html: json['html']['Details Html'],
           scraped_at: Time.current
@@ -90,7 +90,7 @@ module Importers
         end
         offense ||= ::TulsaBlotter::Offense.new
         offense.assign_attributes(
-          arrest: arrest,
+          arrest:,
           bond_amount: Monetize.parse(json['Bond Amt']).to_f.round(2),
           bond_type: json['Bond Type'],
           case_number: json['Case #'],

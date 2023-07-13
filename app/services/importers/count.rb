@@ -55,14 +55,14 @@ module Importers
       {
         number: count_data[:number],
         filed_statute_violation: count_data[:filed_statute_violation],
-        filed_statute_code_id: filed_statute_code_id,
+        filed_statute_code_id:,
         disposition: count_data[:disposition],
         disposition_on: count_data[:disposition_on],
         disposed_statute_violation: count_data[:disposed_statute_violation],
-        disposed_statute_code_id: disposed_statute_code_id,
+        disposed_statute_code_id:,
         charge: count_data[:charge],
-        plea_id: plea_id,
-        verdict_id: verdict_id
+        plea_id:,
+        verdict_id:
       }
     end
 
@@ -90,7 +90,7 @@ module Importers
 
       return count_code_id if count_code_id
 
-      new_count_code = CountCode.create(code: code)
+      new_count_code = CountCode.create(code:)
       @count_codes = CountCode.pluck(:code, :id).to_h
       new_count_code.id
     end

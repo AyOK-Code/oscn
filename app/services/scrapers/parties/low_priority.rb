@@ -8,7 +8,7 @@ module Scrapers
       end
 
       def self.perform(days_ago: 90)
-        new(days_ago: days_ago).perform
+        new(days_ago:).perform
       end
 
       def perform
@@ -16,7 +16,7 @@ module Scrapers
         bar = ProgressBar.new(parties_oscn_ids.count)
 
         parties_oscn_ids.each do |oscn_id|
-          party = ::Party.find_by!(oscn_id: oscn_id)
+          party = ::Party.find_by!(oscn_id:)
           next if party.enqueued
 
           party.update(enqueued: true)

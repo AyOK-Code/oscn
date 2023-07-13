@@ -4,7 +4,7 @@ module Importers
     attr_accessor :party, :county_name, :oscn_id
 
     def initialize(oscn_id)
-      @party = ::Party.find_by(oscn_id: oscn_id)
+      @party = ::Party.find_by(oscn_id:)
       @oscn_id = oscn_id
       @county_name = @party.court_cases.first.county.name
     end
@@ -26,7 +26,7 @@ module Importers
     def save_html(party, html)
       party.build_party_html unless party.party_html
       party.party_html.update({
-                                html: html, scraped_at: DateTime.current
+                                html:, scraped_at: DateTime.current
                               })
     end
   end

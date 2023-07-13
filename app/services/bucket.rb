@@ -20,7 +20,7 @@ class Bucket
                                        ENV.fetch('BUCKETEER_AWS_SECRET_ACCESS_KEY', nil))
     Aws.config.update(
       region: ENV.fetch('BUCKETEER_AWS_REGION', 'us-east-1'),
-      credentials: credentials
+      credentials:
     )
     Aws::S3::Client.new
   end

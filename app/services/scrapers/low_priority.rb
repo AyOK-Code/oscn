@@ -8,7 +8,7 @@ module Scrapers
     end
 
     def self.perform(days_ago: 90)
-      new(days_ago: days_ago).perform
+      new(days_ago:).perform
     end
 
     def perform
@@ -19,7 +19,7 @@ module Scrapers
         county = c.county
 
         case_number = c.case_number
-        court_case = ::CourtCase.find_by!(county_id: county.id, case_number: case_number)
+        court_case = ::CourtCase.find_by!(county_id: county.id, case_number:)
 
         next if court_case.enqueued
 

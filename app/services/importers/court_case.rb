@@ -7,7 +7,7 @@ module Importers
     attr_reader :data
 
     def initialize(county_id, case_number)
-      @court_case = ::CourtCase.find_by(county_id: county_id, case_number: case_number)
+      @court_case = ::CourtCase.find_by(county_id:, case_number:)
       @parsed_html = Nokogiri::HTML(court_case.case_html.html)
       @data = OscnScraper::Parsers::BaseParser.new(@parsed_html).build_object
       @logs = ::Importers::Logger.new(court_case)

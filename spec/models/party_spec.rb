@@ -52,7 +52,7 @@ RSpec.describe Party, type: :model do
     describe '#without_parent' do
       let!(:parent_party) { create(:parent_party) }
       it 'Filter to parties without parent party' do
-        party_bad = create(:party, birth_month: 12, parent_party: parent_party)
+        party_bad = create(:party, birth_month: 12, parent_party:)
         create(:party)
         expect(described_class.without_parent.size).to eq(1)
         expect(described_class.without_parent.first.id).not_to eq(party_bad.id)
@@ -62,7 +62,7 @@ RSpec.describe Party, type: :model do
     describe '#with_parent' do
       let(:parent_party) { create(:parent_party) }
       it 'Filter to parties with parent party' do
-        party_good = create(:party, birth_month: 12, parent_party: parent_party)
+        party_good = create(:party, birth_month: 12, parent_party:)
         create(:party)
         expect(described_class.with_parent.size).to eq(1)
         expect(described_class.with_parent.first.id).to eq(party_good.id)

@@ -45,7 +45,7 @@ module Importers
       code_id = find_or_create_count_code(issue_data[:issue_code]&.squish)
 
       {
-        name: issue_data[:issue_name]
+        name: issue_data[:issue_name],
         filed_by: party_matcher.party_id_from_name(issue_data[:filed_by]),
         filed_on: issue_data[:filed_on],
         count_code_id: code_id
@@ -58,7 +58,7 @@ module Importers
 
       return count_code_id if count_code_id
 
-      new_count_code = CountCode.create(code: code)
+      new_count_code = CountCode.create(code:)
       @count_codes = CountCode.pluck(:code, :id).to_h
       new_count_code.id
     end

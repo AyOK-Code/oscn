@@ -10,8 +10,8 @@ module Scrapers
       # TODO: Capture results and send via email or slack message
       Scrapers::WarrantsView.perform
       counties.each do |county|
-        Scrapers::NewCases.perform(county, days_ago: days_ago)
-        Scrapers::HighPriority.perform(county, days_ago: days_ago, days_forward: days_forward)
+        Scrapers::NewCases.perform(county, days_ago:)
+        Scrapers::HighPriority.perform(county, days_ago:, days_forward:)
       end
 
       Scrapers::MediumPriority.perform

@@ -5,7 +5,7 @@ FactoryBot.define do
     party_type
 
     trait :with_html do
-      after(:create) { |party| create(:party_html, party: party) }
+      after(:create) { |party| create(:party_html, party:) }
     end
 
     trait :defendant do
@@ -23,21 +23,21 @@ FactoryBot.define do
     trait :with_case do
       after(:create) do |party|
         court = create(:court_case)
-        create(:case_party, court_case: court, party: party)
+        create(:case_party, court_case: court, party:)
       end
     end
 
     trait :with_felony_case do
       after(:create) do |party|
         court = create(:court_case, :felony)
-        create(:case_party, court_case: court, party: party)
+        create(:case_party, court_case: court, party:)
       end
     end
 
     trait :with_misdemeanor_case do
       after(:create) do |party|
         court = create(:court_case, :misdemeanor)
-        create(:case_party, court_case: court, party: party)
+        create(:case_party, court_case: court, party:)
       end
     end
   end

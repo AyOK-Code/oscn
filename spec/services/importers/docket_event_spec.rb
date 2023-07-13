@@ -24,7 +24,7 @@ RSpec.describe Importers::DocketEvent do
     end
 
     it 'updates existing docket events' do
-      create(:docket_event, row_index: 0, court_case: court_case, description: 'Test Text')
+      create(:docket_event, row_index: 0, court_case:, description: 'Test Text')
       description = "CRIMINAL FELONY INITIAL FILING. Document Available at Court Clerk's Office"
       described_class.perform(test_data, court_case, log)
 

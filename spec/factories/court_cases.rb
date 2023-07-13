@@ -11,11 +11,11 @@ FactoryBot.define do
     end
 
     trait :with_html do
-      after(:create) { |court_case| create(:case_html, court_case: court_case) }
+      after(:create) { |court_case| create(:case_html, court_case:) }
     end
 
     trait :with_docket_event do
-      after(:create) { |court_case| create(:docket_event, court_case: court_case) }
+      after(:create) { |court_case| create(:docket_event, court_case:) }
     end
 
     trait :active do

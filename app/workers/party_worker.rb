@@ -9,7 +9,7 @@ class PartyWorker
   def perform(oscn_id)
     ::Importers::PartyHtml.perform(oscn_id)
     ::Importers::PartyData.perform(oscn_id)
-    party = ::Party.find_by!(oscn_id: oscn_id)
+    party = ::Party.find_by!(oscn_id:)
     party.update(enqueued: false)
   end
 end

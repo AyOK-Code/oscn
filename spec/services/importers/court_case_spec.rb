@@ -10,7 +10,7 @@ RSpec.describe Importers::CourtCase do
       create(:judge, name: 'CF Docket E')
       court_case = create(:court_case, county_id: county.id, case_number: 'CF-2018-1016')
       html = File.read('spec/fixtures/example.html')
-      create(:case_html, court_case: court_case, html: html)
+      create(:case_html, court_case:, html:)
 
       # Run importer
       described_class.new(county.id, 'CF-2018-1016').perform
@@ -30,7 +30,7 @@ RSpec.describe Importers::CourtCase do
       create(:judge, name: 'Collins, April')
       court_case = create(:court_case, county_id: county.id, case_number: 'CS-2022-1020')
       html = File.read('spec/fixtures/oscn_id_less.html')
-      create(:case_html, court_case: court_case, html: html)
+      create(:case_html, court_case:, html:)
 
       # Run importer
 
