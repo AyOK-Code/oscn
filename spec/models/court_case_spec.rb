@@ -13,6 +13,7 @@ RSpec.describe CourtCase, type: :model do
     it { should have_many(:counsels).through(:counsel_parties) }
     it { should have_many(:docket_events).dependent(:destroy) }
     it { should have_many(:issues).dependent(:destroy) }
+    it { should have_many(:issue_parties).through(:issues) }
     it { should have_one(:case_html).dependent(:destroy) }
     it { should have_one(:case_stat) }
 

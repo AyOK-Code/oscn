@@ -18,7 +18,8 @@ module Importers
 
     def perform
       issues_json.each do |issue_data|
-        save_issue(issue_data)
+        i = save_issue(issue_data)
+        ::Importers::IssueParty.perform(i, issue_data[:parties], logs) if i.present?
       end
     end
 
@@ -30,14 +31,12 @@ module Importers
     end
 
     def save_issue(issue_data)
-      c = find_issue(issue_data)
-      c.assign_attributes(issue_attributes(issue_data))
-
+      i = find_issue(issue_data)
+      i.assign_attributes(issue_attributes(issue_data))
       begin
-        c.save!
-        # TODO: Send data to IssueParty Importer
+        i if i.save!
       rescue StandardError
-        logs.create_log('issues', "#{court_case.case_number} skipped issue due to missing party.", issue_data)
+        logs.create_log('issues', "#{court_case.case_number}: Error creating issue", issue_data)
       end
     end
 
