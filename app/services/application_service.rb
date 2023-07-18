@@ -1,5 +1,5 @@
 class ApplicationService
-  def self.perform(*args, &block)
-    new(*args, &block).perform
+  def self.perform(*args, &)
+    new(*args, &).perform
   end
 end

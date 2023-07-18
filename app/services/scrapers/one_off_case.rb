@@ -28,8 +28,8 @@ module Scrapers
 
         create_court_case(row, case_type_id)
 
-        ::Importers::CaseHtml.perform(county_id, case_number)
-        ::Importers::CourtCase.perform(county_id, case_number)
+        ::Importers::CaseHtml.perform(county.id, case_number)
+        ::Importers::CourtCase.perform(county.id, case_number)
       end
     end
 

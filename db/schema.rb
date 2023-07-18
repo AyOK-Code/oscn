@@ -318,6 +318,33 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_03_210127) do
     t.index ["party_id"], name: "index_events_on_party_id"
   end
 
+  create_table "issue_parties", force: :cascade do |t|
+    t.bigint "issue_id", null: false
+    t.bigint "party_id", null: false
+    t.date "disposition_on"
+    t.bigint "verdict_id", null: false
+    t.string "verdict_details"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["issue_id"], name: "index_issue_parties_on_issue_id"
+    t.index ["party_id"], name: "index_issue_parties_on_party_id"
+    t.index ["verdict_id"], name: "index_issue_parties_on_verdict_id"
+  end
+
+  create_table "issues", force: :cascade do |t|
+    t.integer "number"
+    t.string "name"
+    t.bigint "court_case_id", null: false
+    t.bigint "count_code_id", null: false
+    t.bigint "filed_by_id", null: false
+    t.date "filed_on"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["count_code_id"], name: "index_issues_on_count_code_id"
+    t.index ["court_case_id"], name: "index_issues_on_court_case_id"
+    t.index ["filed_by_id"], name: "index_issues_on_filed_by_id"
+  end
+
   create_table "judges", force: :cascade do |t|
     t.string "name", null: false
     t.string "courthouse"
@@ -634,6 +661,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_03_210127) do
   add_foreign_key "events", "court_cases"
   add_foreign_key "events", "event_types"
   add_foreign_key "events", "parties"
+  add_foreign_key "issue_parties", "issues"
+  add_foreign_key "issue_parties", "parties"
+  add_foreign_key "issue_parties", "verdicts"
+  add_foreign_key "issues", "count_codes"
+  add_foreign_key "issues", "court_cases"
+  add_foreign_key "issues", "parties", column: "filed_by_id"
   add_foreign_key "judges", "counties"
   add_foreign_key "okc_blotter_bookings", "okc_blotter_pdfs", column: "pdf_id"
   add_foreign_key "okc_blotter_bookings", "rosters"

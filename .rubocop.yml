@@ -1,5 +1,5 @@
 AllCops:
-  TargetRubyVersion: 2.6
+  TargetRubyVersion: 3.1
   NewCops: enable
   Include:
     - '**/*.rb'
@@ -50,4 +50,7 @@ Lint/NestedMethodDefinition:
 Metrics/ClassLength:
   Exclude:
     - 'app/services/importers/okc_blotter/pdf.rb'
-
+Style/HashSyntax:
+  EnforcedShorthandSyntax: 'never'
+Style/ArgumentsForwarding:
+  Enabled: false

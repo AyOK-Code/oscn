@@ -10,11 +10,15 @@ RSpec.describe Party, type: :model do
     it { should have_many(:counsels).through(:counsel_parties) }
     it { should have_many(:docket_events).dependent(:destroy) }
     it { should have_many(:addresses).class_name('PartyAddress').dependent(:destroy) }
+    it { should have_many(:aliases).class_name('PartyAlias').dependent(:destroy) }
+    it { should have_many(:issue_parties).dependent(:destroy) }
     it { should have_one(:party_html).dependent(:destroy) }
   end
 
   describe 'validations' do
     subject { FactoryBot.build(:party) }
+    it { should validate_inclusion_of(:birth_month).in_range(1..12).allow_nil }
+    it { should validate_inclusion_of(:birth_year).in_range(1800..DateTime.current.year).allow_nil }
   end
 
   describe 'scopes' do

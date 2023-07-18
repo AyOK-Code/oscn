@@ -22,6 +22,16 @@ FactoryBot.define do
       closed_on { nil }
     end
 
+    trait :with_error do
+      logs do
+        {
+          events: {
+            message: 'Error'
+          }
+        }
+      end
+    end
+
     trait :inactive do
       closed_on { Faker::Date.between(from: 2.years.ago, to: Date.current) }
     end
