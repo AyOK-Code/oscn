@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_03_210127) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_18_120638) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -336,13 +336,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_03_210127) do
     t.string "name"
     t.bigint "court_case_id", null: false
     t.bigint "count_code_id", null: false
-    t.bigint "filed_by_id", null: false
     t.date "filed_on"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "filed_by"
     t.index ["count_code_id"], name: "index_issues_on_count_code_id"
     t.index ["court_case_id"], name: "index_issues_on_court_case_id"
-    t.index ["filed_by_id"], name: "index_issues_on_filed_by_id"
   end
 
   create_table "judges", force: :cascade do |t|
@@ -666,7 +665,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_03_210127) do
   add_foreign_key "issue_parties", "verdicts"
   add_foreign_key "issues", "count_codes"
   add_foreign_key "issues", "court_cases"
-  add_foreign_key "issues", "parties", column: "filed_by_id"
   add_foreign_key "judges", "counties"
   add_foreign_key "okc_blotter_bookings", "okc_blotter_pdfs", column: "pdf_id"
   add_foreign_key "okc_blotter_bookings", "rosters"

@@ -33,7 +33,6 @@ module Importers
       ip.assign_attributes(issue_party_attributes(issue_party_data))
 
       begin
-        ap ip
         ip.save!
       rescue StandardError
         message = "#{issue.court_case.case_number}: Error creating issue party"

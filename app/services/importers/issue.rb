@@ -1,14 +1,13 @@
 module Importers
   # Imports Issue data from parsed json
   class Issue
-    attr_accessor :court_case, :party_matcher, :logs, :count_codes
+    attr_accessor :court_case, :logs, :count_codes
     attr_reader :issues_json
 
     def initialize(issues_json, court_case, logs)
       @issues_json = issues_json
       @court_case = court_case
       @count_codes = CountCode.pluck(:code, :id).to_h
-      @party_matcher = Matchers::Party.new(court_case)
       @logs = logs
     end
 
@@ -45,8 +44,8 @@ module Importers
 
       {
         name: issue_data[:issue_name],
-        filed_by_id: party_matcher.party_id_from_name(issue_data[:filed_by]),
-        filed_on: issue_data[:filed_on],
+        filed_by: issue_data[:filed_by],
+        filed_on: issue_data[:filed_on] == 'Not Available' ? nil : issue_data[:filed_on],
         count_code_id: code_id
       }
     end
