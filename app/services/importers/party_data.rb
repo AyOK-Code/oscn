@@ -22,7 +22,7 @@ module Importers
         save_aliases(aliases_column)
         save_personal(personal_columns)
         save_addresses(parsed_html)
-      rescue StandardError
+      rescue StandardError => e
         Raygun.track_exception(e, custom_data: { error_type: 'Data Error' })
       end
     end
