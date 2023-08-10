@@ -15,7 +15,7 @@ namespace :scrape do
 
     dates.each do |date|
       bar.increment! unless Rails.env.test?
-      
+
       DailyFilingWorker
         .set(queue: :high)
         .perform_async(county_name, date.strftime('%Y-%m-%d'))
