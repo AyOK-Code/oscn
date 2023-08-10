@@ -21,7 +21,7 @@ Bundler.require(*Rails.groups)
 
 module BackendTemplate
   class Application < Rails::Application
-    config.load_defaults 6.0
+    config.load_defaults 7.0
 
     # Add this for Sidekiq UI
     config.session_store :cookie_store, key: '_interslice_session'
