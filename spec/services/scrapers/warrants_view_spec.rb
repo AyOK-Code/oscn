@@ -4,7 +4,7 @@ Sidekiq::Testing.fake!
 
 RSpec.describe Scrapers::WarrantsView do
   describe '#perform' do
-    before(:each) do
+    before do
       create('Ocso::Warrant')
       county = create(:county, name: 'Oklahoma')
       cc = create(:court_case, case_number: 'CF-94-8641', county_id: county.id)

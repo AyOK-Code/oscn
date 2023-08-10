@@ -13,7 +13,7 @@ module Scrapers
     end
 
     def perform
-      puts "#{cases.count} are older #{days_ago} days"
+      Rails.logger.debug { "#{cases.count} are older #{days_ago} days" }
       bar = ProgressBar.new(cases.count)
 
       cases.each do |c|

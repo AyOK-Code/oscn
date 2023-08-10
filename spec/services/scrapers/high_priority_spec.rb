@@ -5,7 +5,7 @@ Sidekiq::Testing.fake!
 RSpec.describe Scrapers::HighPriority do
   describe '#perform' do
     # let(:test_case) {create(:court_case, closed_on: 7.days.ago, county: county)}
-    before(:each) do
+    before do
       @county =  create(:county, name: 'Tulsa')
       @test_case = create(:court_case, closed_on: 7.days.ago, county: @county)
       @data = nil
@@ -30,7 +30,7 @@ RSpec.describe Scrapers::HighPriority do
       described_class.perform('Tulsa')
 
       expect do
-        described_class.perform.to change(CourtCaseWorker.jobs, :size).by(0)
+        described_class.perform.not_to change(CourtCaseWorker.jobs, :size)
       end
     end
   end

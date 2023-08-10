@@ -6,17 +6,18 @@ RSpec.describe Importers::Logger do
   let(:court_case) { create(:court_case) }
   let(:party) { create(:party, full_name: 'PIT, ANTHONY LEE') }
   let(:log) { ::Importers::Logger.new(court_case) }
+
   describe '#update_logs' do
-    it 'updates  court case log if logs are present with a log' do
+    it 'updates court case log if logs are present with a log' do
       count_data = test_data.first
       log.create_log('counts', "#{court_case.case_number} skipped count due to missing party.", count_data)
       log.update_logs
       expect(court_case.logs.size).to eq(1)
     end
 
-    it 'updates  court case log if logs are not present with nil' do
+    it 'updates court case log if logs are not present with nil' do
       log.update_logs
-      expect(court_case.logs).to eq(nil)
+      expect(court_case.logs).to be_nil
     end
   end
 

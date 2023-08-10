@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe TulsaBlotter::Arrest, type: :model do
+RSpec.describe TulsaBlotter::Arrest do
   describe 'associations' do
-    it { should have_many(:offenses).class_name('TulsaBlotter::Offense') }
+    it { is_expected.to have_many(:offenses).class_name('TulsaBlotter::Offense') }
   end
 end

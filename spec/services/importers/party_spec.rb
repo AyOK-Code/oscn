@@ -8,6 +8,7 @@ RSpec.describe Importers::Party do
 
     context 'party has its own page with an oscn id' do
       let(:file_path) { 'spec/fixtures/importers/party_data.json' }
+
       context 'party does not exist in the database' do
         it 'creates a party' do
           described_class.perform(test_data, court_case, log)

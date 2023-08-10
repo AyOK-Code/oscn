@@ -21,9 +21,9 @@ module Importers
 
           @sentences << find_and_save_sentence(data)
         end
-        non_empty = @sentences.reject { |x| !x || x.empty? }
+        non_empty = @sentences.compact_blank
         grouped = non_empty.group_by { |x| [x[:doc_profile_id], x[:sentence_id]] }
-        unique = grouped.map { |_k, v| v[-1] }
+        unique = grouped.pluck(-1)
         ::Doc::Sentence.upsert_all(unique, unique_by: [:doc_profile_id, :sentence_id])
       end
 

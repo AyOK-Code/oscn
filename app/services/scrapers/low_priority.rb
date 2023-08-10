@@ -12,7 +12,7 @@ module Scrapers
     end
 
     def perform
-      puts "Pulling #{cases.count} low priority cases"
+      Rails.logger.debug { "Pulling #{cases.count} low priority cases" }
       bar = ProgressBar.new(cases.count)
 
       cases.each do |c|

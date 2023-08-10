@@ -3,7 +3,7 @@ require 'rake'
 
 RSpec.describe 'update', type: :task do
   describe 'is_error' do
-    after(:each) do
+    after do
       Rake::Task['update:is_error'].reenable
     end
 
@@ -14,7 +14,7 @@ RSpec.describe 'update', type: :task do
       end
       let!(:valid_case) { create(:court_case, :with_docket_event) }
 
-      it 'it updates is_error flag on error cases only' do
+      it 'updates is_error flag on error cases only' do
         Rake::Task['update:is_error'].invoke
         expect(empty_error_case.reload.is_error).to be true
         expect(docket_error_case.reload.is_error).to be true

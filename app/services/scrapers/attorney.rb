@@ -95,7 +95,7 @@ module Scrapers
     def page_count(parsed_data)
       numbers = parsed_data.css('.page-numbers')
       max = numbers.map { |t| t.text.to_i }.max
-      max.blank? ? 1 : max
+      (max.presence || 1)
     end
   end
 end

@@ -1,6 +1,6 @@
 namespace :import do
   desc 'Import Oklahoma List Statutes'
-  task :statutes do
+  task statutes: :environment do
     file = File.read('lib/data/ok_statutes.csv')
     data = CSV.parse(file, headers: true)
 

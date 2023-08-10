@@ -7,21 +7,21 @@ RSpec.describe DatabaseUpdateWorker, type: :worker do
     let(:args) { { 'county_id' => county_id, 'case_number' => case_number } }
 
     it 'calls the CourtCase importer with the provided arguments' do
-      expect(::Importers::CourtCase).to receive(:perform).with(county_id, case_number)
+      expect(::Importers::CourtCase).to have_received(:perform).with(county_id, case_number)
 
-      subject.perform(args)
+      described_class.perform(args)
     end
 
     it 'is a Sidekiq worker' do
-      expect(DatabaseUpdateWorker).to include(Sidekiq::Worker)
+      expect(described_class).to include(Sidekiq::Worker)
     end
 
     it 'has Sidekiq retry options set to 5' do
-      expect(DatabaseUpdateWorker.sidekiq_options['retry']).to eq(5)
+      expect(described_class.sidekiq_options['retry']).to eq(5)
     end
 
     it 'has Sidekiq queue set to :medium' do
-      expect(DatabaseUpdateWorker.sidekiq_options['queue']).to eq(:medium)
+      expect(described_class.sidekiq_options['queue']).to eq(:medium)
     end
   end
 end

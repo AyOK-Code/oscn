@@ -1,32 +1,34 @@
 require 'rails_helper'
 
-RSpec.describe Party, type: :model do
+RSpec.describe Party do
   describe 'associations' do
-    it { should belong_to(:party_type) }
-    it { should belong_to(:parent_party).optional }
-    it { should have_many(:case_parties).dependent(:destroy) }
-    it { should have_many(:court_cases).through(:case_parties) }
-    it { should have_many(:counsel_parties).dependent(:destroy) }
-    it { should have_many(:counsels).through(:counsel_parties) }
-    it { should have_many(:docket_events).dependent(:destroy) }
-    it { should have_many(:addresses).class_name('PartyAddress').dependent(:destroy) }
-    it { should have_many(:aliases).class_name('PartyAlias').dependent(:destroy) }
-    it { should have_many(:issue_parties).dependent(:destroy) }
-    it { should have_one(:party_html).dependent(:destroy) }
+    it { is_expected.to belong_to(:party_type) }
+    it { is_expected.to belong_to(:parent_party).optional }
+    it { is_expected.to have_many(:case_parties).dependent(:destroy) }
+    it { is_expected.to have_many(:court_cases).through(:case_parties) }
+    it { is_expected.to have_many(:counsel_parties).dependent(:destroy) }
+    it { is_expected.to have_many(:counsels).through(:counsel_parties) }
+    it { is_expected.to have_many(:docket_events).dependent(:destroy) }
+    it { is_expected.to have_many(:addresses).class_name('PartyAddress').dependent(:destroy) }
+    it { is_expected.to have_many(:aliases).class_name('PartyAlias').dependent(:destroy) }
+    it { is_expected.to have_many(:issue_parties).dependent(:destroy) }
+    it { is_expected.to have_one(:party_html).dependent(:destroy) }
   end
 
   describe 'validations' do
-    subject { FactoryBot.build(:party) }
-    it { should validate_inclusion_of(:birth_month).in_range(1..12).allow_nil }
-    it { should validate_inclusion_of(:birth_year).in_range(1800..DateTime.current.year).allow_nil }
+    subject { build(:party) }
+
+    it { is_expected.to validate_inclusion_of(:birth_month).in_range(1..12).allow_nil }
+    it { is_expected.to validate_inclusion_of(:birth_year).in_range(1800..DateTime.current.year).allow_nil }
   end
 
   describe 'scopes' do
     describe '#older_than' do
       context 'with newer and older parties' do
-        let(:date) { Time.current - 1.year }
+        let(:date) { 1.year.ago }
         let!(:older_party) { create(:party, party_html: create(:party_html, scraped_at: date - 1.day)) }
         let!(:newer_party) { create(:party, party_html: create(:party_html, scraped_at: date + 1.day)) }
+
         it 'only includes older parties' do
           expect(described_class.older_than(date).map(&:id)).to eq([older_party.id])
         end
@@ -37,6 +39,7 @@ RSpec.describe Party, type: :model do
       context 'with parties with and without html' do
         let!(:with_html) { create(:party, :with_html) }
         let!(:without_html) { create(:party) }
+
         it 'only includes parties without html' do
           expect(described_class.without_html.map(&:id)).to eq([without_html.id])
         end
@@ -54,6 +57,7 @@ RSpec.describe Party, type: :model do
 
     describe '#without_parent' do
       let!(:parent_party) { create(:parent_party) }
+
       it 'Filter to parties without parent party' do
         party_bad = create(:party, birth_month: 12, parent_party: parent_party)
         create(:party)
@@ -64,6 +68,7 @@ RSpec.describe Party, type: :model do
 
     describe '#with_parent' do
       let(:parent_party) { create(:parent_party) }
+
       it 'Filter to parties with parent party' do
         party_good = create(:party, birth_month: 12, parent_party: parent_party)
         create(:party)

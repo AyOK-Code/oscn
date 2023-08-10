@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe OkcBlotter::Pdf, type: :model do
+RSpec.describe OkcBlotter::Pdf do
   describe 'validations' do
-    it { should have_many(:bookings).dependent(:destroy) }
+    it { is_expected.to have_many(:bookings).dependent(:destroy) }
   end
 end

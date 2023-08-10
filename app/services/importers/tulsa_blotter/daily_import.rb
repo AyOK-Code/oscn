@@ -12,7 +12,7 @@ module Importers
           json = JSON.parse(response)
           save_page(json)
           page_number += 1
-          incarcerated_ids += (json['Data'].map { |val| val['Booking ID'] })
+          incarcerated_ids += json['Data'].pluck('Booking ID')
         end
         track_released(incarcerated_ids)
       end

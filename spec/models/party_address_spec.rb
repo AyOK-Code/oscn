@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-RSpec.describe PartyAddress, type: :model do
+RSpec.describe PartyAddress do
   describe 'associations' do
-    it { should belong_to(:party) }
+    it { is_expected.to belong_to(:party) }
   end
 
   describe '.current' do

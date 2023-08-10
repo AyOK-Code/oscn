@@ -14,7 +14,7 @@ module Importers
       end
 
       def perform
-        puts "Importing #{dir}"
+        Rails.logger.debug { "Importing #{dir}" }
         @file.body.string.split("\r\n").each do |line|
           bar.increment!
           data = line.unpack(field_pattern).map(&:squish)

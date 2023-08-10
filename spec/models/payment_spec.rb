@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Payment, type: :model do
+RSpec.describe Payment do
   describe 'view data' do
     it 'populates the view with data' do
       skip

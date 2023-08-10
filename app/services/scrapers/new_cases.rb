@@ -19,7 +19,7 @@ module Scrapers
         scraper = OscnScraper::Requestor::Report.new({ county: county, date: date })
         html = scraper.fetch_daily_filings
         data = Nokogiri::HTML(html.body)
-        puts "Pulling cases from #{date.strftime('%m/%d/%Y')}"
+        Rails.logger.debug { "Pulling cases from #{date.strftime('%m/%d/%Y')}" }
 
         data.css('tr').each do |row|
           save_case(row, date)

@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe IssueParty, type: :model do
+RSpec.describe IssueParty do
   describe 'associations' do
-    it { should belong_to(:issue) }
-    it { should belong_to(:party) }
-    it { should belong_to(:verdict) }
+    it { is_expected.to belong_to(:issue) }
+    it { is_expected.to belong_to(:party) }
+    it { is_expected.to belong_to(:verdict) }
   end
 end

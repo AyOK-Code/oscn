@@ -7,24 +7,25 @@ RSpec.describe Scrapers::Parties::HighPriority do
     context 'when the party is enqueued' do
       let!(:party_enqueued) { create(:party, enqueued: true) }
 
-      it ' doesnt add  jobs to the PartyWorker' do
+      it 'doesnt add jobs to the PartyWorker' do
         expect do
-          described_class.perform.to change(PartyWorker.jobs, :size).by(0)
+          described_class.perform.not_to change(PartyWorker.jobs, :size)
         end
       end
     end
 
     context 'when there is a recently scraped party' do
       let!(:recently_scraped_party) do
-        create(:party, party_html: build(:party_html, scraped_at: Time.current - 1.day))
+        create(:party, party_html: build(:party_html, scraped_at: 1.day.ago))
       end
 
       it 'doesn\'t add jobs to the PartyWorker' do
         expect do
-          described_class.perform.to change(PartyWorker.jobs, :size).by(0)
+          described_class.perform.not_to change(PartyWorker.jobs, :size)
         end
       end
     end
+
     context 'when there is a party with no html and no oscn_id' do
       let!(:party_no_oscn) do
         create(:party, oscn_id: nil)
@@ -32,14 +33,14 @@ RSpec.describe Scrapers::Parties::HighPriority do
 
       it 'doesnt add jobs to the PartyWorker' do
         expect do
-          described_class.perform.to change(PartyWorker.jobs, :size).by(0)
+          described_class.perform.not_to change(PartyWorker.jobs, :size)
         end
       end
     end
 
     context 'when there is a party that hasn\'t been scraped in a while' do
       let!(:old_party) do
-        create(:party, party_html: build(:party_html, scraped_at: Time.current - 1.year))
+        create(:party, party_html: build(:party_html, scraped_at: 1.year.ago))
       end
 
       it 'adds jobs to the PartyWorker' do

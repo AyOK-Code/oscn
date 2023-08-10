@@ -12,7 +12,7 @@ module Scrapers
       end
 
       def perform
-        puts "Pulling #{parties_oscn_ids.count} low priority parties"
+        Rails.logger.debug { "Pulling #{parties_oscn_ids.count} low priority parties" }
         bar = ProgressBar.new(parties_oscn_ids.count)
 
         parties_oscn_ids.each do |oscn_id|

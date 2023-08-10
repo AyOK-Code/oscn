@@ -64,7 +64,7 @@ module Importers
       {
         event_on: docket_event_data[:date],
         docket_event_type_id: event_type_id,
-        count: docket_event_data[:count].blank? ? nil : docket_event_data[:count],
+        count: docket_event_data[:count].presence,
         party_id: party_id,
         description: docket_event_data[:description],
         amount: currency_to_number(docket_event_data[:amount])

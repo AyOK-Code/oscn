@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-RSpec.describe CaseHtml, type: :model do
+RSpec.describe CaseHtml do
   describe 'associations' do
-    it { should belong_to(:court_case) }
+    it { is_expected.to belong_to(:court_case) }
   end
 
   describe 'validations' do
-    it { should validate_presence_of(:html) }
-    it { should validate_presence_of(:scraped_at) }
+    it { is_expected.to validate_presence_of(:html) }
+    it { is_expected.to validate_presence_of(:scraped_at) }
   end
 end

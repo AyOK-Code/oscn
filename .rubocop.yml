@@ -1,3 +1,7 @@
+require:
+  - rubocop-rails
+  - rubocop-rspec
+
 AllCops:
   TargetRubyVersion: 3.1
   NewCops: enable
@@ -54,3 +58,5 @@ Style/HashSyntax:
   EnforcedShorthandSyntax: 'never'
 Style/ArgumentsForwarding:
   Enabled: false
+RSpec/MultipleExpectations:
+  Max: 3
