@@ -18,7 +18,7 @@ namespace :scrape do
 
       DailyFilingWorker
         .set(queue: :high)
-        .perform_async(county_name, date)
+        .perform_async(county_name, date.strftime('%Y-%m-%d'))
     end
   end
 end
