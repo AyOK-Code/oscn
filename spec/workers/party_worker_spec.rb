@@ -15,9 +15,9 @@ RSpec.describe PartyWorker, type: :worker do
     end
 
     it 'raises an error when party is not found' do
-      expect {
+      expect do
         subject.perform(oscn_id)
-      }.to raise_error(ActiveRecord::RecordNotFound)
+      end.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'is a Sidekiq worker' do

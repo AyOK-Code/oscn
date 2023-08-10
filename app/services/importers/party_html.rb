@@ -15,7 +15,7 @@ module Importers
     def perform
       county_name = @party.court_cases.first.county.name
       data = OscnScraper::Requestor::Party.fetch_party(county_name, oscn_id)
-  rescue StandardError => e
+    rescue StandardError => e
       Raygun.track_exception(e, custom_data: { error_type: 'Request Error' })
     else
       save_html(party, data)
