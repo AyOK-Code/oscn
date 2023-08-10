@@ -8,5 +8,6 @@ RSpec.describe 'scrape:court_cases', type: :task do
     expect do
       Rake::Task['scrape:court_cases'].invoke(2020, 'Oklahoma', 1)
     end.to change(DailyFilingWorker.jobs, :size).by(31)
+    expect(DailyFilingWorker.jobs.first['args']).to eq(['Oklahoma', '2020-01-01']
   end
 end
