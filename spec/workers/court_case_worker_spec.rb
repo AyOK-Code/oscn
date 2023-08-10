@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe CourtCaseWorker, type: :worker do
   describe '#perform' do
     let(:county) { create(:county, id: 55, name: 'Tulsa') }
-    let!(:court_case) {create(:court_case, case_number: case_number, county: county)}
+    let!(:court_case) { create(:court_case, case_number: case_number, county: county) }
     let(:case_number) { 'CF-2018-1016' }
 
     it 'imports case HTML and court case data when scrape_case is true' do
@@ -11,9 +11,8 @@ RSpec.describe CourtCaseWorker, type: :worker do
       allow(::Importers::CourtCase).to receive(:perform)
       expect(::Importers::CaseHtml).to receive(:perform).with(county.id, case_number)
       expect(::Importers::CourtCase).to receive(:perform).with(county.id, case_number)
-      
-      subject.perform(county.id, case_number, true)
 
+      subject.perform(county.id, case_number, true)
     end
 
     it 'does not import case HTML but imports court case data when scrape_case is false' do
@@ -21,7 +20,7 @@ RSpec.describe CourtCaseWorker, type: :worker do
       allow(::Importers::CourtCase).to receive(:perform)
       expect(::Importers::CaseHtml).not_to receive(:perform)
       expect(::Importers::CourtCase).to receive(:perform).with(county.id, case_number)
-      
+
       subject.perform(county.id, case_number, false)
     end
 
