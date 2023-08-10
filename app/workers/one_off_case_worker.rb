@@ -21,6 +21,8 @@ class OneOffCaseWorker
     end
   end
 
+  private
+
   def find_county(county_name)
     County.find_by(name: county_name)
   end
