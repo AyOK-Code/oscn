@@ -43,7 +43,7 @@ Rails.application.configure do
   config.active_record.verbose_query_logs = true
 
   # New connection handling
-  config.active_record.legacy_connection_handling
+  config.active_record.legacy_connection_handling = false
 
 
   # Raises error for missing translations.

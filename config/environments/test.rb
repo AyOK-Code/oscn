@@ -29,7 +29,7 @@ Rails.application.configure do
   config.action_dispatch.show_exceptions = false
 
   # New connection handling
-  config.active_record.legacy_connection_handling
+  config.active_record.legacy_connection_handling = false
 
   # Disable request forgery protection in test environment.
   config.action_controller.allow_forgery_protection = false

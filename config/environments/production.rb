@@ -83,7 +83,7 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # New connection handling
-  config.active_record.legacy_connection_handling
+  config.active_record.legacy_connection_handling = false
 
   # Inserts middleware to perform automatic connection switching.
   # The `database_selector` hash is used to pass options to the DatabaseSelector
