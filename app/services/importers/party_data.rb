@@ -4,7 +4,7 @@ module Importers
     attr_accessor :party
 
     def initialize(oscn_id)
-      @party = ::Party.find_by(oscn_id: oscn_id)
+      @party = ::Party.find_by!(oscn_id: oscn_id)
     end
 
     def self.perform(oscn_id)

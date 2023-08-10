@@ -1,12 +1,11 @@
 module Importers
   # Saves the Html of a court case to the database
   class PartyHtml
-    attr_accessor :party, :county_name, :oscn_id
+    attr_accessor :party, :oscn_id
 
     def initialize(oscn_id)
-      @party = ::Party.find_by(oscn_id: oscn_id)
+      @party = ::Party.find_by!(oscn_id: oscn_id)
       @oscn_id = oscn_id
-      @county_name = @party.court_cases.first.county.name
     end
 
     def self.perform(oscn_id)
@@ -14,8 +13,9 @@ module Importers
     end
 
     def perform
+      county_name = @party.court_cases.first.county.name
       data = OscnScraper::Requestor::Party.fetch_party(county_name, oscn_id)
-    rescue StandardError
+  rescue StandardError => e
       Raygun.track_exception(e, custom_data: { error_type: 'Request Error' })
     else
       save_html(party, data)
