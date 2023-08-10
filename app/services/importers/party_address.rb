@@ -21,7 +21,7 @@ module Importers
 
       begin
         create_party_address(address_columns)
-      rescue StandardError
+      rescue StandardError => e
         Raygun.track_exception(e, custom_data: { error_type: 'Data Error' })
       end
     end

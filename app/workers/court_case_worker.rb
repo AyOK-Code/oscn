@@ -7,10 +7,10 @@ class CourtCaseWorker
   sidekiq_options retry: 5, queue: :medium
   sidekiq_throttle_as :oscn
 
-  def perform(county_id, oscn, scrape_case)
-    ::Importers::CaseHtml.perform(county_id, oscn) if scrape_case
-    ::Importers::CourtCase.perform(county_id, oscn)
-    court_case = ::CourtCase.find_by!(county_id: county_id, case_number: oscn)
+  def perform(county_id, case_number, scrape_case)
+    ::Importers::CaseHtml.perform(county_id, case_number) if scrape_case
+    ::Importers::CourtCase.perform(county_id, case_number)
+    court_case = ::CourtCase.find_by!(county_id: county_id, case_number: case_number)
     court_case.update(enqueued: false)
   end
 end
