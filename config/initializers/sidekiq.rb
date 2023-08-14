@@ -23,14 +23,14 @@ Sidekiq::Throttled::Registry.add(:oscn, **{
 Sidekiq::Throttled::Registry.add(:tulsa_city, **{
   threshold: {
     :limit => ->(*_) {
-      Time.now.utc.between?(OKLAHOMA_DAY_START, OKLAHOMA_DAY_END) ? ENV.fetch('TULSA_CITY_THROTTLE', 60).to_i .to_i : 1_000
+      Time.now.utc.between?(OKLAHOMA_DAY_START, OKLAHOMA_DAY_END) ? ENV.fetch('TULSA_CITY_THROTTLE', 60).to_i : 1_000
     },
     :period => 1.minute
   }
 })
 
 Sidekiq::Throttled::Registry.add(:ok2explore, **{
-  threshold: { limit: 10, period: 1.minute },
+  threshold: { limit: ENV.fetch('OK2EXPLORE_THROTTLE', 20).to_i, period: 1.minute },
   concurrency: { limit: 1 },
 })
   
