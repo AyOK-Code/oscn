@@ -16,9 +16,11 @@ class DeathWorker
       records = Ok2explore::Scraper.new(**args).perform  
     rescue Ok2explore::Errors::TooManyResults => e
       days = Date.new(year, month, -1).day
+
       (1..days).each do |day|
         DeathWorker.perform_async(first_letter, last_letter, year, month, day)
       end
+      records = []
     end
     
     records.each do |record|
