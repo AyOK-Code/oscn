@@ -29,4 +29,10 @@ Sidekiq::Throttled::Registry.add(:tulsa_city, **{
   }
 })
 
+Sidekiq::Throttled::Registry.add(:ok2explore, **{
+  threshold: { limit: 10, period: 1.minute },
+  concurrency: { limit: 1 },
+})
+  
+
 Sidekiq::Throttled.setup!
