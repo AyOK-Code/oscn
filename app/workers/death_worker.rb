@@ -13,16 +13,16 @@ class DeathWorker
       last_name: "#{last_letter}*"
     }
     begin
-      records = Ok2explore::Scraper.new(**args).perform  
-    rescue Ok2explore::Errors::TooManyResults => e
-      days = Date.new(year, month, -1).day
+      records = Ok2explore::Scraper.new(**args).perform
+    rescue Ok2explore::Errors::TooManyResults
+      days_of_month = Date.new(year, month, -1).day
 
-      (1..days).each do |day|
-        DeathWorker.perform_async(first_letter, last_letter, year, month, day)
+      (1..days_of_month).each do |day_of_month|
+        DeathWorker.perform_async(first_letter, last_letter, year, month, day_of_month)
       end
       records = []
     end
-    
+
     records.each do |record|
       ::Importers::Ok2Explore::Death.perform(record)
     end

@@ -12,7 +12,6 @@ module Scrapers
       end
 
       def perform
-        errors = []
         (1..12).each do |month|
           ('a'..'z').to_a.each do |first_letter|
             ('a'..'z').to_a.each do |last_letter|
