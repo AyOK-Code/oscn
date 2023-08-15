@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_15_161201) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -392,6 +392,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_161201) do
     t.boolean "is_success", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_too_many_records", default: false, null: false
   end
 
   create_table "okc_blotter_bookings", force: :cascade do |t|
