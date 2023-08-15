@@ -18,7 +18,8 @@ namespace :scrape do
 
   desc 'Scrape death records'
   task :death_records, [:record_count] => [:environment] do |_t, args|
-    needs_scraping = Ok2Explore::ScrapeJob.where(is_success: false).sample(args.record_count.to_i)
+    needs_scraping = Ok2Explore::ScrapeJob.where(is_success: false,
+                                                 is_too_many_records: false).sample(args.record_count.to_i)
     needs_scraping.each do |record|
       puts "Scraping: #{record.id}"
       args = {
