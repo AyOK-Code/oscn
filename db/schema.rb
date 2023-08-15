@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_12_140708) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_15_161201) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -382,6 +382,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_12_140708) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["county_id"], name: "index_ok2_explore_deaths_on_county_id"
+  end
+
+  create_table "ok2_explore_scrape_jobs", force: :cascade do |t|
+    t.integer "year", null: false
+    t.integer "month", null: false
+    t.string "first_name", null: false
+    t.string "last_name", null: false
+    t.boolean "is_success", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "okc_blotter_bookings", force: :cascade do |t|

@@ -13,4 +13,22 @@ namespace :scrape do
       Scrapers::Ok2Explore::Deaths.perform(year)
     end
   end
+
+  desc 'Populate desired scrapes for deaths'
+  task jobs: [:environment] do
+    (1980..2018).to_a.each do |year|
+      (1..12).to_a.each do |month|
+        ('a'..'z').to_a.each do |first_letter|
+          ('a'..'z').to_a.each do |last_letter|
+            Ok2Explore::ScrapeJob.create(
+              year: year,
+              month: month,
+              first_name: first_letter,
+              last_name: last_letter
+            )
+          end
+        end
+      end
+    end
+  end
 end
