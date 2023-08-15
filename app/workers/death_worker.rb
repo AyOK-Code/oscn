@@ -25,6 +25,10 @@ class DeathWorker
 
     records.each do |record|
       ::Importers::Ok2Explore::Death.perform(record)
+      if ['', 'z'].include?(day)
+        Ok2Explore::ScrapeJob.find_by(year: year, month: month, first_name: first_letter,
+                                      last_name: last_letter).update!(is_success: true)
+      end
     end
   end
 end
