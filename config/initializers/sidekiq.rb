@@ -31,7 +31,7 @@ Sidekiq::Throttled::Registry.add(:tulsa_city, **{
 
 Sidekiq::Throttled::Registry.add(:ok2explore, **{
   threshold: { limit: ENV.fetch('OK2EXPLORE_THROTTLE', 20).to_i, period: 1.minute },
-  concurrency: { limit: 1 },
+  concurrency: { limit: ENV.fetch('OK2EXPLORE_CONCURRENCY', 3).to_i },
 })
   
 
