@@ -7,8 +7,8 @@ GIT
 
 GIT
   remote: https://github.com/AyOK-Code/ok2explore
-  revision: cc17b8f3ff7fabe96b93e1116ad73e624969384a
-  ref: cc17b8f
+  revision: fdf184d3dc3a09ed7838237d778ec14731527b5c
+  ref: fdf184d
   specs:
     ok2explore (0.1.0)
       selenium-webdriver (>= 4.11)
