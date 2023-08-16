@@ -18,18 +18,19 @@ RSpec.describe Scrapers::Parties::HighPriority do
     context 'when the party is enqueued' do
       let!(:party_enqueued) { create(:party, enqueued: true) }
 
-      it ' doesnt add  jobs to the PartyWorker' do
+      it 'doesnt add jobs to the PartyWorker' do
         expect do
-          described_class.perform.to change(PartyWorker.jobs, :size).by(0)
+          described_class.perform.not_to change(PartyWorker.jobs, :size)
         end
       end
     end
+
     context 'when there is a party with no html and no oscn_id' do
       let!(:party_no_oscn) { create(:party, oscn_id: nil) }
 
       it 'doesnt add jobs to the PartyWorker' do
         expect do
-          described_class.perform.to change(PartyWorker.jobs, :size).by(0)
+          described_class.perform.not_to change(PartyWorker.jobs, :size)
         end
       end
     end
@@ -39,7 +40,7 @@ RSpec.describe Scrapers::Parties::HighPriority do
 
       it 'doesn\'t add jobs to the PartyWorker' do
         expect do
-          described_class.perform.to change(PartyWorker.jobs, :size).by(0)
+          described_class.perform.not_to change(PartyWorker.jobs, :size)
         end
       end
     end

@@ -6,7 +6,7 @@ RSpec.describe Scrapers::DistrictAttorney do
     fixture_path = 'spec/fixtures/district_attorney.html'
     html = File.read(fixture_path)
 
-    it 'saves  district attorney and hooks up counties' do
+    it 'saves district attorney and hooks up counties' do
       counties = ['Beaver', 'Cimarron', 'Harper', 'Texas', 'Beckham', 'Custer', 'Ellis', 'Roger Mills', 'Washita',
                   'Greer', 'Harmon', 'Jackson', 'Kiowa', 'Tillman']
 

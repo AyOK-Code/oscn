@@ -114,14 +114,14 @@ module Importers
           perform(date)
         rescue StandardError => e
           error = StandardError.new("Error processing #{date}. Data not saved. Message was: #{e}")
-          puts error
+          Rails.logger.debug error
           Raygun.track_exception(error)
         end
       end
 
       # NOTE: PDFs only are on the website for 30 days but if pdfs are saved to s3 you may be able to parse longer
       def self.import_missing_dates(since_date = (DateTime.now - 1.month).to_date)
-        query = <<-SQL
+        query = <<-SQL.squish
           SELECT * FROM generate_series('#{since_date}', '#{DateTime.now.to_date}', interval '1 day') AS dates
           WHERE dates NOT IN (SELECT date FROM okc_blotter_pdfs);
         SQL
@@ -130,7 +130,7 @@ module Importers
           perform(date)
         rescue StandardError => e
           error = StandardError.new("Error processing #{date}. Data not saved. Error was: #{e}")
-          puts error
+          Rails.logger.debug error
           Raygun.track_exception(error)
         end
       end

@@ -7,6 +7,6 @@ class Doc::Profile < ApplicationRecord
   # TODO: move this (and all other doc validation) to the database level since we're doing upsert_all
   validates :last_name, :birth_date, :doc_number, :status, :sex, presence: true
 
-  enum status: [:active, :inactive]
-  enum sex: [:male, :female]
+  enum status: { active: 0, inactive: 1 }
+  enum sex: { male: 0, female: 1 }
 end

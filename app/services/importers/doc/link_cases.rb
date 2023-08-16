@@ -10,7 +10,7 @@ module Importers
       end
 
       def perform
-        puts "Processing #{@sentences.count} sentences"
+        Rails.logger.debug { "Processing #{@sentences.count} sentences" }
         sentences.each do |sentence|
           bar.increment!
           cc = match_regex(sentence)

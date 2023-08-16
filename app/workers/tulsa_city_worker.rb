@@ -59,7 +59,7 @@ class TulsaCityWorker
         begin
           DateTime.strptime(datetime, '%m/%d/%Y %H:%M')
         rescue StandardError
-          puts "Invalid Date on Offense or Inmate, Inmate number: #{inmate_number} , Date:#{datetime}"
+          Rails.logger.debug { "Invalid Date on Offense or Inmate, Inmate number: #{inmate_number} , Date:#{datetime}" }
           nil
         end
       end
@@ -73,7 +73,7 @@ class TulsaCityWorker
       begin
         Date.strptime(date, '%m/%d/%Y')
       rescue StandardError
-        puts "Invalid Date on Offense or Inmate, Inmate number: #{inmate_number} , Date:#{date}"
+        Rails.logger.debug { "Invalid Date on Offense or Inmate, Inmate number: #{inmate_number} , Date:#{date}" }
         nil
       end
     end

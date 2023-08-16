@@ -1,6 +1,6 @@
 namespace :save do
   # TODO: Delete
-  task :purge_errors do
+  task purge_errors: :environment do
     court_cases = CourtCase.with_html
     bar = ProgressBar.new(court_cases.count)
 
@@ -14,7 +14,7 @@ namespace :save do
   end
 
   # TODO: Delete
-  task :update_judge do
+  task update_judge: :environment do
     court_cases = CourtCase.all
     bar = ProgressBar.new(court_cases.count)
 

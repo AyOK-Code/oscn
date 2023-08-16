@@ -6,6 +6,7 @@ RSpec.describe Importers::DocketEvent do
     let(:test_data) { parse_json(file_path) }
     let(:court_case) { create(:court_case) }
     let(:log) { ::Importers::Logger.new(court_case) }
+
     it 'creates a new docket_event_type if it does not exist' do
       described_class.perform(test_data, court_case, log)
 

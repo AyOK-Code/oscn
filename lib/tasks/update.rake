@@ -48,7 +48,7 @@ namespace :update do
 
   desc 'Create count codes from stored htmls data'
   task count_code: [:environment] do
-    cases = CourtCase.where(id: Count.where(filed_statute_code_id: nil).pluck(:court_case_id))
+    cases = CourtCase.where(id: Count.where(filed_statute_code_id: nil).select(:court_case_id))
     bar = ProgressBar.new(cases.count)
 
     cases.each do |c|
@@ -70,7 +70,7 @@ namespace :update do
 
       next if c[2].nil?
 
-      DatabaseUpdateWorker.perform_in(1.minutes, { county_id: c[0], case_number: c[1] })
+      DatabaseUpdateWorker.perform_in(1.minute, { county_id: c[0], case_number: c[1] })
     end
   end
 

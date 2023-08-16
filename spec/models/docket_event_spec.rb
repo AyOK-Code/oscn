@@ -1,15 +1,15 @@
 require 'rails_helper'
 
-RSpec.describe DocketEvent, type: :model do
+RSpec.describe DocketEvent do
   describe 'associations' do
-    it { should belong_to(:court_case) }
-    it { should belong_to(:docket_event_type) }
-    it { should belong_to(:party).optional }
-    it { should have_many(:links).dependent(:destroy) }
+    it { is_expected.to belong_to(:court_case) }
+    it { is_expected.to belong_to(:docket_event_type) }
+    it { is_expected.to belong_to(:party).optional }
+    it { is_expected.to have_many(:links).dependent(:destroy) }
   end
 
   describe 'validations' do
-    it { should validate_presence_of(:event_on) }
+    it { is_expected.to validate_presence_of(:event_on) }
   end
 
   describe 'scopes' do
@@ -46,13 +46,17 @@ RSpec.describe DocketEvent, type: :model do
   describe 'methods' do
     describe '#is_error' do
       let(:subject) { docket_event.error? }
+
       context 'with a normal description' do
         let(:docket_event) { build(:docket_event) }
-        it { should be false }
+
+        it { is_expected.to be false }
       end
+
       context 'when description contains an error string' do
         let(:docket_event) { build(:docket_event, description: 'CASE FILED IN ERROR SHOULD BE A CHARGE PER DA') }
-        it { should be true }
+
+        it { is_expected.to be true }
       end
     end
   end

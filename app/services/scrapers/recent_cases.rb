@@ -20,7 +20,7 @@ module Scrapers
 
     def perform
       date_range.each do |date|
-        puts "Pulling case changes for #{date.to_date}"
+        Rails.logger.debug { "Pulling case changes for #{date.to_date}" }
         fetch_docket_for_date(date)
       end
       recent_cases.flatten

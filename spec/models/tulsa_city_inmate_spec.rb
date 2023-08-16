@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe TulsaCity::Inmate, type: :model do
+RSpec.describe TulsaCity::Inmate do
   describe 'associations' do
-    it { should have_many(:offenses) }
+    it { is_expected.to have_many(:offenses) }
   end
 end

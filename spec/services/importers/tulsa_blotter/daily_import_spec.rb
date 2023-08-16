@@ -5,10 +5,11 @@ RSpec.describe Importers::TulsaBlotter::DailyImport do
     before do
       ENV['AWS_LAMBDA_REGION'] = 'us-east-2'
     end
+
     context 'when blotter data exists' do
       it 'imports the data' do
         VCR.use_cassette 'tulsa_blotter_shortened' do
-          Importers::TulsaBlotter::DailyImport.perform # NOTE: vcr has been shortened
+          described_class.perform # NOTE: vcr has been shortened
         end
 
         expect(::TulsaBlotter::PageHtml.count).to be > 0
@@ -21,14 +22,14 @@ RSpec.describe Importers::TulsaBlotter::DailyImport do
     context 'when doing another import' do
       before do
         VCR.use_cassette 'tulsa_blotter_shortened' do
-          Importers::TulsaBlotter::DailyImport.perform
+          described_class.perform
         end
       end
 
       it 'creates new pages' do
         page_html_count = ::TulsaBlotter::PageHtml.count
         VCR.use_cassette 'tulsa_blotter_shortened' do
-          Importers::TulsaBlotter::DailyImport.perform
+          described_class.perform
         end
         expect(::TulsaBlotter::PageHtml.count).to be page_html_count * 2
       end
@@ -39,7 +40,7 @@ RSpec.describe Importers::TulsaBlotter::DailyImport do
         offense_count = ::TulsaBlotter::Offense.count
 
         VCR.use_cassette 'tulsa_blotter_shortened' do
-          Importers::TulsaBlotter::DailyImport.perform
+          described_class.perform
         end
 
         expect(::TulsaBlotter::Arrest.count).to be arrest_count
@@ -50,12 +51,13 @@ RSpec.describe Importers::TulsaBlotter::DailyImport do
 
     context "when there are un-released inmates who aren't on daily import" do
       let!(:arrest) { create(:tulsa_blotter_arrest, release_date: nil) }
+
       it 'flags them as released' do
         VCR.use_cassette 'tulsa_blotter_shortened' do
-          Importers::TulsaBlotter::DailyImport.perform
+          described_class.perform
         end
 
-        expect(arrest.reload.freedom_date).not_to eq nil
+        expect(arrest.reload.freedom_date).not_to be_nil
       end
     end
   end

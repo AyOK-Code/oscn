@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe ParentParty, type: :model do
+RSpec.describe ParentParty do
   describe 'associations' do
-    it { should have_many(:parties) }
+    it { is_expected.to have_many(:parties) }
   end
 end

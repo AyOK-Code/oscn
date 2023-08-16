@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe Doc::OffenseCode, type: :model do
+RSpec.describe Doc::OffenseCode do
   describe 'associations' do
     it {
-      should have_many(:sentences)
+      expect(subject).to have_many(:sentences)
         .class_name('Doc::Sentence')
         .with_foreign_key('doc_offense_code_id')
         .dependent(:destroy)
@@ -11,7 +11,7 @@ RSpec.describe Doc::OffenseCode, type: :model do
   end
 
   describe 'validations' do
-    it { should validate_presence_of(:statute_code) }
-    it { should validate_presence_of(:description) }
+    it { is_expected.to validate_presence_of(:statute_code) }
+    it { is_expected.to validate_presence_of(:description) }
   end
 end

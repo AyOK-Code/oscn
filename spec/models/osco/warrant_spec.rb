@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-RSpec.describe Ocso::Warrant, type: :model do
+RSpec.describe Ocso::Warrant do
   describe 'validations' do
-    it { should validate_presence_of(:case_number) }
+    it { is_expected.to validate_presence_of(:case_number) }
   end
 
   describe 'generated clean_case_number column' do
@@ -31,11 +31,12 @@ RSpec.describe Ocso::Warrant, type: :model do
         end
       end
     end
+
     context 'when case_number does not match' do
       it 'is null' do
         warrant = create('Ocso::Warrant', case_number: 'ABC-19991-0')
         warrant.reload
-        expect(warrant.clean_case_number).to be nil
+        expect(warrant.clean_case_number).to be_nil
       end
     end
   end

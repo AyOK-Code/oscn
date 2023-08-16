@@ -9,9 +9,9 @@ RSpec.describe OneOffCaseWorker, type: :worker do
     context 'when the CourtCase does not exist' do
       it 'calls the OneOffCase scraper' do
         allow(CourtCase).to receive(:find_by).and_return(nil)
-        expect(::Scrapers::OneOffCase).to receive(:perform).with(county.name, court_case.case_number)
+        expect(::Scrapers::OneOffCase).to have_receive(:perform).with(county.name, court_case.case_number)
 
-        subject.perform(county.name, case_number)
+        described_class.perform(county.name, case_number)
       end
     end
 
@@ -20,11 +20,11 @@ RSpec.describe OneOffCaseWorker, type: :worker do
 
       it 'does not call OneOffCase' do
         allow(CourtCase).to receive(:find_by).and_return(court_case)
-        allow(::Importers::CourtCase).to receive(:perform)
-        expect(::Scrapers::OneOffCase).to_not receive(:perform).with(county.name, court_case.case_number)
-        expect(::Importers::CourtCase).to receive(:perform).with(county.id, case_number)
+        allow(::Importers::CourtCase).to have_received(:perform)
+        expect(::Scrapers::OneOffCase).not_to have_received(:perform).with(county.name, court_case.case_number)
+        expect(::Importers::CourtCase).to have_received(:perform).with(county.id, case_number)
 
-        subject.perform(county.name, case_number)
+        described_class.perform(county.name, case_number)
       end
     end
 
@@ -32,24 +32,24 @@ RSpec.describe OneOffCaseWorker, type: :worker do
       missing_county = 'Nowhere County'
 
       expect do
-        subject.perform(missing_county, case_number)
+        described_class.perform(missing_county, case_number)
       end.to raise_error(StandardError, 'County not found')
     end
   end
 
   it 'is a Sidekiq worker' do
-    expect(OneOffCaseWorker).to include(Sidekiq::Worker)
+    expect(described_class).to include(Sidekiq::Worker)
   end
 
   it 'is a Sidekiq throttled worker' do
-    expect(OneOffCaseWorker).to include(Sidekiq::Throttled::Worker)
+    expect(described_class).to include(Sidekiq::Throttled::Worker)
   end
 
   it 'has Sidekiq retry options set to 5' do
-    expect(OneOffCaseWorker.sidekiq_options['retry']).to eq(5)
+    expect(described_class.sidekiq_options['retry']).to eq(5)
   end
 
   it 'has Sidekiq queue set to :medium' do
-    expect(OneOffCaseWorker.sidekiq_options['queue']).to eq(:medium)
+    expect(described_class.sidekiq_options['queue']).to eq(:medium)
   end
 end
