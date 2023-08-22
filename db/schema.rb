@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_22_190043) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -137,6 +137,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
     t.bigint "current_judge_id"
     t.boolean "is_error", default: false, null: false
     t.boolean "enqueued", default: false, null: false
+    t.virtual "clean_case_number", type: :string, as: "\nCASE\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN ((((\"substring\"((case_number)::text, 1, 2) || '-'::text) ||\n    CASE\n        WHEN ((\"substring\"((case_number)::text, 3, 2))::integer <= 23) THEN ('20'::text || \"substring\"((case_number)::text, 3, 2))\n        ELSE ('19'::text || \"substring\"((case_number)::text, 3, 2))\n    END) || '-'::text) || regexp_replace(\"substring\"((case_number)::text, 5), '^0+'::text, ''::text))\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2}-[0-9]{1,}'::text) THEN ((((\"substring\"((case_number)::text, 1, 2) || '-'::text) ||\n    CASE\n        WHEN ((split_part((case_number)::text, '-'::text, 2))::integer <= 23) THEN ('20'::text || split_part((case_number)::text, '-'::text, 2))\n        ELSE ('19'::text || split_part((case_number)::text, '-'::text, 2))\n    END) || '-'::text) || split_part((case_number)::text, '-'::text, 3))\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2}-[0-9]{4}-[0-9]{1,}'::text) THEN (case_number)::text\n    ELSE NULL::text\nEND", stored: true
     t.index ["case_type_id"], name: "index_court_cases_on_case_type_id"
     t.index ["county_id", "oscn_id"], name: "index_court_cases_on_county_id_and_oscn_id", unique: true
     t.index ["county_id"], name: "index_court_cases_on_county_id"
@@ -737,7 +738,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
       ( SELECT count(*) AS count
              FROM (docket_events
                JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-            WHERE ((docket_events.party_id = parties.id) AND ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'BWIFAR'::character varying])::text[])))) AS warrants_count,
+            WHERE ((docket_events.party_id = parties.id) AND ((docket_event_types.code)::text = ANY (ARRAY[('WAI$'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('WAI'::character varying)::text, ('WAIMV'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAR'::character varying)::text])))) AS warrants_count,
       ( SELECT sum(docket_events.amount) AS sum
              FROM docket_events
             WHERE (docket_events.party_id = parties.id)) AS total_fined,
@@ -815,7 +816,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
               ELSE NULL::text
           END AS shortdescription,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIFAR'::character varying])::text[])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY (ARRAY[('BWIFA'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFAR'::character varying)::text])) THEN true
               ELSE false
           END AS is_failure_to_appear,
           CASE
@@ -831,11 +832,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
               ELSE false
           END AS is_failure_to_comply,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAA'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying])::text[])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY (ARRAY[('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIAA'::character varying)::text, ('BWIAR'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text])) THEN true
               ELSE false
           END AS is_bench_warrant_issued,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['WAI'::character varying, 'WAI$'::character varying])::text[])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY (ARRAY[('WAI'::character varying)::text, ('WAI$'::character varying)::text])) THEN true
               ELSE false
           END AS is_arrest_warrant_issued,
           CASE
@@ -851,7 +852,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
               ELSE false
           END AS is_cause,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIMW'::character varying, 'WAIMW'::character varying])::text[])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY (ARRAY[('BWIMW'::character varying)::text, ('WAIMW'::character varying)::text])) THEN true
               ELSE false
           END AS is_material_witness,
           CASE
@@ -863,7 +864,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
               ELSE false
           END AS is_material_rule_8,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIS$'::character varying, 'BWIS'::character varying])::text[])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY (ARRAY[('BWIS$'::character varying)::text, ('BWIS'::character varying)::text])) THEN true
               ELSE false
           END AS is_service_by_sheriff,
           CASE
@@ -882,7 +883,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
        JOIN docket_event_types ON ((docket_event_types.id = docket_events.docket_event_type_id)))
        JOIN court_cases ON ((court_cases.id = docket_events.court_case_id)))
        JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
-    WHERE ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWIFC'::character varying, 'BWIFAR'::character varying, 'BWICA'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'RETBW'::character varying, 'RETWA'::character varying])::text[]));
+    WHERE ((docket_event_types.code)::text = ANY (ARRAY[('WAI$'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('WAI'::character varying)::text, ('WAIMV'::character varying)::text, ('WAIMW'::character varying)::text, ('RETBW'::character varying)::text, ('RETWA'::character varying)::text]));
   SQL
   add_index "report_warrants", ["party_id", "code"], name: "index_report_warrants_on_party_id_and_code"
 
@@ -907,7 +908,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
       ( SELECT count(*) AS count
              FROM (docket_events
                JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-            WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'BWIFAR'::character varying])::text[])))) AS warrants_count
+            WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY (ARRAY[('WAI$'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('WAI'::character varying)::text, ('WAIMV'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAR'::character varying)::text])))) AS warrants_count
      FROM court_cases;
   SQL
   add_index "case_stats", ["court_case_id"], name: "index_case_stats_on_court_case_id"
@@ -984,7 +985,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
           CASE
               WHEN (( SELECT count(*) AS count
                  FROM report_warrants
-                WHERE ((parties.id = report_warrants.party_id) AND ((report_warrants.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'BWIFAR'::character varying])::text[])))) > ( SELECT count(*) AS count
+                WHERE ((parties.id = report_warrants.party_id) AND ((report_warrants.code)::text = ANY (ARRAY[('WAI$'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('WAI'::character varying)::text, ('WAIMV'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAR'::character varying)::text])))) > ( SELECT count(*) AS count
                  FROM report_warrants
                 WHERE ((parties.id = report_warrants.party_id) AND ((report_warrants.code)::text = 'RETWA'::text)))) THEN 'Yes'::text
               ELSE 'No'::text
@@ -996,7 +997,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
               WHEN (( SELECT count(*) AS count
                  FROM (docket_events
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'BWIFAR'::character varying])::text[])))) > 0) THEN 'Yes'::text
+                WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY (ARRAY[('WAI$'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('WAI'::character varying)::text, ('WAIMV'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAR'::character varying)::text])))) > 0) THEN 'Yes'::text
               ELSE 'No'::text
           END AS warrant_on_case,
       pleas.name AS plea,
@@ -1118,7 +1119,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
                    JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
                    JOIN counties ON ((court_cases.county_id = counties.id)))
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
+                WHERE (((docket_event_types.code)::text = ANY (ARRAY[('BWIFP'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIAR'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIS$'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWIMW'::character varying)::text, ('WAI$'::character varying)::text, ('WAI'::character varying)::text, ('BWIS'::character varying)::text])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
                          FROM ((case_parties
                            JOIN parties ON ((case_parties.party_id = parties.id)))
                            JOIN party_types ON ((parties.party_type_id = party_types.id)))
@@ -1129,7 +1130,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
                    JOIN counties ON ((court_cases.county_id = counties.id)))
                    JOIN parties ON ((docket_events.party_id = parties.id)))
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2))))
+                WHERE (((docket_event_types.code)::text = ANY (ARRAY[('BWIFP'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIAR'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIS$'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWIMW'::character varying)::text, ('WAI$'::character varying)::text, ('WAI'::character varying)::text, ('BWIS'::character varying)::text])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2))))
               ELSE NULL::bigint
           END AS warrant_count,
           CASE
@@ -1139,7 +1140,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
                    JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
                    JOIN counties ON ((court_cases.county_id = counties.id)))
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['RETBW'::character varying, 'RETWA'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
+                WHERE (((docket_event_types.code)::text = ANY (ARRAY[('RETBW'::character varying)::text, ('RETWA'::character varying)::text])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
                          FROM ((case_parties
                            JOIN parties ON ((case_parties.party_id = parties.id)))
                            JOIN party_types ON ((parties.party_type_id = party_types.id)))
@@ -1150,7 +1151,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
                    JOIN counties ON ((court_cases.county_id = counties.id)))
                    JOIN parties ON ((docket_events.party_id = parties.id)))
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['RETBW'::character varying, 'RETWA'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2))))
+                WHERE (((docket_event_types.code)::text = ANY (ARRAY[('RETBW'::character varying)::text, ('RETWA'::character varying)::text])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2))))
               ELSE NULL::bigint
           END AS return_warrant_count,
           CASE
@@ -1160,7 +1161,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
                    JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
                    JOIN counties ON ((court_cases.county_id = counties.id)))
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
+                WHERE (((docket_event_types.code)::text = ANY (ARRAY[('BWIFP'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIAR'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIS$'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWIMW'::character varying)::text, ('WAI$'::character varying)::text, ('WAI'::character varying)::text, ('BWIS'::character varying)::text])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
                          FROM ((case_parties
                            JOIN parties ON ((case_parties.party_id = parties.id)))
                            JOIN party_types ON ((parties.party_type_id = party_types.id)))
@@ -1173,7 +1174,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
                    JOIN counties ON ((court_cases.county_id = counties.id)))
                    JOIN parties ON ((docket_events.party_id = parties.id)))
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2)))
+                WHERE (((docket_event_types.code)::text = ANY (ARRAY[('BWIFP'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIAR'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIS$'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWIMW'::character varying)::text, ('WAI$'::character varying)::text, ('WAI'::character varying)::text, ('BWIS'::character varying)::text])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2)))
                 ORDER BY docket_events.event_on DESC
                LIMIT 1)
               ELSE NULL::character varying
