@@ -29,7 +29,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
     t.string "case_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.virtual "clean_case_number", type: :string, as: "\nCASE\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN ((((\"substring\"((case_number)::text, 1, 2) || '-'::text) ||\n    CASE\n        WHEN ((\"substring\"((case_number)::text, 3, 2))::integer <= 23) THEN ('20'::text || \"substring\"((case_number)::text, 3, 2))\n        ELSE ('19'::text || \"substring\"((case_number)::text, 3, 2))\n    END) || '-'::text) || regexp_replace(\"substring\"((case_number)::text, 5), '^0+'::text, ''::text))\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2}-[0-9]{1,}'::text) THEN ((((\"substring\"((case_number)::text, 1, 2) || '-'::text) ||\n    CASE\n        WHEN ((split_part((case_number)::text, '-'::text, 2))::integer <= 23) THEN ('20'::text || split_part((case_number)::text, '-'::text, 2))\n        ELSE ('19'::text || split_part((case_number)::text, '-'::text, 2))\n    END) || '-'::text) || split_part((case_number)::text, '-'::text, 3))\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2}-[0-9]{4}-[0-9]{1,}'::text) THEN (case_number)::text\n    ELSE NULL::text\nEND", stored: true
     t.index ["county_id"], name: "index_case_not_founds_on_county_id"
   end
 
@@ -138,7 +137,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
     t.bigint "current_judge_id"
     t.boolean "is_error", default: false, null: false
     t.boolean "enqueued", default: false, null: false
-    t.virtual "clean_case_number", type: :string, as: "\nCASE\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN ((((\"substring\"((case_number)::text, 1, 2) || '-'::text) ||\n    CASE\n        WHEN ((\"substring\"((case_number)::text, 3, 2))::integer <= 23) THEN ('20'::text || \"substring\"((case_number)::text, 3, 2))\n        ELSE ('19'::text || \"substring\"((case_number)::text, 3, 2))\n    END) || '-'::text) || regexp_replace(\"substring\"((case_number)::text, 5), '^0+'::text, ''::text))\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2}-[0-9]{1,}'::text) THEN ((((\"substring\"((case_number)::text, 1, 2) || '-'::text) ||\n    CASE\n        WHEN ((split_part((case_number)::text, '-'::text, 2))::integer <= 23) THEN ('20'::text || split_part((case_number)::text, '-'::text, 2))\n        ELSE ('19'::text || split_part((case_number)::text, '-'::text, 2))\n    END) || '-'::text) || split_part((case_number)::text, '-'::text, 3))\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2}-[0-9]{4}-[0-9]{1,}'::text) THEN (case_number)::text\n    ELSE NULL::text\nEND", stored: true
     t.index ["case_type_id"], name: "index_court_cases_on_case_type_id"
     t.index ["county_id", "oscn_id"], name: "index_court_cases_on_county_id_and_oscn_id", unique: true
     t.index ["county_id"], name: "index_court_cases_on_county_id"
@@ -512,6 +510,103 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
     t.index ["name"], name: "index_party_types_on_name", unique: true
   end
 
+  create_table "pd_bookings", force: :cascade do |t|
+    t.string "jailnet_inmate_id"
+    t.string "initial_docket_id"
+    t.string "inmate_name"
+    t.string "inmate_aka"
+    t.datetime "birth_date", precision: nil
+    t.string "city_of_birth"
+    t.string "state_of_birth"
+    t.integer "current_age"
+    t.string "race"
+    t.string "gender"
+    t.integer "height"
+    t.float "weight"
+    t.string "hair_color"
+    t.string "eye_color"
+    t.string "build"
+    t.string "complexion"
+    t.string "facial_hair"
+    t.string "martial_status"
+    t.string "emergency_contact"
+    t.string "emergency_phone"
+    t.string "drivers_state"
+    t.string "drivers_license"
+    t.string "address1"
+    t.string "address2"
+    t.string "city"
+    t.string "state"
+    t.string "zip_code"
+    t.string "home_phone"
+    t.string "fbi_nbr"
+    t.string "osbi_nbr"
+    t.string "tpd_nbr"
+    t.integer "age_at_booking"
+    t.integer "age_at_release"
+    t.string "arrest_date"
+    t.string "arrest_by"
+    t.string "agency"
+    t.string "booking_date"
+    t.string "booking_by"
+    t.string "otn_nbr"
+    t.string "estimated_release_date"
+    t.string "release_date"
+    t.string "release_by"
+    t.string "release_reason"
+    t.string "weekend_server"
+    t.string "custody_level"
+    t.string "assigned_cell_id"
+    t.string "current_location"
+    t.string "booking_notes"
+    t.string "booking_alerts"
+    t.string "booking_trustees"
+  end
+
+  create_table "pd_offense_minutes", force: :cascade do |t|
+    t.bigint "offense_id", null: false
+    t.datetime "minute_date", precision: nil
+    t.string "minute"
+    t.string "minute_by"
+    t.string "judge"
+    t.string "next_proceeding"
+    t.index ["offense_id"], name: "index_pd_offense_minutes_on_offense_id"
+  end
+
+  create_table "pd_offenses", force: :cascade do |t|
+    t.bigint "booking_id", null: false
+    t.string "docket_id"
+    t.integer "offense_seq"
+    t.string "case_number"
+    t.string "offense_code"
+    t.string "offense_special_code"
+    t.string "offense_description"
+    t.string "offense_category"
+    t.string "court"
+    t.string "judge"
+    t.datetime "court_date", precision: nil
+    t.float "bond_amount"
+    t.string "bond_type"
+    t.integer "jail_term"
+    t.string "jail_sentence_term_type"
+    t.datetime "jail_conviction_date", precision: nil
+    t.datetime "jail_start_date", precision: nil
+    t.string "form41_filed"
+    t.string "docsentence_term"
+    t.string "docsentence_term_type"
+    t.datetime "docsentence_date", precision: nil
+    t.string "docnotified"
+    t.string "sentence_agent"
+    t.string "narative"
+    t.string "disposition"
+    t.datetime "disposition_date", precision: nil
+    t.datetime "entered_date", precision: nil
+    t.string "entered_by"
+    t.datetime "modified_date", precision: nil
+    t.string "modified_by"
+    t.index ["booking_id"], name: "index_pd_offenses_on_booking_id"
+  end
+
   create_table "pleas", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -592,7 +687,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
     t.bigint "arrests_id"
     t.decimal "bond_amount", precision: 14, scale: 2
     t.date "court_date"
-    t.virtual "clean_case_number", type: :string, as: "\nCASE\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN ((((\"substring\"((case_number)::text, 1, 2) || '-'::text) ||\n    CASE\n        WHEN ((\"substring\"((case_number)::text, 3, 2))::integer <= 23) THEN ('20'::text || \"substring\"((case_number)::text, 3, 2))\n        ELSE ('19'::text || \"substring\"((case_number)::text, 3, 2))\n    END) || '-'::text) || regexp_replace(\"substring\"((case_number)::text, 5), '^0+'::text, ''::text))\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2}-[0-9]{1,}'::text) THEN ((((\"substring\"((case_number)::text, 1, 2) || '-'::text) ||\n    CASE\n        WHEN ((split_part((case_number)::text, '-'::text, 2))::integer <= 23) THEN ('20'::text || split_part((case_number)::text, '-'::text, 2))\n        ELSE ('19'::text || split_part((case_number)::text, '-'::text, 2))\n    END) || '-'::text) || split_part((case_number)::text, '-'::text, 3))\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2}-[0-9]{4}-[0-9]{1,}'::text) THEN (case_number)::text\n    ELSE NULL::text\nEND", stored: true
     t.index ["arrests_id"], name: "index_tulsa_blotter_offenses_on_arrests_id"
   end
 
@@ -642,7 +736,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
     t.string "crime"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.virtual "clean_case_number", type: :string, as: "\nCASE\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN ((((\"substring\"((case_number)::text, 1, 2) || '-'::text) ||\n    CASE\n        WHEN ((\"substring\"((case_number)::text, 3, 2))::integer <= 23) THEN ('20'::text || \"substring\"((case_number)::text, 3, 2))\n        ELSE ('19'::text || \"substring\"((case_number)::text, 3, 2))\n    END) || '-'::text) || regexp_replace(\"substring\"((case_number)::text, 5), '^0+'::text, ''::text))\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2}-[0-9]{1,}'::text) THEN ((((\"substring\"((case_number)::text, 1, 2) || '-'::text) ||\n    CASE\n        WHEN ((split_part((case_number)::text, '-'::text, 2))::integer <= 23) THEN ('20'::text || split_part((case_number)::text, '-'::text, 2))\n        ELSE ('19'::text || split_part((case_number)::text, '-'::text, 2))\n    END) || '-'::text) || split_part((case_number)::text, '-'::text, 3))\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2}-[0-9]{4}-[0-9]{1,}'::text) THEN (case_number)::text\n    ELSE NULL::text\nEND", stored: true
     t.index ["docket_id", "inmate_id"], name: "index_tulsa_city_offenses_on_docket_id_and_inmate_id", unique: true
     t.index ["inmate_id"], name: "index_tulsa_city_offenses_on_inmate_id"
   end
@@ -702,6 +795,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
   add_foreign_key "party_addresses", "parties"
   add_foreign_key "party_aliases", "parties"
   add_foreign_key "party_htmls", "parties"
+  add_foreign_key "pd_offense_minutes", "pd_offenses", column: "offense_id"
+  add_foreign_key "pd_offenses", "pd_bookings", column: "booking_id"
   add_foreign_key "tulsa_blotter_arrest_details_htmls", "tulsa_blotter_arrests", column: "arrest_id"
   add_foreign_key "tulsa_blotter_arrests", "rosters"
   add_foreign_key "tulsa_blotter_arrests_page_htmls", "tulsa_blotter_arrests", column: "arrest_id"
