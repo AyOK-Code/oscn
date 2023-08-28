@@ -12,6 +12,8 @@ class CourtCase < ApplicationRecord
   has_many :docket_events, dependent: :destroy
   has_many :issues, dependent: :destroy
   has_many :issue_parties, through: :issues
+  has_many :links, through: :docket_events
+  has_one :report_eviction
   has_one :case_html, dependent: :destroy
   has_one :case_stat
 

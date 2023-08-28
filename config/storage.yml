@@ -8,6 +8,6 @@ local:
 
 microsoft:
   service: AzureStorage
-  storage_account_name: <%= ENV.fetch('AZURE_STORAGE_NAME', storage_account_name) %>
-  storage_access_key: <%= ENV.fetch('AZURE_STORAGE_KEY', storage_access_key) %>
-  container: <%= ENV.fetch('AZURE_STORAGE_CONTAINER', container) %>
+  storage_account_name: <%= ENV.fetch('AZURE_STORAGE_NAME', '') %>
+  storage_access_key: <%= ENV.fetch('AZURE_STORAGE_KEY', '') %>
+  container: <%= ENV.fetch('AZURE_STORAGE_CONTAINER', '') %>
