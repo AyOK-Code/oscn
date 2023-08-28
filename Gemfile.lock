@@ -120,6 +120,14 @@ GEM
       aws-sigv4 (~> 1.4)
     aws-sigv4 (1.5.2)
       aws-eventstream (~> 1, >= 1.0.2)
+    azure-storage-blob (2.0.3)
+      azure-storage-common (~> 2.0)
+      nokogiri (~> 1, >= 1.10.8)
+    azure-storage-common (2.0.4)
+      faraday (~> 1.0)
+      faraday_middleware (~> 1.0, >= 1.0.0.rc1)
+      net-http-persistent (~> 4.0)
+      nokogiri (~> 1, >= 1.10.8)
     bcrypt (3.1.18)
     bootsnap (1.13.0)
       msgpack (~> 1.2)
@@ -156,15 +164,11 @@ GEM
       railties (>= 5.0.0)
     faker (2.23.0)
       i18n (>= 1.8.11, < 2)
-    faraday (2.6.0)
-      faraday-net_http (>= 2.0, < 3.1)
-      ruby2_keywords (>= 0.0.4)
-    faraday-mashify (0.1.1)
-      faraday (~> 2.0)
-      hashie
-    faraday-multipart (1.0.4)
-      multipart-post (~> 2)
-    faraday-net_http (3.0.1)
+    faraday (1.2.0)
+      multipart-post (>= 1.2, < 3)
+      ruby2_keywords
+    faraday_middleware (1.2.0)
+      faraday (~> 1.0)
     ffi (1.15.5)
     fuzzy_match (2.1.0)
     gli (2.21.0)
@@ -223,6 +227,8 @@ GEM
     msgpack (1.6.0)
     multi_xml (0.6.0)
     multipart-post (2.2.3)
+    net-http-persistent (4.0.2)
+      connection_pool (~> 2.2)
     net-imap (0.3.4)
       date
       net-protocol
@@ -382,10 +388,9 @@ GEM
       json
       simplecov
     simplecov_json_formatter (0.1.4)
-    slack-ruby-client (2.0.0)
-      faraday (>= 2.0)
-      faraday-mashify
-      faraday-multipart
+    slack-ruby-client (1.0.0)
+      faraday (>= 1.0)
+      faraday_middleware
       gli
       hashie
       websocket-driver
@@ -420,6 +425,7 @@ DEPENDENCIES
   awesome_print
   aws-sdk-lambda
   aws-sdk-s3 (~> 1)
+  azure-storage-blob
   bcrypt (~> 3.1.7)
   bootsnap (>= 1.4.2)
   bullet

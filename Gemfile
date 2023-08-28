@@ -3,6 +3,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.1.3'
 
+gem "azure-storage-blob", require: false
 gem 'awesome_print'
 gem 'aws-sdk-s3', '~> 1'
 gem 'aws-sdk-lambda'
@@ -33,6 +34,7 @@ gem 'sidekiq-throttled'
 gem 'slack-ruby-client'
 gem 'slowweb'
 gem 'rubyzip'
+
 gem 'psych', '< 4'
 gem 'net-smtp', require: false
 gem 'net-imap', require: false
