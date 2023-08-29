@@ -10,10 +10,90 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_29_151652) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
+
+  create_table "account_emailaddress", id: :serial, force: :cascade do |t|
+    t.string "email", limit: 254, null: false
+    t.boolean "verified", null: false
+    t.boolean "primary", null: false
+    t.integer "user_id", null: false
+    t.index ["email"], name: "account_emailaddress_email_03be32b2_like", opclass: :varchar_pattern_ops
+    t.index ["email"], name: "account_emailaddress_email_key", unique: true
+    t.index ["user_id"], name: "account_emailaddress_user_id_2c513194"
+  end
+
+  create_table "account_emailconfirmation", id: :serial, force: :cascade do |t|
+    t.timestamptz "created", null: false
+    t.timestamptz "sent"
+    t.string "key", limit: 64, null: false
+    t.integer "email_address_id", null: false
+    t.index ["email_address_id"], name: "account_emailconfirmation_email_address_id_5b7f8c58"
+    t.index ["key"], name: "account_emailconfirmation_key_f43612bd_like", opclass: :varchar_pattern_ops
+    t.index ["key"], name: "account_emailconfirmation_key_key", unique: true
+  end
+
+  create_table "auth_group", id: :serial, force: :cascade do |t|
+    t.string "name", limit: 150, null: false
+    t.index ["name"], name: "auth_group_name_a6ea08ec_like", opclass: :varchar_pattern_ops
+    t.index ["name"], name: "auth_group_name_key", unique: true
+  end
+
+  create_table "auth_group_permissions", force: :cascade do |t|
+    t.integer "group_id", null: false
+    t.integer "permission_id", null: false
+    t.index ["group_id", "permission_id"], name: "auth_group_permissions_group_id_permission_id_0cd325b0_uniq", unique: true
+    t.index ["group_id"], name: "auth_group_permissions_group_id_b120cbf9"
+    t.index ["permission_id"], name: "auth_group_permissions_permission_id_84c5c92e"
+  end
+
+  create_table "auth_permission", id: :serial, force: :cascade do |t|
+    t.string "name", limit: 255, null: false
+    t.integer "content_type_id", null: false
+    t.string "codename", limit: 100, null: false
+    t.index ["content_type_id", "codename"], name: "auth_permission_content_type_id_codename_01ab375a_uniq", unique: true
+    t.index ["content_type_id"], name: "auth_permission_content_type_id_2f476e4b"
+  end
+
+  create_table "auth_user", id: :serial, force: :cascade do |t|
+    t.string "password", limit: 128, null: false
+    t.timestamptz "last_login"
+    t.boolean "is_superuser", null: false
+    t.string "username", limit: 150, null: false
+    t.string "first_name", limit: 150, null: false
+    t.string "last_name", limit: 150, null: false
+    t.string "email", limit: 254, null: false
+    t.boolean "is_staff", null: false
+    t.boolean "is_active", null: false
+    t.timestamptz "date_joined", null: false
+    t.index ["username"], name: "auth_user_username_6821ab7c_like", opclass: :varchar_pattern_ops
+    t.index ["username"], name: "auth_user_username_key", unique: true
+  end
+
+  create_table "auth_user_groups", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "group_id", null: false
+    t.index ["group_id"], name: "auth_user_groups_group_id_97559544"
+    t.index ["user_id", "group_id"], name: "auth_user_groups_user_id_group_id_94350c0c_uniq", unique: true
+    t.index ["user_id"], name: "auth_user_groups_user_id_6a12ed8b"
+  end
+
+  create_table "auth_user_user_permissions", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "permission_id", null: false
+    t.index ["permission_id"], name: "auth_user_user_permissions_permission_id_1fbb5f2c"
+    t.index ["user_id", "permission_id"], name: "auth_user_user_permissions_user_id_permission_id_14a6b632_uniq", unique: true
+    t.index ["user_id"], name: "auth_user_user_permissions_user_id_a95ead1b"
+  end
+
+  create_table "authtoken_token", primary_key: "key", id: { type: :string, limit: 40 }, force: :cascade do |t|
+    t.timestamptz "created", null: false
+    t.integer "user_id", null: false
+    t.index ["key"], name: "authtoken_token_key_10f0b77e_like", opclass: :varchar_pattern_ops
+    t.index ["user_id"], name: "authtoken_token_user_id_key", unique: true
+  end
 
   create_table "case_htmls", force: :cascade do |t|
     t.bigint "court_case_id", null: false
@@ -137,10 +217,174 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
     t.bigint "current_judge_id"
     t.boolean "is_error", default: false, null: false
     t.boolean "enqueued", default: false, null: false
+    t.virtual "clean_case_number", type: :string, as: "\nCASE\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2,3}-?[0-9]{2,4}-[0-9]{2,8}'::text) THEN ((((\"substring\"((case_number)::text, '^([A-Za-z]{2,3})-?[0-9]{2,4}-[0-9]{2,8}'::text) || '-'::text) ||\n    CASE\n        WHEN (length(\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)) = 2) THEN\n        CASE\n            WHEN ((\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))::integer <= 40) THEN ('20'::text || \"substring\"((case_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n            ELSE ('19'::text || \"substring\"((case_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n        END\n        ELSE \"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)\n    END) || '-'::text) || regexp_replace(\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?[0-9]{2,4}-([0-9]{2,8})'::text), '^0+'::text, ''::text))\n    ELSE NULL::text\nEND", stored: true
     t.index ["case_type_id"], name: "index_court_cases_on_case_type_id"
     t.index ["county_id", "oscn_id"], name: "index_court_cases_on_county_id_and_oscn_id", unique: true
     t.index ["county_id"], name: "index_court_cases_on_county_id"
     t.index ["current_judge_id"], name: "index_court_cases_on_current_judge_id"
+  end
+
+  create_table "datasources_area", force: :cascade do |t|
+    t.string "identity", limit: 200, null: false
+    t.jsonb "geom", null: false
+    t.string "map_type", limit: 20, null: false
+    t.index ["identity"], name: "datasources_area_tract_64e1493e_like", opclass: :varchar_pattern_ops
+    t.index ["identity"], name: "datasources_area_tract_64e1493e_uniq", unique: true
+  end
+
+  create_table "datasources_areastatistic", force: :cascade do |t|
+    t.float "value"
+    t.date "date"
+    t.timestamptz "created_date", null: false
+    t.bigint "statistic_id", null: false
+    t.string "identity_id", limit: 200, null: false
+    t.index ["identity_id", "statistic_id"], name: "datasources_identit_093296_idx"
+    t.index ["identity_id"], name: "datasources_areastatistic_tract_id_27b12430"
+    t.index ["statistic_id"], name: "datasources_areastatistic_statistic_id_0689a96f"
+  end
+
+  create_table "datasources_datasource", force: :cascade do |t|
+    t.timestamptz "date", null: false
+    t.string "file", limit: 100
+    t.boolean "is_parcel_linked", null: false
+    t.boolean "is_average", null: false
+    t.jsonb "column_list"
+    t.string "map_id_column", limit: 10
+    t.index ["map_id_column"], name: "datasources_datasource_map_id_column_d263390f"
+    t.index ["map_id_column"], name: "datasources_datasource_map_id_column_d263390f_like", opclass: :varchar_pattern_ops
+  end
+
+  create_table "datasources_parcel", force: :cascade do |t|
+    t.string "parcel_id", limit: 200, null: false
+    t.string "parcel_nb", limit: 200
+    t.string "geoid20", limit: 200, null: false
+    t.string "zip", limit: 200, null: false
+    t.string "identity_id", limit: 200
+    t.string "block", limit: 200, null: false
+    t.decimal "lat", precision: 17, scale: 14
+    t.decimal "long", precision: 17, scale: 14
+    t.index ["identity_id"], name: "datasources_parcel_tract_id_01ed29cb"
+    t.index ["identity_id"], name: "datasources_parcel_tract_id_01ed29cb_like", opclass: :varchar_pattern_ops
+    t.index ["parcel_nb", "geoid20", "zip", "identity_id", "block"], name: "datasources_parcel__187275_idx"
+    t.index ["parcel_nb"], name: "datasources_parcel_parcel_nb_e608996f_like", opclass: :varchar_pattern_ops
+    t.index ["parcel_nb"], name: "datasources_parcel_parcel_nb_e608996f_uniq", unique: true
+  end
+
+  create_table "datasources_parcelstatistic", force: :cascade do |t|
+    t.float "value"
+    t.date "date", null: false
+    t.timestamptz "created_date", null: false
+    t.string "parcel_id", limit: 200, null: false
+    t.bigint "statistic_id", null: false
+    t.index ["parcel_id", "statistic_id"], name: "datasources_parcel__c049c6_idx"
+    t.index ["parcel_id"], name: "datasources_parcelstatistic_parcel_id_e1f79122"
+    t.index ["parcel_id"], name: "datasources_parcelstatistic_parcel_id_e1f79122_like", opclass: :varchar_pattern_ops
+    t.index ["statistic_id"], name: "datasources_parcelstatistic_statistic_id_0666c66c"
+  end
+
+  create_table "datasources_refresh", force: :cascade do |t|
+    t.timestamptz "date", null: false
+    t.bigint "source_id", null: false
+    t.index ["source_id"], name: "datasources_refresh_source_id_2ce66c5e"
+  end
+
+  create_table "datasources_statistic", force: :cascade do |t|
+    t.string "name", limit: 200, null: false
+    t.text "description", null: false
+    t.boolean "is_average", null: false
+    t.bigint "statistic_category_id"
+    t.boolean "published", null: false
+    t.bigint "source_id"
+    t.string "desired", limit: 25, null: false
+    t.string "chart_zoom", limit: 25, null: false
+    t.jsonb "params"
+    t.bigint "parent_id"
+    t.integer "rate_multiplier", null: false
+    t.bigint "denominator_id"
+    t.string "update_period", limit: 25, null: false
+    t.timestamptz "created", null: false
+    t.timestamptz "modified", null: false
+    t.boolean "show_rate_on_map", null: false
+    t.index ["denominator_id"], name: "datasources_statistic_denominator_id_9c807d00"
+    t.index ["parent_id"], name: "datasources_statistic_parent_id_22dcfc7a"
+    t.index ["source_id"], name: "datasources_statistic_source_id_54471ee0"
+    t.index ["statistic_category_id"], name: "datasources_statistic_statistic_category_id_4697d786"
+  end
+
+  create_table "datasources_statistic_categories", force: :cascade do |t|
+    t.bigint "statistic_id", null: false
+    t.bigint "statisticcategory_id", null: false
+    t.index ["statistic_id", "statisticcategory_id"], name: "datasources_statistic_ca_statistic_id_statisticca_358fb6c3_uniq", unique: true
+    t.index ["statistic_id"], name: "datasources_statistic_categories_statistic_id_6bc88a81"
+    t.index ["statisticcategory_id"], name: "datasources_statistic_categories_statisticcategory_id_e6f4058c"
+  end
+
+  create_table "datasources_statistic_research_questions", force: :cascade do |t|
+    t.bigint "from_statistic_id", null: false
+    t.bigint "to_statistic_id", null: false
+    t.index ["from_statistic_id", "to_statistic_id"], name: "datasources_statistic_re_from_statistic_id_to_sta_7c3a6af8_uniq", unique: true
+    t.index ["from_statistic_id"], name: "datasources_statistic_rese_from_statistic_id_9781d809"
+    t.index ["to_statistic_id"], name: "datasources_statistic_rese_to_statistic_id_f4b3621d"
+  end
+
+  create_table "datasources_statistic_users", id: :bigint, default: -> { "nextval('\"datasources_statistic_Users_id_seq\"'::regclass)" }, force: :cascade do |t|
+    t.bigint "statistic_id", null: false
+    t.integer "user_id", null: false
+    t.index ["statistic_id", "user_id"], name: "datasources_statistic_Users_statistic_id_user_id_3ea3880a_uniq", unique: true
+    t.index ["statistic_id"], name: "datasources_statistic_Users_statistic_id_ddfaefdc"
+    t.index ["user_id"], name: "datasources_statistic_Users_user_id_c2750f30"
+  end
+
+  create_table "datasources_statistic_visible_by", force: :cascade do |t|
+    t.bigint "statistic_id", null: false
+    t.integer "user_id", null: false
+    t.index ["statistic_id", "user_id"], name: "datasources_statistic_vi_statistic_id_user_id_a17c5d91_uniq", unique: true
+    t.index ["statistic_id"], name: "datasources_statistic_visible_by_statistic_id_8e74144b"
+    t.index ["user_id"], name: "datasources_statistic_visible_by_user_id_f06a25ab"
+  end
+
+  create_table "datasources_statisticattribute", force: :cascade do |t|
+    t.text "category", null: false
+    t.text "value", null: false
+    t.bigint "statistic_id", null: false
+    t.index ["statistic_id"], name: "datasources_statisticattribute_statistic_id_dd17ea57"
+  end
+
+  create_table "datasources_statisticcategory", force: :cascade do |t|
+    t.string "name", limit: 200
+    t.boolean "active", null: false
+    t.timestamptz "created", null: false
+    t.string "fa_icon", limit: 100
+    t.timestamptz "modified", null: false
+    t.integer "order", limit: 2, null: false
+    t.string "un_color", limit: 6
+    t.string "un_name", limit: 200
+    t.integer "un_sdg_number", limit: 2
+    t.check_constraint "\"order\" >= 0", name: "datasources_statisticcategory_order_check"
+    t.check_constraint "name IS NOT NULL OR NOT active", name: "name_required_when_active_constraint"
+    t.check_constraint "un_sdg_number >= 0", name: "datasources_statisticcategory_un_sdg_number_check"
+  end
+
+  create_table "datasources_statisticrefresh", id: :bigint, default: -> { "nextval('datasources_statistic_id_seq'::regclass)" }, force: :cascade do |t|
+    t.string "field_name", limit: 200
+    t.timestamptz "created_date", null: false
+    t.bigint "data_source_id"
+    t.boolean "imported", null: false
+    t.bigint "statistic_id"
+    t.date "date", null: false
+    t.float "tulsa_value"
+    t.float "okc_value"
+    t.string "geometry", limit: 10
+    t.integer "task_source_id"
+    t.integer "creator_id"
+    t.index ["creator_id"], name: "datasources_statisticrefresh_creator_id_986147ac"
+    t.index ["data_source_id"], name: "datasources_statistic_data_source_id_40d7dc16"
+    t.index ["geometry"], name: "datasources_statisticrefresh_geometry_a7d6e6c0"
+    t.index ["geometry"], name: "datasources_statisticrefresh_geometry_a7d6e6c0_like", opclass: :varchar_pattern_ops
+    t.index ["statistic_id"], name: "datasources_statisticrefresh_statistic_id_2cfb46c7"
+    t.index ["task_source_id"], name: "datasources_statisticrefresh_task_source_id_0f2577a9"
+    t.index ["task_source_id"], name: "datasources_statisticrefresh_task_source_id_0f2577a9_uniq", unique: true
+    t.check_constraint "data_source_id IS NULL OR task_source_id IS NULL", name: "only_one_source_constraint"
   end
 
   create_table "district_attorneys", force: :cascade do |t|
@@ -148,6 +392,154 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
     t.integer "number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "django_admin_log", id: :serial, force: :cascade do |t|
+    t.timestamptz "action_time", null: false
+    t.text "object_id"
+    t.string "object_repr", limit: 200, null: false
+    t.integer "action_flag", limit: 2, null: false
+    t.text "change_message", null: false
+    t.integer "content_type_id"
+    t.integer "user_id", null: false
+    t.index ["content_type_id"], name: "django_admin_log_content_type_id_c4bce8eb"
+    t.index ["user_id"], name: "django_admin_log_user_id_c564eba6"
+    t.check_constraint "action_flag >= 0", name: "django_admin_log_action_flag_check"
+  end
+
+  create_table "django_celery_beat_clockedschedule", id: :serial, force: :cascade do |t|
+    t.timestamptz "clocked_time", null: false
+  end
+
+  create_table "django_celery_beat_crontabschedule", id: :serial, force: :cascade do |t|
+    t.string "minute", limit: 240, null: false
+    t.string "hour", limit: 96, null: false
+    t.string "day_of_week", limit: 64, null: false
+    t.string "day_of_month", limit: 124, null: false
+    t.string "month_of_year", limit: 64, null: false
+    t.string "timezone", limit: 63, null: false
+  end
+
+  create_table "django_celery_beat_intervalschedule", id: :serial, force: :cascade do |t|
+    t.integer "every", null: false
+    t.string "period", limit: 24, null: false
+  end
+
+  create_table "django_celery_beat_periodictask", id: :serial, force: :cascade do |t|
+    t.string "name", limit: 200, null: false
+    t.string "task", limit: 200, null: false
+    t.text "args", null: false
+    t.text "kwargs", null: false
+    t.string "queue", limit: 200
+    t.string "exchange", limit: 200
+    t.string "routing_key", limit: 200
+    t.timestamptz "expires"
+    t.boolean "enabled", null: false
+    t.timestamptz "last_run_at"
+    t.integer "total_run_count", null: false
+    t.timestamptz "date_changed", null: false
+    t.text "description", null: false
+    t.integer "crontab_id"
+    t.integer "interval_id"
+    t.integer "solar_id"
+    t.boolean "one_off", null: false
+    t.timestamptz "start_time"
+    t.integer "priority"
+    t.text "headers", null: false
+    t.integer "clocked_id"
+    t.integer "expire_seconds"
+    t.index ["clocked_id"], name: "django_celery_beat_periodictask_clocked_id_47a69f82"
+    t.index ["crontab_id"], name: "django_celery_beat_periodictask_crontab_id_d3cba168"
+    t.index ["interval_id"], name: "django_celery_beat_periodictask_interval_id_a8ca27da"
+    t.index ["name"], name: "django_celery_beat_periodictask_name_265a36b7_like", opclass: :varchar_pattern_ops
+    t.index ["name"], name: "django_celery_beat_periodictask_name_key", unique: true
+    t.index ["solar_id"], name: "django_celery_beat_periodictask_solar_id_a87ce72c"
+    t.check_constraint "expire_seconds >= 0", name: "django_celery_beat_periodictask_expire_seconds_check"
+    t.check_constraint "priority >= 0", name: "django_celery_beat_periodictask_priority_check"
+    t.check_constraint "total_run_count >= 0", name: "django_celery_beat_periodictask_total_run_count_check"
+  end
+
+  create_table "django_celery_beat_periodictasks", primary_key: "ident", id: { type: :integer, limit: 2, default: nil }, force: :cascade do |t|
+    t.timestamptz "last_update", null: false
+  end
+
+  create_table "django_celery_beat_solarschedule", id: :serial, force: :cascade do |t|
+    t.string "event", limit: 24, null: false
+    t.decimal "latitude", precision: 9, scale: 6, null: false
+    t.decimal "longitude", precision: 9, scale: 6, null: false
+    t.index ["event", "latitude", "longitude"], name: "django_celery_beat_solar_event_latitude_longitude_ba64999a_uniq", unique: true
+  end
+
+  create_table "django_celery_results_chordcounter", id: :serial, force: :cascade do |t|
+    t.string "group_id", limit: 255, null: false
+    t.text "sub_tasks", null: false
+    t.integer "count", null: false
+    t.index ["group_id"], name: "django_celery_results_chordcounter_group_id_1f70858c_like", opclass: :varchar_pattern_ops
+    t.index ["group_id"], name: "django_celery_results_chordcounter_group_id_key", unique: true
+    t.check_constraint "count >= 0", name: "django_celery_results_chordcounter_count_check"
+  end
+
+  create_table "django_celery_results_groupresult", id: :serial, force: :cascade do |t|
+    t.string "group_id", limit: 255, null: false
+    t.timestamptz "date_created", null: false
+    t.timestamptz "date_done", null: false
+    t.string "content_type", limit: 128, null: false
+    t.string "content_encoding", limit: 64, null: false
+    t.text "result"
+    t.index ["date_created"], name: "django_cele_date_cr_bd6c1d_idx"
+    t.index ["date_done"], name: "django_cele_date_do_caae0e_idx"
+    t.index ["group_id"], name: "django_celery_results_groupresult_group_id_a085f1a9_like", opclass: :varchar_pattern_ops
+    t.index ["group_id"], name: "django_celery_results_groupresult_group_id_key", unique: true
+  end
+
+  create_table "django_celery_results_taskresult", id: :serial, force: :cascade do |t|
+    t.string "task_id", limit: 255, null: false
+    t.string "status", limit: 50, null: false
+    t.string "content_type", limit: 128, null: false
+    t.string "content_encoding", limit: 64, null: false
+    t.text "result"
+    t.timestamptz "date_done", null: false
+    t.text "traceback"
+    t.text "meta"
+    t.text "task_args"
+    t.text "task_kwargs"
+    t.string "task_name", limit: 255
+    t.string "worker", limit: 100
+    t.timestamptz "date_created", null: false
+    t.string "periodic_task_name", limit: 255
+    t.index ["date_created"], name: "django_cele_date_cr_f04a50_idx"
+    t.index ["date_done"], name: "django_cele_date_do_f59aad_idx"
+    t.index ["status"], name: "django_cele_status_9b6201_idx"
+    t.index ["task_id"], name: "django_celery_results_taskresult_task_id_de0d95bf_like", opclass: :varchar_pattern_ops
+    t.index ["task_id"], name: "django_celery_results_taskresult_task_id_key", unique: true
+    t.index ["task_name"], name: "django_cele_task_na_08aec9_idx"
+    t.index ["worker"], name: "django_cele_worker_d54dd8_idx"
+  end
+
+  create_table "django_content_type", id: :serial, force: :cascade do |t|
+    t.string "app_label", limit: 100, null: false
+    t.string "model", limit: 100, null: false
+    t.index ["app_label", "model"], name: "django_content_type_app_label_model_76bd3d3b_uniq", unique: true
+  end
+
+  create_table "django_migrations", force: :cascade do |t|
+    t.string "app", limit: 255, null: false
+    t.string "name", limit: 255, null: false
+    t.timestamptz "applied", null: false
+  end
+
+  create_table "django_session", primary_key: "session_key", id: { type: :string, limit: 40 }, force: :cascade do |t|
+    t.text "session_data", null: false
+    t.timestamptz "expire_date", null: false
+    t.index ["expire_date"], name: "django_session_expire_date_a5c62663"
+    t.index ["session_key"], name: "django_session_session_key_c0390e0f_like", opclass: :varchar_pattern_ops
+  end
+
+  create_table "django_site", id: :serial, force: :cascade do |t|
+    t.string "domain", limit: 100, null: false
+    t.string "name", limit: 50, null: false
+    t.index ["domain"], name: "django_site_domain_a2e37b91_like", opclass: :varchar_pattern_ops
+    t.index ["domain"], name: "django_site_domain_a2e37b91_uniq", unique: true
   end
 
   create_table "doc_aliases", force: :cascade do |t|
@@ -224,6 +616,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
     t.string "sentence_id", null: false
     t.string "consecutive_to_sentence_id"
     t.bigint "doc_sentencing_county_id"
+    t.virtual "clean_case_number", type: :string, as: "\nCASE\n    WHEN ((crf_number)::text ~ '^[A-Za-z]{2,3}-?[0-9]{2,4}-[0-9]{2,8}'::text) THEN ((((\"substring\"((crf_number)::text, '^([A-Za-z]{2,3})-?[0-9]{2,4}-[0-9]{2,8}'::text) || '-'::text) ||\n    CASE\n        WHEN (length(\"substring\"((crf_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)) = 2) THEN\n        CASE\n            WHEN ((\"substring\"((crf_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))::integer <= 40) THEN ('20'::text || \"substring\"((crf_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n            ELSE ('19'::text || \"substring\"((crf_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n        END\n        ELSE \"substring\"((crf_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)\n    END) || '-'::text) || regexp_replace(\"substring\"((crf_number)::text, '^[A-Za-z]{2,3}-?[0-9]{2,4}-([0-9]{2,8})'::text), '^0+'::text, ''::text))\n    ELSE NULL::text\nEND", stored: true
     t.index ["court_case_id"], name: "index_doc_sentences_on_court_case_id"
     t.index ["doc_offense_code_id"], name: "index_doc_sentences_on_doc_offense_code_id"
     t.index ["doc_profile_id", "sentence_id"], name: "index_doc_sentences_on_doc_profile_id_and_sentence_id", unique: true
@@ -305,7 +698,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
   create_table "events", force: :cascade do |t|
     t.bigint "court_case_id", null: false
     t.bigint "party_id"
-    t.datetime "event_at", precision: nil, null: false
+    t.datetime "event_at", null: false
     t.string "event_name"
     t.string "docket"
     t.datetime "created_at", null: false
@@ -407,8 +800,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
     t.string "inmate_number", null: false
     t.string "booking_number", null: false
     t.string "booking_type"
-    t.datetime "booking_date", precision: nil, null: false
-    t.datetime "release_date", precision: nil
+    t.datetime "booking_date", null: false
+    t.datetime "release_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "roster_id"
@@ -431,7 +824,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
   end
 
   create_table "okc_blotter_pdfs", force: :cascade do |t|
-    t.datetime "parsed_on", precision: nil
+    t.datetime "parsed_on"
     t.date "date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -614,6 +1007,343 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
     t.index ["name"], name: "index_pleas_on_name", unique: true
   end
 
+  create_table "projects_agecategory", force: :cascade do |t|
+    t.string "name", limit: 200, null: false
+  end
+
+  create_table "projects_disaggregationbarriers", force: :cascade do |t|
+    t.string "name", limit: 200, null: false
+  end
+
+  create_table "projects_educationcategory", force: :cascade do |t|
+    t.string "name", limit: 200, null: false
+  end
+
+  create_table "projects_gendercategory", force: :cascade do |t|
+    t.string "name", limit: 200, null: false
+  end
+
+  create_table "projects_healthcarecategory", force: :cascade do |t|
+    t.string "name", limit: 200, null: false
+  end
+
+  create_table "projects_incomecategory", force: :cascade do |t|
+    t.string "name", limit: 200, null: false
+  end
+
+  create_table "projects_insurancecategory", force: :cascade do |t|
+    t.string "name", limit: 200, null: false
+  end
+
+  create_table "projects_insuredstatuscategory", force: :cascade do |t|
+    t.string "name", limit: 200, null: false
+  end
+
+  create_table "projects_locationtype", force: :cascade do |t|
+    t.string "name", limit: 200, null: false
+  end
+
+  create_table "projects_maritalcategory", force: :cascade do |t|
+    t.string "name", limit: 200, null: false
+  end
+
+  create_table "projects_othervariables", force: :cascade do |t|
+    t.string "name", limit: 200, null: false
+  end
+
+  create_table "projects_parentingstatuscategory", force: :cascade do |t|
+    t.string "name", limit: 200, null: false
+  end
+
+  create_table "projects_racecategory", force: :cascade do |t|
+    t.string "name", limit: 200, null: false
+  end
+
+  create_table "projects_researcher", force: :cascade do |t|
+    t.string "name", limit: 200, null: false
+  end
+
+  create_table "projects_researchquestion", id: :bigint, default: -> { "nextval('projects_research_question_id_seq'::regclass)" }, force: :cascade do |t|
+    t.string "title", limit: 200, null: false
+    t.text "description", null: false
+    t.timestamptz "created_date", null: false
+    t.integer "author_id"
+    t.text "results_report", null: false
+    t.text "ableism", null: false
+    t.text "accuracy", null: false
+    t.text "branding", null: false
+    t.text "broad_questions_to_narrow", null: false
+    t.text "centered_perspectives", null: false
+    t.text "change_onus", null: false
+    t.text "clarity", null: false
+    t.text "complexity", null: false
+    t.text "copyright", null: false
+    t.text "cultural_translation", null: false
+    t.text "data_disaggregation_change", null: false
+    t.text "data_generalization", null: false
+    t.text "data_weight", null: false
+    t.text "datasource_list", null: false
+    t.text "define_process_answer", null: false
+    t.text "depth", null: false
+    t.text "digital_vs_print", null: false
+    t.text "feedback", null: false
+    t.text "field_list", null: false
+    t.text "implicit_biases", null: false
+    t.text "interactive_vs_demonstrative", null: false
+    t.text "isolated_vs_network", null: false
+    t.text "list_defs_of_success", null: false
+    t.text "list_goals", null: false
+    t.text "list_restrictions", null: false
+    t.text "list_rewards", null: false
+    t.text "live_vs_standalone", null: false
+    t.text "narrative", null: false
+    t.text "ownership", null: false
+    t.text "paywall", null: false
+    t.text "permanence", null: false
+    t.text "perspective", null: false
+    t.text "pov", null: false
+    t.text "private_vs_public", null: false
+    t.date "refresh_date"
+    t.text "relevance", null: false
+    t.date "report_date"
+    t.date "request_date"
+    t.text "research_sources", null: false
+    t.text "sensitivity", null: false
+    t.text "specificity", null: false
+    t.text "static_vs_dynamic", null: false
+    t.text "training", null: false
+    t.boolean "BEST_partner"
+    t.string "visibility", limit: 8, null: false
+    t.bigint "researcher_id"
+    t.string "status", limit: 12, null: false
+    t.boolean "show_results_only", null: false
+    t.text "requester_organization", null: false
+    t.index ["author_id"], name: "projects_research_question_author_id_1ff8b07e"
+    t.index ["researcher_id"], name: "projects_research_question_researcher_id_6c7bac8d"
+  end
+
+  create_table "projects_researchquestion_categories", id: :bigint, default: -> { "nextval('projects_research_question_categories_id_seq'::regclass)" }, force: :cascade do |t|
+    t.bigint "researchquestion_id", null: false
+    t.bigint "statisticcategory_id", null: false
+    t.index ["researchquestion_id", "statisticcategory_id"], name: "projects_research_questi_research_question_id_sta_3def0284_uniq", unique: true
+    t.index ["researchquestion_id"], name: "projects_research_question_research_question_id_9d26b18b"
+    t.index ["statisticcategory_id"], name: "projects_research_question_statisticcategory_id_f2ba72fe"
+  end
+
+  create_table "projects_researchquestion_other_variables", id: :bigint, default: -> { "nextval('projects_research_question_other_variables_id_seq'::regclass)" }, force: :cascade do |t|
+    t.bigint "researchquestion_id", null: false
+    t.bigint "othervariables_id", null: false
+    t.index ["othervariables_id"], name: "projects_research_question_othervariables_id_145a1563"
+    t.index ["researchquestion_id", "othervariables_id"], name: "projects_research_questi_research_question_id_oth_56d6f715_uniq", unique: true
+    t.index ["researchquestion_id"], name: "projects_research_question_research_question_id_ed02b47d"
+  end
+
+  create_table "projects_researchquestion_topics", id: :bigint, default: -> { "nextval('projects_research_question_topics_id_seq'::regclass)" }, force: :cascade do |t|
+    t.bigint "researchquestion_id", null: false
+    t.bigint "topics_id", null: false
+    t.index ["researchquestion_id", "topics_id"], name: "projects_research_questi_research_question_id_top_4816e498_uniq", unique: true
+    t.index ["researchquestion_id"], name: "projects_research_question_topics_research_question_id_9be92457"
+    t.index ["topics_id"], name: "projects_research_question_topics_topics_id_06d83e7d"
+  end
+
+  create_table "projects_sexcategory", force: :cascade do |t|
+    t.string "name", limit: 200, null: false
+  end
+
+  create_table "projects_source", force: :cascade do |t|
+    t.string "title", limit: 200, null: false
+    t.text "description", null: false
+    t.timestamptz "created_date", null: false
+    t.integer "author_id"
+    t.text "category_comparison", null: false
+    t.text "category_define", null: false
+    t.text "category_select", null: false
+    t.date "collection_date"
+    t.string "datasource_link", limit: 2048
+    t.boolean "has_data_been_disaggregated"
+    t.text "how", null: false
+    t.text "quality", null: false
+    t.text "refresh_frequency", null: false
+    t.text "sample_pop", null: false
+    t.bigint "sample_size"
+    t.string "storage_link", limit: 200
+    t.text "usage", null: false
+    t.boolean "variable_define"
+    t.date "when"
+    t.text "who_collected", null: false
+    t.text "who_owns", null: false
+    t.text "why", null: false
+    t.text "why_category", null: false
+    t.bigint "where_id"
+    t.bigint "why_not_disaggregated_id"
+    t.string "visibility", limit: 8, null: false
+    t.string "prepped_status", limit: 20, null: false
+    t.index ["author_id"], name: "projects_source_author_id_2d4d785e"
+    t.index ["where_id"], name: "projects_source_where_id_69a8e9a8"
+    t.index ["why_not_disaggregated_id"], name: "projects_source_why_not_disaggregated_id_57358c3c"
+    t.check_constraint "sample_size >= 0", name: "projects_source_sample_size_check"
+  end
+
+  create_table "projects_source_categories", force: :cascade do |t|
+    t.bigint "source_id", null: false
+    t.bigint "statisticcategory_id", null: false
+    t.index ["source_id", "statisticcategory_id"], name: "projects_source_categori_source_id_statisticcateg_5734b04e_uniq", unique: true
+    t.index ["source_id"], name: "projects_source_categories_source_id_03c32e23"
+    t.index ["statisticcategory_id"], name: "projects_source_categories_statisticcategory_id_a502f974"
+  end
+
+  create_table "projects_source_categories_age", id: :bigint, default: -> { "nextval('projects_source_category_age_id_seq'::regclass)" }, force: :cascade do |t|
+    t.bigint "source_id", null: false
+    t.bigint "agecategory_id", null: false
+    t.index ["agecategory_id"], name: "projects_source_category_age_agecategory_id_dbb1bc6d"
+    t.index ["source_id", "agecategory_id"], name: "projects_source_category_source_id_agecategory_id_e4194c8f_uniq", unique: true
+    t.index ["source_id"], name: "projects_source_category_age_source_id_9a1698d6"
+  end
+
+  create_table "projects_source_categories_education", id: :bigint, default: -> { "nextval('projects_source_category_education_id_seq'::regclass)" }, force: :cascade do |t|
+    t.bigint "source_id", null: false
+    t.bigint "educationcategory_id", null: false
+    t.index ["educationcategory_id"], name: "projects_source_category_e_educationcategory_id_ad31257d"
+    t.index ["source_id", "educationcategory_id"], name: "projects_source_category_source_id_educationcateg_8d2aa595_uniq", unique: true
+    t.index ["source_id"], name: "projects_source_category_education_source_id_c7ba0c4b"
+  end
+
+  create_table "projects_source_categories_gender", force: :cascade do |t|
+    t.bigint "source_id", null: false
+    t.bigint "gendercategory_id", null: false
+    t.index ["gendercategory_id"], name: "projects_source_categories_gender_gendercategory_id_ad55902c"
+    t.index ["source_id", "gendercategory_id"], name: "projects_source_categori_source_id_gendercategory_5c3f6917_uniq", unique: true
+    t.index ["source_id"], name: "projects_source_categories_gender_source_id_bf69a909"
+  end
+
+  create_table "projects_source_categories_healthcare", id: :bigint, default: -> { "nextval('projects_source_category_healthcare_id_seq'::regclass)" }, force: :cascade do |t|
+    t.bigint "source_id", null: false
+    t.bigint "healthcarecategory_id", null: false
+    t.index ["healthcarecategory_id"], name: "projects_source_category_h_healthcarecategory_id_1ddaee9f"
+    t.index ["source_id", "healthcarecategory_id"], name: "projects_source_category_source_id_healthcarecate_d17a3d8f_uniq", unique: true
+    t.index ["source_id"], name: "projects_source_category_healthcare_source_id_c2053f1f"
+  end
+
+  create_table "projects_source_categories_income", id: :bigint, default: -> { "nextval('projects_source_category_income_id_seq'::regclass)" }, force: :cascade do |t|
+    t.bigint "source_id", null: false
+    t.bigint "incomecategory_id", null: false
+    t.index ["incomecategory_id"], name: "projects_source_category_income_incomecategory_id_dfdd1285"
+    t.index ["source_id", "incomecategory_id"], name: "projects_source_category_source_id_incomecategory_072bf867_uniq", unique: true
+    t.index ["source_id"], name: "projects_source_category_income_source_id_d570c618"
+  end
+
+  create_table "projects_source_categories_insurance", id: :bigint, default: -> { "nextval('projects_source_category_insurance_id_seq'::regclass)" }, force: :cascade do |t|
+    t.bigint "source_id", null: false
+    t.bigint "insurancecategory_id", null: false
+    t.index ["insurancecategory_id"], name: "projects_source_category_i_insurancecategory_id_d1538746"
+    t.index ["source_id", "insurancecategory_id"], name: "projects_source_category_source_id_insurancecateg_439addb1_uniq", unique: true
+    t.index ["source_id"], name: "projects_source_category_insurance_source_id_12c96c2e"
+  end
+
+  create_table "projects_source_categories_insured", id: :bigint, default: -> { "nextval('projects_source_category_insured_id_seq'::regclass)" }, force: :cascade do |t|
+    t.bigint "source_id", null: false
+    t.bigint "insuredstatuscategory_id", null: false
+    t.index ["insuredstatuscategory_id"], name: "projects_source_category_i_insuredstatuscategory_id_db81ddeb"
+    t.index ["source_id", "insuredstatuscategory_id"], name: "projects_source_category_source_id_insuredstatusc_a86b1051_uniq", unique: true
+    t.index ["source_id"], name: "projects_source_category_insured_source_id_671007b5"
+  end
+
+  create_table "projects_source_categories_marital", id: :bigint, default: -> { "nextval('projects_source_category_marital_id_seq'::regclass)" }, force: :cascade do |t|
+    t.bigint "source_id", null: false
+    t.bigint "maritalcategory_id", null: false
+    t.index ["maritalcategory_id"], name: "projects_source_category_marital_maritalcategory_id_8bcc8810"
+    t.index ["source_id", "maritalcategory_id"], name: "projects_source_category_source_id_maritalcategor_b0170bed_uniq", unique: true
+    t.index ["source_id"], name: "projects_source_category_marital_source_id_2e314214"
+  end
+
+  create_table "projects_source_categories_parenting", id: :bigint, default: -> { "nextval('projects_source_category_parenting_id_seq'::regclass)" }, force: :cascade do |t|
+    t.bigint "source_id", null: false
+    t.bigint "parentingstatuscategory_id", null: false
+    t.index ["parentingstatuscategory_id"], name: "projects_source_category_p_parentingstatuscategory_id_4b7dce8d"
+    t.index ["source_id", "parentingstatuscategory_id"], name: "projects_source_category_source_id_parentingstatu_1046d559_uniq", unique: true
+    t.index ["source_id"], name: "projects_source_category_parenting_source_id_81338cd2"
+  end
+
+  create_table "projects_source_categories_race", id: :bigint, default: -> { "nextval('projects_source_category_race_id_seq'::regclass)" }, force: :cascade do |t|
+    t.bigint "source_id", null: false
+    t.bigint "racecategory_id", null: false
+    t.index ["racecategory_id"], name: "projects_source_category_race_racecategory_id_c683f5b0"
+    t.index ["source_id", "racecategory_id"], name: "projects_source_category_source_id_racecategory_i_ebd82b39_uniq", unique: true
+    t.index ["source_id"], name: "projects_source_category_race_source_id_ac04047e"
+  end
+
+  create_table "projects_source_categories_sex", force: :cascade do |t|
+    t.bigint "source_id", null: false
+    t.bigint "sexcategory_id", null: false
+    t.index ["sexcategory_id"], name: "projects_source_categories_sex_sexcategory_id_7a5e6b22"
+    t.index ["source_id", "sexcategory_id"], name: "projects_source_categori_source_id_sexcategory_id_bac1ec8b_uniq", unique: true
+    t.index ["source_id"], name: "projects_source_categories_sex_source_id_0f19d26f"
+  end
+
+  create_table "projects_source_research_questions", id: :bigint, default: -> { "nextval('projects_source_research_question_id_seq'::regclass)" }, force: :cascade do |t|
+    t.bigint "source_id", null: false
+    t.bigint "researchquestion_id", null: false
+    t.index ["researchquestion_id"], name: "projects_source_research_question_research_question_id_b8a06e2f"
+    t.index ["source_id", "researchquestion_id"], name: "projects_source_research_source_id_research_quest_928025bc_uniq", unique: true
+    t.index ["source_id"], name: "projects_source_research_question_source_id_451782de"
+  end
+
+  create_table "projects_source_topics_covered", force: :cascade do |t|
+    t.bigint "source_id", null: false
+    t.bigint "topics_id", null: false
+    t.index ["source_id", "topics_id"], name: "projects_source_topics_c_source_id_topics_id_b59edf45_uniq", unique: true
+    t.index ["source_id"], name: "projects_source_topics_covered_source_id_d120fe6e"
+    t.index ["topics_id"], name: "projects_source_topics_covered_topics_id_83f74664"
+  end
+
+  create_table "projects_topics", force: :cascade do |t|
+    t.string "name", limit: 200, null: false
+  end
+
+  create_table "resources_category", force: :cascade do |t|
+    t.string "name", limit: 200, null: false
+    t.bigint "parent_category_id"
+    t.text "svg_code", null: false
+    t.timestamptz "created_at", null: false
+    t.timestamptz "updated_at", null: false
+    t.index ["parent_category_id"], name: "resources_category_parent_category_id_6fffa3b5"
+  end
+
+  create_table "resources_resource", force: :cascade do |t|
+    t.text "name", null: false
+    t.string "address", limit: 200
+    t.string "city", limit: 200
+    t.string "state", limit: 200
+    t.string "zip", limit: 200
+    t.jsonb "details_html"
+    t.bigint "parcel_id"
+    t.timestamptz "created_at", null: false
+    t.timestamptz "updated_at", null: false
+    t.bigint "list_html_id"
+    t.bigint "refresh_id", null: false
+    t.index ["list_html_id"], name: "resources_resource_list_html_id_93af9cdb"
+    t.index ["parcel_id"], name: "resources_resource_parcel_id_d8e5f681"
+    t.index ["refresh_id"], name: "resources_resource_refresh_id_a263997c"
+  end
+
+  create_table "resources_resource_categories", force: :cascade do |t|
+    t.bigint "resource_id", null: false
+    t.bigint "category_id", null: false
+    t.index ["category_id"], name: "resources_resource_categories_category_id_3944a462"
+    t.index ["resource_id", "category_id"], name: "resources_resource_categ_resource_id_category_id_934a21a6_uniq", unique: true
+    t.index ["resource_id"], name: "resources_resource_categories_resource_id_f2f988e9"
+  end
+
+  create_table "resources_resourcelisthtml", force: :cascade do |t|
+    t.text "html", null: false
+    t.timestamptz "created_at", null: false
+    t.boolean "parsed", null: false
+    t.jsonb "request", null: false
+    t.timestamptz "updated_at", null: false
+    t.bigint "refresh_id", null: false
+    t.index ["refresh_id"], name: "resources_resourcelisthtml_refresh_id_f68a7098"
+  end
+
   create_table "rosters", force: :cascade do |t|
     t.string "birth_year"
     t.string "birth_month"
@@ -627,6 +1357,44 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
     t.string "middle_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "socialaccount_socialaccount", id: :serial, force: :cascade do |t|
+    t.string "provider", limit: 30, null: false
+    t.string "uid", limit: 191, null: false
+    t.timestamptz "last_login", null: false
+    t.timestamptz "date_joined", null: false
+    t.text "extra_data", null: false
+    t.integer "user_id", null: false
+    t.index ["provider", "uid"], name: "socialaccount_socialaccount_provider_uid_fc810c6e_uniq", unique: true
+    t.index ["user_id"], name: "socialaccount_socialaccount_user_id_8146e70c"
+  end
+
+  create_table "socialaccount_socialapp", id: :serial, force: :cascade do |t|
+    t.string "provider", limit: 30, null: false
+    t.string "name", limit: 40, null: false
+    t.string "client_id", limit: 191, null: false
+    t.string "secret", limit: 191, null: false
+    t.string "key", limit: 191, null: false
+  end
+
+  create_table "socialaccount_socialapp_sites", force: :cascade do |t|
+    t.integer "socialapp_id", null: false
+    t.integer "site_id", null: false
+    t.index ["site_id"], name: "socialaccount_socialapp_sites_site_id_2579dee5"
+    t.index ["socialapp_id", "site_id"], name: "socialaccount_socialapp__socialapp_id_site_id_71a9a768_uniq", unique: true
+    t.index ["socialapp_id"], name: "socialaccount_socialapp_sites_socialapp_id_97fb6e7d"
+  end
+
+  create_table "socialaccount_socialtoken", id: :serial, force: :cascade do |t|
+    t.text "token", null: false
+    t.text "token_secret", null: false
+    t.timestamptz "expires_at"
+    t.integer "account_id", null: false
+    t.integer "app_id", null: false
+    t.index ["account_id"], name: "socialaccount_socialtoken_account_id_951f210e"
+    t.index ["app_id", "account_id"], name: "socialaccount_socialtoken_app_id_account_id_fca4e0ac_uniq", unique: true
+    t.index ["app_id"], name: "socialaccount_socialtoken_app_id_636a42d7"
   end
 
   create_table "titles", force: :cascade do |t|
@@ -687,6 +1455,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
     t.bigint "arrests_id"
     t.decimal "bond_amount", precision: 14, scale: 2
     t.date "court_date"
+    t.virtual "clean_case_number", type: :string, as: "\nCASE\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2,3}-?[0-9]{2,4}-[0-9]{2,8}'::text) THEN ((((\"substring\"((case_number)::text, '^([A-Za-z]{2,3})-?[0-9]{2,4}-[0-9]{2,8}'::text) || '-'::text) ||\n    CASE\n        WHEN (length(\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)) = 2) THEN\n        CASE\n            WHEN ((\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))::integer <= 40) THEN ('20'::text || \"substring\"((case_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n            ELSE ('19'::text || \"substring\"((case_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n        END\n        ELSE \"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)\n    END) || '-'::text) || regexp_replace(\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?[0-9]{2,4}-([0-9]{2,8})'::text), '^0+'::text, ''::text))\n    ELSE NULL::text\nEND", stored: true
     t.index ["arrests_id"], name: "index_tulsa_blotter_offenses_on_arrests_id"
   end
 
@@ -736,6 +1505,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
     t.string "crime"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.virtual "clean_case_number", type: :string, as: "\nCASE\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2,3}-?[0-9]{2,4}-[0-9]{2,8}'::text) THEN ((((\"substring\"((case_number)::text, '^([A-Za-z]{2,3})-?[0-9]{2,4}-[0-9]{2,8}'::text) || '-'::text) ||\n    CASE\n        WHEN (length(\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)) = 2) THEN\n        CASE\n            WHEN ((\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))::integer <= 40) THEN ('20'::text || \"substring\"((case_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n            ELSE ('19'::text || \"substring\"((case_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n        END\n        ELSE \"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)\n    END) || '-'::text) || regexp_replace(\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?[0-9]{2,4}-([0-9]{2,8})'::text), '^0+'::text, ''::text))\n    ELSE NULL::text\nEND", stored: true
     t.index ["docket_id", "inmate_id"], name: "index_tulsa_city_offenses_on_docket_id_and_inmate_id", unique: true
     t.index ["inmate_id"], name: "index_tulsa_city_offenses_on_inmate_id"
   end
@@ -747,6 +1517,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
     t.index ["name"], name: "index_verdicts_on_name", unique: true
   end
 
+  add_foreign_key "account_emailaddress", "auth_user", column: "user_id", name: "account_emailaddress_user_id_2c513194_fk_auth_user_id", deferrable: :deferred
+  add_foreign_key "account_emailconfirmation", "account_emailaddress", column: "email_address_id", name: "account_emailconfirm_email_address_id_5b7f8c58_fk_account_e", deferrable: :deferred
+  add_foreign_key "auth_group_permissions", "auth_group", column: "group_id", name: "auth_group_permissions_group_id_b120cbf9_fk_auth_group_id", deferrable: :deferred
+  add_foreign_key "auth_group_permissions", "auth_permission", column: "permission_id", name: "auth_group_permissio_permission_id_84c5c92e_fk_auth_perm", deferrable: :deferred
+  add_foreign_key "auth_permission", "django_content_type", column: "content_type_id", name: "auth_permission_content_type_id_2f476e4b_fk_django_co", deferrable: :deferred
+  add_foreign_key "auth_user_groups", "auth_group", column: "group_id", name: "auth_user_groups_group_id_97559544_fk_auth_group_id", deferrable: :deferred
+  add_foreign_key "auth_user_groups", "auth_user", column: "user_id", name: "auth_user_groups_user_id_6a12ed8b_fk_auth_user_id", deferrable: :deferred
+  add_foreign_key "auth_user_user_permissions", "auth_permission", column: "permission_id", name: "auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm", deferrable: :deferred
+  add_foreign_key "auth_user_user_permissions", "auth_user", column: "user_id", name: "auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id", deferrable: :deferred
+  add_foreign_key "authtoken_token", "auth_user", column: "user_id", name: "authtoken_token_user_id_35299eff_fk_auth_user_id", deferrable: :deferred
   add_foreign_key "case_htmls", "court_cases"
   add_foreign_key "case_not_founds", "counties"
   add_foreign_key "case_parties", "court_cases"
@@ -764,6 +1544,34 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
   add_foreign_key "court_cases", "case_types"
   add_foreign_key "court_cases", "counties"
   add_foreign_key "court_cases", "judges", column: "current_judge_id"
+  add_foreign_key "datasources_areastatistic", "datasources_area", column: "identity_id", primary_key: "identity", name: "datasources_areastat_identity_id_59216d92_fk_datasourc", deferrable: :deferred
+  add_foreign_key "datasources_areastatistic", "datasources_statisticrefresh", column: "statistic_id", name: "datasources_areastat_statistic_id_0689a96f_fk_datasourc", deferrable: :deferred
+  add_foreign_key "datasources_parcelstatistic", "datasources_parcel", column: "parcel_id", primary_key: "parcel_nb", name: "datasources_parcelst_parcel_id_e1f79122_fk_datasourc", deferrable: :deferred
+  add_foreign_key "datasources_parcelstatistic", "datasources_statisticrefresh", column: "statistic_id", name: "datasources_parcelst_statistic_id_0666c66c_fk_datasourc", deferrable: :deferred
+  add_foreign_key "datasources_refresh", "projects_source", column: "source_id", name: "datasources_refresh_source_id_2ce66c5e_fk_projects_source_id", deferrable: :deferred
+  add_foreign_key "datasources_statistic", "datasources_statistic", column: "denominator_id", name: "datasources_statisti_denominator_id_9c807d00_fk_datasourc", deferrable: :deferred
+  add_foreign_key "datasources_statistic", "datasources_statistic", column: "parent_id", name: "datasources_statisti_parent_id_22dcfc7a_fk_datasourc", deferrable: :deferred
+  add_foreign_key "datasources_statistic", "datasources_statisticcategory", column: "statistic_category_id", name: "datasources_statisti_statistic_category_i_4697d786_fk_datasourc", deferrable: :deferred
+  add_foreign_key "datasources_statistic", "projects_source", column: "source_id", name: "datasources_statistic_source_id_54471ee0_fk_projects_source_id", deferrable: :deferred
+  add_foreign_key "datasources_statistic_categories", "datasources_statistic", column: "statistic_id", name: "datasources_statisti_statistic_id_6bc88a81_fk_datasourc", deferrable: :deferred
+  add_foreign_key "datasources_statistic_categories", "datasources_statisticcategory", column: "statisticcategory_id", name: "datasources_statisti_statisticcategory_id_e6f4058c_fk_datasourc", deferrable: :deferred
+  add_foreign_key "datasources_statistic_research_questions", "datasources_statistic", column: "from_statistic_id", name: "datasources_statisti_from_statistic_id_9781d809_fk_datasourc", deferrable: :deferred
+  add_foreign_key "datasources_statistic_research_questions", "datasources_statistic", column: "to_statistic_id", name: "datasources_statisti_to_statistic_id_f4b3621d_fk_datasourc", deferrable: :deferred
+  add_foreign_key "datasources_statistic_users", "auth_user", column: "user_id", name: "datasources_statistic_Users_user_id_c2750f30_fk_auth_user_id", deferrable: :deferred
+  add_foreign_key "datasources_statistic_users", "datasources_statistic", column: "statistic_id", name: "datasources_statisti_statistic_id_ddfaefdc_fk_datasourc", deferrable: :deferred
+  add_foreign_key "datasources_statistic_visible_by", "auth_user", column: "user_id", name: "datasources_statisti_user_id_f06a25ab_fk_auth_user", deferrable: :deferred
+  add_foreign_key "datasources_statistic_visible_by", "datasources_statistic", column: "statistic_id", name: "datasources_statisti_statistic_id_8e74144b_fk_datasourc", deferrable: :deferred
+  add_foreign_key "datasources_statisticattribute", "datasources_statistic", column: "statistic_id", name: "datasources_statisti_statistic_id_dd17ea57_fk_datasourc", deferrable: :deferred
+  add_foreign_key "datasources_statisticrefresh", "auth_user", column: "creator_id", name: "datasources_statisti_creator_id_986147ac_fk_auth_user", deferrable: :deferred
+  add_foreign_key "datasources_statisticrefresh", "datasources_datasource", column: "data_source_id", name: "datasources_statisti_data_source_id_40d7dc16_fk_datasourc", deferrable: :deferred
+  add_foreign_key "datasources_statisticrefresh", "datasources_statistic", column: "statistic_id", name: "datasources_statisti_statistic_id_2cfb46c7_fk_datasourc", deferrable: :deferred
+  add_foreign_key "datasources_statisticrefresh", "django_celery_beat_periodictask", column: "task_source_id", name: "datasources_statisti_task_source_id_0f2577a9_fk_django_ce", deferrable: :deferred
+  add_foreign_key "django_admin_log", "auth_user", column: "user_id", name: "django_admin_log_user_id_c564eba6_fk_auth_user_id", deferrable: :deferred
+  add_foreign_key "django_admin_log", "django_content_type", column: "content_type_id", name: "django_admin_log_content_type_id_c4bce8eb_fk_django_co", deferrable: :deferred
+  add_foreign_key "django_celery_beat_periodictask", "django_celery_beat_clockedschedule", column: "clocked_id", name: "django_celery_beat_p_clocked_id_47a69f82_fk_django_ce", deferrable: :deferred
+  add_foreign_key "django_celery_beat_periodictask", "django_celery_beat_crontabschedule", column: "crontab_id", name: "django_celery_beat_p_crontab_id_d3cba168_fk_django_ce", deferrable: :deferred
+  add_foreign_key "django_celery_beat_periodictask", "django_celery_beat_intervalschedule", column: "interval_id", name: "django_celery_beat_p_interval_id_a8ca27da_fk_django_ce", deferrable: :deferred
+  add_foreign_key "django_celery_beat_periodictask", "django_celery_beat_solarschedule", column: "solar_id", name: "django_celery_beat_p_solar_id_a87ce72c_fk_django_ce", deferrable: :deferred
   add_foreign_key "doc_aliases", "doc_profiles"
   add_foreign_key "doc_profiles", "doc_facilities"
   add_foreign_key "doc_profiles", "rosters"
@@ -797,6 +1605,57 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
   add_foreign_key "party_htmls", "parties"
   add_foreign_key "pd_offense_minutes", "pd_offenses", column: "offense_id"
   add_foreign_key "pd_offenses", "pd_bookings", column: "booking_id"
+  add_foreign_key "projects_researchquestion", "auth_user", column: "author_id", name: "projects_research_question_author_id_1ff8b07e_fk_auth_user_id", deferrable: :deferred
+  add_foreign_key "projects_researchquestion", "projects_researcher", column: "researcher_id", name: "projects_research_qu_researcher_id_6c7bac8d_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_researchquestion_categories", "datasources_statisticcategory", column: "statisticcategory_id", name: "projects_research_qu_statisticcategory_id_f2ba72fe_fk_datasourc", deferrable: :deferred
+  add_foreign_key "projects_researchquestion_categories", "projects_researchquestion", column: "researchquestion_id", name: "projects_researchque_researchquestion_id_ea254582_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_researchquestion_other_variables", "projects_othervariables", column: "othervariables_id", name: "projects_research_qu_othervariables_id_145a1563_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_researchquestion_other_variables", "projects_researchquestion", column: "researchquestion_id", name: "projects_researchque_researchquestion_id_f57381e5_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_researchquestion_topics", "projects_researchquestion", column: "researchquestion_id", name: "projects_researchque_researchquestion_id_dda5957e_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_researchquestion_topics", "projects_topics", column: "topics_id", name: "projects_research_qu_topics_id_06d83e7d_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source", "auth_user", column: "author_id", name: "projects_source_author_id_2d4d785e_fk_auth_user_id", deferrable: :deferred
+  add_foreign_key "projects_source", "projects_disaggregationbarriers", column: "why_not_disaggregated_id", name: "projects_source_why_not_disaggregate_57358c3c_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source", "projects_locationtype", column: "where_id", name: "projects_source_where_id_69a8e9a8_fk_projects_locationtype_id", deferrable: :deferred
+  add_foreign_key "projects_source_categories", "datasources_statisticcategory", column: "statisticcategory_id", name: "projects_source_cate_statisticcategory_id_a502f974_fk_datasourc", deferrable: :deferred
+  add_foreign_key "projects_source_categories", "projects_source", column: "source_id", name: "projects_source_cate_source_id_03c32e23_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_age", "projects_agecategory", column: "agecategory_id", name: "projects_source_cate_agecategory_id_dbb1bc6d_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_age", "projects_source", column: "source_id", name: "projects_source_cate_source_id_9a1698d6_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_education", "projects_educationcategory", column: "educationcategory_id", name: "projects_source_cate_educationcategory_id_ad31257d_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_education", "projects_source", column: "source_id", name: "projects_source_cate_source_id_c7ba0c4b_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_gender", "projects_gendercategory", column: "gendercategory_id", name: "projects_source_cate_gendercategory_id_ad55902c_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_gender", "projects_source", column: "source_id", name: "projects_source_cate_source_id_bf69a909_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_healthcare", "projects_healthcarecategory", column: "healthcarecategory_id", name: "projects_source_cate_healthcarecategory_i_1ddaee9f_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_healthcare", "projects_source", column: "source_id", name: "projects_source_cate_source_id_c2053f1f_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_income", "projects_incomecategory", column: "incomecategory_id", name: "projects_source_cate_incomecategory_id_dfdd1285_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_income", "projects_source", column: "source_id", name: "projects_source_cate_source_id_d570c618_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_insurance", "projects_insurancecategory", column: "insurancecategory_id", name: "projects_source_cate_insurancecategory_id_d1538746_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_insurance", "projects_source", column: "source_id", name: "projects_source_cate_source_id_12c96c2e_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_insured", "projects_insuredstatuscategory", column: "insuredstatuscategory_id", name: "projects_source_cate_insuredstatuscategor_db81ddeb_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_insured", "projects_source", column: "source_id", name: "projects_source_cate_source_id_671007b5_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_marital", "projects_maritalcategory", column: "maritalcategory_id", name: "projects_source_cate_maritalcategory_id_8bcc8810_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_marital", "projects_source", column: "source_id", name: "projects_source_cate_source_id_2e314214_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_parenting", "projects_parentingstatuscategory", column: "parentingstatuscategory_id", name: "projects_source_cate_parentingstatuscateg_4b7dce8d_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_parenting", "projects_source", column: "source_id", name: "projects_source_cate_source_id_81338cd2_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_race", "projects_racecategory", column: "racecategory_id", name: "projects_source_cate_racecategory_id_c683f5b0_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_race", "projects_source", column: "source_id", name: "projects_source_cate_source_id_ac04047e_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_sex", "projects_sexcategory", column: "sexcategory_id", name: "projects_source_cate_sexcategory_id_7a5e6b22_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_categories_sex", "projects_source", column: "source_id", name: "projects_source_cate_source_id_0f19d26f_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_research_questions", "projects_researchquestion", column: "researchquestion_id", name: "projects_source_rese_researchquestion_id_aa32edb1_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_research_questions", "projects_source", column: "source_id", name: "projects_source_rese_source_id_451782de_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_topics_covered", "projects_source", column: "source_id", name: "projects_source_topi_source_id_d120fe6e_fk_projects_", deferrable: :deferred
+  add_foreign_key "projects_source_topics_covered", "projects_topics", column: "topics_id", name: "projects_source_topi_topics_id_83f74664_fk_projects_", deferrable: :deferred
+  add_foreign_key "resources_category", "resources_category", column: "parent_category_id", name: "resources_category_parent_category_id_6fffa3b5_fk_resources", deferrable: :deferred
+  add_foreign_key "resources_resource", "datasources_parcel", column: "parcel_id", name: "resources_resource_parcel_id_d8e5f681_fk_datasources_parcel_id", deferrable: :deferred
+  add_foreign_key "resources_resource", "datasources_refresh", column: "refresh_id", name: "resources_resource_refresh_id_a263997c_fk_datasourc", deferrable: :deferred
+  add_foreign_key "resources_resource", "resources_resourcelisthtml", column: "list_html_id", name: "resources_resource_list_html_id_93af9cdb_fk_resources", deferrable: :deferred
+  add_foreign_key "resources_resource_categories", "resources_category", column: "category_id", name: "resources_resource_c_category_id_3944a462_fk_resources", deferrable: :deferred
+  add_foreign_key "resources_resource_categories", "resources_resource", column: "resource_id", name: "resources_resource_c_resource_id_f2f988e9_fk_resources", deferrable: :deferred
+  add_foreign_key "resources_resourcelisthtml", "datasources_refresh", column: "refresh_id", name: "resources_resourceli_refresh_id_f68a7098_fk_datasourc", deferrable: :deferred
+  add_foreign_key "socialaccount_socialaccount", "auth_user", column: "user_id", name: "socialaccount_socialaccount_user_id_8146e70c_fk_auth_user_id", deferrable: :deferred
+  add_foreign_key "socialaccount_socialapp_sites", "django_site", column: "site_id", name: "socialaccount_social_site_id_2579dee5_fk_django_si", deferrable: :deferred
+  add_foreign_key "socialaccount_socialapp_sites", "socialaccount_socialapp", column: "socialapp_id", name: "socialaccount_social_socialapp_id_97fb6e7d_fk_socialacc", deferrable: :deferred
+  add_foreign_key "socialaccount_socialtoken", "socialaccount_socialaccount", column: "account_id", name: "socialaccount_social_account_id_951f210e_fk_socialacc", deferrable: :deferred
+  add_foreign_key "socialaccount_socialtoken", "socialaccount_socialapp", column: "app_id", name: "socialaccount_social_app_id_636a42d7_fk_socialacc", deferrable: :deferred
   add_foreign_key "tulsa_blotter_arrest_details_htmls", "tulsa_blotter_arrests", column: "arrest_id"
   add_foreign_key "tulsa_blotter_arrests", "rosters"
   add_foreign_key "tulsa_blotter_arrests_page_htmls", "tulsa_blotter_arrests", column: "arrest_id"
@@ -836,7 +1695,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
       ( SELECT count(*) AS count
              FROM (docket_events
                JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-            WHERE ((docket_events.party_id = parties.id) AND ((docket_event_types.code)::text = ANY (ARRAY[('WAI$'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('WAI'::character varying)::text, ('WAIMV'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAR'::character varying)::text])))) AS warrants_count,
+            WHERE ((docket_events.party_id = parties.id) AND ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'BWIFAR'::character varying])::text[])))) AS warrants_count,
       ( SELECT sum(docket_events.amount) AS sum
              FROM docket_events
             WHERE (docket_events.party_id = parties.id)) AS total_fined,
@@ -914,7 +1773,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
               ELSE NULL::text
           END AS shortdescription,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY (ARRAY[('BWIFA'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFAR'::character varying)::text])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIFAR'::character varying])::text[])) THEN true
               ELSE false
           END AS is_failure_to_appear,
           CASE
@@ -930,11 +1789,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
               ELSE false
           END AS is_failure_to_comply,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY (ARRAY[('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIAA'::character varying)::text, ('BWIAR'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAA'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying])::text[])) THEN true
               ELSE false
           END AS is_bench_warrant_issued,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY (ARRAY[('WAI'::character varying)::text, ('WAI$'::character varying)::text])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['WAI'::character varying, 'WAI$'::character varying])::text[])) THEN true
               ELSE false
           END AS is_arrest_warrant_issued,
           CASE
@@ -950,7 +1809,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
               ELSE false
           END AS is_cause,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY (ARRAY[('BWIMW'::character varying)::text, ('WAIMW'::character varying)::text])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIMW'::character varying, 'WAIMW'::character varying])::text[])) THEN true
               ELSE false
           END AS is_material_witness,
           CASE
@@ -962,7 +1821,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
               ELSE false
           END AS is_material_rule_8,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY (ARRAY[('BWIS$'::character varying)::text, ('BWIS'::character varying)::text])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIS$'::character varying, 'BWIS'::character varying])::text[])) THEN true
               ELSE false
           END AS is_service_by_sheriff,
           CASE
@@ -981,7 +1840,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
        JOIN docket_event_types ON ((docket_event_types.id = docket_events.docket_event_type_id)))
        JOIN court_cases ON ((court_cases.id = docket_events.court_case_id)))
        JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
-    WHERE ((docket_event_types.code)::text = ANY (ARRAY[('WAI$'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('WAI'::character varying)::text, ('WAIMV'::character varying)::text, ('WAIMW'::character varying)::text, ('RETBW'::character varying)::text, ('RETWA'::character varying)::text]));
+    WHERE ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWIFC'::character varying, 'BWIFAR'::character varying, 'BWICA'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'RETBW'::character varying, 'RETWA'::character varying])::text[]));
   SQL
   add_index "report_warrants", ["party_id", "code"], name: "index_report_warrants_on_party_id_and_code"
 
@@ -1006,7 +1865,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
       ( SELECT count(*) AS count
              FROM (docket_events
                JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-            WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY (ARRAY[('WAI$'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('WAI'::character varying)::text, ('WAIMV'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAR'::character varying)::text])))) AS warrants_count
+            WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'BWIFAR'::character varying])::text[])))) AS warrants_count
      FROM court_cases;
   SQL
   add_index "case_stats", ["court_case_id"], name: "index_case_stats_on_court_case_id"
@@ -1083,7 +1942,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
           CASE
               WHEN (( SELECT count(*) AS count
                  FROM report_warrants
-                WHERE ((parties.id = report_warrants.party_id) AND ((report_warrants.code)::text = ANY (ARRAY[('WAI$'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('WAI'::character varying)::text, ('WAIMV'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAR'::character varying)::text])))) > ( SELECT count(*) AS count
+                WHERE ((parties.id = report_warrants.party_id) AND ((report_warrants.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'BWIFAR'::character varying])::text[])))) > ( SELECT count(*) AS count
                  FROM report_warrants
                 WHERE ((parties.id = report_warrants.party_id) AND ((report_warrants.code)::text = 'RETWA'::text)))) THEN 'Yes'::text
               ELSE 'No'::text
@@ -1095,7 +1954,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
               WHEN (( SELECT count(*) AS count
                  FROM (docket_events
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY (ARRAY[('WAI$'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('WAI'::character varying)::text, ('WAIMV'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAR'::character varying)::text])))) > 0) THEN 'Yes'::text
+                WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'BWIFAR'::character varying])::text[])))) > 0) THEN 'Yes'::text
               ELSE 'No'::text
           END AS warrant_on_case,
       pleas.name AS plea,
@@ -1217,7 +2076,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
                    JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
                    JOIN counties ON ((court_cases.county_id = counties.id)))
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY (ARRAY[('BWIFP'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIAR'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIS$'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWIMW'::character varying)::text, ('WAI$'::character varying)::text, ('WAI'::character varying)::text, ('BWIS'::character varying)::text])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
                          FROM ((case_parties
                            JOIN parties ON ((case_parties.party_id = parties.id)))
                            JOIN party_types ON ((parties.party_type_id = party_types.id)))
@@ -1228,7 +2087,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
                    JOIN counties ON ((court_cases.county_id = counties.id)))
                    JOIN parties ON ((docket_events.party_id = parties.id)))
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY (ARRAY[('BWIFP'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIAR'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIS$'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWIMW'::character varying)::text, ('WAI$'::character varying)::text, ('WAI'::character varying)::text, ('BWIS'::character varying)::text])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2))))
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2))))
               ELSE NULL::bigint
           END AS warrant_count,
           CASE
@@ -1238,7 +2097,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
                    JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
                    JOIN counties ON ((court_cases.county_id = counties.id)))
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY (ARRAY[('RETBW'::character varying)::text, ('RETWA'::character varying)::text])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['RETBW'::character varying, 'RETWA'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
                          FROM ((case_parties
                            JOIN parties ON ((case_parties.party_id = parties.id)))
                            JOIN party_types ON ((parties.party_type_id = party_types.id)))
@@ -1249,7 +2108,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
                    JOIN counties ON ((court_cases.county_id = counties.id)))
                    JOIN parties ON ((docket_events.party_id = parties.id)))
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY (ARRAY[('RETBW'::character varying)::text, ('RETWA'::character varying)::text])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2))))
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['RETBW'::character varying, 'RETWA'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2))))
               ELSE NULL::bigint
           END AS return_warrant_count,
           CASE
@@ -1259,7 +2118,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
                    JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
                    JOIN counties ON ((court_cases.county_id = counties.id)))
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY (ARRAY[('BWIFP'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIAR'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIS$'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWIMW'::character varying)::text, ('WAI$'::character varying)::text, ('WAI'::character varying)::text, ('BWIS'::character varying)::text])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
                          FROM ((case_parties
                            JOIN parties ON ((case_parties.party_id = parties.id)))
                            JOIN party_types ON ((parties.party_type_id = party_types.id)))
@@ -1272,7 +2131,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_211829) do
                    JOIN counties ON ((court_cases.county_id = counties.id)))
                    JOIN parties ON ((docket_events.party_id = parties.id)))
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY (ARRAY[('BWIFP'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIAR'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIS$'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWIMW'::character varying)::text, ('WAI$'::character varying)::text, ('WAI'::character varying)::text, ('BWIS'::character varying)::text])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2)))
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2)))
                 ORDER BY docket_events.event_on DESC
                LIMIT 1)
               ELSE NULL::character varying

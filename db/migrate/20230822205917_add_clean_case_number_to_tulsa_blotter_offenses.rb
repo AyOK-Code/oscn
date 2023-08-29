@@ -27,7 +27,9 @@ class AddCleanCaseNumberToTulsaBlotterOffenses < ActiveRecord::Migration[7.0]
              REGEXP_REPLACE(substring(case_number, '^[A-Za-z]{2,3}-?[0-9]{2,4}-([0-9]{2,8})'), '^0+','')
         )
     END"
-   
+    add_column :tulsa_blotter_offenses,
+    :clean_case_number,
+    :virtual, type: :string, as: sql, stored: true
   
 end
 end
