@@ -23,7 +23,7 @@ default: &default
 
 development:
   <<: *default
-  database: oscn_development
+  database: oscn_development_backup
   pool: 20
 
   # The specified database role being used to connect to postgres.
@@ -58,7 +58,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: oscn_test
+  database: oscn_test_backup
   password: mysecretpassword
 
 # As with config/credentials.yml, you never want to store sensitive information,
@@ -74,7 +74,7 @@ test:
 production:
   <<: *default
   host: <%= ENV['DATABASE_HOST'] %>
-  database: postgres
+  database: postgres_backup
   username: <%= ENV['DATABASE_USER'] %>
   password: <%= ENV['DATABASE_PASSWORD'] %>
   port: <%= ENV['DATABASE_PORT'] %>

@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_30_215056) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
+  enable_extension "pg_trgm"
   enable_extension "plpgsql"
 
   create_table "case_htmls", force: :cascade do |t|
@@ -22,14 +23,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["court_case_id"], name: "index_case_htmls_on_court_case_id"
-  end
-
-  create_table "case_not_founds", force: :cascade do |t|
-    t.bigint "county_id", null: false
-    t.string "case_number", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["county_id"], name: "index_case_not_founds_on_county_id"
   end
 
   create_table "case_parties", force: :cascade do |t|
@@ -136,7 +129,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
     t.jsonb "logs"
     t.bigint "current_judge_id"
     t.boolean "is_error", default: false, null: false
+    t.string "party_string"
     t.boolean "enqueued", default: false, null: false
+    t.virtual "clean_case_number", type: :string, as: "\nCASE\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2,3}-?[0-9]{2,4}-[0-9]{2,8}'::text) THEN ((((\"substring\"((case_number)::text, '^([A-Za-z]{2,3})-?[0-9]{2,4}-[0-9]{2,8}'::text) || '-'::text) ||\n    CASE\n        WHEN (length(\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)) = 2) THEN\n        CASE\n            WHEN ((\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))::integer <= 40) THEN ('20'::text || \"substring\"((case_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n            ELSE ('19'::text || \"substring\"((case_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n        END\n        ELSE \"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)\n    END) || '-'::text) || regexp_replace(\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?[0-9]{2,4}-([0-9]{2,8})'::text), '^0+'::text, ''::text))\n    ELSE NULL::text\nEND", stored: true
     t.index ["case_type_id"], name: "index_court_cases_on_case_type_id"
     t.index ["county_id", "oscn_id"], name: "index_court_cases_on_county_id_and_oscn_id", unique: true
     t.index ["county_id"], name: "index_court_cases_on_county_id"
@@ -170,14 +165,39 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "doc_historical_sentences", force: :cascade do |t|
+    t.integer "external_id"
+    t.bigint "doc_profile_id"
+    t.string "order_id"
+    t.string "charge_seq"
+    t.string "crf_num"
+    t.date "convict_date"
+    t.string "court"
+    t.string "statute_code"
+    t.string "offence_description"
+    t.string "offence_comment"
+    t.string "sentence_term_code"
+    t.string "years"
+    t.string "months"
+    t.string "days"
+    t.string "sentence_term"
+    t.date "start_date"
+    t.date "end_date"
+    t.string "count_num"
+    t.string "order_code"
+    t.string "consecutive_to_count"
+    t.string "charge_status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["doc_profile_id"], name: "index_doc_historical_sentences_on_doc_profile_id"
+  end
+
   create_table "doc_offense_codes", force: :cascade do |t|
     t.string "statute_code", null: false
     t.string "description", null: false
     t.boolean "is_violent", default: false, null: false
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.index ["statute_code", "description", "is_violent"], name: "doc_offense_codes_index", unique: true
-    t.index ["statute_code", "description", "is_violent"], name: "offense_code_index", unique: true
   end
 
   create_table "doc_profiles", force: :cascade do |t|
@@ -199,14 +219,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
     t.integer "status"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.bigint "parent_party_id"
     t.bigint "doc_facility_id"
     t.bigint "roster_id"
     t.index ["doc_facility_id"], name: "index_doc_profiles_on_doc_facility_id"
     t.index ["doc_number"], name: "index_doc_profiles_on_doc_number", unique: true
+    t.index ["parent_party_id"], name: "index_doc_profiles_on_parent_party_id"
     t.index ["roster_id"], name: "index_doc_profiles_on_roster_id"
   end
 
-  create_table "doc_sentences", force: :cascade do |t|
+  create_table "doc_sentences", id: false, force: :cascade do |t|
+    t.bigserial "id", null: false
     t.bigint "doc_profile_id", null: false
     t.bigint "doc_offense_code_id"
     t.string "statute_code"
@@ -224,11 +247,33 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
     t.string "sentence_id", null: false
     t.string "consecutive_to_sentence_id"
     t.bigint "doc_sentencing_county_id"
+    t.virtual "clean_case_number", type: :string, as: "\nCASE\n    WHEN ((crf_number)::text ~ '^[A-Za-z]{2,3}-?[0-9]{2,4}-[0-9]{2,8}'::text) THEN ((((\"substring\"((crf_number)::text, '^([A-Za-z]{2,3})-?[0-9]{2,4}-[0-9]{2,8}'::text) || '-'::text) ||\n    CASE\n        WHEN (length(\"substring\"((crf_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)) = 2) THEN\n        CASE\n            WHEN ((\"substring\"((crf_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))::integer <= 40) THEN ('20'::text || \"substring\"((crf_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n            ELSE ('19'::text || \"substring\"((crf_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n        END\n        ELSE \"substring\"((crf_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)\n    END) || '-'::text) || regexp_replace(\"substring\"((crf_number)::text, '^[A-Za-z]{2,3}-?[0-9]{2,4}-([0-9]{2,8})'::text), '^0+'::text, ''::text))\n    ELSE NULL::text\nEND", stored: true
     t.index ["court_case_id"], name: "index_doc_sentences_on_court_case_id"
     t.index ["doc_offense_code_id"], name: "index_doc_sentences_on_doc_offense_code_id"
     t.index ["doc_profile_id", "sentence_id"], name: "index_doc_sentences_on_doc_profile_id_and_sentence_id", unique: true
     t.index ["doc_profile_id"], name: "index_doc_sentences_on_doc_profile_id"
     t.index ["doc_sentencing_county_id"], name: "index_doc_sentences_on_doc_sentencing_county_id"
+    t.index ["sentence_id"], name: "index_doc_sentence_on_sentence_id"
+  end
+
+  create_table "doc_sentences_backup", id: :bigint, default: -> { "nextval('doc_sentences_id_seq'::regclass)" }, force: :cascade do |t|
+    t.bigint "doc_profile_id", null: false
+    t.bigint "doc_offense_code_id"
+    t.string "statute_code"
+    t.string "sentencing_county"
+    t.date "js_date"
+    t.string "crf_number"
+    t.decimal "incarcerated_term_in_years"
+    t.decimal "probation_term_in_years"
+    t.boolean "is_death_sentence", default: false, null: false
+    t.boolean "is_life_sentence", default: false, null: false
+    t.boolean "is_life_no_parole_sentence", default: false, null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.bigint "court_case_id"
+    t.string "sentence_id", null: false
+    t.string "consecutive_to_sentence_id"
+    t.bigint "doc_sentencing_county_id"
   end
 
   create_table "doc_sentencing_counties", force: :cascade do |t|
@@ -280,16 +325,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
     t.datetime "updated_at", null: false
     t.bigint "party_id"
     t.integer "count"
-    t.decimal "payment", default: "0.0", null: false
-    t.decimal "adjustment", default: "0.0", null: false
+    t.decimal "payment", default: "0.0"
+    t.decimal "adjustment", default: "0.0"
     t.integer "row_index", null: false
     t.boolean "is_otc_payment", default: false, null: false
-    t.index ["adjustment"], name: "index_docket_events_on_adjustment", where: "(adjustment <> (0)::numeric)"
+    t.index ["adjustment"], name: "index_docket_events_on_adjustment"
     t.index ["amount"], name: "index_docket_events_on_amount", where: "(amount <> (0)::numeric)"
     t.index ["court_case_id"], name: "index_docket_events_on_court_case_id"
     t.index ["docket_event_type_id"], name: "index_docket_events_on_docket_event_type_id"
     t.index ["party_id"], name: "index_docket_events_on_party_id"
-    t.index ["payment"], name: "index_docket_events_on_payment", where: "(payment <> (0)::numeric)"
+    t.index ["payment"], name: "index_docket_events_on_payment"
     t.index ["row_index", "court_case_id"], name: "index_docket_events_on_row_index_and_court_case_id", unique: true
   end
 
@@ -306,7 +351,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
     t.bigint "court_case_id", null: false
     t.bigint "party_id"
     t.datetime "event_at", precision: nil, null: false
-    t.string "event_name"
+    t.string "event_name", null: false
     t.string "docket"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -336,12 +381,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
     t.string "name"
     t.bigint "court_case_id", null: false
     t.bigint "count_code_id", null: false
+    t.bigint "filed_by_id", null: false
     t.date "filed_on"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "filed_by"
     t.index ["count_code_id"], name: "index_issues_on_count_code_id"
     t.index ["court_case_id"], name: "index_issues_on_court_case_id"
+    t.index ["filed_by_id"], name: "index_issues_on_filed_by_id"
   end
 
   create_table "judges", force: :cascade do |t|
@@ -368,31 +414,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "resolved_at", precision: nil
-    t.virtual "clean_case_number", type: :string, as: "\nCASE\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN ((((\"substring\"((case_number)::text, 1, 2) || '-'::text) ||\n    CASE\n        WHEN ((\"substring\"((case_number)::text, 3, 2))::integer <= 23) THEN ('20'::text || \"substring\"((case_number)::text, 3, 2))\n        ELSE ('19'::text || \"substring\"((case_number)::text, 3, 2))\n    END) || '-'::text) || regexp_replace(\"substring\"((case_number)::text, 5), '^0+'::text, ''::text))\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2}-[0-9]{1,}'::text) THEN ((((\"substring\"((case_number)::text, 1, 2) || '-'::text) ||\n    CASE\n        WHEN ((split_part((case_number)::text, '-'::text, 2))::integer <= 23) THEN ('20'::text || split_part((case_number)::text, '-'::text, 2))\n        ELSE ('19'::text || split_part((case_number)::text, '-'::text, 2))\n    END) || '-'::text) || split_part((case_number)::text, '-'::text, 3))\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2}-[0-9]{4}-[0-9]{1,}'::text) THEN (case_number)::text\n    ELSE NULL::text\nEND", stored: true
     t.index ["case_number", "first_name", "last_name", "birth_date"], name: "index_ocso_warrants_on_case_number_etc", unique: true
-  end
-
-  create_table "ok2_explore_deaths", force: :cascade do |t|
-    t.string "last_name", null: false
-    t.string "first_name", null: false
-    t.string "middle_name"
-    t.integer "sex", null: false
-    t.bigint "county_id", null: false
-    t.datetime "death_on", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["county_id"], name: "index_ok2_explore_deaths_on_county_id"
-  end
-
-  create_table "ok2_explore_scrape_jobs", force: :cascade do |t|
-    t.integer "year", null: false
-    t.integer "month", null: false
-    t.string "first_name", null: false
-    t.string "last_name", null: false
-    t.boolean "is_success", default: false, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.boolean "is_too_many_records", default: false, null: false
   end
 
   create_table "okc_blotter_bookings", force: :cascade do |t|
@@ -467,7 +489,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
     t.integer "birth_year"
     t.string "suffix"
     t.bigint "parent_party_id"
+    t.bigint "doc_profile_id"
     t.boolean "enqueued", default: false
+    t.index ["doc_profile_id"], name: "index_parties_on_doc_profile_id"
     t.index ["oscn_id"], name: "index_parties_on_oscn_id", unique: true
     t.index ["parent_party_id"], name: "index_parties_on_parent_party_id"
     t.index ["party_type_id"], name: "index_parties_on_party_type_id"
@@ -590,6 +614,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
     t.bigint "arrests_id"
     t.decimal "bond_amount", precision: 14, scale: 2
     t.date "court_date"
+    t.virtual "clean_case_number", type: :string, as: "\nCASE\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2,3}-?[0-9]{2,4}-[0-9]{2,8}'::text) THEN ((((\"substring\"((case_number)::text, '^([A-Za-z]{2,3})-?[0-9]{2,4}-[0-9]{2,8}'::text) || '-'::text) ||\n    CASE\n        WHEN (length(\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)) = 2) THEN\n        CASE\n            WHEN ((\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))::integer <= 40) THEN ('20'::text || \"substring\"((case_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n            ELSE ('19'::text || \"substring\"((case_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n        END\n        ELSE \"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)\n    END) || '-'::text) || regexp_replace(\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?[0-9]{2,4}-([0-9]{2,8})'::text), '^0+'::text, ''::text))\n    ELSE NULL::text\nEND", stored: true
     t.index ["arrests_id"], name: "index_tulsa_blotter_offenses_on_arrests_id"
   end
 
@@ -639,6 +664,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
     t.string "crime"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.virtual "clean_case_number", type: :string, as: "\nCASE\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2,3}-?[0-9]{2,4}-[0-9]{2,8}'::text) THEN ((((\"substring\"((case_number)::text, '^([A-Za-z]{2,3})-?[0-9]{2,4}-[0-9]{2,8}'::text) || '-'::text) ||\n    CASE\n        WHEN (length(\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)) = 2) THEN\n        CASE\n            WHEN ((\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))::integer <= 40) THEN ('20'::text || \"substring\"((case_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n            ELSE ('19'::text || \"substring\"((case_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n        END\n        ELSE \"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)\n    END) || '-'::text) || regexp_replace(\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?[0-9]{2,4}-([0-9]{2,8})'::text), '^0+'::text, ''::text))\n    ELSE NULL::text\nEND", stored: true
     t.index ["docket_id", "inmate_id"], name: "index_tulsa_city_offenses_on_docket_id_and_inmate_id", unique: true
     t.index ["inmate_id"], name: "index_tulsa_city_offenses_on_inmate_id"
   end
@@ -650,74 +676,108 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
     t.index ["name"], name: "index_verdicts_on_name", unique: true
   end
 
-  add_foreign_key "case_htmls", "court_cases"
-  add_foreign_key "case_not_founds", "counties"
-  add_foreign_key "case_parties", "court_cases"
-  add_foreign_key "case_parties", "parties"
+  create_table "warrants", force: :cascade do |t|
+    t.bigint "docket_event_id", null: false
+    t.bigint "judge_id"
+    t.integer "bond"
+    t.string "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["docket_event_id"], name: "index_warrants_on_docket_event_id"
+    t.index ["judge_id"], name: "index_warrants_on_judge_id"
+  end
+
+  add_foreign_key "case_htmls", "court_cases", on_update: :cascade
   add_foreign_key "case_parties", "rosters"
   add_foreign_key "counsel_parties", "counsels"
-  add_foreign_key "counsel_parties", "court_cases"
-  add_foreign_key "counsel_parties", "parties"
+  add_foreign_key "counties", "district_attorneys", on_update: :cascade
   add_foreign_key "counts", "count_codes", column: "disposed_statute_code_id"
   add_foreign_key "counts", "count_codes", column: "filed_statute_code_id"
-  add_foreign_key "counts", "court_cases"
-  add_foreign_key "counts", "parties"
   add_foreign_key "counts", "pleas"
   add_foreign_key "counts", "verdicts"
   add_foreign_key "court_cases", "case_types"
+  add_foreign_key "court_cases", "case_types", on_update: :cascade
   add_foreign_key "court_cases", "counties"
+  add_foreign_key "court_cases", "counties", on_update: :cascade
   add_foreign_key "court_cases", "judges", column: "current_judge_id"
-  add_foreign_key "doc_aliases", "doc_profiles"
-  add_foreign_key "doc_profiles", "doc_facilities"
+  add_foreign_key "doc_historical_sentences", "doc_profiles", on_update: :cascade
+  add_foreign_key "doc_profiles", "parent_parties", on_update: :cascade
   add_foreign_key "doc_profiles", "rosters"
-  add_foreign_key "doc_sentences", "court_cases"
   add_foreign_key "doc_sentences", "doc_offense_codes"
-  add_foreign_key "doc_sentences", "doc_profiles"
+  add_foreign_key "doc_sentences_backup", "court_cases", on_update: :cascade
+  add_foreign_key "doc_sentences_backup", "doc_offense_codes", on_update: :cascade
+  add_foreign_key "doc_sentences_backup", "doc_profiles", on_update: :cascade
   add_foreign_key "doc_sentencing_counties", "counties"
   add_foreign_key "doc_statuses", "doc_facilities"
-  add_foreign_key "doc_statuses", "doc_profiles"
-  add_foreign_key "docket_event_links", "docket_events"
-  add_foreign_key "docket_events", "court_cases"
-  add_foreign_key "docket_events", "docket_event_types"
-  add_foreign_key "docket_events", "parties"
-  add_foreign_key "events", "court_cases"
-  add_foreign_key "events", "event_types"
-  add_foreign_key "events", "parties"
+  add_foreign_key "docket_events", "court_cases", on_update: :cascade
+  add_foreign_key "docket_events", "docket_event_types", on_update: :cascade
+  add_foreign_key "docket_events", "parties", on_update: :cascade
+  add_foreign_key "events", "court_cases", on_update: :cascade
+  add_foreign_key "events", "event_types", on_update: :cascade
+  add_foreign_key "events", "judges", on_update: :cascade
+  add_foreign_key "events", "parties", on_update: :cascade
   add_foreign_key "issue_parties", "issues"
   add_foreign_key "issue_parties", "parties"
   add_foreign_key "issue_parties", "verdicts"
   add_foreign_key "issues", "count_codes"
   add_foreign_key "issues", "court_cases"
+  add_foreign_key "issues", "parties", column: "filed_by_id"
   add_foreign_key "judges", "counties"
-  add_foreign_key "ok2_explore_deaths", "counties"
   add_foreign_key "okc_blotter_bookings", "okc_blotter_pdfs", column: "pdf_id"
   add_foreign_key "okc_blotter_bookings", "rosters"
   add_foreign_key "okc_blotter_offenses", "okc_blotter_bookings", column: "booking_id"
+  add_foreign_key "parties", "doc_profiles", on_update: :cascade
   add_foreign_key "parties", "parent_parties"
-  add_foreign_key "parties", "party_types"
-  add_foreign_key "party_addresses", "parties"
-  add_foreign_key "party_aliases", "parties"
-  add_foreign_key "party_htmls", "parties"
+  add_foreign_key "party_htmls", "parties", on_update: :cascade
   add_foreign_key "tulsa_blotter_arrest_details_htmls", "tulsa_blotter_arrests", column: "arrest_id"
   add_foreign_key "tulsa_blotter_arrests", "rosters"
   add_foreign_key "tulsa_blotter_arrests_page_htmls", "tulsa_blotter_arrests", column: "arrest_id"
   add_foreign_key "tulsa_blotter_arrests_page_htmls", "tulsa_blotter_page_htmls", column: "page_html_id"
   add_foreign_key "tulsa_blotter_offenses", "tulsa_blotter_arrests", column: "arrests_id"
   add_foreign_key "tulsa_city_offenses", "tulsa_city_inmates", column: "inmate_id"
+  add_foreign_key "warrants", "docket_events", on_update: :cascade
+  add_foreign_key "warrants", "judges", on_update: :cascade
 
-  create_view "payments", sql_definition: <<-SQL
+  create_view "case_stats", materialized: true, sql_definition: <<-SQL
       SELECT court_cases.id AS court_case_id,
-      docket_events.party_id,
-      sum(docket_events.amount) AS total,
-      sum(docket_events.payment) AS payment,
-      sum(docket_events.adjustment) AS adjustment,
-      ((sum(docket_events.amount) - sum(docket_events.adjustment)) - sum(docket_events.payment)) AS owed
-     FROM (((docket_events
-       JOIN court_cases ON ((court_cases.id = docket_events.court_case_id)))
-       JOIN parties ON ((docket_events.party_id = parties.id)))
-       JOIN party_types ON ((parties.party_type_id = party_types.id)))
-    WHERE ((party_types.name)::text = 'defendant'::text)
-    GROUP BY docket_events.party_id, court_cases.id;
+      (court_cases.closed_on - court_cases.filed_on) AS length_of_case_in_days,
+      ( SELECT count(*) AS count
+             FROM counts
+            WHERE (court_cases.id = counts.court_case_id)) AS counts_count,
+      ( SELECT count(*) AS count
+             FROM ((case_parties
+               JOIN parties ON ((case_parties.party_id = parties.id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+            WHERE ((court_cases.id = case_parties.court_case_id) AND ((party_types.name)::text = 'defendant'::text))) AS defendant_count,
+          CASE
+              WHEN (( SELECT count(*) AS count
+                 FROM (docket_events
+                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
+                WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = 'CTRS'::text))) > 0) THEN true
+              ELSE false
+          END AS is_tax_intercepted,
+      ( SELECT count(*) AS count
+             FROM (docket_events
+               JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
+            WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY (ARRAY[('WAI$'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('WAI'::character varying)::text, ('WAIMV'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAR'::character varying)::text])))) AS warrants_count
+     FROM court_cases;
+  SQL
+  add_index "case_stats", ["court_case_id"], name: "index_case_stats_on_court_case_id"
+
+  create_view "parties_cases", materialized: true, sql_definition: <<-SQL
+      SELECT parties.full_name,
+      parties.first_name,
+      parties.last_name,
+      parties.birth_month,
+      parties.birth_year,
+      count(parties.full_name) AS count
+     FROM (((parties
+       JOIN case_parties ON ((parties.id = case_parties.party_id)))
+       JOIN court_cases ON ((court_cases.id = case_parties.court_case_id)))
+       JOIN case_types ON ((case_types.id = court_cases.case_type_id)))
+    WHERE ((court_cases.created_at >= (now() - 'P6Y'::interval)) AND (((case_types.name)::text = 'CRIMINAL FELONY'::text) OR ((case_types.name)::text = 'CRIMINAL MISDEMEANOR'::text)) AND (parties.full_name IS NOT NULL))
+    GROUP BY parties.full_name, parties.first_name, parties.last_name, parties.birth_month, parties.birth_year
+    ORDER BY parties.full_name;
   SQL
   create_view "party_stats", materialized: true, sql_definition: <<-SQL
       SELECT parties.id AS party_id,
@@ -737,7 +797,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
       ( SELECT count(*) AS count
              FROM (docket_events
                JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-            WHERE ((docket_events.party_id = parties.id) AND ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'BWIFAR'::character varying])::text[])))) AS warrants_count,
+            WHERE ((docket_events.party_id = parties.id) AND ((docket_event_types.code)::text = ANY (ARRAY[('WAI$'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('WAI'::character varying)::text, ('WAIMV'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAR'::character varying)::text])))) AS warrants_count,
       ( SELECT sum(docket_events.amount) AS sum
              FROM docket_events
             WHERE (docket_events.party_id = parties.id)) AS total_fined,
@@ -760,10 +820,114 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
   SQL
   add_index "party_stats", ["party_id"], name: "index_party_stats_on_party_id"
 
+  create_view "payments", sql_definition: <<-SQL
+      SELECT court_cases.id AS court_case_id,
+      docket_events.party_id,
+      sum(docket_events.amount) AS total,
+      sum(docket_events.payment) AS payment,
+      sum(docket_events.adjustment) AS adjustment,
+      ((sum(docket_events.amount) - sum(docket_events.adjustment)) - sum(docket_events.payment)) AS owed
+     FROM (((docket_events
+       JOIN court_cases ON ((court_cases.id = docket_events.court_case_id)))
+       JOIN parties ON ((docket_events.party_id = parties.id)))
+       JOIN party_types ON ((parties.party_type_id = party_types.id)))
+    WHERE ((party_types.name)::text = 'defendant'::text)
+    GROUP BY docket_events.party_id, court_cases.id;
+  SQL
+  create_view "report_charges_counts_last3years", materialized: true, sql_definition: <<-SQL
+      SELECT counts.as_filed,
+      count(counts.as_filed) AS count
+     FROM ((((parties
+       JOIN case_parties ON ((parties.id = case_parties.party_id)))
+       JOIN court_cases ON ((court_cases.id = case_parties.court_case_id)))
+       JOIN case_types ON ((case_types.id = court_cases.case_type_id)))
+       JOIN counts ON ((counts.court_case_id = court_cases.id)))
+    WHERE ((court_cases.created_at >= (now() - 'P3Y'::interval)) AND (((case_types.name)::text = 'CRIMINAL FELONY'::text) OR ((case_types.name)::text = 'CRIMINAL MISDEMEANOR'::text)) AND (parties.full_name IS NOT NULL) AND (parties.first_name IS NOT NULL) AND (parties.last_name IS NOT NULL))
+    GROUP BY counts.as_filed
+    ORDER BY (count(counts.as_filed)) DESC;
+  SQL
+  create_view "report_criminal_charges_last3years", materialized: true, sql_definition: <<-SQL
+      SELECT parties.full_name,
+      parties.first_name,
+      parties.last_name,
+      parties.birth_month,
+      parties.birth_year,
+      counts.as_filed,
+      count(counts.as_filed) AS count
+     FROM ((((parties
+       JOIN case_parties ON ((parties.id = case_parties.party_id)))
+       JOIN court_cases ON ((court_cases.id = case_parties.court_case_id)))
+       JOIN case_types ON ((case_types.id = court_cases.case_type_id)))
+       JOIN counts ON ((counts.court_case_id = court_cases.id)))
+    WHERE ((court_cases.created_at >= (now() - 'P3Y'::interval)) AND (((case_types.name)::text = 'CRIMINAL FELONY'::text) OR ((case_types.name)::text = 'CRIMINAL MISDEMEANOR'::text)) AND (parties.full_name IS NOT NULL) AND (parties.first_name IS NOT NULL) AND (parties.last_name IS NOT NULL))
+    GROUP BY parties.full_name, parties.first_name, parties.last_name, parties.birth_month, parties.birth_year, counts.as_filed
+    ORDER BY parties.full_name;
+  SQL
+  create_view "report_evictions_temp", sql_definition: <<-SQL
+      SELECT court_cases.id AS court_case_id,
+      court_cases.filed_on AS case_filed_on,
+      court_cases.closed_on AS case_closed_on,
+      court_cases.case_number,
+      ( SELECT DISTINCT parties.full_name
+             FROM ((parties
+               JOIN case_parties ON ((case_parties.party_id = parties.id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+            WHERE ((case_parties.court_case_id = court_cases.id) AND ((party_types.name)::text = 'defendant'::text))
+           LIMIT 1) AS defendant_name,
+      ( SELECT DISTINCT parties.full_name
+             FROM ((parties
+               JOIN case_parties ON ((case_parties.party_id = parties.id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+            WHERE ((case_parties.court_case_id = court_cases.id) AND ((party_types.name)::text = 'plaintiff'::text))
+           LIMIT 1) AS plaintiff_name,
+      docket_events.id AS docket_event_id,
+      ('https://www.oscn.net/dockets/GetCaseInformation.aspx?db=oklahoma&number='::text || (court_cases.case_number)::text) AS case_link,
+      ( SELECT (translate(translate((regexp_matches(de.description, '\\$\\s{0,2}[0-9]{1,3}(?:,?[0-9]{3})*\\.?[0-9]{0,2}'::text))[1], ','::text, ''::text), '$'::text, ''::text))::numeric AS money
+             FROM (docket_events de
+               JOIN docket_event_types docket_event_types_1 ON ((de.docket_event_type_id = docket_event_types_1.id)))
+            WHERE (((docket_event_types_1.code)::text = 'P'::text) AND (de.court_case_id = court_cases.id))
+           LIMIT 1) AS rent_owed,
+      ( SELECT (de.description ~~ '%POS%'::text) AS money
+             FROM (docket_events de
+               JOIN docket_event_types docket_event_types_1 ON ((de.docket_event_type_id = docket_event_types_1.id)))
+            WHERE (((docket_event_types_1.code)::text = 'P'::text) AND (de.court_case_id = court_cases.id))
+           LIMIT 1) AS possession
+     FROM ((((docket_events
+       JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
+       JOIN counties ON ((court_cases.county_id = counties.id)))
+       JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
+       JOIN docket_event_types ON ((docket_event_types.id = docket_events.docket_event_type_id)))
+    WHERE (((docket_event_types.code)::text = 'SCFED1'::text) AND ((counties.name)::text = 'Oklahoma'::text));
+  SQL
+  create_view "report_fines_and_fees", materialized: true, sql_definition: <<-SQL
+      SELECT court_cases.id AS court_case_id,
+      case_types.id AS case_type_id,
+      docket_event_types.id AS docket_event_types_id,
+      docket_events.event_on,
+      docket_events.amount,
+      docket_events.payment,
+      docket_events.adjustment,
+          CASE
+              WHEN (( SELECT count(*) AS count
+                 FROM (docket_events docket_events_1
+                   JOIN docket_event_types docket_event_types_1 ON ((docket_events_1.docket_event_type_id = docket_event_types_1.id)))
+                WHERE ((docket_events_1.court_case_id = court_cases.id) AND ((docket_event_types_1.code)::text = 'CTRS'::text))) > 0) THEN true
+              ELSE false
+          END AS is_tax_intercepted
+     FROM (((docket_events
+       JOIN docket_event_types ON ((docket_event_types.id = docket_events.docket_event_type_id)))
+       JOIN court_cases ON ((court_cases.id = docket_events.court_case_id)))
+       JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
+    WHERE ((docket_events.amount <> (0)::numeric) OR (docket_events.adjustment <> (0)::numeric) OR (docket_events.payment <> (0)::numeric));
+  SQL
+  add_index "report_fines_and_fees", ["case_type_id"], name: "index_report_fines_and_fees_on_case_type_id"
+  add_index "report_fines_and_fees", ["court_case_id"], name: "index_report_fines_and_fees_on_court_case_id"
+  add_index "report_fines_and_fees", ["docket_event_types_id"], name: "index_report_fines_and_fees_on_docket_event_types_id"
+  add_index "report_fines_and_fees", ["event_on"], name: "index_report_fines_and_fees_on_event_on"
+
   create_view "report_warrants", materialized: true, sql_definition: <<-SQL
       SELECT docket_events.id,
       docket_events.court_case_id,
-      court_cases.county_id,
       case_types.name,
       case_types.abbreviation,
       docket_events.party_id,
@@ -815,7 +979,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
               ELSE NULL::text
           END AS shortdescription,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIFAR'::character varying])::text[])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY (ARRAY[('BWIFA'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFAR'::character varying)::text])) THEN true
               ELSE false
           END AS is_failure_to_appear,
           CASE
@@ -831,11 +995,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
               ELSE false
           END AS is_failure_to_comply,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAA'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying])::text[])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY (ARRAY[('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIAA'::character varying)::text, ('BWIAR'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text])) THEN true
               ELSE false
           END AS is_bench_warrant_issued,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['WAI'::character varying, 'WAI$'::character varying])::text[])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY (ARRAY[('WAI'::character varying)::text, ('WAI$'::character varying)::text])) THEN true
               ELSE false
           END AS is_arrest_warrant_issued,
           CASE
@@ -851,7 +1015,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
               ELSE false
           END AS is_cause,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIMW'::character varying, 'WAIMW'::character varying])::text[])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY (ARRAY[('BWIMW'::character varying)::text, ('WAIMW'::character varying)::text])) THEN true
               ELSE false
           END AS is_material_witness,
           CASE
@@ -863,7 +1027,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
               ELSE false
           END AS is_material_rule_8,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIS$'::character varying, 'BWIS'::character varying])::text[])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY (ARRAY[('BWIS$'::character varying)::text, ('BWIS'::character varying)::text])) THEN true
               ELSE false
           END AS is_service_by_sheriff,
           CASE
@@ -882,36 +1046,63 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
        JOIN docket_event_types ON ((docket_event_types.id = docket_events.docket_event_type_id)))
        JOIN court_cases ON ((court_cases.id = docket_events.court_case_id)))
        JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
-    WHERE ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWIFC'::character varying, 'BWIFAR'::character varying, 'BWICA'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'RETBW'::character varying, 'RETWA'::character varying])::text[]));
+    WHERE ((docket_event_types.code)::text = ANY (ARRAY[('WAI$'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('WAI'::character varying)::text, ('WAIMV'::character varying)::text, ('WAIMW'::character varying)::text, ('RETBW'::character varying)::text, ('RETWA'::character varying)::text]));
   SQL
   add_index "report_warrants", ["party_id", "code"], name: "index_report_warrants_on_party_id_and_code"
 
-  create_view "case_stats", materialized: true, sql_definition: <<-SQL
-      SELECT court_cases.id AS court_case_id,
-      (court_cases.closed_on - court_cases.filed_on) AS length_of_case_in_days,
-      ( SELECT count(*) AS count
-             FROM counts
-            WHERE (court_cases.id = counts.court_case_id)) AS counts_count,
-      ( SELECT count(*) AS count
-             FROM ((case_parties
-               JOIN parties ON ((case_parties.party_id = parties.id)))
-               JOIN party_types ON ((parties.party_type_id = party_types.id)))
-            WHERE ((court_cases.id = case_parties.court_case_id) AND ((party_types.name)::text = 'defendant'::text))) AS defendant_count,
+  create_view "report_searchable_cases", materialized: true, sql_definition: <<-SQL
+      SELECT court_cases.case_number,
+      court_cases.filed_on,
+      parties.full_name,
+      parties.first_name,
+      parties.last_name,
+      parties.birth_month,
+      parties.birth_year,
+          CASE
+              WHEN (( SELECT count(*) AS count
+                 FROM report_warrants
+                WHERE ((parties.id = report_warrants.party_id) AND ((report_warrants.code)::text = ANY (ARRAY[('WAI$'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('WAI'::character varying)::text, ('WAIMV'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAR'::character varying)::text])))) > ( SELECT count(*) AS count
+                 FROM report_warrants
+                WHERE ((parties.id = report_warrants.party_id) AND ((report_warrants.code)::text = 'RETWA'::text)))) THEN 'Yes'::text
+              ELSE 'No'::text
+          END AS has_active_warrant,
+      counts.offense_on AS date_of_offense,
+      counts.as_filed AS count_as_filed,
+      counts.charge AS count_as_disposed,
           CASE
               WHEN (( SELECT count(*) AS count
                  FROM (docket_events
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = 'CTRS'::text))) > 0) THEN true
-              ELSE false
-          END AS is_tax_intercepted,
-      ( SELECT count(*) AS count
-             FROM (docket_events
-               JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-            WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'BWIFAR'::character varying])::text[])))) AS warrants_count
-     FROM court_cases;
+                WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY (ARRAY[('WAI$'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('WAI'::character varying)::text, ('WAIMV'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAR'::character varying)::text])))) > 0) THEN 'Yes'::text
+              ELSE 'No'::text
+          END AS warrant_on_case,
+      pleas.name AS plea,
+      verdicts.name AS verdict,
+      (regexp_matches(split_part((counts.filed_statute_violation)::text, 'O.S.'::text, 1), '[0-9]{2}[A-Z]?'::text))[1] AS title_code
+     FROM ((((counts
+       JOIN court_cases ON ((counts.court_case_id = court_cases.id)))
+       JOIN parties ON ((parties.id = counts.party_id)))
+       JOIN pleas ON ((pleas.id = counts.plea_id)))
+       JOIN verdicts ON ((verdicts.id = counts.verdict_id)));
   SQL
-  add_index "case_stats", ["court_case_id"], name: "index_case_stats_on_court_case_id"
+  add_index "report_searchable_cases", ["case_number"], name: "index_report_searchable_cases_on_case_number"
+  add_index "report_searchable_cases", ["filed_on"], name: "index_report_searchable_cases_on_filed_on"
+  add_index "report_searchable_cases", ["first_name"], name: "index_report_searchable_cases_on_first_name"
+  add_index "report_searchable_cases", ["last_name"], name: "index_report_searchable_cases_on_last_name"
 
+  create_view "report_statute_counts_last3years", materialized: true, sql_definition: <<-SQL
+      SELECT oklahoma_statutes.description,
+      count(oklahoma_statutes.id) AS count
+     FROM (((((parties
+       JOIN case_parties ON ((parties.id = case_parties.party_id)))
+       JOIN court_cases ON ((court_cases.id = case_parties.court_case_id)))
+       JOIN case_types ON ((case_types.id = court_cases.case_type_id)))
+       JOIN counts ON ((counts.court_case_id = court_cases.id)))
+       JOIN oklahoma_statutes ON ((counts.filed_statute_code_id = oklahoma_statutes.id)))
+    WHERE ((court_cases.created_at >= (now() - 'P3Y'::interval)) AND (((case_types.name)::text = 'CRIMINAL FELONY'::text) OR ((case_types.name)::text = 'CRIMINAL MISDEMEANOR'::text)) AND (parties.full_name IS NOT NULL) AND (parties.first_name IS NOT NULL) AND (parties.last_name IS NOT NULL))
+    GROUP BY oklahoma_statutes.description
+    ORDER BY (count(oklahoma_statutes.id)) DESC;
+  SQL
   create_view "report_arresting_agencies", materialized: true, sql_definition: <<-SQL
       SELECT court_cases.id AS court_case_id,
       court_cases.county_id,
@@ -945,245 +1136,4 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
   add_index "report_arresting_agencies", ["filed_on"], name: "index_report_arresting_agencies_on_filed_on"
   add_index "report_arresting_agencies", ["title_code"], name: "index_report_arresting_agencies_on_title_code"
 
-  create_view "report_fines_and_fees", materialized: true, sql_definition: <<-SQL
-      SELECT court_cases.id AS court_case_id,
-      court_cases.county_id,
-      case_types.id AS case_type_id,
-      docket_event_types.id AS docket_event_types_id,
-      docket_events.event_on,
-      docket_events.amount,
-      docket_events.payment,
-      docket_events.adjustment,
-          CASE
-              WHEN (( SELECT count(*) AS count
-                 FROM (docket_events docket_events_1
-                   JOIN docket_event_types docket_event_types_1 ON ((docket_events_1.docket_event_type_id = docket_event_types_1.id)))
-                WHERE ((docket_events_1.court_case_id = court_cases.id) AND ((docket_event_types_1.code)::text = 'CTRS'::text))) > 0) THEN true
-              ELSE false
-          END AS is_tax_intercepted
-     FROM (((docket_events
-       JOIN docket_event_types ON ((docket_event_types.id = docket_events.docket_event_type_id)))
-       JOIN court_cases ON ((court_cases.id = docket_events.court_case_id)))
-       JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
-    WHERE ((docket_events.amount <> (0)::numeric) OR (docket_events.adjustment <> (0)::numeric) OR (docket_events.payment <> (0)::numeric));
-  SQL
-  add_index "report_fines_and_fees", ["case_type_id"], name: "index_report_fines_and_fees_on_case_type_id"
-  add_index "report_fines_and_fees", ["court_case_id"], name: "index_report_fines_and_fees_on_court_case_id"
-  add_index "report_fines_and_fees", ["docket_event_types_id"], name: "index_report_fines_and_fees_on_docket_event_types_id"
-  add_index "report_fines_and_fees", ["event_on"], name: "index_report_fines_and_fees_on_event_on"
-
-  create_view "report_searchable_cases", materialized: true, sql_definition: <<-SQL
-      SELECT court_cases.case_number,
-      court_cases.filed_on,
-      court_cases.county_id,
-      parties.full_name,
-      parties.first_name,
-      parties.last_name,
-      parties.birth_month,
-      parties.birth_year,
-          CASE
-              WHEN (( SELECT count(*) AS count
-                 FROM report_warrants
-                WHERE ((parties.id = report_warrants.party_id) AND ((report_warrants.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'BWIFAR'::character varying])::text[])))) > ( SELECT count(*) AS count
-                 FROM report_warrants
-                WHERE ((parties.id = report_warrants.party_id) AND ((report_warrants.code)::text = 'RETWA'::text)))) THEN 'Yes'::text
-              ELSE 'No'::text
-          END AS has_active_warrant,
-      counts.offense_on AS date_of_offense,
-      counts.as_filed AS count_as_filed,
-      counts.charge AS count_as_disposed,
-          CASE
-              WHEN (( SELECT count(*) AS count
-                 FROM (docket_events
-                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'BWIFAR'::character varying])::text[])))) > 0) THEN 'Yes'::text
-              ELSE 'No'::text
-          END AS warrant_on_case,
-      pleas.name AS plea,
-      verdicts.name AS verdict,
-      (regexp_matches(split_part((counts.filed_statute_violation)::text, 'O.S.'::text, 1), '[0-9]{2}[A-Z]?'::text))[1] AS title_code
-     FROM ((((counts
-       JOIN court_cases ON ((counts.court_case_id = court_cases.id)))
-       JOIN parties ON ((parties.id = counts.party_id)))
-       JOIN pleas ON ((pleas.id = counts.plea_id)))
-       JOIN verdicts ON ((verdicts.id = counts.verdict_id)));
-  SQL
-  add_index "report_searchable_cases", ["case_number"], name: "index_report_searchable_cases_on_case_number"
-  add_index "report_searchable_cases", ["filed_on"], name: "index_report_searchable_cases_on_filed_on"
-  add_index "report_searchable_cases", ["first_name"], name: "index_report_searchable_cases_on_first_name"
-  add_index "report_searchable_cases", ["last_name"], name: "index_report_searchable_cases_on_last_name"
-
-  create_view "report_ocso_oscn_joins", sql_definition: <<-SQL
-      WITH clean_ocso AS (
-           SELECT ocso_warrants.id AS ocso_id,
-              ocso_warrants.first_name AS ocso_first_name,
-              ocso_warrants.last_name AS ocso_last_name,
-              ocso_warrants.middle_name AS ocso_middle_name,
-              ocso_warrants.birth_date AS ocso_birth_date,
-              ocso_warrants.bond_amount AS ocso_bond_amount,
-              ocso_warrants.issued AS ocso_issued,
-              ocso_warrants.counts AS ocso_counts,
-              ocso_warrants.resolved_at AS ocso_resolved_at,
-              ocso_warrants.case_number AS ocso_case_number,
-                  CASE
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN "substring"((ocso_warrants.case_number)::text, 1, 2)
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2,}-[0-9]{1,}'::text) THEN "substring"((ocso_warrants.case_number)::text, '[A-Za-z]{1,}'::text)
-                      ELSE NULL::text
-                  END AS case_type,
-                  CASE
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN (
-                      CASE
-                          WHEN (("substring"((ocso_warrants.case_number)::text, 3, 2))::integer <= 23) THEN ('20'::text || "substring"((ocso_warrants.case_number)::text, 3, 2))
-                          ELSE ('19'::text || "substring"((ocso_warrants.case_number)::text, 3, 2))
-                      END)::integer
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2}-[0-9]{1,}'::text) THEN (
-                      CASE
-                          WHEN ((split_part((ocso_warrants.case_number)::text, '-'::text, 2))::integer <= 23) THEN ('20'::text || split_part((ocso_warrants.case_number)::text, '-'::text, 2))
-                          ELSE ('19'::text || split_part((ocso_warrants.case_number)::text, '-'::text, 2))
-                      END)::integer
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{4}-[0-9]{1,}'::text) THEN (split_part((ocso_warrants.case_number)::text, '-'::text, 2))::integer
-                      ELSE NULL::integer
-                  END AS full_year,
-                  CASE
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN regexp_replace("substring"((ocso_warrants.case_number)::text, 5), '^0+'::text, ''::text)
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2,}-[0-9]{1,}'::text) THEN split_part((ocso_warrants.case_number)::text, '-'::text, 3)
-                      ELSE NULL::text
-                  END AS last_case_number,
-                  CASE
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN (((("substring"((ocso_warrants.case_number)::text, 1, 2) || '-'::text) ||
-                      CASE
-                          WHEN (("substring"((ocso_warrants.case_number)::text, 3, 2))::integer <= 23) THEN ('20'::text || "substring"((ocso_warrants.case_number)::text, 3, 2))
-                          ELSE ('19'::text || "substring"((ocso_warrants.case_number)::text, 3, 2))
-                      END) || '-'::text) || regexp_replace("substring"((ocso_warrants.case_number)::text, 5), '^0+'::text, ''::text))
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2}-[0-9]{1,}'::text) THEN (((("substring"((ocso_warrants.case_number)::text, 1, 2) || '-'::text) ||
-                      CASE
-                          WHEN ((split_part((ocso_warrants.case_number)::text, '-'::text, 2))::integer <= 23) THEN ('20'::text || split_part((ocso_warrants.case_number)::text, '-'::text, 2))
-                          ELSE ('19'::text || split_part((ocso_warrants.case_number)::text, '-'::text, 2))
-                      END) || '-'::text) || split_part((ocso_warrants.case_number)::text, '-'::text, 3))
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{4}-[0-9]{1,}'::text) THEN (ocso_warrants.case_number)::text
-                      ELSE NULL::text
-                  END AS clean_case_number,
-                  CASE
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN ((((('https://www.oscn.net/dockets/GetCaseInformation.aspx?db=oklahoma&number='::text || "substring"((ocso_warrants.case_number)::text, 1, 2)) || '-'::text) || "substring"((ocso_warrants.case_number)::text, 3, 2)) || '-'::text) || regexp_replace("substring"((ocso_warrants.case_number)::text, 5), '^0+'::text, ''::text))
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2,}-[0-9]{1,}'::text) THEN ('https://www.oscn.net/dockets/GetCaseInformation.aspx?db=oklahoma&number='::text || (ocso_warrants.case_number)::text)
-                      ELSE NULL::text
-                  END AS link
-             FROM ocso_warrants
-          ), added_defendant_counts AS (
-           SELECT clean_ocso.ocso_id,
-              clean_ocso.ocso_first_name,
-              clean_ocso.ocso_last_name,
-              clean_ocso.ocso_middle_name,
-              clean_ocso.ocso_birth_date,
-              clean_ocso.ocso_bond_amount,
-              clean_ocso.ocso_issued,
-              clean_ocso.ocso_counts,
-              clean_ocso.ocso_resolved_at,
-              clean_ocso.ocso_case_number,
-              clean_ocso.case_type,
-              clean_ocso.full_year,
-              clean_ocso.last_case_number,
-              clean_ocso.clean_case_number,
-              clean_ocso.link,
-              ( SELECT count(DISTINCT parties.id) AS count
-                     FROM ((((case_parties
-                       JOIN parties ON ((case_parties.party_id = parties.id)))
-                       JOIN court_cases ON ((court_cases.id = case_parties.court_case_id)))
-                       JOIN counties ON ((court_cases.county_id = counties.id)))
-                       JOIN party_types ON ((parties.party_type_id = party_types.id)))
-                    WHERE (((party_types.name)::text = 'defendant'::text) AND ((court_cases.case_number)::text = clean_ocso.clean_case_number) AND ((counties.name)::text = 'Oklahoma'::text))) AS defendant_count
-             FROM clean_ocso
-            WHERE (clean_ocso.ocso_resolved_at IS NULL)
-          )
-   SELECT added_defendant_counts.ocso_id,
-      added_defendant_counts.ocso_first_name,
-      added_defendant_counts.ocso_last_name,
-      added_defendant_counts.ocso_middle_name,
-      added_defendant_counts.ocso_birth_date,
-      added_defendant_counts.ocso_bond_amount,
-      added_defendant_counts.ocso_issued,
-      added_defendant_counts.ocso_counts,
-      added_defendant_counts.ocso_resolved_at,
-      added_defendant_counts.ocso_case_number,
-      added_defendant_counts.case_type,
-      added_defendant_counts.full_year,
-      added_defendant_counts.last_case_number,
-      added_defendant_counts.clean_case_number,
-      added_defendant_counts.link,
-      added_defendant_counts.defendant_count,
-          CASE
-              WHEN (added_defendant_counts.defendant_count = 0) THEN NULL::bigint
-              WHEN (added_defendant_counts.defendant_count = 1) THEN ( SELECT count(*) AS count
-                 FROM (((docket_events
-                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
-                   JOIN counties ON ((court_cases.county_id = counties.id)))
-                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
-                         FROM ((case_parties
-                           JOIN parties ON ((case_parties.party_id = parties.id)))
-                           JOIN party_types ON ((parties.party_type_id = party_types.id)))
-                        WHERE (((party_types.name)::text = 'defendant'::text) AND (case_parties.court_case_id = court_cases.id))) = 1)))
-              WHEN (added_defendant_counts.defendant_count > 1) THEN ( SELECT count(*) AS count
-                 FROM ((((docket_events
-                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
-                   JOIN counties ON ((court_cases.county_id = counties.id)))
-                   JOIN parties ON ((docket_events.party_id = parties.id)))
-                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2))))
-              ELSE NULL::bigint
-          END AS warrant_count,
-          CASE
-              WHEN (added_defendant_counts.defendant_count = 0) THEN NULL::bigint
-              WHEN (added_defendant_counts.defendant_count = 1) THEN ( SELECT count(*) AS count
-                 FROM (((docket_events
-                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
-                   JOIN counties ON ((court_cases.county_id = counties.id)))
-                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['RETBW'::character varying, 'RETWA'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
-                         FROM ((case_parties
-                           JOIN parties ON ((case_parties.party_id = parties.id)))
-                           JOIN party_types ON ((parties.party_type_id = party_types.id)))
-                        WHERE (((party_types.name)::text = 'defendant'::text) AND (case_parties.court_case_id = court_cases.id))) = 1)))
-              WHEN (added_defendant_counts.defendant_count > 1) THEN ( SELECT count(*) AS count
-                 FROM ((((docket_events
-                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
-                   JOIN counties ON ((court_cases.county_id = counties.id)))
-                   JOIN parties ON ((docket_events.party_id = parties.id)))
-                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['RETBW'::character varying, 'RETWA'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2))))
-              ELSE NULL::bigint
-          END AS return_warrant_count,
-          CASE
-              WHEN (added_defendant_counts.defendant_count = 0) THEN NULL::character varying
-              WHEN (added_defendant_counts.defendant_count = 1) THEN ( SELECT docket_event_types.code
-                 FROM (((docket_events
-                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
-                   JOIN counties ON ((court_cases.county_id = counties.id)))
-                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
-                         FROM ((case_parties
-                           JOIN parties ON ((case_parties.party_id = parties.id)))
-                           JOIN party_types ON ((parties.party_type_id = party_types.id)))
-                        WHERE (((party_types.name)::text = 'defendant'::text) AND (case_parties.court_case_id = court_cases.id))) = 1))
-                ORDER BY docket_events.event_on DESC
-               LIMIT 1)
-              WHEN (added_defendant_counts.defendant_count > 1) THEN ( SELECT docket_event_types.code
-                 FROM ((((docket_events
-                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
-                   JOIN counties ON ((court_cases.county_id = counties.id)))
-                   JOIN parties ON ((docket_events.party_id = parties.id)))
-                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2)))
-                ORDER BY docket_events.event_on DESC
-               LIMIT 1)
-              ELSE NULL::character varying
-          END AS most_recent_warrant_type,
-      ( SELECT case_htmls.scraped_at
-             FROM ((court_cases
-               JOIN counties ON ((court_cases.county_id = counties.id)))
-               JOIN case_htmls ON ((case_htmls.court_case_id = court_cases.id)))
-            WHERE (((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((counties.name)::text = 'Oklahoma'::text))
-           LIMIT 1) AS scraped_at
-     FROM added_defendant_counts;
-  SQL
 end
