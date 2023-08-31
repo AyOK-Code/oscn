@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :doc_sentence, class: 'Doc::Sentence' do
-    doc_profile
+    doc_profile {nil}
     statute_code { 'MyString' }
     sentencing_county { 'MyString' }
     js_date { '2022-01-24' }
