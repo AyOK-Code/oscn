@@ -34,7 +34,6 @@ gem 'sidekiq-throttled'
 gem 'slack-ruby-client'
 gem 'slowweb'
 gem 'rubyzip'
-
 gem 'psych', '< 4'
 gem 'net-smtp', require: false
 gem 'net-imap', require: false
