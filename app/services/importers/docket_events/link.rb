@@ -17,7 +17,10 @@ module Importers
       def perform
         expected_links = link_json.count
         link_json.each do |link_data|
-          save_docket_event_link(link_data)
+          del = save_docket_event_link(link_data)
+          next if del.nil? || del.title != 'PDF'
+
+          save_pdf(link_data[:link], del)
         end
         links = docket_event.links.count
 
@@ -27,7 +30,13 @@ module Importers
       def save_docket_event_link(link_data)
         docket_event_link = find_or_initialize_docket_event_link(link_data)
 
-        docket_event_link.save!
+        docket_event_link.save! ? docket_event_link : nil
+      end
+
+      def save_pdf(link, docket_event_link)
+        return unless ['SC', 'CJ'].include?(docket_event.court_case.case_type.abbreviation)
+
+        ::Importers::DocketEvents::Pdf.perform(link, docket_event_link)
       end
 
       def find_or_initialize_docket_event_link(link_data)

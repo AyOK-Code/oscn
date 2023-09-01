@@ -10,10 +10,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_28_191830) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
 
   create_table "case_htmls", force: :cascade do |t|
     t.bigint "court_case_id", null: false
@@ -650,6 +678,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
     t.index ["name"], name: "index_verdicts_on_name", unique: true
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "case_htmls", "court_cases"
   add_foreign_key "case_not_founds", "counties"
   add_foreign_key "case_parties", "court_cases"
@@ -1185,5 +1215,44 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
             WHERE (((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((counties.name)::text = 'Oklahoma'::text))
            LIMIT 1) AS scraped_at
      FROM added_defendant_counts;
+  SQL
+  create_view "report_evictions", sql_definition: <<-SQL
+      SELECT court_cases.id AS court_case_id,
+      court_cases.filed_on AS case_filed_on,
+      court_cases.closed_on AS case_closed_on,
+      court_cases.case_number,
+      ( SELECT string_agg((parties.full_name)::text, '; '::text) AS string_agg
+             FROM ((parties
+               JOIN case_parties ON ((case_parties.party_id = parties.id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+            WHERE ((case_parties.court_case_id = court_cases.id) AND ((party_types.name)::text = 'defendant'::text))) AS defendant_name,
+      ( SELECT count(parties.id) AS count
+             FROM ((parties
+               JOIN case_parties ON ((case_parties.party_id = parties.id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+            WHERE ((case_parties.court_case_id = court_cases.id) AND ((party_types.name)::text = 'defendant'::text))) AS defendant_count,
+      ( SELECT DISTINCT parties.full_name
+             FROM ((parties
+               JOIN case_parties ON ((case_parties.party_id = parties.id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+            WHERE ((case_parties.court_case_id = court_cases.id) AND ((party_types.name)::text = 'plaintiff'::text))
+           LIMIT 1) AS plaintiff_name,
+      ('https://www.oscn.net/dockets/GetCaseInformation.aspx?db=oklahoma&number='::text || (court_cases.case_number)::text) AS case_link,
+      ( SELECT (translate(translate((regexp_matches(de.description, '\\$\\s{0,2}[0-9]{1,3}(?:,?[0-9]{3})*\\.?[0-9]{0,2}'::text))[1], ','::text, ''::text), '$'::text, ''::text))::numeric AS money
+             FROM (docket_events de
+               JOIN docket_event_types docket_event_types_1 ON ((de.docket_event_type_id = docket_event_types_1.id)))
+            WHERE (((docket_event_types_1.code)::text = 'P'::text) AND (de.court_case_id = court_cases.id))
+           LIMIT 1) AS rent_owed,
+      ( SELECT (de.description ~~ '%POS%'::text) AS money
+             FROM (docket_events de
+               JOIN docket_event_types docket_event_types_1 ON ((de.docket_event_type_id = docket_event_types_1.id)))
+            WHERE (((docket_event_types_1.code)::text = 'P'::text) AND (de.court_case_id = court_cases.id))
+           LIMIT 1) AS possession
+     FROM ((((court_cases
+       JOIN counties ON ((court_cases.county_id = counties.id)))
+       JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
+       JOIN issues ON ((court_cases.id = issues.court_case_id)))
+       JOIN count_codes ON ((issues.count_code_id = count_codes.id)))
+    WHERE (((count_codes.code)::text = ANY (ARRAY['SCFED1'::text, 'SCFED2'::text, 'FED1'::text, 'FED2'::text, 'ENTRY'::text])) AND ((counties.name)::text = 'Oklahoma'::text));
   SQL
 end

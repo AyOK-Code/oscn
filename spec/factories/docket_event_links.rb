@@ -4,5 +4,9 @@ FactoryBot.define do
     sequence(:oscn_id)
     title { ['TIFF', 'PDF'].sample }
     link { Faker::Internet.url(host: 'oscn.net') }
+
+    trait :with_file do
+      document { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'fixtures', 'files', 'test.pdf')) }
+    end
   end
 end
