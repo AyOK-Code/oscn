@@ -15,7 +15,6 @@ RSpec.describe Doc::Sentence, type: :model do
         it 'parses the crf_number' do
           
           doc_sentence = create(:doc_sentence, crf_number: 'CF94008641',doc_profile_id:@doc_profile.id,sentence_id:1,id:1)
-          binding.pry
           doc_sentence.reload
           expect(doc_sentence.clean_case_number).to eq 'CF-1994-8641'
         end
