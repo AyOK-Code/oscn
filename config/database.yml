@@ -74,7 +74,7 @@ test:
 production:
   <<: *default
   host: <%= ENV['DATABASE_HOST'] %>
-  database: postgres
+  database: postgres_
   username: <%= ENV['DATABASE_USER'] %>
   password: <%= ENV['DATABASE_PASSWORD'] %>
   port: <%= ENV['DATABASE_PORT'] %>

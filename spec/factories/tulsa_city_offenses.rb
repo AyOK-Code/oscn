@@ -1,11 +1,11 @@
 FactoryBot.define do
-  factory :tulsa_city_offense do
+  factory :tulsa_city_offense, class: TulsaCity::Offense do
     bond { 'MyString' }
-    courtDate { 'MyString' }
-    caseNumber { 'MyString' }
-    courtDivision { 'MyString' }
+    court_date { 'MyString' }
+    case_number { 'MyString' }
+    court_division { 'MyString' }
     hold { 'MyString' }
-    docketId { 'MyString' }
+    docket_id { 'MyString' }
     title { 'MyString' }
     section { 'MyString' }
     paragraph { 'MyString' }

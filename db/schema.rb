@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_30_215056) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -137,6 +137,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
     t.bigint "current_judge_id"
     t.boolean "is_error", default: false, null: false
     t.boolean "enqueued", default: false, null: false
+    t.virtual "clean_case_number", type: :string, as: "\nCASE\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2,3}-?[0-9]{2,4}-[0-9]{2,8}'::text) THEN ((((\"substring\"((case_number)::text, '^([A-Za-z]{2,3})-?[0-9]{2,4}-[0-9]{2,8}'::text) || '-'::text) ||\n    CASE\n        WHEN (length(\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)) = 2) THEN\n        CASE\n            WHEN ((\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))::integer <= 40) THEN ('20'::text || \"substring\"((case_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n            ELSE ('19'::text || \"substring\"((case_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n        END\n        ELSE \"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)\n    END) || '-'::text) || regexp_replace(\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?[0-9]{2,4}-([0-9]{2,8})'::text), '^0+'::text, ''::text))\n    ELSE NULL::text\nEND", stored: true
     t.index ["case_type_id"], name: "index_court_cases_on_case_type_id"
     t.index ["county_id", "oscn_id"], name: "index_court_cases_on_county_id_and_oscn_id", unique: true
     t.index ["county_id"], name: "index_court_cases_on_county_id"
@@ -224,6 +225,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
     t.string "sentence_id", null: false
     t.string "consecutive_to_sentence_id"
     t.bigint "doc_sentencing_county_id"
+    t.virtual "clean_case_number", type: :string, as: "\nCASE\n    WHEN ((crf_number)::text ~ '^[A-Za-z]{2,3}-?[0-9]{2,4}-[0-9]{2,8}'::text) THEN ((((\"substring\"((crf_number)::text, '^([A-Za-z]{2,3})-?[0-9]{2,4}-[0-9]{2,8}'::text) || '-'::text) ||\n    CASE\n        WHEN (length(\"substring\"((crf_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)) = 2) THEN\n        CASE\n            WHEN ((\"substring\"((crf_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))::integer <= 40) THEN ('20'::text || \"substring\"((crf_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n            ELSE ('19'::text || \"substring\"((crf_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n        END\n        ELSE \"substring\"((crf_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)\n    END) || '-'::text) || regexp_replace(\"substring\"((crf_number)::text, '^[A-Za-z]{2,3}-?[0-9]{2,4}-([0-9]{2,8})'::text), '^0+'::text, ''::text))\n    ELSE NULL::text\nEND", stored: true
     t.index ["court_case_id"], name: "index_doc_sentences_on_court_case_id"
     t.index ["doc_offense_code_id"], name: "index_doc_sentences_on_doc_offense_code_id"
     t.index ["doc_profile_id", "sentence_id"], name: "index_doc_sentences_on_doc_profile_id_and_sentence_id", unique: true
@@ -305,7 +307,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
   create_table "events", force: :cascade do |t|
     t.bigint "court_case_id", null: false
     t.bigint "party_id"
-    t.datetime "event_at", precision: nil, null: false
+    t.datetime "event_at", null: false
     t.string "event_name"
     t.string "docket"
     t.datetime "created_at", null: false
@@ -407,8 +409,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
     t.string "inmate_number", null: false
     t.string "booking_number", null: false
     t.string "booking_type"
-    t.datetime "booking_date", precision: nil, null: false
-    t.datetime "release_date", precision: nil
+    t.datetime "booking_date", null: false
+    t.datetime "release_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "roster_id"
@@ -431,7 +433,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
   end
 
   create_table "okc_blotter_pdfs", force: :cascade do |t|
-    t.datetime "parsed_on", precision: nil
+    t.datetime "parsed_on"
     t.date "date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -590,6 +592,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
     t.bigint "arrests_id"
     t.decimal "bond_amount", precision: 14, scale: 2
     t.date "court_date"
+    t.virtual "clean_case_number", type: :string, as: "\nCASE\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2,3}-?[0-9]{2,4}-[0-9]{2,8}'::text) THEN ((((\"substring\"((case_number)::text, '^([A-Za-z]{2,3})-?[0-9]{2,4}-[0-9]{2,8}'::text) || '-'::text) ||\n    CASE\n        WHEN (length(\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)) = 2) THEN\n        CASE\n            WHEN ((\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))::integer <= 40) THEN ('20'::text || \"substring\"((case_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n            ELSE ('19'::text || \"substring\"((case_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n        END\n        ELSE \"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)\n    END) || '-'::text) || regexp_replace(\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?[0-9]{2,4}-([0-9]{2,8})'::text), '^0+'::text, ''::text))\n    ELSE NULL::text\nEND", stored: true
     t.index ["arrests_id"], name: "index_tulsa_blotter_offenses_on_arrests_id"
   end
 
@@ -639,6 +642,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_15_183510) do
     t.string "crime"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.virtual "clean_case_number", type: :string, as: "\nCASE\n    WHEN ((case_number)::text ~ '^[A-Za-z]{2,3}-?[0-9]{2,4}-[0-9]{2,8}'::text) THEN ((((\"substring\"((case_number)::text, '^([A-Za-z]{2,3})-?[0-9]{2,4}-[0-9]{2,8}'::text) || '-'::text) ||\n    CASE\n        WHEN (length(\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)) = 2) THEN\n        CASE\n            WHEN ((\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))::integer <= 40) THEN ('20'::text || \"substring\"((case_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n            ELSE ('19'::text || \"substring\"((case_number)::text, '[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text))\n        END\n        ELSE \"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?([0-9]{2,4})-[0-9]{2,8}'::text)\n    END) || '-'::text) || regexp_replace(\"substring\"((case_number)::text, '^[A-Za-z]{2,3}-?[0-9]{2,4}-([0-9]{2,8})'::text), '^0+'::text, ''::text))\n    ELSE NULL::text\nEND", stored: true
     t.index ["docket_id", "inmate_id"], name: "index_tulsa_city_offenses_on_docket_id_and_inmate_id", unique: true
     t.index ["inmate_id"], name: "index_tulsa_city_offenses_on_inmate_id"
   end
