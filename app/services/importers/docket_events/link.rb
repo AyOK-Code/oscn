@@ -19,6 +19,7 @@ module Importers
         link_json.each do |link_data|
           del = save_docket_event_link(link_data)
           next if del.nil? || del.title != 'PDF'
+
           save_pdf(link_data[:link], del)
         end
         links = docket_event.links.count

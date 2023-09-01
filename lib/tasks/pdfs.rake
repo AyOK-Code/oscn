@@ -9,6 +9,7 @@ namespace :save do
             .pdf
             .joins(:docket_event)
             .where(docket_events: { court_case_id: CourtCase.joins(:report_eviction).pluck(:id) })
+            .order('docket_events.event_on DESC')
             .limit(count)
 
     links.each do |link|
@@ -18,7 +19,6 @@ namespace :save do
       link.document.attach(io: StringIO.new(response.body), filename: link.docket_event_id,
                            content_type: 'application/pdf')
       puts "Saved #{link.link}"
-      sleep 2
     end
   end
 end

@@ -17,7 +17,7 @@ module Importers
       def perform
         response = OscnRequestor.perform(link)
         docket_event_link.document.attach(io: StringIO.new(response.body), filename: docket_event_link.docket_event_id,
-                             content_type: 'application/pdf')
+                                          content_type: 'application/pdf')
       end
     end
   end
