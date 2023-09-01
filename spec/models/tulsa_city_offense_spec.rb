@@ -11,8 +11,7 @@ RSpec.describe TulsaCity::Offense, type: :model do
     context 'when case_number matches' do
       context 'when format ^[A-Za-z]{2}[0-9]{5,}' do
         it 'parses the case_number' do
-         
-          tulsa_city_offense = create(:tulsa_city_offense, case_number: 'CF94008641',inmate:@inmate)
+          tulsa_city_offense = create(:tulsa_city_offense, case_number: 'CF94008641', inmate: @inmate)
           tulsa_city_offense.reload
           expect(tulsa_city_offense.clean_case_number).to eq 'CF-1994-8641'
         end
@@ -20,7 +19,7 @@ RSpec.describe TulsaCity::Offense, type: :model do
 
       context 'when format ^[A-Za-z]{2}-[0-9]{2}-[0-9]{1,}' do
         it 'parses the case_number' do
-          tulsa_city_offense = create(:tulsa_city_offense, case_number: 'CF-94-8641',inmate:@inmate)
+          tulsa_city_offense = create(:tulsa_city_offense, case_number: 'CF-94-8641', inmate: @inmate)
           tulsa_city_offense.reload
           expect(tulsa_city_offense.clean_case_number).to eq 'CF-1994-8641'
         end
@@ -28,7 +27,7 @@ RSpec.describe TulsaCity::Offense, type: :model do
 
       context 'when format ^[A-Za-z]{2}-[0-9]{4}-[0-9]{1,}' do
         it 'parses the case_number' do
-          tulsa_city_offense = create(:tulsa_city_offense, case_number: 'CF-1994-8641',inmate:@inmate)
+          tulsa_city_offense = create(:tulsa_city_offense, case_number: 'CF-1994-8641', inmate: @inmate)
           tulsa_city_offense.reload
           expect(tulsa_city_offense.clean_case_number).to eq 'CF-1994-8641'
         end
@@ -36,7 +35,7 @@ RSpec.describe TulsaCity::Offense, type: :model do
     end
     context 'when case_number does not match' do
       it 'is null' do
-        tulsa_city_offense = create(:tulsa_city_offense, case_number: 'ABC-19991-0',inmate:@inmate)
+        tulsa_city_offense = create(:tulsa_city_offense, case_number: 'ABC-19991-0', inmate: @inmate)
         tulsa_city_offense.reload
         expect(tulsa_city_offense.clean_case_number).to be nil
       end
