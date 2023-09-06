@@ -35,6 +35,7 @@ module Importers
 
       def save_pdf(link, docket_event_link)
         return unless ['SC', 'CJ'].include?(docket_event.court_case.case_type.abbreviation)
+        return unless ['P', 'SCFED1', 'AFDC1'].include?(docket_event.docket_event_type.abbreviation)
 
         ::Importers::DocketEvents::Pdf.perform(link, docket_event_link)
       end
