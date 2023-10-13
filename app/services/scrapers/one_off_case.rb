@@ -20,7 +20,7 @@ module Scrapers
 
       parsed_html = scrape_html
       data = parse_html(parsed_html)
-      
+
       create_missing_case if data.empty?
 
       data.each do |row|
