@@ -31,7 +31,6 @@ module Importers
     def save_issue_party(issue_party_data)
       ip = find_issue_party(issue_party_data)
       ip.assign_attributes(issue_party_attributes(issue_party_data))
-
       begin
         ip.save!
       rescue StandardError
