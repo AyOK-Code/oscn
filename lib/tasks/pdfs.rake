@@ -8,7 +8,8 @@ namespace :save do
             .without_attached_file
             .pdf
             .joins(:docket_event)
-            .where(docket_events: { court_case_id: ReportEviction.where('case_filed_on > ?', 1.year.ago).pluck(:court_case_id) })
+            .where(docket_events: { court_case_id: ReportEviction.where('case_filed_on > ?',
+                                                                        1.year.ago).pluck(:court_case_id) })
             .order('docket_events.event_on DESC')
             .limit(count)
 
