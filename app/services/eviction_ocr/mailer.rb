@@ -12,7 +12,7 @@ module EvictionOcr
     end
 
     def perform
-      response = create_postcard
+      response = Postgrid.post('postcards', params)
       if response && response['result'] && response['result']['id']
         eviction_letter.update(status: 'mailed')
       else
@@ -22,7 +22,18 @@ module EvictionOcr
 
     def create_postcard
       url = 'postcards'
-      params = {
+      response = Postgrid.post(url, params)
+      eviction_letter.update(postgrid_id: response['result']['id'])
+
+      if response && response['result'] && response['result']['id']
+        eviction_letter.update(status: 'mailed')
+      else
+        eviction_letter.update(status: 'error')
+      end
+    end
+
+    def params
+      {
         to: {
           firstName: 'John',
           lastName: 'Doe',
@@ -34,13 +45,7 @@ module EvictionOcr
         backTemplate: 1,
         express: true,
       }
-      response = Postgrid.post(url, params)
-      response
-      if response && response['result'] && response['result']['id']
-        eviction_letter.update(status: 'mailed')
-      else
-        eviction_letter.update(status: 'error')
-      end
     end
+
   end
 end

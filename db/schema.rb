@@ -353,7 +353,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_14_013735) do
     t.string "ocr_agreed_amount"
     t.string "ocr_default_amount"
     t.string "ocr_plaintiff_phone_number"
-    t.boolean "is_validated"
+    t.boolean "is_validated", default: false, null: false
     t.string "validation_granularity"
     t.string "validation_unconfirmed_components"
     t.string "validation_inferred_components"
@@ -361,6 +361,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_14_013735) do
     t.string "validation_usps_state_zip"
     t.float "validation_latitude"
     t.float "validation_longitude"
+    t.string "postgrid_id"
+    t.datetime "postgrid_sent_to_api_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["docket_event_link_id"], name: "index_eviction_letters_on_docket_event_link_id"
@@ -1247,6 +1249,21 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_14_013735) do
                JOIN case_parties ON ((case_parties.party_id = parties.id)))
                JOIN party_types ON ((parties.party_type_id = party_types.id)))
             WHERE ((case_parties.court_case_id = court_cases.id) AND ((party_types.name)::text = 'defendant'::text))) AS defendant_name,
+      ( SELECT count(DISTINCT verdicts.id) AS count
+             FROM ((issue_parties
+               JOIN verdicts ON ((verdicts.id = issue_parties.verdict_id)))
+               JOIN parties ON ((issue_parties.party_id = parties.id)))
+            WHERE (issue_parties.issue_id = issues.id)) AS distinct_verdicts_count,
+      ( SELECT string_agg(DISTINCT (verdicts.name)::text, ', '::text) AS string_agg
+             FROM ((issue_parties
+               JOIN verdicts ON ((verdicts.id = issue_parties.verdict_id)))
+               JOIN parties ON ((issue_parties.party_id = parties.id)))
+            WHERE (issue_parties.issue_id = issues.id)) AS verdict,
+      ( SELECT string_agg(DISTINCT (issue_parties.verdict_details)::text, ', '::text) AS string_agg
+             FROM ((issue_parties
+               JOIN verdicts ON ((verdicts.id = issue_parties.verdict_id)))
+               JOIN parties ON ((issue_parties.party_id = parties.id)))
+            WHERE (issue_parties.issue_id = issues.id)) AS verdict_details,
       ( SELECT count(parties.id) AS count
              FROM ((parties
                JOIN case_parties ON ((case_parties.party_id = parties.id)))

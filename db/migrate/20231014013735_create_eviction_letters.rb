@@ -15,6 +15,8 @@ class CreateEvictionLetters < ActiveRecord::Migration[7.0]
       t.string :validation_usps_state_zip
       t.float :validation_latitude
       t.float :validation_longitude
+      t.string :postgrid_id
+      t.datetime :postgrid_sent_to_api_at
 
       t.timestamps
     end
