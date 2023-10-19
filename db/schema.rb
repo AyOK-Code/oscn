@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_13_162725) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_19_202526) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -344,6 +344,26 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_13_162725) do
     t.index ["event_type_id"], name: "index_events_on_event_type_id"
     t.index ["judge_id"], name: "index_events_on_judge_id"
     t.index ["party_id"], name: "index_events_on_party_id"
+  end
+
+  create_table "eviction_letters", force: :cascade do |t|
+    t.integer "status", default: 0, null: false
+    t.bigint "docket_event_link_id", null: false
+    t.string "ocr_plaintiff_address"
+    t.string "ocr_agreed_amount"
+    t.string "ocr_default_amount"
+    t.string "ocr_plaintiff_phone_number"
+    t.boolean "is_validated"
+    t.string "validation_granularity"
+    t.string "validation_unconfirmed_components"
+    t.string "validation_inferred_components"
+    t.string "validation_usps_address"
+    t.string "validation_usps_state_zip"
+    t.float "validation_latitude"
+    t.float "validation_longitude"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["docket_event_link_id"], name: "index_eviction_letters_on_docket_event_link_id"
   end
 
   create_table "issue_parties", force: :cascade do |t|
@@ -713,6 +733,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_13_162725) do
   add_foreign_key "events", "court_cases"
   add_foreign_key "events", "event_types"
   add_foreign_key "events", "parties"
+  add_foreign_key "eviction_letters", "docket_event_links"
   add_foreign_key "issue_parties", "issues"
   add_foreign_key "issue_parties", "parties"
   add_foreign_key "issue_parties", "verdicts"
@@ -1226,6 +1247,21 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_13_162725) do
                JOIN case_parties ON ((case_parties.party_id = parties.id)))
                JOIN party_types ON ((parties.party_type_id = party_types.id)))
             WHERE ((case_parties.court_case_id = court_cases.id) AND ((party_types.name)::text = 'defendant'::text))) AS defendant_name,
+      ( SELECT count(DISTINCT verdicts.id) AS count
+             FROM ((issue_parties
+               JOIN verdicts ON ((verdicts.id = issue_parties.verdict_id)))
+               JOIN parties ON ((issue_parties.party_id = parties.id)))
+            WHERE (issue_parties.issue_id = issues.id)) AS distinct_verdicts_count,
+      ( SELECT string_agg(DISTINCT (verdicts.name)::text, ', '::text) AS string_agg
+             FROM ((issue_parties
+               JOIN verdicts ON ((verdicts.id = issue_parties.verdict_id)))
+               JOIN parties ON ((issue_parties.party_id = parties.id)))
+            WHERE (issue_parties.issue_id = issues.id)) AS verdict,
+      ( SELECT string_agg(DISTINCT (issue_parties.verdict_details)::text, ', '::text) AS string_agg
+             FROM ((issue_parties
+               JOIN verdicts ON ((verdicts.id = issue_parties.verdict_id)))
+               JOIN parties ON ((issue_parties.party_id = parties.id)))
+            WHERE (issue_parties.issue_id = issues.id)) AS verdict_details,
       ( SELECT count(parties.id) AS count
              FROM ((parties
                JOIN case_parties ON ((case_parties.party_id = parties.id)))
