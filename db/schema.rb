@@ -370,7 +370,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_14_013735) do
     t.bigint "issue_id", null: false
     t.bigint "party_id", null: false
     t.date "disposition_on"
-    t.bigint "verdict_id", null: false
+    t.bigint "verdict_id"
     t.string "verdict_details"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
