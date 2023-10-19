@@ -82,7 +82,7 @@ module Importers
       begin
         party_type_id = find_or_create_party_type(party_data[:party_type].downcase)
       rescue NoMethodError
-        logs.create_log('parties', "#{court_case.case_number}: error when creating the party, likely null", party_data)
+        logs.create_log('parties', "#{court_case.case_number}: error when creating the party", party_data)
       end
 
       return if text_only_party_exists?(full_name, party_type_id)
