@@ -23,7 +23,7 @@ module Importers
         save_personal(personal_columns)
         save_addresses(parsed_html)
       rescue StandardError => e
-        Raygun.track_exception(e, custom_data: { error_type: 'Data Error' })
+        Raygun.track_exception(e, custom_data: { error_type: 'Data Error', data_content: parsed_html })
       end
     end
 
