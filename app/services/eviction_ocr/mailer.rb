@@ -7,7 +7,7 @@ module EvictionOcr
       @eviction_letter = EvictionLetter.find(eviction_letter_id)
     end
 
-    def self.perform
+    def self.perform(eviction_letter_id)
       new(eviction_letter_id).perform
     end
 
@@ -37,7 +37,7 @@ module EvictionOcr
       {
         to: {
           firstName: 'Austin Mayden',
-          addressLine1: '911 NW 57th Street | Oklahoma City, OK 73118',
+          addressLine1: '911 NW 57th Street Oklahoma City, OK 73118',
           # firstName: eviction_letter.full_name,
           # addressLine1: eviction_letter.validation_usps_address + ' ' + eviction_letter.validation_usps_state_zip,
           proviceOrState: 'OK',
