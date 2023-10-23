@@ -3,13 +3,12 @@ require 'httparty'
 module EvictionOcr
   class Extractor
     attr_accessor :eviction_letter
-    attr_reader :url, :endpoint, :api_key, :model_id
+    attr_reader :url, :endpoint, :model_id
 
     def initialize(eviction_letter_id)
       @eviction_letter = EvictionLetter.find(eviction_letter_id)
       @url = eviction_letter.docket_event_link.document.url
       @endpoint = 'https://eastus.api.cognitive.microsoft.com/'
-      @api_key = ENV.fetch('AZURE_FORM_API_KEY')
     end
 
     def self.perform(url)
