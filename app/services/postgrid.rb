@@ -6,7 +6,7 @@ class Postgrid
   # https://docs.postgrid.com/#3ac81e66-c5be-4bb6-93c1-fd8a6f0a24b3
 
   def initialize
-    @api_key = ENV.fetch('POSTGRID_API_KEY', nil)
+    @api_key = ENV.fetch('POSTGRID_API_KEY')
     @base_url = 'https://api.postgrid.com/print-mail/v1'
     raise ArgumentError, 'Postgrid API key is required' if @api_key.nil?
   end

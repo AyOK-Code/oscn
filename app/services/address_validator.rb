@@ -34,6 +34,6 @@ class AddressValidator
   end
 
   def url
-    "https://addressvalidation.googleapis.com/v1:validateAddress?key=#{ENV.fetch('GOOGLE_API_KEY', nil)}"
+    "https://addressvalidation.googleapis.com/v1:validateAddress?key=#{ENV.fetch('GOOGLE_API_KEY')}"
   end
 end

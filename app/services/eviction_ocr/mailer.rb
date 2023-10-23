@@ -3,7 +3,7 @@ module EvictionOcr
     attr_accessor :postgrid, :eviction_letter
 
     def initialize(eviction_letter_id)
-      @postgrid = Postgrid.new(ENV.fetch('POSTGRID_API_KEY', nil))
+      @postgrid = Postgrid.new
       @eviction_letter = EvictionLetter.find(eviction_letter_id)
     end
 
@@ -23,7 +23,7 @@ module EvictionOcr
     def create_postcard
       url = 'postcards'
       response = Postgrid.post(url, params)
-      eviction_letter.update(postgrid_id: response['result']['id'])
+      eviction_letter.update(postgrid_id: response['result']['id'], postgrid_sent_to_api_at: DateTime.now)
 
       if response && response['result'] && response['result']['id']
         eviction_letter.update(status: 'mailed')
@@ -33,19 +33,22 @@ module EvictionOcr
     end
 
     def params
+      # TODO: Remove Austin after the test case
       {
         to: {
-          firstName: 'John',
-          lastName: 'Doe',
-          addressLine1: '123 Main St',
+          firstName: 'Austin Mayden',
+          addressLine1: '911 NW 57th Street | Oklahoma City, OK 73118',
+          # firstName: eviction_letter.full_name,
+          # addressLine1: eviction_letter.validation_usps_address + ' ' + eviction_letter.validation_usps_state_zip,
+          proviceOrState: 'OK',
           countryCode: 'US'
         },
-        from: 1,
-        frontTemplate: 1,
-        backTemplate: 1,
-        express: true,
+        from: {
+          firstName: 'Oklahoma Evictions',
+          addressLine1: '200 S Cincinnati Ave, Tulsa, OK 74103',
+        },
+        html: "This letter was sent on: #{DateTime.now.strftime('%m/%d/%Y %I:%M%p')}"
       }
     end
-
   end
 end

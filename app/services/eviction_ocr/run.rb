@@ -14,7 +14,7 @@ module EvictionOcr
       [EvictionOcr::Extractor, EvictionOcr::Validator, EvictionOcr::Mailer].each do |action|
         begin
           action.perform(eviction_letter.id)  
-        rescue => e
+        rescue StandardError => e
           Raygun.track_exception(e)
         end
       end
