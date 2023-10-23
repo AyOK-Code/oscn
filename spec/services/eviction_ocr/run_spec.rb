@@ -14,7 +14,7 @@ RSpec.describe EvictionOcr::Run do
   describe '.perform' do
     it 'invokes the perform methods of each action class' do
       described_class.perform(eviction_letter.id)
-      
+
       expect(EvictionOcr::Extractor).to have_received(:perform).with(eviction_letter.id)
       expect(EvictionOcr::Validator).to have_received(:perform).with(eviction_letter.id)
       expect(EvictionOcr::Mailer).to have_received(:perform).with(eviction_letter.id)

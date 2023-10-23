@@ -25,11 +25,11 @@ class AddressValidator
 
   def build_data(address)
     {
-        'address' => {
-          'regionCode' => 'US',
-          'administrativeArea' => 'Oklahoma County',
-          'addressLines' => [address]
-        }
+      'address' => {
+        'regionCode' => 'US',
+        'administrativeArea' => 'Oklahoma County',
+        'addressLines' => [address]
+      }
     }
   end
 

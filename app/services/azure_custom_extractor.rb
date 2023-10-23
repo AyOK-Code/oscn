@@ -1,7 +1,7 @@
 class AzureCustomExtractor
   # TODO: Configure to accept different extraction models
   attr_reader :url
-  
+
   def initialize
     @url = url
   end
@@ -25,7 +25,7 @@ class AzureCustomExtractor
       end
       result = {}
       result['analyzeResult']['documents'][0]['fields'].each do |name, field|
-        result["#{name}"] = field['valueString']
+        result[name.to_s] = field['valueString']
       end
     end
     result

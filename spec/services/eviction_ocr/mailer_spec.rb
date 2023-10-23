@@ -20,8 +20,8 @@ RSpec.describe EvictionOcr::Mailer do
 
   describe '#create_postcard' do
     it 'creates a postcard and updates the eviction letter' do
-      response = mailer.create_postcard
-      
+      mailer.create_postcard
+
       eviction_letter.reload
       expect(eviction_letter.postgrid_id).to eq('postgrid123')
       expect(eviction_letter.status).to eq('mailed')

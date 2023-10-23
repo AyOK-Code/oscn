@@ -12,6 +12,6 @@ class EvictionLetter < ApplicationRecord
   # TODO: How to know what error occurred?
 
   def full_name
-    docket_event_link.docket_event.court_case.defendants.map{|d| d.full_name}.join(', ')
+    docket_event_link.docket_event.court_case.defendants.map(&:full_name).join(', ')
   end
 end

@@ -45,7 +45,7 @@ module EvictionOcr
         },
         from: {
           firstName: 'Oklahoma Evictions',
-          addressLine1: '200 S Cincinnati Ave, Tulsa, OK 74103',
+          addressLine1: '200 S Cincinnati Ave, Tulsa, OK 74103'
         },
         html: "This letter was sent on: #{DateTime.now.strftime('%m/%d/%Y %I:%M%p')}"
       }
