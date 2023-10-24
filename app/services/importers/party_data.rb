@@ -17,9 +17,8 @@ module Importers
       parsed_html = Nokogiri::HTML(html)
       data = OscnScraper::Parsers::PartyData.perform(parsed_html)
 
-      personal_columns = data['personal_columns']
-      aliases_column = data['aliases_column']
-
+      personal_columns = data[:personal_columns]
+      aliases_column = data[:aliases_column]
       begin
         save_aliases(aliases_column)
         save_personal(personal_columns)
@@ -30,7 +29,7 @@ module Importers
     end
 
     def save_addresses(data)
-      address_row = data['address_row']
+      address_row = data[:address_row]
       return if address_row.count < 2
 
       address_row.each_with_index do |row, index|
