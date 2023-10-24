@@ -15,20 +15,22 @@ module Importers
     def perform
       html = party.party_html.html
       parsed_html = Nokogiri::HTML(html)
-      personal_columns = personal_html(parsed_html)
-      aliases_column = aliases_html(parsed_html)
+      data = OscnScraper::Parsers::PartyData.perform(parsed_html)
+
+      personal_columns = data['personal_columns']
+      aliases_column = data['aliases_column']
 
       begin
         save_aliases(aliases_column)
         save_personal(personal_columns)
-        save_addresses(parsed_html)
+        save_addresses(parsed_html, data)
       rescue StandardError => e
         Raygun.track_exception(e, custom_data: { error_type: 'Data Error', data_content: parsed_html })
       end
     end
 
-    def save_addresses(parsed_html)
-      address_row = address_html(parsed_html)
+    def save_addresses(data)
+      address_row = data['address_row']
       return if address_row.count < 2
 
       address_row.each_with_index do |row, index|
@@ -59,18 +61,6 @@ module Importers
 
     def year(string)
       string[1].to_i
-    end
-
-    def personal_html(parsed_html)
-      parsed_html.css('.personal tr td')
-    end
-
-    def aliases_html(parsed_html)
-      parsed_html.css('.partymain tr td')[1].children
-    end
-
-    def address_html(parsed_html)
-      parsed_html.css('.addresses tr')
     end
   end
 end
