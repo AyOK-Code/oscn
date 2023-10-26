@@ -14,7 +14,7 @@ module Importers
     end
 
     def perform
-      address = OscnScraper::Parsers::PartyAddress.parse(row, party)
+      address = OscnScraper::Parsers::PartyAddress.perform(row, party)
 
       ::PartyAddress.find_or_create_by(address)
     end
