@@ -15,7 +15,6 @@ module Scrapers
 
     def perform
       check_not_found = CaseNotFound.find_by(county_id: county.id, case_number: case_number)
-
       return if check_not_found.present?
 
       parsed_html = scrape_html
