@@ -22,7 +22,9 @@ module Importers
       counts_json.each do |count_data|
         save_counts(count_data)
       rescue StandardError => e
-        Raygun.track_exception(e, custom_data: { error_type: 'Data Error', data_content: count_data })
+        Raygun.track_exception(e,
+                               custom_data: { error_type: 'Data Error', data_content: count_data,
+                                              case_number: court_case.case_number })
       end
     end
 
