@@ -43,4 +43,8 @@ class CourtCase < ApplicationRecord
     associations = [parties, current_judge, counsels, counts, events, docket_events]
     associations.all?(&:blank?) || docket_events.any?(&:error?)
   end
+
+  def defendants
+    parties.defendant
+  end
 end

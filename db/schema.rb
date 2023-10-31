@@ -10,6 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+
 ActiveRecord::Schema[7.0].define(version: 2023_10_19_202526) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -353,7 +354,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_19_202526) do
     t.string "ocr_agreed_amount"
     t.string "ocr_default_amount"
     t.string "ocr_plaintiff_phone_number"
-    t.boolean "is_validated"
+    t.boolean "is_validated", default: false, null: false
     t.string "validation_granularity"
     t.string "validation_unconfirmed_components"
     t.string "validation_inferred_components"
@@ -361,6 +362,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_19_202526) do
     t.string "validation_usps_state_zip"
     t.float "validation_latitude"
     t.float "validation_longitude"
+    t.string "postgrid_id"
+    t.datetime "postgrid_sent_to_api_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["docket_event_link_id"], name: "index_eviction_letters_on_docket_event_link_id"
