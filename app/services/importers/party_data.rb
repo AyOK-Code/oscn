@@ -40,6 +40,7 @@ module Importers
     end
 
     def save_personal(personal_columns)
+      # TODO: Move to OSCN Scraper Gem
       string = personal_columns[2]&.text&.split('/')
       return if string.blank?
 
