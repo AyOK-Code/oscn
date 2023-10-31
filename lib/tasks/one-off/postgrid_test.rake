@@ -1,7 +1,7 @@
 namespace :postgrid do
   desc 'Test postgrid timing by sending postcards every 4 hours'
   task :test, [:first_name, :address] => [:environment] do |_t, args|
-    current = DateTime.now
+    current = DateTime.now.change(:offset => '-0500')
     end_on = Date.new(2023, 11, 8)
     first_name = args[:first_name]
     address = args[:address]
