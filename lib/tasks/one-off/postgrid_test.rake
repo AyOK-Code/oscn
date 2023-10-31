@@ -1,20 +1,23 @@
 namespace :postgrid do
-  desc 'Test postgrid timing by sending postcards to Austin'
-  task test: [:environment] do
+  desc 'Test postgrid timing by sending postcards every 4 hours'
+  task :test, [:firstName, :address] => [:environment] do |_t, args|
     current = DateTime.now
-    if (current.hour % 4).zero?
+    endOn = Date.new(2023, 11, 8)
+    firstName = args[:firstName]
+    address = args[:address]
+    if (current.hour % 4).zero? && current < endOn
       date = current.strftime('%m/%d/%Y %H:%M')
       url = 'letters'
       params = {
         to: {
-          firstName: 'Austin',
-          addressLine1: '911 NW 57th Street',
+          firstName: firstName,
+          addressLine1: address,
           city: 'Oklahoma City',
           provinceOrState: 'OK',
           country: 'US',
           skipVerification: true
         },
-        html: "Hello, Austin <br> Sent at: #{date}",
+        html: "Hello, #{firstName} <br> Sent at: #{date}",
         from: {
           firstName: 'Holden',
           addressLine1: '200 S Cincinnati Ave',

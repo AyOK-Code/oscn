@@ -36,10 +36,8 @@ module EvictionOcr
       # TODO: Remove Austin after the test case
       {
         to: {
-          firstName: 'Austin Mayden',
-          addressLine1: '911 NW 57th Street Oklahoma City, OK 73118',
-          # firstName: eviction_letter.full_name,
-          # addressLine1: eviction_letter.validation_usps_address + ' ' + eviction_letter.validation_usps_state_zip,
+          firstName: eviction_letter.full_name,
+          addressLine1: eviction_letter.validation_usps_address + ' ' + eviction_letter.validation_usps_state_zip,
           proviceOrState: 'OK',
           countryCode: 'US'
         },

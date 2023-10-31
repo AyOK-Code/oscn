@@ -1,7 +1,3 @@
-require 'net/http'
-require 'uri'
-require 'json'
-
 namespace :save do
   desc 'Update cases for data request'
   task :pdfs, [:count] => [:environment] do |_t, args|
@@ -25,10 +21,5 @@ namespace :save do
                            content_type: 'application/pdf')
       puts "Saved #{link.link}"
     end
-  end
-
-  desc 'Run analysis on pdfs'
-  task analysis: [:environment] do
-    OcrPdf.perform(url)
   end
 end
