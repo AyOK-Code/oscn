@@ -14,8 +14,7 @@ namespace :postgrid do
           addressLine1: address,
           city: 'Oklahoma City',
           provinceOrState: 'OK',
-          country: 'US',
-          skipVerification: true
+          country: 'US'
         },
         html: "Hello, #{first_name} <br> Sent at: #{date}",
         from: {
@@ -23,8 +22,7 @@ namespace :postgrid do
           addressLine1: '200 S Cincinnati Ave',
           city: 'Tulsa',
           stateOrProvince: 'OK',
-          country: 'US',
-          skipVerification: true
+          country: 'US'
         }
       }
       Postgrid.post(url, params)
