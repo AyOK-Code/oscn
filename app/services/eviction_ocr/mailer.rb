@@ -33,7 +33,6 @@ module EvictionOcr
     end
 
     def params
-      # TODO: Remove Austin after the test case
       {
         to: {
           firstName: eviction_letter.full_name,
