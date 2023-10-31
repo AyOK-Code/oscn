@@ -37,7 +37,7 @@ module EvictionOcr
       {
         to: {
           firstName: eviction_letter.full_name,
-          addressLine1: eviction_letter.validation_usps_address + ' ' + eviction_letter.validation_usps_state_zip,
+          addressLine1: "#{eviction_letter.validation_usps_address} #{eviction_letter.validation_usps_state_zip}",
           proviceOrState: 'OK',
           countryCode: 'US'
         },
