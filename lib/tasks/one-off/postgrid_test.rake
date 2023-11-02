@@ -1,7 +1,8 @@
 namespace :postgrid do
   desc 'Test postgrid timing by sending postcards every 4 hours'
   task :test, [:first_name, :address] => [:environment] do |_t, args|
-    current = DateTime.now.change(:offset => '-0500')
+    Time.zone = "Central Time (US & Canada)"
+    current = DateTime.current
     end_on = Date.new(2023, 11, 8)
     first_name = args[:first_name]
     address = args[:address]
@@ -16,7 +17,7 @@ namespace :postgrid do
           provinceOrState: 'OK',
           country: 'US'
         },
-        html: "Hello, #{first_name} <br> Sent at: #{date}",
+        html: "<div style='position: fixed; top: 40%; left: 40%;'><h1>Hello, #{first_name},</h1> <br> Sent at: #{date}</div>",
         from: {
           firstName: 'Holden',
           addressLine1: '200 S Cincinnati Ave',
