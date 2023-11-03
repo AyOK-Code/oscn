@@ -1,14 +1,15 @@
 namespace :postgrid do
   desc 'Test postgrid timing by sending postcards every 4 hours'
   task :test, [:first_name, :address] => [:environment] do |_t, args|
-    Time.zone = "Central Time (US & Canada)"
+    Time.zone = 'Central Time (US & Canada)'
     current = DateTime.current
-    end_on = Date.new(2023, 11, 8)
+    end_on = Date.new(2023, 11, 10)
     first_name = args[:first_name]
     address = args[:address]
     if (current.hour % 4).zero? && current < end_on
       date = current.strftime('%m/%d/%Y %H:%M')
       url = 'letters'
+      # rubocop:disable Metrics/LineLength
       params = {
         to: {
           firstName: first_name,
@@ -26,6 +27,7 @@ namespace :postgrid do
           country: 'US'
         }
       }
+      # rubocop:enable Metrics/LineLength
       Postgrid.post(url, params)
     end
   end
