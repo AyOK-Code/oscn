@@ -9,6 +9,7 @@ namespace :postgrid do
     if (current.hour % 4).zero? && current < end_on
       date = current.strftime('%m/%d/%Y %H:%M')
       url = 'letters'
+      # rubocop:disable Metrics/LineLength
       params = {
         to: {
           firstName: first_name,
@@ -26,6 +27,7 @@ namespace :postgrid do
           country: 'US'
         }
       }
+      # rubocop:enable Metrics/LineLength
       Postgrid.post(url, params)
     end
   end
