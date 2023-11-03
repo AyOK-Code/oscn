@@ -1,7 +1,7 @@
 namespace :postgrid do
   desc 'Test postgrid timing by sending postcards every 4 hours'
   task :test, [:first_name, :address] => [:environment] do |_t, args|
-    Time.zone = "Central Time (US & Canada)"
+    Time.zone = 'Central Time (US & Canada)'
     current = DateTime.current
     end_on = Date.new(2023, 11, 10)
     first_name = args[:first_name]
