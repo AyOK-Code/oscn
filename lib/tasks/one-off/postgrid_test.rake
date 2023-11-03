@@ -3,7 +3,7 @@ namespace :postgrid do
   task :test, [:first_name, :address] => [:environment] do |_t, args|
     Time.zone = "Central Time (US & Canada)"
     current = DateTime.current
-    end_on = Date.new(2023, 11, 8)
+    end_on = Date.new(2023, 11, 10)
     first_name = args[:first_name]
     address = args[:address]
     if (current.hour % 4).zero? && current < end_on
