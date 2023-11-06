@@ -21,7 +21,7 @@ module Importers
       aliases_column = data[:aliases_column]
       begin
         save_aliases(aliases_column)
-        save_personal(personal_columns)
+        save_personal(data[:birth_month],data[:birth_year])
         save_addresses(data)
       rescue StandardError => e
         Raygun.track_exception(e, custom_data: { error_type: 'Data Error', data_content: parsed_html })
@@ -39,12 +39,14 @@ module Importers
       end
     end
 
-    def save_personal(personal_columns)
-      # TODO: Move to OSCN Scraper Gem
-      string = personal_columns[2]&.text&.split('/')
-      return if string.blank?
+    def save_personal(birth_month,birth_year)
+     
+     
+      return if birth_month.blank?
+      return if birth_year.blank?
 
-      party.update(birth_month: month(string), birth_year: year(string))
+
+      party.update(birth_month: birth_month, birth_year: birth_year)
     end
 
     def save_aliases(aliases_column)
@@ -55,12 +57,6 @@ module Importers
       end
     end
 
-    def month(string)
-      string[0].to_i
-    end
-
-    def year(string)
-      string[1].to_i
-    end
+    
   end
 end
