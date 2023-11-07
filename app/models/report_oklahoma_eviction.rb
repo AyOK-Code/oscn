@@ -8,7 +8,10 @@ class ReportOklahomaEviction < ApplicationRecord
     docket = court_case.docket_events.where(docket_event_type_id: docket_event_type_id).first
     return nil if docket.nil?
 
-    docket.links.pdf.first.id
+    pdf = docket.links.pdf.first
+    return nil if pdf.nil?
+
+    pdf.id
   end
 
   def readonly?
