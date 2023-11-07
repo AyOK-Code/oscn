@@ -30,4 +30,40 @@ RSpec.describe EvictionLetter, type: :model do
       expect(eviction_letter.full_name).to eq("#{defendant1.full_name}, #{defendant2.full_name}")
     end
   end
+
+  describe '#missing_address_validation' do
+    it 'returns letters that have not been validated' do
+      eviction_letter = create(:eviction_letter, is_validated: false)
+      create(:eviction_letter, is_validated: true)
+
+      expect(EvictionLetter.missing_address_validation).to eq([eviction_letter])
+    end
+  end
+
+  describe '#has_address_validation' do
+    it 'returns letters that have been validated' do
+      create(:eviction_letter, is_validated: false)
+      eviction_letter = create(:eviction_letter, is_validated: true)
+
+      expect(EvictionLetter.has_address_validation).to eq([eviction_letter])
+    end
+  end
+
+  describe '#missing_extraction' do
+    it 'returns letters that have not been extracted' do
+      create(:eviction_letter, ocr_plaintiff_address: nil)
+      eviction_letter = create(:eviction_letter, ocr_plaintiff_address: '123 Main St')
+
+      expect(EvictionLetter.missing_extraction).to eq([eviction_letter])
+    end
+  end
+
+  describe '#has_extraction' do
+    it 'returns letters that have been extracted' do
+      create(:eviction_letter, ocr_plaintiff_address: nil)
+      eviction_letter = create(:eviction_letter, ocr_plaintiff_address: '123 Main St')
+
+      expect(EvictionLetter.has_extraction).to eq([eviction_letter])
+    end
+  end
 end
