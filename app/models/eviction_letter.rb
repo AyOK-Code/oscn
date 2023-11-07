@@ -6,10 +6,14 @@ class EvictionLetter < ApplicationRecord
     extracted: 1,
     error: 2,
     validated: 3,
-    mailed: 4
+    mailed: 4,
+    historical: 5 # No letter was sent
   }
 
-  # TODO: How to know what error occurred?
+  scope :missing_address_validation, -> { where(is_validated: false) }
+  scope :has_address_validation, -> { where(is_validated: true) }
+  scope :missing_extraction, -> { where.not(ocr_plaintiff_address: nil) }
+  scope :has_extraction, -> { where.not(ocr_plaintiff_address: nil) }
 
   def full_name
     docket_event_link.docket_event.court_case.defendants.map(&:full_name).join(', ')
