@@ -1,7 +1,7 @@
 class ReportOklahomaEviction < ApplicationRecord
   belongs_to :court_case
 
-  scope :filed_year, ->(year) { where(case_filed_on: Date.new(year - 1, 12, 31)..Date.new(year, 12, 31)) }
+  scope :filed_year, ->(year) { where(case_filed_on: Date.new(year.to_i - 1, 12, 31)..Date.new(year.to_i, 12, 31)) }
 
   def docket_link_id
     docket_event_type_id = DocketEventType.find_by(code: 'P').id
