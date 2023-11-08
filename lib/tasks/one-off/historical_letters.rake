@@ -12,8 +12,8 @@ namespace :historical do
   end
 
   desc 'Extracts historical eviction pdfs'
-  task :extract, [:count] => [:environment] do |_t, args|
-    count = args.count.to_i || 100
+  task :extract, [:pdf_count] => [:environment] do |_t, args|
+    count = args.pdf_count.to_i
     bar = ProgressBar.new(count)
 
     EvictionLetter.historical.missing_extraction.each_with_index do |letter, i|
@@ -24,8 +24,8 @@ namespace :historical do
   end
 
   desc 'Validate addresses'
-  task :validate, [:count] => [:environment] do |_t, args|
-    count = args.count || 100
+  task :validate, [:pdf_count] => [:environment] do |_t, args|
+    count = args.pdf_count.to_i
     bar = ProgressBar.new(count)
 
     EvictionLetter.historical.has_extraction.missing_address_validation.each_with_index do |letter, i|

@@ -24,6 +24,7 @@ class AzureCustomExtractor
         break if poll_result['status'] != 'running'
       end
       result = {}
+      ap poll_result
       poll_result['analyzeResult']['documents'][0]['fields'].each do |name, field|
         result[name.to_s] = field['valueString']
       end
