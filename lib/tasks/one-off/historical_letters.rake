@@ -18,7 +18,7 @@ namespace :historical do
 
     EvictionLetter.historical.missing_extraction.each_with_index do |letter, i|
       bar.increment!
-      EvictionOcr::Extractor.perform(letter.docket_event_link.document.url)
+      EvictionOcr::Extractor.perform(letter.id)
       break if i > count
     end
   end
