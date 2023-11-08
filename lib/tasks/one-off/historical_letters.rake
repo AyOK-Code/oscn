@@ -30,7 +30,7 @@ namespace :historical do
 
     EvictionLetter.has_extraction.missing_address_validation.each_with_index do |letter, i|
       bar.increment!
-      EvictionOcr::AddressValidator.perform(letter.id)
+      EvictionOcr::Validator.perform(letter.id)
       break if i > count
     end
   end
