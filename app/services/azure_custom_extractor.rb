@@ -2,7 +2,7 @@ class AzureCustomExtractor
   # TODO: Configure to accept different extraction models
   attr_reader :url
 
-  def initialize
+  def initialize(url)
     @url = url
   end
 
