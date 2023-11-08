@@ -51,8 +51,8 @@ RSpec.describe EvictionLetter, type: :model do
 
   describe '#missing_extraction' do
     it 'returns letters that have not been extracted' do
-      create(:eviction_letter, ocr_plaintiff_address: nil)
-      eviction_letter = create(:eviction_letter, ocr_plaintiff_address: '123 Main St')
+      eviction_letter = create(:eviction_letter, ocr_plaintiff_address: nil)
+      create(:eviction_letter, ocr_plaintiff_address: '123 Main St')
 
       expect(EvictionLetter.missing_extraction).to eq([eviction_letter])
     end
