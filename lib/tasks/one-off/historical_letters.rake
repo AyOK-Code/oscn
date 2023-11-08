@@ -28,7 +28,7 @@ namespace :historical do
     count = args.pdf_count.to_i
     bar = ProgressBar.new(count)
 
-    EvictionLetter.historical.has_extraction.missing_address_validation.each_with_index do |letter, i|
+    EvictionLetter.has_extraction.missing_address_validation.each_with_index do |letter, i|
       bar.increment!
       EvictionOcr::AddressValidator.perform(letter.id)
       break if i > count
