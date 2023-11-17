@@ -365,7 +365,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_17_165310) do
     t.datetime "postgrid_sent_to_api_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "validation_object"
+    t.jsonb "validation_object", default: {}, null: false
     t.index ["docket_event_link_id"], name: "index_eviction_letters_on_docket_event_link_id"
   end
 

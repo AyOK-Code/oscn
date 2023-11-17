@@ -1,5 +1,5 @@
 class AddValidationJsonToEvictionLetter < ActiveRecord::Migration[7.0]
   def change
-    add_column :eviction_letters, :validation_object, :jsonb
+    add_column :eviction_letters, :validation_object, :jsonb, default: {}, null: false
   end
 end
