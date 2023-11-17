@@ -16,7 +16,7 @@ module EvictionOcr
 
       if response.code.to_i == 200
         parsed_response = JSON.parse(response.body)['result']
-        eviction_letter.update(validation_object: response.body)
+        eviction_letter.update(validation_object: parsed_response)
         attributes = new_attributes(parsed_response)
         eviction_letter.update(attributes) if attributes.present?
       else
