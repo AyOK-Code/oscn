@@ -16,8 +16,8 @@ module EvictionOcr
 
       if response.code.to_i == 200
         parsed_response = JSON.parse(response.body)['result']
-
-        eviction_letter.update(new_attributes(parsed_response))
+        attributes = new_attributes(parsed_response)
+        eviction_letter.update(attributes) if attributes.present?
       else
         Raygun.track_exception(
           StandardError.new('AddressValidator returned a non-200 response'),
@@ -28,6 +28,21 @@ module EvictionOcr
 
     def new_attributes(parsed_response)
       usps = usps?(parsed_response)
+      begin
+        define_attributes(parsed_response, usps)
+      rescue => e
+        @eviction_letter.update(status: :error)
+        Raygun.track_exception(
+          e,
+          custom_data: { eviction_letter_id: eviction_letter.id, parsed_response: parsed_response }
+        )
+        nil
+      end
+    end
+
+    private
+
+    def define_attributes(parsed_response, usps)
       {
         status: 'validated',
         is_validated: true,
@@ -40,8 +55,6 @@ module EvictionOcr
         validation_longitude: longitude(parsed_response)
       }
     end
-
-    private
 
     def granularity(parsed_response)
       parsed_response['verdict']['validationGranularity']
