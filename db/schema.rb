@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_03_123202) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_17_165310) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -365,6 +365,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_03_123202) do
     t.datetime "postgrid_sent_to_api_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "validation_object"
     t.index ["docket_event_link_id"], name: "index_eviction_letters_on_docket_event_link_id"
   end
 
