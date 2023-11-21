@@ -1,0 +1,3382 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html lang="en-US" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="en-US" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="en-US" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en-US" class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>
+    OSCN Case Details
+  </title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <link rel="stylesheet" href="/assets/css/normalize.min.css">
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="stylesheet" href="/assets/css/bootstrap-2.3.2.min.css">
+		<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-Bx4pytHkyTDy3aJKjGkGoHPt3tvv6zlwwjc3iqN7ktaiEMLDPqLSZYts2OjKcBx1" crossorigin="anonymous">		
+		<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">-->
+		<link rel="stylesheet" href="/assets/css/oscn-navigation.css">
+        <link rel="stylesheet" href="/assets/css/oscn-footer.css">
+<style>
+.bold {
+	font-weight: bold;
+}
+.docket-first-column {
+	display: inline-block;
+	width: 125px;
+	text-align: center;
+}
+.docketlist th:nth-child(2){
+	display: none;
+}
+.docketlist td:nth-child(2){
+	display: none;
+}
+.docketlist,.docketlist tr {
+	position: relative;
+}
+.docketlist th:nth-child(3) {
+	position: absolute;
+	left: 10em;
+}
+span.partyname {
+	font-size: 0.75rem;
+}
+.docketlist td:nth-child(3) .description-wrapper{
+	margin-top: 1.75em;
+	position: relative;
+	margin-left: -3.5em;
+	padding-right: 1em;
+}
+/*------ kellpro remove space on additional text*/
+.addtl-text .description-wrapper{
+	margin-top: 0!important;
+}
+.addtl-text .docket_code {
+	display: none;
+}
+.docketlist td:nth-child(1) {
+	font-weight: bold;
+}
+.docketlist th:nth-child(4),
+.docketlist td:nth-child(4){
+	position: absolute; 
+	right: 6em;
+}
+.docketlist th:nth-child(5),
+.docketlist td:nth-child(5){
+	position: absolute; 
+	right: 10em;
+}
+.docketlist th:nth-child(6),
+.docketlist td:nth-child(6){
+	position: absolute; 
+	right: 0;
+}
+.docketlist th:nth-child(2),
+.docketlist td:nth-child(2){
+	display: table-cell;
+	position: absolute; 
+	left: 6.1em;
+	font-weight: bold;
+}
+
+.docketRow td {
+	border-bottom: none!important;
+	border-top: none!important;
+}
+/*
+.docketlist td:nth-child(1),
+.docketlist td:nth-child(3){
+	border-bottom: gray solid 1px!important;
+}
+*/
+.primary-entry {
+	overflow: hidden;
+}
+.primary-entry td {
+	position: relative;
+}
+.primary-entry > td:before {
+	content: '';
+	border-top: 1px solid gray;
+	display: block;
+	position: absolute;
+	top: -1px;
+	width: 100%;
+}
+.kp.docketlist td:nth-child(1),
+.kp.docketlist td:nth-child(3){
+	//border-bottom: #cecece solid 1px!important;
+}
+
+
+
+@media print {
+	.docketlist thead {
+		display: table-row;
+	}
+	.description-wrapper img { display: none; }
+	thead, thead tr {
+		position: relative!important;
+		width: 100%;
+	}
+}
+@media screen and (max-width:768px){
+	.docketlist td:nth-child(2){
+		display: none;
+		font-size: smaller;
+	}
+}
+.partyname:after {
+	content:'\f007';
+	font-family: "Font Awesome 5 Pro";
+    font-weight: 900;
+	position: relative;
+	right: -0.25em;
+}
+.count_issue:before {
+	content:'\f292';
+	font-family: "Font Awesome 5 Pro";
+    font-weight: 900;
+}
+.docket_code:before {
+	content:'[';
+	font-family: "Font Awesome 5 Pro";	
+	position: relative;
+	left: -0.25em;
+}
+.docket_code:after {
+	content:']';
+	font-family: "Font Awesome 5 Pro";	
+	position: relative;
+	right: -0.25em;
+}
+.warrant .docket_code:before {
+	content:'[ \f06e';
+	font-family: "Font Awesome 5 Pro";
+	left: -0.25em;
+	font-weight: 900;
+}
+.return-warrant .docket_code:before {
+	content:'[ \f0e2';
+	font-family: "Font Awesome 5 Pro";
+	left: -0.25em;
+	font-weight: 900;
+}
+.doc-tif:before {
+	content: '\f15b';
+	font-family: "Font Awesome 5 Pro";
+	left: -0.25em;
+	color: black;
+}
+.doc-pdf:before {
+	content: '\f1c1';
+	font-family: "Font Awesome 5 Pro";
+	left: -0.25em;
+	color: #FF0000;
+}
+
+
+/*COUNTS*/
+@media screen and (max-width:1024px){
+	
+	/*SHORTSTYLE*/
+	.caseStyle td ~ td{
+		width: 33%;
+	}
+	/*END SHORTSTYLE*/
+	
+    .Disposition td, .Disposition th, .Counts td {
+        display: block;    
+    }
+    
+    .dispositionInformation, .paddedContainer, .partyName {
+        display: none!important;
+    }
+    
+    .CountsContainer ~ .CountsContainer {
+        border-top: 3px solid silver;
+    }
+    
+    .CountDescription {
+        padding-left: 1.75rem;
+    }
+    
+    .Disposition th,
+    .Disposition td {
+        padding-left: 14px;
+    }
+    
+    .countpartyname:before {
+        content: 'Party Name: ';
+        font-weight: bold;
+        white-space: nowrap;
+    }
+    .countdisposition, .countdisposition {
+        margin-left: 1rem;
+    }
+    
+    .Disposition tbody tr ~ tr {
+        display: block;
+        margin-top: 0.5rem;
+        border-top: 1px silver dashed
+    }
+}
+
+
+/*EVENTS*/
+@media screen and (max-width:1024px){
+	.events_table td {
+		display: block;
+	}
+	td.event_partyname.empty, td.event_reporter.empty, td.event_judge.empty {
+		display: none;
+	}
+
+	td.event_partyname:before,
+	td.event_reporter:before,
+	td.event_judge:before {
+		font-weight: 600; 
+	}
+	td.event_partyname:before { content: 'Party Name: '; }
+	td.event_reporter:before { content: 'Reporter: '; }
+	td.event_judge:before { content: 'Docket: '; }
+
+	span.nbsps { display: none; }
+
+	.events_table tr ~ tr {
+		border-top: 1px dashed silver;
+		padding: 0.25rem
+	}
+	.events_table tr{
+		padding-left: 0.5rem;
+		display: block;
+	}
+	td.event_partyname,
+	td.event_reporter,
+	td.event_judge
+	{
+		padding-left: 2rem;
+		font-size: 12px
+	}
+
+	.events_table thead {
+		display: none;    
+	}
+}
+  </style>
+<!-- /STYLESHEET_INLINE/ -->
+        <script src="/assets/js/modernizr-2.6.2.min.js"></script>
+		<!--[if lt IE 9]>	
+		<script src="/assets/js/respond.min.js"></script>
+		<script>
+		window.onload = function() {
+			setTimeout(function(){				
+				var height = $(".footer").outerHeight(true);
+				$("#oscn-content").css("padding-bottom", function(){
+					return height;
+				});}, 2000);
+		}
+		</script>
+		<![endif]-->
+        <script src="/assets/js/cookies.js"></script>			
+<!-- /JAVASCRIPT_TOP/ -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-54280338-1', {'sampleRate': 50});
+ga('send', 'pageview');
+</script>
+    </head>
+    <body>
+	<div class="wrapper">
+<!-- /ERRORMESSAGE/ -->
+		<div class="header" data-elastic-exclude>
+			<div class="accessibility">
+				<a href="#oscn-content">Skip to Main Content</a>
+				<a href="/v4/accessibility/">Accessibility Statement</a>
+			</div>
+			<div class="navigation-tophat">
+				<div class="sized">
+					<div class="left">
+						<ul>
+							<li><a href="http://www.oscn.net/applications/oscn/SimpleHelp.asp?HelpContextID=">Help</a></li>
+							<li><a href="http://www.oscn.net/applications/oscn/SimpleHelp.asp?HelpContextID=84">Contact Us</a></li>
+						</ul>
+					</div>
+					<div class="right">
+						<ul>
+							<!--<li><a href="">e-filing</a></li>-->
+							<li><a href="https://pay.oscn.net/epayments/">e-payments</a></li>
+							<li><a href="/jobs/">Careers</a></li>
+							<!-- <li class="site-search no-border">
+								<form class="search-form" method="get" action="/search/search.aspx">
+									<div class="search-container">
+									<select class="template-dropdown" style="display: none;">
+										<option class="template-option"></option>
+									</select>	
+									<select class="search-dropdown" name="t">
+										<optgroup label="Legal Research">
+											<option value="citation">By Citation (QuickCite)</option>
+											<option value="judge">By Judge</option>
+											<option value="caselaw">Case Law (full-text)</option>
+											<option value="statutes">Statutes &amp; Rules (full-text)</option>
+											<option value="library">All Oklahoma Materials (full-text)</option>
+										</optgroup>
+										<optgroup label="Court Records">
+											<option selected="selected" value="party">By Party Name</option>
+											<option value="business">By Business Name</option>
+											<option value="casenumber">By Case Number</option>
+											<option value="traffic">By Traffic Citation</option>
+										</optgroup>											
+									</select></div><!--
+									<input class="search-input" type="text" value="Search" name="q"></input><!-- 
+									<button class="search-button" type="submit" value="Go!"></button>
+								</form>
+							</li>-->
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="navigation-spectacles sized">
+				<div class="navigation-utility">
+					<div class="brand"><a href="/"><img id="logo" class="screen-logo" alt="OSCN" src="/assets/img/logo.jpg" /><img class="print-logo" alt="" src="/assets/img/logo-bw.jpg" /></a></div>
+					<div class="toggle" style="display: none;"><button type="button" data-toggle="navigation"><span class="sr-only">toggle navigation</span></button></div>
+				</div>
+				<nav>
+					<ol class="nav-menu">
+						<li class="nav-item" id="home"><a href="/v4/">Home</a></li>
+						<li class="nav-item" id="courts_menu"><a href="/courts/">Courts</a></li>
+						<li class="nav-item" id="decisions"><a href="/decisions/">Decisions</a></li>
+						<li class="nav-item" id="programs"><a href="/v4/programs/">Programs</a></li>
+						<li class="nav-item" id="news"><a href="/news/">News</a></li>
+						<li class="nav-item" id="legal-research"><a href="http://www.oscn.net/applications/oscn/start.asp?viewType=LIBRARY">Legal Research</a></li>
+						<li class="nav-item" id="court-records"><a href="/dockets/">Court Records</a></li>
+						<li class="nav-item" id="quick-links"><a href="/v4/quicklinks/">Quick Links</a></li>
+					</ol>
+				</nav>
+			</div>
+		</div>		
+<div id="oscn-content"><div class="sized">
+  <style>
+        td, th { padding: 2px 5px; }
+        h2.styletop {
+			text-align: left;
+			background: #033c60;
+			color: white;
+			margin: 0;
+			padding: 6px;
+			font-size: 18px;
+			text-transform: uppercase;
+			font-weight: bold;
+        }
+        span.styletop { 
+			display: block; 
+			text-align: center; 
+			line-height: 1.5rem;
+			padding: 0.5rem 0;
+		}
+
+        .section {
+        text-transform: uppercase;
+        color: #033c60;
+        padding: 2px 5px;
+        background-color: #f7f7f7;
+        border-top: 1px #e1e1e1 solid;
+        border-bottom: 1px #e1e1e1 solid;
+        font-size: 22px;
+        text-align: left;
+        }
+
+        .partyCounts thead th { text-decoration: underline; }
+        .paddedContainer { width: 75px; }
+        .partyName, .dispositionInformation, .CountDescription { padding: 2px 5px; }
+        .CountNumber { width: 75px; }
+        .CountNumber, .partyName, .dispositionInformation, .CountDescription { vertical-align: top; }
+
+        p { margin: 0; padding: 0; }
+        table th { text-align: left; }
+        table { margin-bottom: 10px; width: 100%; border-collapse: collapse; }
+
+        .caseStyle {  }
+        .caseStyle td { border: 1px solid #e1e1e1; padding: 5px 10px; }
+
+        .docketRow td { padding: 3px 2px 3px 2px; border-top: thin solid #e1e1e1; border-bottom: thin solid #e1e1e1;}
+
+        .evenRow { background-color: #f7f7f7;}
+        .oddRow { background-color: white; }
+
+        .multipleRecords {
+        width: 100%;
+        position: relative;
+        margin-top: 2em;
+        margin-bottom: 2em;
+        }
+        .multipleRecords caption {
+        text-align: left;
+        font-weight: bold;
+        position: relative;
+        background: #033c60;
+        color: white;
+        margin: 0;
+        padding: 6px;
+        font-size: 18px;
+        text-transform: uppercase;
+        position: relative;
+        }
+        .foundRecords {
+        position: absolute;
+        right: 5px; font-size: 14px;
+        }
+        .multipleRecords thead th {
+        font-size: 13px;
+        text-align: left;
+        padding: 4px 3px;
+        vertical-align: top;
+        background-color: #f7f7f7;
+        }
+        .tablerow { border-top: thin solid #e1e1e1; }
+        .tablerow td { font-size: 11px; padding: 4px 3px; color: #033c60; vertical-align: top;}
+
+        
+        #rev, .revLabel { display: inline; margin: 0; }
+
+        .heading3 {
+        text-transform: uppercase;
+        color: #033c60;
+        padding: 2px 5px;
+        background-color: #f7f7f7;
+        border-top: 1px #e1e1e1 solid;
+        border-bottom: 1px #e1e1e1 solid;
+        font-size: 22px;
+        text-align: center;
+        margin-top: 2em;
+        }
+
+        table { margin: 0 auto 0 auto; }
+        .casetype { width: 50%; }
+        .casetype caption {
+        text-align: center;
+        color: #033c60;
+        margin: 0;
+        padding: 10px 5px;
+        font-size: 18px;
+        text-transform: uppercase;
+        font-weight: bold;
+        }
+        .casetype th {
+        font-size: 13px;
+        text-align: left;
+        padding: 4px 3px;
+        vertical-align: top;
+        background-color: #f7f7f7;
+        border-top: 1px #e1e1e1 solid;
+        border-bottom: 1px #e1e1e1 solid;
+        }
+        .casetype tr {
+        border-top: 1px #e1e1e1 solid;
+        border-bottom: 1px #e1e1e1 solid;
+        }
+        .casetype td { padding: 3px 4px; }
+        .casenoformat { width: 350px; }
+        .casenoformat tbody tr td { text-align: center; }
+        table caption { }
+        .casetype { min-width: 250px; }
+        form label { font: bold 11pt arial; }
+        .padding { height: 2em; }
+      </style>
+  <style>
+		td, th {
+			padding: 2px 5px;
+		}
+		h2.styletop {
+			text-align: left;
+			background: #033c60;
+			color: white;
+			margin: 0;
+			padding: 6px;
+			font-size: 18px;
+			text-transform: uppercase;
+			font-weight: bold;	
+		}
+		span.styletop { display: block; text-align: center; }
+
+		.section { 
+			text-transform: uppercase; 
+			color: #033c60;  
+			padding: 2px 5px;
+			background-color: #f7f7f7;
+			border-top: 1px #e1e1e1 solid;
+			border-bottom: 1px #e1e1e1 solid;
+			font-size: 22px;
+			text-align: left;
+		}
+
+		.partyCounts thead th {
+			text-decoration: underline;
+		}
+		.paddedContainer {
+			width: 75px;
+		}
+		.partyName, .dispositionInformation, .CountDescription {
+			padding: 2px 5px;
+		}
+		.CountNumber {
+			width: 75px;
+		}
+		
+		.CountNumber, .partyName, .dispositionInformation, .CountDescription {
+			vertical-align: top;
+		}
+		
+		p { margin: 0; padding: 0; }
+		table th { text-align: left; }
+		table { margin-bottom: 10px; width: 100%; border-collapse: collapse; }
+
+		.caseStyle {  }
+		.caseStyle td { border: 1px solid #e1e1e1; padding: 5px 10px; }
+
+		.docketRow td { padding: 3px 2px 3px 2px; border-top: thin solid #e1e1e1; border-bottom: thin solid #e1e1e1;}
+
+		.evenRow { background-color: #f7f7f7;}
+		.oddRow { background-color: white; }	
+    </style>
+  <p class="notice">The information on this page is NOT an official 
+            record. Do not rely on the correctness or completeness of this 
+            information. Verify all information with the <a href="
+    /courts/tulsa">official record 
+            keeper</a>. The information contained in this report is provided in 
+            compliance with the Oklahoma Open Records Act, 
+            <a href="http://www.oscn.net/applications/oscn/deliverdocument.asp?citeid=80288">51 O.S. 24A.1</a>. 
+            Use of this information is governed by this act, as well as other 
+            applicable state and federal laws.
+          </p>
+  <h2 class="styletop"><span class="styletop">In the District Court in and for <a style="color: white; text-decoration: underline;" href="
+    /courts/tulsa">tulsa&nbsp;County</a>, Oklahoma</span></h2>
+  <table class="caseStyle" cellspacing="0" cellpadding="0" border="0" width="100%">
+    <tr>
+      <td valign="center" width="50%">STATE OF OKLAHOMA,<br />
+          Plaintiff,<br />
+v.<br />
+DEVIN LEE SEARS,<br />
+          Defendant.</td>
+      <td width="50%"><strong>
+              No. CF-2018-1016<br>
+              (Criminal Felony)
+            </strong><br><br>
+            Filed: 03/16/2018<br>Closed: 06/16/2020<br><br>Judge: CF Docket E <br></td>
+    </tr>
+  </table><script id="json_style" type="application/json">
+	{
+		"style": "STATE OF OKLAHOMA v. DEVIN LEE SEARS",
+		"cmid": "3136061",
+		"cms": "ocis",
+		"court": "TULSA"
+	}
+	</script><h2 class="section party">Parties</h2>
+  <p><a href="GetPartyRecord.aspx?db=tulsa&cn=CF-2018-1016&id=9041810">SEARS,&nbsp; DEVIN&nbsp; LEE</a>,
+				
+Defendant<br><a href="GetPartyRecord.aspx?db=tulsa&cn=CF-2018-1016&id=32000">STATE OF OKLAHOMA</a>,
+				
+Plaintiff<br><a href="GetPartyRecord.aspx?db=tulsa&cn=CF-2018-1016&id=296276">Tulsa Police Department</a>,
+				
+ARRESTING AGENCY<br> &nbsp;
+          </p>
+  <h2 class="section attorneys">Attorneys</h2>
+  <table width="100%">
+    <thead>
+      <tr>
+        <th align="left">Attorney</th>
+        <th align="left">Represented Parties</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td valign="top" width="50%">Fox,&nbsp; Charles<br>403 SOUTH CHEYENNE<br>TULSA, OK&nbsp;74103<br>&nbsp;
+                        </td>
+        <td valign="top" width="50%">&nbsp; <br></td>
+      </tr>
+      <tr>
+        <td valign="top" width="50%">TULSA COUNTY PUBLIC DEFENDER<br><br>&nbsp;
+                        </td>
+        <td valign="top" width="50%">SEARS, &nbsp; DEVIN&nbsp; LEE<br></td>
+      </tr>
+    </tbody>
+  </table>
+  <h2 class="section events">Events</h2><script id="json_events" type="application/json">
+		{
+		"events": [
+		
+				{ 
+					"date": "Friday, April 13, 2018 at 9:00 AM",
+					"description":
+					  "PRELIMINARY HEARING  ISSUE (PUBLIC DEFENDER)"
+				},
+				{ 
+					"date": "Friday, May 4, 2018 at 9:00 AM",
+					"description":
+					  "PRELIMINARY HEARING  ISSUE (PUBLIC DEFENDER)"
+				},
+				{ 
+					"date": "Wednesday, May 23, 2018 at 0:00 AM",
+					"description":
+					  "FAILED TO REPORT TO COST ADMININISTRATION {COST ADMINISTRATION LETTER SENT}"
+				},
+				{ 
+					"date": "Friday, January 4, 2019 at 0:00 AM",
+					"description":
+					  "COST ADMINISTRATION REVIEW"
+				},
+				{ 
+					"date": "Thursday, October 31, 2019 at 0:00 AM",
+					"description":
+					  "FAILED TO REPORT TO COST ADMININISTRATION {COST ADMINISTRATION LETTER SENT}"
+				},
+				{ 
+					"date": "Wednesday, January 22, 2020 at 0:00 AM",
+					"description":
+					  "COST ADMINISTRATION REVIEW"
+				},
+				{ 
+					"date": "Monday, May 17, 2021 at 0:00 AM",
+					"description":
+					  "NOTICE OF AVAILABLE FUNDS REPORT RECEIVED FROM OKLAHOMA TAX COMMISSION"
+				},
+				{ 
+					"date": "Wednesday, June 30, 2021 at 0:00 AM",
+					"description":
+					  "OTC Intercept Review"
+				},
+				{ 
+					"date": "Friday, October 1, 2021 at 0:00 AM",
+					"description":
+					  "COST ADMINISTRATION REVIEW"
+				},
+				{ 
+					"date": "Monday, July 25, 2022 at 0:00 AM",
+					"description":
+					  "NOTICE OF AVAILABLE FUNDS REPORT RECEIVED FROM OKLAHOMA TAX COMMISSION"
+				},
+				{ 
+					"date": "Wednesday, August 31, 2022 at 0:00 AM",
+					"description":
+					  "OTC Intercept Review"
+				},
+				{ 
+					"date": "Monday, September 11, 2023 at 0:00 AM",
+					"description":
+					  "NOTICE OF AVAILABLE FUNDS REPORT RECEIVED FROM OKLAHOMA TAX COMMISSION"
+				},
+				{ 
+					"date": "Tuesday, October 31, 2023 at 0:00 AM",
+					"description":
+					  "OTC Intercept Review"
+				}
+		]}
+	</script><table class="events_table" width="100%">
+    <thead>
+      <tr>
+        <th>Event</th>
+        <th>Party</th>
+        <th>Docket</th>
+        <th>Reporter</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="event_description">
+          <font color="green">Friday, April 13, 2018 at 9:00 AM</font><br><span class='nbsps'>   </span>PRELIMINARY HEARING  ISSUE (PUBLIC DEFENDER)<!--
+                          (PDP)
+                        --></td>
+        <td class="event_partyname">SEARS,&nbsp; DEVIN&nbsp; LEE</td>
+        <td class="event_judge"> Preliminary Hearing Docket</td>
+        <td class="event_reporter empty">
+        </td>
+      </tr>
+      <tr>
+        <td class="event_description">
+          <font color="green">Friday, May 4, 2018 at 9:00 AM</font><br><span class='nbsps'>   </span>PRELIMINARY HEARING  ISSUE (PUBLIC DEFENDER)<!--
+                          (PDP)
+                        --></td>
+        <td class="event_partyname">SEARS,&nbsp; DEVIN&nbsp; LEE</td>
+        <td class="event_judge"> Preliminary Hearing Docket</td>
+        <td class="event_reporter empty">
+        </td>
+      </tr>
+      <tr>
+        <td class="event_description">
+          <font color="green">Wednesday, May 23, 2018 at 0:00 AM</font><br><span class='nbsps'>   </span>FAILED TO REPORT TO COST ADMININISTRATION {COST ADMINISTRATION LETTER SENT}<!--
+                          (FTR)
+                        --></td>
+        <td class="event_partyname">SEARS,&nbsp; DEVIN&nbsp; LEE</td>
+        <td class="event_judge"> Cost Admin. Judge (General)</td>
+        <td class="event_reporter empty">
+        </td>
+      </tr>
+      <tr>
+        <td class="event_description">
+          <font color="green">Friday, January 4, 2019 at 0:00 AM</font><br><span class='nbsps'>   </span>COST ADMINISTRATION REVIEW<!--
+                          (CAR)
+                        --></td>
+        <td class="event_partyname">SEARS,&nbsp; DEVIN&nbsp; LEE</td>
+        <td class="event_judge"> Cost Admin. Judge (General)</td>
+        <td class="event_reporter empty">
+        </td>
+      </tr>
+      <tr>
+        <td class="event_description">
+          <font color="green">Thursday, October 31, 2019 at 0:00 AM</font><br><span class='nbsps'>   </span>FAILED TO REPORT TO COST ADMININISTRATION {COST ADMINISTRATION LETTER SENT}<!--
+                          (FTR)
+                        --></td>
+        <td class="event_partyname">SEARS,&nbsp; DEVIN&nbsp; LEE</td>
+        <td class="event_judge"> Cost Admin. Judge (General)</td>
+        <td class="event_reporter empty">
+        </td>
+      </tr>
+      <tr>
+        <td class="event_description">
+          <font color="green">Wednesday, January 22, 2020 at 0:00 AM</font><br><span class='nbsps'>   </span>COST ADMINISTRATION REVIEW<!--
+                          (CAR)
+                        --></td>
+        <td class="event_partyname">SEARS,&nbsp; DEVIN&nbsp; LEE</td>
+        <td class="event_judge"> Cost Admin. Judge (General)</td>
+        <td class="event_reporter empty">
+        </td>
+      </tr>
+      <tr>
+        <td class="event_description">
+          <font color="green">Monday, May 17, 2021 at 0:00 AM</font><br><span class='nbsps'>   </span>NOTICE OF AVAILABLE FUNDS REPORT RECEIVED FROM OKLAHOMA TAX COMMISSION<!--
+                          (NAF)
+                        --></td>
+        <td class="event_partyname">SEARS,&nbsp; DEVIN&nbsp; LEE</td>
+        <td class="event_judge"> Cost Admin. Judge (General)</td>
+        <td class="event_reporter empty">
+        </td>
+      </tr>
+      <tr>
+        <td class="event_description">
+          <font color="green">Wednesday, June 30, 2021 at 0:00 AM</font><br><span class='nbsps'>   </span>OTC Intercept Review<!--
+                          (TIR)
+                        --></td>
+        <td class="event_partyname">SEARS,&nbsp; DEVIN&nbsp; LEE</td>
+        <td class="event_judge"> Cost Admin. Judge (General)</td>
+        <td class="event_reporter empty">
+        </td>
+      </tr>
+      <tr>
+        <td class="event_description">
+          <font color="green">Friday, October 1, 2021 at 0:00 AM</font><br><span class='nbsps'>   </span>COST ADMINISTRATION REVIEW<!--
+                          (CAR)
+                        --></td>
+        <td class="event_partyname">SEARS,&nbsp; DEVIN&nbsp; LEE</td>
+        <td class="event_judge"> Cost Admin. Judge (General)</td>
+        <td class="event_reporter empty">
+        </td>
+      </tr>
+      <tr>
+        <td class="event_description">
+          <font color="green">Monday, July 25, 2022 at 0:00 AM</font><br><span class='nbsps'>   </span>NOTICE OF AVAILABLE FUNDS REPORT RECEIVED FROM OKLAHOMA TAX COMMISSION<!--
+                          (NAF)
+                        --></td>
+        <td class="event_partyname">SEARS,&nbsp; DEVIN&nbsp; LEE</td>
+        <td class="event_judge"> Cost Admin. Judge (General)</td>
+        <td class="event_reporter empty">
+        </td>
+      </tr>
+      <tr>
+        <td class="event_description">
+          <font color="green">Wednesday, August 31, 2022 at 0:00 AM</font><br><span class='nbsps'>   </span>OTC Intercept Review<!--
+                          (TIR)
+                        --></td>
+        <td class="event_partyname">SEARS,&nbsp; DEVIN&nbsp; LEE</td>
+        <td class="event_judge"> Cost Admin. Judge (General)</td>
+        <td class="event_reporter empty">
+        </td>
+      </tr>
+      <tr>
+        <td class="event_description">
+          <font color="green">Monday, September 11, 2023 at 0:00 AM</font><br><span class='nbsps'>   </span>NOTICE OF AVAILABLE FUNDS REPORT RECEIVED FROM OKLAHOMA TAX COMMISSION<!--
+                          (NAF)
+                        --></td>
+        <td class="event_partyname">SEARS,&nbsp; DEVIN&nbsp; LEE</td>
+        <td class="event_judge"> Cost Admin. Judge (General)</td>
+        <td class="event_reporter empty">
+        </td>
+      </tr>
+      <tr>
+        <td class="event_description">
+          <font color="green">Tuesday, October 31, 2023 at 0:00 AM</font><br><span class='nbsps'>   </span>OTC Intercept Review<!--
+                          (TIR)
+                        --></td>
+        <td class="event_partyname">SEARS,&nbsp; DEVIN&nbsp; LEE</td>
+        <td class="event_judge"> Cost Admin. Judge (General)</td>
+        <td class="event_reporter empty">
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h2 class="section counts">Counts</h2>
+  <p>
+    <font size="1">Parties appear only under the counts with which they were charged. For complete sentence information, see the court minute on the docket.</font><br>&nbsp;</p>
+  <div class="CountsContainer">
+    <table class="Counts">
+      <tr>
+        <td valign="top" width="100px"><strong>Count # 1.</strong></td>
+        <td class="CountDescription">
+								Count as Filed: 
+								DU8TAM1, TRAFFICKING IN ILLEGAL DRUGS, 
+								in violation of <a href="http://www.oscn.net/applications/oscn/deliverdocument.asp?box1=63&box2=OS&box3=2-415(C)(4)(a), 2-416">63 O.S. 2-415(C)(4)(a), 2-416</a><br>Date of Offense: 03/10/2018<br></td>
+      </tr>
+    </table>
+    <table class="Disposition">
+      <thead>
+        <tr>
+          <th class="paddedContainer"></th>
+          <th class="partyName">Party Name</th>
+          <th class="dispositionInformation">Disposition Information</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td width="100px"></td>
+          <td class="countpartyname" width="20%" valign="top"><nobr>SEARS, DEVIN LEE</nobr></td>
+          <td class="countdisposition" valign="top">
+            <font color="red"><strong>
+                        Disposed:  CONVICTION,
+                        05/04/2018.
+                        Guilty Plea</strong></font><br>
+                        Count as Disposed: POSSESSION OF CONTROLLED DRUG WITH INTENT TO DISTRIBUTE(DU8IV)<br>
+                          Violation of 
+                          <a href="http://www.oscn.net/applications/oscn/deliverdocument.asp?box1=63        &box2=OS&box3=2-401-A03                                                                                           ">63         O.S. 2-401-A03                                                                                           </a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="CountsContainer">
+    <table class="Counts">
+      <tr>
+        <td valign="top" width="100px"><strong>Count # 2.</strong></td>
+        <td class="CountDescription">
+								Count as Filed: 
+								WFEL, POSSESSION OF A FIREARM WHILE IN THE COMMISSION OF A FELONY, 
+								in violation of <a href="http://www.oscn.net/applications/oscn/deliverdocument.asp?box1=21&box2=OS&box3=1287">21 O.S. 1287</a><br>Date of Offense: 03/10/2018<br></td>
+      </tr>
+    </table>
+    <table class="Disposition">
+      <thead>
+        <tr>
+          <th class="paddedContainer"></th>
+          <th class="partyName">Party Name</th>
+          <th class="dispositionInformation">Disposition Information</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td width="100px"></td>
+          <td class="countpartyname" width="20%" valign="top"><nobr>SEARS, DEVIN LEE</nobr></td>
+          <td class="countdisposition" valign="top">
+            <font color="red"><strong>
+                        Disposed:  DISMISSED,
+                        05/04/2018.
+                        Dismissed- Request of the State</strong></font><br>
+                        Count as Disposed: POSSESSION OF A FIREARM WHILE IN THE COMMISSION OF A FELONY(WFEL)<br>
+                          Violation of 
+                          <a href="http://www.oscn.net/applications/oscn/deliverdocument.asp?box1=21        &box2=OS&box3=1287                                                                                                ">21         O.S. 1287                                                                                                </a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="CountsContainer">
+    <table class="Counts">
+      <tr>
+        <td valign="top" width="100px"><strong>Count # 3.</strong></td>
+        <td class="CountDescription">
+								Count as Filed: 
+								TAXS, POSSESSION OF CONTROLLED DRUGS WITHOUT TAX STAMP AFFIXED, 
+								in violation of <a href="http://www.oscn.net/applications/oscn/deliverdocument.asp?box1=68&box2=OS&box3=450.1">68 O.S. 450.1</a><br>Date of Offense: 03/10/2018<br></td>
+      </tr>
+    </table>
+    <table class="Disposition">
+      <thead>
+        <tr>
+          <th class="paddedContainer"></th>
+          <th class="partyName">Party Name</th>
+          <th class="dispositionInformation">Disposition Information</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td width="100px"></td>
+          <td class="countpartyname" width="20%" valign="top"><nobr>SEARS, DEVIN LEE</nobr></td>
+          <td class="countdisposition" valign="top">
+            <font color="red"><strong>
+                        Disposed:  CONVICTION,
+                        05/04/2018.
+                        Guilty Plea</strong></font><br>
+                        Count as Disposed: POSSESSION OF CONTROLLED DRUGS WITHOUT TAX STAMP AFFIXED(TAXS)<br>
+                          Violation of 
+                          <a href="http://www.oscn.net/applications/oscn/deliverdocument.asp?box1=68        &box2=OS&box3=450.1                                                                                               ">68         O.S. 450.1                                                                                               </a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="CountsContainer">
+    <table class="Counts">
+      <tr>
+        <td valign="top" width="100px"><strong>Count # 4.</strong></td>
+        <td class="CountDescription">
+								Count as Filed: 
+								DU9, POSSESSION OF CONTROLLED DRUG, 
+								in violation of <a href="http://www.oscn.net/applications/oscn/deliverdocument.asp?box1=63&box2=OS&box3=2-402 (A1)">63 O.S. 2-402 (A1)</a><br>Date of Offense: 03/10/2018<br></td>
+      </tr>
+    </table>
+    <table class="Disposition">
+      <thead>
+        <tr>
+          <th class="paddedContainer"></th>
+          <th class="partyName">Party Name</th>
+          <th class="dispositionInformation">Disposition Information</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td width="100px"></td>
+          <td class="countpartyname" width="20%" valign="top"><nobr>SEARS, DEVIN LEE</nobr></td>
+          <td class="countdisposition" valign="top">
+            <font color="red"><strong>
+                        Disposed:  CONVICTION,
+                        05/04/2018.
+                        Guilty Plea</strong></font><br>
+                        Count as Disposed: POSSESSION OF CONTROLLED DRUG (DU9)<br>
+                          Violation of 
+                          <a href="http://www.oscn.net/applications/oscn/deliverdocument.asp?box1=63        &box2=OS&box3=2-402 (A1)                                                                                          ">63         O.S. 2-402 (A1)                                                                                          </a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <h2 class="section dockets">Docket</h2>
+  <table class="docketlist ocis" cellpadding="2" cellspacing="2" border="0">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Code</th>
+        <th>Description</th>
+        <th>Count</th>
+        <th>Party</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>03-16-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>TEXT</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">CRIMINAL FELONY INITIAL FILING.</font>
+            </p>
+            <p><span style="text-decoration: italic;">Document Available at Court Clerk's Office</span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">1&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>03-16-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>INFORMATION</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">DEFENDANT DEVIN LEE SEARS  WAS CHARGED WITH COUNT #1, TRAFFICKING IN ILLEGAL DRUGS IN VIOLATION OF 63 O.S. 2-415(B)</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">1&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>03-16-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>INFORMATION</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">DEFENDANT DEVIN LEE SEARS  WAS CHARGED WITH COUNT #2, POSSESSION OF A FIREARM WHILE IN THE COMMISSION OF A FELONY IN VIOLATION OF 21 O.S. 1287</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">2&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>03-16-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>INFORMATION</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">DEFENDANT DEVIN LEE SEARS  WAS CHARGED WITH COUNT #3, POSSESSION OF CONTROLLED DRUGS WITHOUT TAX STAMP AFFIXED IN VIOLATION OF 68 O.S. 450.1</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">3&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>03-16-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>INFORMATION</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">DEFENDANT DEVIN LEE SEARS  WAS CHARGED WITH COUNT #4, POSSESSION OF CONTROLLED DRUG IN VIOLATION OF 63 O.S. 2-402 (A1)</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">4&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>03-16-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>TEXT</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">OCIS HAS AUTOMATICALLY ASSIGNED JUDGE CF E DOCKET TO THIS CASE.</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="blue"><nobr>03-19-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="blue"><nobr>CTARRPL</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="blue">JUDGE APRIL SEIBERT FOR DAWN MOODY:  DEFENDANT PRESENT, IN CUSTODY AND COURT APPOINTS PUBLIC DEFENDER.  ARRAIGNMENT HELD.  DEFENDANT WAIVES READING OF THE INFORMATION AND FURTHER TIME TO PLEAD.  DEFENDANT ENTERS A PLEA OF NOT GUILTY.  PRELIMINARY HEARING SET FOR 4-13-18 AT 9AM IN ROOM 344.  BOND SET IN THE AMOUNT OF CT1 $25,000.00, CT2 $5,000.00, CT3 $1,000.00, & CT4 $1,000.00; DEFENDANT REMANDED TO CUSTODY.</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>03-19-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>TEXT</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">PUBLIC DEFENDERS INSPECTION REQUEST</font>
+            </p>
+            <p><span style="text-decoration: italic;">
+									Document Available (#1039901229)
+									<nobr><a class="doc-tif" href="GetDocument.aspx?ct=tulsa&cn=CF-2018-1016&bc=1039901229&fmt=tif" target="_blank" title="Download document in TIFF format.">TIFF</a></nobr>
+									&nbsp;&nbsp;
+									<nobr><a class="doc-pdf" href="GetDocument.aspx?ct=tulsa&bc=1039901229&cn=CF-2018-1016&fmt=pdf" target="_blank" title="Download document in PDF format.">PDF</a></nobr></span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>03-20-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>PA</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">PAUPER'S AFFIDAVIT</font>
+            </p>
+            <p><span style="text-decoration: italic;">
+									Document Available (#1039901246)
+									<nobr><a class="doc-tif" href="GetDocument.aspx?ct=tulsa&cn=CF-2018-1016&bc=1039901246&fmt=tif" target="_blank" title="Download document in TIFF format.">TIFF</a></nobr>
+									&nbsp;&nbsp;
+									<nobr><a class="doc-pdf" href="GetDocument.aspx?ct=tulsa&bc=1039901246&cn=CF-2018-1016&fmt=pdf" target="_blank" title="Download document in PDF format.">PDF</a></nobr></span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>03-21-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>RETCO</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">RETURN COMMITMENT</font>
+            </p>
+            <p><span style="text-decoration: italic;">
+									Document Available (#1039818846)
+									<nobr><a class="doc-tif" href="GetDocument.aspx?ct=tulsa&cn=CF-2018-1016&bc=1039818846&fmt=tif" target="_blank" title="Download document in TIFF format.">TIFF</a></nobr>
+									&nbsp;&nbsp;
+									<nobr><a class="doc-pdf" href="GetDocument.aspx?ct=tulsa&bc=1039818846&cn=CF-2018-1016&fmt=pdf" target="_blank" title="Download document in PDF format.">PDF</a></nobr></span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>03-28-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>AFPCA</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">AFFIDAVIT & FINDING OF PROBABLE CAUSE T.R.A.C.I.S. (ARRESTED)</font>
+            </p>
+            <p><span style="text-decoration: italic;">Document Available at Court Clerk's Office</span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>04-09-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>RETCO</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">RETURN COMMITMENT</font>
+            </p>
+            <p><span style="text-decoration: italic;">
+									Document Available (#1040032019)
+									<nobr><a class="doc-tif" href="GetDocument.aspx?ct=tulsa&cn=CF-2018-1016&bc=1040032019&fmt=tif" target="_blank" title="Download document in TIFF format.">TIFF</a></nobr>
+									&nbsp;&nbsp;
+									<nobr><a class="doc-pdf" href="GetDocument.aspx?ct=tulsa&bc=1040032019&cn=CF-2018-1016&fmt=pdf" target="_blank" title="Download document in PDF format.">PDF</a></nobr></span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="BLACK"><nobr>04-10-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="BLACK"><nobr>ADISC</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="BLACK">ACKNOWLEDGEMENT OF RECEIPT OF DISCOVERY</font>
+            </p>
+            <p><span style="text-decoration: italic;">
+									Document Available (#1040030446)
+									<nobr><a class="doc-tif" href="GetDocument.aspx?ct=tulsa&cn=CF-2018-1016&bc=1040030446&fmt=tif" target="_blank" title="Download document in TIFF format.">TIFF</a></nobr>
+									&nbsp;&nbsp;
+									<nobr><a class="doc-pdf" href="GetDocument.aspx?ct=tulsa&bc=1040030446&cn=CF-2018-1016&fmt=pdf" target="_blank" title="Download document in PDF format.">PDF</a></nobr></span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>04-13-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>O</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">ORDER</font>
+            </p>
+            <p><span style="text-decoration: italic;">Document Available (SEALED DOCUMENT)</span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>04-13-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>MOCON</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">MOTION FOR CONTINUANCE</font>
+            </p>
+            <p><span style="text-decoration: italic;">Document Available (SEALED DOCUMENT)</span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="blue"><nobr>04-13-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="blue"><nobr>CTPASS</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="blue">JUDGE LUDI LEITCH:  DEFENDANT PRESENT, IN CUSTODY, AND REPRESENTED BY KAYLA CANNON PD. STATE REPRESENTED BY  SEAN WATERS.  PRELIMINARY HEARING  PASSED TO 5-4-2018  @  9 AM  IN ROOM 344.  BOND TO REMAIN; DEFENDANT REMANDED TO CUSTODY. CASE PASSED AT STATES MOTION, NO LAB.</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="8B0000C"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="8B0000C"><nobr>CONVICTED</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="8B0000C">JUDGE LUDI LEITCH: DEFENDANT PRESENT, IN CUSTODY, AND REPRESENTED BY ADAM HASELGREN. STATE REPRESENTED BY SEAN WATERS. COURT REPORTER: ANN BEHLES. DEFENDANT WAIVES PRELIMINARY HEARING, DEFENDANT SWORN IN OPEN COURT. PARTIES WAIVE JURISDICTION OF THE COURT. DEFENDANT ENTERS A PLEA OF GUILTY. DEFENDANT WAIVES RIGHT TO JURY/NON JURY TRIAL. COURT ACCEPTS PLEA AND FINDS DEFENDANT GUILTY. <BR />
+<BR />
+DEFENDANT IS TO BE UNDER THE SUPERVISION OF THE DEPARTMENT OF CORRECTIONS, PROBATION AND PAROLE.<BR />
+<BR />
+COUNT ONE:  AMENDED TO POSSESSION OF CONTROLLED DRUG WITH INTENT TO DISTRIBUTE - DEFENDANT IS SENTENCED TO FIVE (5) YEARS (ALL BUT 90 DAYS IN THE TULSA COUNTY JAIL WITH CREDIT FOR TIME SERVED) IN THE DEPARTMENT OF CORRECTIONS SUSPENDED SENTENCE. DEFENDANT ASSESSED $500.00 FINE, $250.00 VICTIMS COMPENSATION FUND PLUS COST.  DISTRICT ATTORNEY'S 991 FEE ASSESSED.  THIS SENTENCE IS TO RUN CONCURRENTLY WITH COUNTS THREE & FOUR.<BR />
+<BR />
+COUNT TWO:  DISMISSED COST TO STATE.<BR />
+<BR />
+COUNT THREE:  DEFENDANT IS SENTENCED TO FIVE (5) YEARS IN THE DEPARTMENT OF CORRECTIONS SUSPENDED SENTENCE. DEFENDANT ASSESSED $500.00 FINE AND $250.00 VICTIMS COMPENSATION FUND PLUS COST.  THIS SENTENCE IS TO RUN CONCURRENTLY WITH COUNTS ONE AND FOUR.<BR />
+<BR />
+COUNT FOUR:  DEFENDANT IS SENTENCED TO ONE (1) YEAR IN THE TULSA COUNTY JAIL SUSPENDED SENTENCE. DEFENDANT ASSESSED $250.00 FINE AND $125.00 VICTIMS COMPENSATION FUND PLUS COST.  THIS SENTENCE IS TO RUN CONCURRENTLY WITH COUNTS ONE & THREE.<BR />
+<BR />
+DEFENDANT ADVISED OF APPEAL RIGHTS. RULE 8 EXECUTED. J & S ISSUED. BOND EXONERATED. COMMITMENT ISSUED.</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">1&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>COSTF</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">COURT COSTS ON FELONY</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">1&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 103.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>TCARF</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">TRAUMA CARE ASSISTANCE REVOLVING FUND</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">1&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 100.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>DACPAF</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">DA COUNCIL PROSECUTION ASSESSMENT FOR FELONY</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">1&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 50.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>OCISR</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">OKLAHOMA COURT INFORMATION SYSTEM REVOLVING FUND</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">1&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 25.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>SSFCHS</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">SHERIFF’S SERVICE FEE FOR COURT HOUSE SECURITY</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">1&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 10.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>MELRF</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">MEDICAL EXPENSE LIABILITY REVOLVING FUND</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">1&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 10.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>CLEET</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">CLEET PENALTY ASSESSMENT</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">1&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 10.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>AFIS</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">AFIS FEE</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">1&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 10.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>FOREN</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">FORENSIC SCIENCE IMPROVEMENT ASSESSMENT</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">1&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 10.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>PFE7</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">LAW LIBRARY FEE</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">1&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 6.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>SSF</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">SHERIFF'S SERVICE FEE ON ARRESTS</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">1&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 5.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>AGVSU</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">ATTORNEY GENERAL VICTIM SERVICES UNIT</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">1&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 3.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>CHAB</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">C.H.A.B. STATUTORY FEE</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">1&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 3.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>FINE</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">FINES PAYABLE TO COUNTY</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">1&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 500.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>VCA</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">VICTIMS COMPENSATION ASSESSMENT (AC12)</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">1&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 250.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>CCADMIN</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">COURT CLERK ADMINISTRATIVE FEE ON COLLECTIONS</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">1&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 20.60</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="green"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="green"><nobr>DCADMIN</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="green">DISTRICT COURT ADMINISTRATIVE FEE</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">1&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 30.90</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>COSTF</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">COURT COSTS ON FELONY</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">3&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 103.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>DACPAF</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">DA COUNCIL PROSECUTION ASSESSMENT FOR FELONY</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">3&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 50.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>OCISR</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">OKLAHOMA COURT INFORMATION SYSTEM REVOLVING FUND</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">3&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 25.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>CLEET</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">CLEET PENALTY ASSESSMENT</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">3&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 10.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>AFIS</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">AFIS FEE</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">3&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 10.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>MELRF</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">MEDICAL EXPENSE LIABILITY REVOLVING FUND</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">3&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 10.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>SSFCHS</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">SHERIFF’S SERVICE FEE FOR COURT HOUSE SECURITY</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">3&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 10.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>FOREN</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">FORENSIC SCIENCE IMPROVEMENT ASSESSMENT</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">3&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 10.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>PFE7</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">LAW LIBRARY FEE</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">3&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 6.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>SSF</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">SHERIFF'S SERVICE FEE ON ARRESTS</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">3&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 5.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>AGVSU</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">ATTORNEY GENERAL VICTIM SERVICES UNIT</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">3&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 3.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>CHAB</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">C.H.A.B. STATUTORY FEE</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">3&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 3.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>FINE</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">FINES PAYABLE TO COUNTY</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">3&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 500.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>VCA</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">VICTIMS COMPENSATION ASSESSMENT (AC12)</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">3&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 250.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>CCADMIN</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">COURT CLERK ADMINISTRATIVE FEE ON COLLECTIONS</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">3&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 10.60</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="green"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="green"><nobr>DCADMIN</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="green">DISTRICT COURT ADMINISTRATIVE FEE</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">3&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 15.90</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>TCARF</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">TRAUMA CARE ASSISTANCE REVOLVING FUND</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">4&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 100.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>COSTM</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">COURT COSTS ON MISDEMEANOR</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">4&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 83.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>DACPAM</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">DA COUNCIL PROSECUTION ASSESSMENT FOR MISDEMEANOR</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">4&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 30.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>OCISR</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">OKLAHOMA COURT INFORMATION SYSTEM REVOLVING FUND</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">4&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 25.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>SSFCHS</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">SHERIFF’S SERVICE FEE FOR COURT HOUSE SECURITY</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">4&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 10.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>AFIS</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">AFIS FEE</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">4&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 10.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>CLEET</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">CLEET PENALTY ASSESSMENT</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">4&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 10.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>MELRF</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">MEDICAL EXPENSE LIABILITY REVOLVING FUND</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">4&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 10.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>TCARF</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">TRAUMA CARE ASSISTANCE REVOLVING FUND</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">4&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 10.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>FOREN</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">FORENSIC SCIENCE IMPROVEMENT ASSESSMENT</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">4&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 10.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>PFE7</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">LAW LIBRARY FEE</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">4&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 6.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>BNDE</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">BUREAU OF NARCOTICS DRUG EDUCATION REVOLVING FUND</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">4&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 5.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>SSF</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">SHERIFF'S SERVICE FEE ON ARRESTS</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">4&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 5.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>AGVSU</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">ATTORNEY GENERAL VICTIM SERVICES UNIT</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">4&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 3.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>CHAB</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">C.H.A.B. STATUTORY FEE</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">4&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 3.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>FINE</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">FINES PAYABLE TO COUNTY</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">4&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 250.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>VCA</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">VICTIMS COMPENSATION ASSESSMENT (AC12)</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">4&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 125.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>CCADMIN</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">COURT CLERK ADMINISTRATIVE FEE ON COLLECTIONS</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">4&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 20.10</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="green"><nobr>05-04-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="green"><nobr>DCADMIN</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="green">DISTRICT COURT ADMINISTRATIVE FEE</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">4&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 30.15</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>05-07-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>JAILS</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">JAIL CREDIT- JAIL TIME COMPLETED AS SENTENCED - RELEASE ISSUED FOR 5-7-18 (ORIGINAL 5-2-18)</font>
+            </p>
+            <p><span style="text-decoration: italic;">
+									Document Available (#1040350432)
+									<nobr><a class="doc-tif" href="GetDocument.aspx?ct=tulsa&cn=CF-2018-1016&bc=1040350432&fmt=tif" target="_blank" title="Download document in TIFF format.">TIFF</a></nobr>
+									&nbsp;&nbsp;
+									<nobr><a class="doc-pdf" href="GetDocument.aspx?ct=tulsa&bc=1040350432&cn=CF-2018-1016&fmt=pdf" target="_blank" title="Download document in PDF format.">PDF</a></nobr></span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>05-07-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>RLSI</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">RELEASE ISSUED</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>05-08-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>RETCP</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">RETURN COMMITMENT FOR PUNISHMENT</font>
+            </p>
+            <p><span style="text-decoration: italic;">
+									Document Available (#1040354481)
+									<nobr><a class="doc-tif" href="GetDocument.aspx?ct=tulsa&cn=CF-2018-1016&bc=1040354481&fmt=tif" target="_blank" title="Download document in TIFF format.">TIFF</a></nobr>
+									&nbsp;&nbsp;
+									<nobr><a class="doc-pdf" href="GetDocument.aspx?ct=tulsa&bc=1040354481&cn=CF-2018-1016&fmt=pdf" target="_blank" title="Download document in PDF format.">PDF</a></nobr></span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>05-08-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>RETRL</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">RETURN RELEASE</font>
+            </p>
+            <p><span style="text-decoration: italic;">
+									Document Available (#1040354559)
+									<nobr><a class="doc-tif" href="GetDocument.aspx?ct=tulsa&cn=CF-2018-1016&bc=1040354559&fmt=tif" target="_blank" title="Download document in TIFF format.">TIFF</a></nobr>
+									&nbsp;&nbsp;
+									<nobr><a class="doc-pdf" href="GetDocument.aspx?ct=tulsa&bc=1040354559&cn=CF-2018-1016&fmt=pdf" target="_blank" title="Download document in PDF format.">PDF</a></nobr></span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>05-09-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>J&S</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">JUDGMENT AND SENTENCE</font>
+            </p>
+            <p><span style="text-decoration: italic;">
+									Document Available (#1040240982)
+									<nobr><a class="doc-tif" href="GetDocument.aspx?ct=tulsa&cn=CF-2018-1016&bc=1040240982&fmt=tif" target="_blank" title="Download document in TIFF format.">TIFF</a></nobr>
+									&nbsp;&nbsp;
+									<nobr><a class="doc-pdf" href="GetDocument.aspx?ct=tulsa&bc=1040240982&cn=CF-2018-1016&fmt=pdf" target="_blank" title="Download document in PDF format.">PDF</a></nobr></span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="magenta"><nobr>05-09-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="magenta"><nobr>CNOTE</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="magenta">DEFENDANT NEEDS TO REPORT TO COST ADMINISTRATION FOR A PAYMENT PLAN. <BR /></font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>05-09-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>RULE8</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">ORDER OF THE COURT - RULE 8 HEARING</font>
+            </p>
+            <p><span style="text-decoration: italic;">
+									Document Available (#1040370016)
+									<nobr><a class="doc-tif" href="GetDocument.aspx?ct=tulsa&cn=CF-2018-1016&bc=1040370016&fmt=tif" target="_blank" title="Download document in TIFF format.">TIFF</a></nobr>
+									&nbsp;&nbsp;
+									<nobr><a class="doc-pdf" href="GetDocument.aspx?ct=tulsa&bc=1040370016&cn=CF-2018-1016&fmt=pdf" target="_blank" title="Download document in PDF format.">PDF</a></nobr></span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>05-09-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>RETRL</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">RETURN RELEASE</font>
+            </p>
+            <p><span style="text-decoration: italic;">
+									Document Available (#1040354908)
+									<nobr><a class="doc-tif" href="GetDocument.aspx?ct=tulsa&cn=CF-2018-1016&bc=1040354908&fmt=tif" target="_blank" title="Download document in TIFF format.">TIFF</a></nobr>
+									&nbsp;&nbsp;
+									<nobr><a class="doc-pdf" href="GetDocument.aspx?ct=tulsa&bc=1040354908&cn=CF-2018-1016&fmt=pdf" target="_blank" title="Download document in PDF format.">PDF</a></nobr></span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>05-09-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>PGSF</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">PLEA OF GUILTY - SUMMARY OF FACTS</font>
+            </p>
+            <p><span style="text-decoration: italic;">
+									Document Available (#1040245247)
+									<nobr><a class="doc-tif" href="GetDocument.aspx?ct=tulsa&cn=CF-2018-1016&bc=1040245247&fmt=tif" target="_blank" title="Download document in TIFF format.">TIFF</a></nobr>
+									&nbsp;&nbsp;
+									<nobr><a class="doc-pdf" href="GetDocument.aspx?ct=tulsa&bc=1040245247&cn=CF-2018-1016&fmt=pdf" target="_blank" title="Download document in PDF format.">PDF</a></nobr></span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>05-09-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>WAIPH</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">WAIVER OF PRELIMINARY HEARING AND BIND- OVER ORDER</font>
+            </p>
+            <p><span style="text-decoration: italic;">
+									Document Available (#1040245239)
+									<nobr><a class="doc-tif" href="GetDocument.aspx?ct=tulsa&cn=CF-2018-1016&bc=1040245239&fmt=tif" target="_blank" title="Download document in TIFF format.">TIFF</a></nobr>
+									&nbsp;&nbsp;
+									<nobr><a class="doc-pdf" href="GetDocument.aspx?ct=tulsa&bc=1040245239&cn=CF-2018-1016&fmt=pdf" target="_blank" title="Download document in PDF format.">PDF</a></nobr></span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>05-09-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>O</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">ORDER - 991 FEES</font>
+            </p>
+            <p><span style="text-decoration: italic;">
+									Document Available (#1040245215)
+									<nobr><a class="doc-tif" href="GetDocument.aspx?ct=tulsa&cn=CF-2018-1016&bc=1040245215&fmt=tif" target="_blank" title="Download document in TIFF format.">TIFF</a></nobr>
+									&nbsp;&nbsp;
+									<nobr><a class="doc-pdf" href="GetDocument.aspx?ct=tulsa&bc=1040245215&cn=CF-2018-1016&fmt=pdf" target="_blank" title="Download document in PDF format.">PDF</a></nobr></span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>05-09-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>ABST</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">ABSTRACT SENT TO D.P.S.</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">2&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>05-09-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>ABST</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">ABSTRACT SENT TO D.P.S.</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">4&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>05-09-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>ABST</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">ABSTRACT SENT TO D.P.S.</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"><span class="count_issue">1&nbsp;&nbsp;</span></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="BLACK"><nobr>05-17-2018&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="BLACK"><nobr>CTPPA</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="BLACK">$ 25.00 IS TO BE PAID ON OR BEFORE 07/06/18 AND A PAYMENT DUE ON THE 6TH  DAY OF EACH MONTH CONTINUING UNTIL THE CASE(S) IS PAID IN FULL. <BR />
+<BR />
+COST ADMINISTRATION REVIEW:  5/16/18<BR />
+<BR />
+AUTHORIZATION DATE: 1/04/19<BR />
+<BR />
+SEE ALL: CF-18-1016/CF-17-2843<BR /></font>
+            </p>
+            <p><span style="text-decoration: italic;">
+									Document Available (#1040398818)
+									<nobr><a class="doc-tif" href="GetDocument.aspx?ct=tulsa&cn=CF-2018-1016&bc=1040398818&fmt=tif" target="_blank" title="Download document in TIFF format.">TIFF</a></nobr>
+									&nbsp;&nbsp;
+									<nobr><a class="doc-pdf" href="GetDocument.aspx?ct=tulsa&bc=1040398818&cn=CF-2018-1016&fmt=pdf" target="_blank" title="Download document in PDF format.">PDF</a></nobr></span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="magenta"><nobr>09-10-2019&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="magenta"><nobr>CNOTE</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="magenta">DEFT NEEDS $250 BY 10/31/19 TO HAVE NEW PAYMENT PLAN ARR <BR />
+ALSO SEE: CF-17-2843/CF-2000-646/CF-18-1016<BR /></font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>10-09-2019&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>CTRS</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">CLAIM FOR INTERCEPT OF TAX REFUND</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="BLACK"><nobr>10-31-2019&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="BLACK"><nobr>ADJUST</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="BLACK">ADJUSTING ENTRY: MONIES DUE TO AC09-CARD ALLOCATION</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 3.75</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="000000"><nobr>10-31-2019&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="000000"><nobr>ACCOUNT</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="000000">ADJUSTING ENTRY: MONIES DUE TO THE FOLLOWING AGENCIES REDUCED BY THE FOLLOWING AMOUNTS:<BR>CF-2018-1016: AC01 CLERK FEES -$3.75<BR></font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="000000"><nobr>10-31-2019&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="000000"><nobr>ACCOUNT</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="000000">RECEIPT # 2019-4014570 ON 10/31/2019. AS<BR />
+ PAYOR: SEARS/DEVIN TOTAL AMOUNT PAID: $ 150.00.<BR />
+ LINE ITEMS:<BR />
+ CF-2018-1016: $146.25 ON AC01 CLERK FEES FOR SEARS, DEVIN LEE.<BR />
+ CF-2018-1016: $3.75 ON AC09 CARD ALLOCATIONS FOR SEARS, DEVIN LEE.<BR /></font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="BLACK"><nobr>11-01-2019&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="BLACK"><nobr>CTPPA</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="BLACK">$25.00 IS TO BE PAID ON OR BEFORE 11/22/19 AND A PAYMENT DUE ON THE 22ND DAY OF EACH MONTH CONTINUING UNTIL THE CASE(S) IS PAID IN FULL. <BR />
+<BR />
+COST ADMINISTRATION REVIEW:1/22/20<BR />
+<BR />
+AUTHORIZATION DATE: 10/31/19<BR />
+<BR />
+SEE ALL<BR />
+CF-18-1016<BR />
+CF-17-2843<BR />
+CF-00-646</font>
+            </p>
+            <p><span style="text-decoration: italic;">
+									Document Available (#1045260014)
+									<nobr><a class="doc-tif" href="GetDocument.aspx?ct=tulsa&cn=CF-2018-1016&bc=1045260014&fmt=tif" target="_blank" title="Download document in TIFF format.">TIFF</a></nobr>
+									&nbsp;&nbsp;
+									<nobr><a class="doc-pdf" href="GetDocument.aspx?ct=tulsa&bc=1045260014&cn=CF-2018-1016&fmt=pdf" target="_blank" title="Download document in PDF format.">PDF</a></nobr></span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="BLACK"><nobr>12-05-2019&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="BLACK"><nobr>ADJUST</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="BLACK">ADJUSTING ENTRY: MONIES DUE TO AC09-CARD ALLOCATION</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 1.25</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="000000"><nobr>12-05-2019&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="000000"><nobr>ACCOUNT</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="000000">ADJUSTING ENTRY: MONIES DUE TO THE FOLLOWING AGENCIES REDUCED BY THE FOLLOWING AMOUNTS:<BR>CF-2018-1016: AC01 CLERK FEES -$1.25<BR></font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="000000"><nobr>12-05-2019&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="000000"><nobr>ACCOUNT</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="000000">RECEIPT # 2019-4028735 ON 12/05/2019. <BR />
+ PAYOR: SEARS/DEVIN TOTAL AMOUNT PAID: $ 50.00.<BR />
+ LINE ITEMS:<BR />
+ CF-2018-1016: $48.75 ON AC01 CLERK FEES FOR SEARS, DEVIN LEE.<BR />
+ CF-2018-1016: $1.25 ON AC09 CARD ALLOCATIONS FOR SEARS, DEVIN LEE.<BR /></font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="BLACK"><nobr>01-03-2020&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="BLACK"><nobr>ADJUST</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="BLACK">ADJUSTING ENTRY: MONIES DUE TO AC09-CARD ALLOCATION</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 1.25</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="000000"><nobr>01-03-2020&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="000000"><nobr>ACCOUNT</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="000000">ADJUSTING ENTRY: MONIES DUE TO THE FOLLOWING AGENCIES REDUCED BY THE FOLLOWING AMOUNTS:<BR>CF-2018-1016: AC01 CLERK FEES -$1.25<BR></font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="000000"><nobr>01-03-2020&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="000000"><nobr>ACCOUNT</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="000000">RECEIPT # 2020-4039583 ON 01/03/2020. <BR />
+ PAYOR: SEARS/DEVIN TOTAL AMOUNT PAID: $ 50.00.<BR />
+ LINE ITEMS:<BR />
+ CF-2018-1016: $48.75 ON AC01 CLERK FEES FOR SEARS, DEVIN LEE.<BR />
+ CF-2018-1016: $1.25 ON AC09 CARD ALLOCATIONS FOR SEARS, DEVIN LEE.<BR /></font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="BLACK"><nobr>02-20-2020&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="BLACK"><nobr>ADJUST</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="BLACK">ADJUSTING ENTRY: MONIES DUE TO AC09-CARD ALLOCATION</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 0.63</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="000000"><nobr>02-20-2020&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="000000"><nobr>ACCOUNT</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="000000">ADJUSTING ENTRY: MONIES DUE TO THE FOLLOWING AGENCIES REDUCED BY THE FOLLOWING AMOUNTS:<BR>CF-2018-1016: AC01 CLERK FEES -$0.63<BR></font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="000000"><nobr>02-20-2020&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="000000"><nobr>ACCOUNT</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="000000">RECEIPT # 2020-4061395 ON 02/20/2020. MM<BR />
+ PAYOR: SEARS/DEVIN TOTAL AMOUNT PAID: $ 25.00.<BR />
+ LINE ITEMS:<BR />
+ CF-2018-1016: $24.37 ON AC01 CLERK FEES FOR SEARS, DEVIN LEE.<BR />
+ CF-2018-1016: $0.63 ON AC09 CARD ALLOCATIONS FOR SEARS, DEVIN LEE.<BR /></font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="BLACK"><nobr>08-07-2020&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="BLACK"><nobr>ADJUST</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="BLACK">ADJUSTING ENTRY: MONIES DUE TO AC09-CARD ALLOCATION</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 3.13</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="000000"><nobr>08-07-2020&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="000000"><nobr>ACCOUNT</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="000000">ADJUSTING ENTRY: MONIES DUE TO THE FOLLOWING AGENCIES REDUCED BY THE FOLLOWING AMOUNTS:<BR>CF-2018-1016: AC79 OCIS REVOLVING FUND -$1.50<BR>CF-2018-1016: AC31 COURT CLERK REVOLVING FUND -$1.29<BR>CF-2018-1016: AC01 CLERK FEES -$0.34<BR></font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="000000"><nobr>08-07-2020&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="000000"><nobr>ACCOUNT</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="000000">RECEIPT # 2020-4122495 ON 08/07/2020. <BR />
+ PAYOR: SEARS/DEVIN TOTAL AMOUNT PAID: $ 125.00.<BR />
+ LINE ITEMS:<BR />
+ CF-2018-1016: $13.66 ON AC01 CLERK FEES FOR SEARS, DEVIN LEE.<BR />
+ CF-2018-1016: $3.13 ON AC09 CARD ALLOCATIONS FOR SEARS, DEVIN LEE.<BR />
+ CF-2018-1016: $50.01 ON AC31 COURT CLERK REVOLVING FUND FOR SEARS, DEVIN LEE.<BR />
+ CF-2018-1016: $58.20 ON AC79 OCIS REVOLVING FUND FOR SEARS, DEVIN LEE.<BR /></font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>10-05-2020&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>CTRS</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">CLAIM FOR INTERCEPT OF TAX REFUND</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="BLACK"><nobr>03-03-2021&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="BLACK"><nobr>CTPPA</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="BLACK">$25.00 IS TO BE PAID ON OR BEFORE 04/09/21 AND A PAYMENT DUE ON THE 9TH  DAY OF EACH MONTH CONTINUING UNTIL THE CASE(S) IS PAID IN FULL. <BR />
+<BR />
+COST ADMINISTRATION REVIEW: 10/01/21<BR />
+<BR />
+AUTHORIZATION DATE: 03/02/21<BR />
+<BR />
+SEE ALL: CF-2000-646, CF-2017-2843, CF-2018-1016<BR /></font>
+            </p>
+            <p><span style="text-decoration: italic;">
+									Document Available (#1049011445)
+									<nobr><a class="doc-tif" href="GetDocument.aspx?ct=tulsa&cn=CF-2018-1016&bc=1049011445&fmt=tif" target="_blank" title="Download document in TIFF format.">TIFF</a></nobr>
+									&nbsp;&nbsp;
+									<nobr><a class="doc-pdf" href="GetDocument.aspx?ct=tulsa&bc=1049011445&cn=CF-2018-1016&fmt=pdf" target="_blank" title="Download document in PDF format.">PDF</a></nobr></span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="BLUE"><nobr>03-23-2021&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="BLUE"><nobr>WINC</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="BLUE">NOTICE OF CLAIM OKLAHOMA TAX COMMISSION WARRANT INTERCEPT</font>
+            </p>
+            <p><span style="text-decoration: italic;">
+									Document Available (#1049110413)
+									<nobr><a class="doc-tif" href="GetDocument.aspx?ct=tulsa&cn=CF-2018-1016&bc=1049110413&fmt=tif" target="_blank" title="Download document in TIFF format.">TIFF</a></nobr>
+									&nbsp;&nbsp;
+									<nobr><a class="doc-pdf" href="GetDocument.aspx?ct=tulsa&bc=1049110413&cn=CF-2018-1016&fmt=pdf" target="_blank" title="Download document in PDF format.">PDF</a></nobr></span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>04-01-2021&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>WA</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">OTC INTERCEPT WAIVER SIGNED BY: SEARS, DEVIN</font>
+            </p>
+            <p><span style="text-decoration: italic;">
+									Document Available (#1049109700)
+									<nobr><a class="doc-tif" href="GetDocument.aspx?ct=tulsa&cn=CF-2018-1016&bc=1049109700&fmt=tif" target="_blank" title="Download document in TIFF format.">TIFF</a></nobr>
+									&nbsp;&nbsp;
+									<nobr><a class="doc-pdf" href="GetDocument.aspx?ct=tulsa&bc=1049109700&cn=CF-2018-1016&fmt=pdf" target="_blank" title="Download document in PDF format.">PDF</a></nobr></span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>10-12-2021&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>CTRS</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">CLAIM FOR INTERCEPT OF TAX REFUND</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="BLUE"><nobr>05-23-2022&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="BLUE"><nobr>WINC</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="BLUE">NOTICE OF CLAIM OKLAHOMA TAX COMMISSION WARRANT INTERCEPT</font>
+            </p>
+            <p><span style="text-decoration: italic;">
+									Document Available (#1051955081)
+									<nobr><a class="doc-tif" href="GetDocument.aspx?ct=tulsa&cn=CF-2018-1016&bc=1051955081&fmt=tif" target="_blank" title="Download document in TIFF format.">TIFF</a></nobr>
+									&nbsp;&nbsp;
+									<nobr><a class="doc-pdf" href="GetDocument.aspx?ct=tulsa&bc=1051955081&cn=CF-2018-1016&fmt=pdf" target="_blank" title="Download document in PDF format.">PDF</a></nobr></span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 10.00</font>
+        </td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="GREEN"><nobr>05-23-2022&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="GREEN"><nobr>WICF</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="GREEN">WARRANT INTERCEPT 3% COLLECTION FEE</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right">
+          <font color="green">$ 11.04</font>
+        </td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>11-10-2022&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>CTRS</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">CLAIM FOR INTERCEPT OF TAX REFUND</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="BLUE"><nobr>07-10-2023&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="BLUE"><nobr>WINC</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="BLUE">NOTICE OF CLAIM OKLAHOMA TAX COMMISSION WARRANT INTERCEPT</font>
+            </p>
+            <p><span style="text-decoration: italic;">
+									Document Available (#1055630028)
+									<nobr><a class="doc-tif" href="GetDocument.aspx?ct=tulsa&cn=CF-2018-1016&bc=1055630028&fmt=tif" target="_blank" title="Download document in TIFF format.">TIFF</a></nobr>
+									&nbsp;&nbsp;
+									<nobr><a class="doc-pdf" href="GetDocument.aspx?ct=tulsa&bc=1055630028&cn=CF-2018-1016&fmt=pdf" target="_blank" title="Download document in PDF format.">PDF</a></nobr></span></p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow evenRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>10-26-2023&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>CTRS</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">CLAIM FOR INTERCEPT OF TAX REFUND</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+      <tr class="docketRow oddRow primary-entry">
+        <td valign="top">
+          <font color="black"><nobr>10-26-2023&nbsp;</nobr></font>
+        </td>
+        <td valign="top">
+          <font class="docket_code" color="black"><nobr>CTRS</nobr></font>
+        </td>
+        <td valign="top">
+          <div class="description-wrapper">
+            <p>
+              <font color="black">CLAIM FOR INTERCEPT OF TAX REFUND</font>
+            </p>
+          </div>
+        </td>
+        <td align="center" valign="top"></td>
+        <td valign="top"><span class="partyname">SEARS, DEVIN LEE</span></td>
+        <td valign="top" align="right"></td>
+      </tr>
+    </tbody>
+  </table>
+</div></div>
+<div class="footer" data-elastic-exclude>
+	<div class="container-fluid sized">
+		<div class="row-fluid">
+			<div class="contact-foot column span3">
+				<h6>oscn</h6>
+				<p>
+				EMAIL: <a href="mailto:webmaster@oscn.net">webmaster@oscn.net</a><br />
+				Oklahoma Judicial Center<br />
+				2100 N Lincoln Blvd.<br />
+				Oklahoma City, OK 73105</p>
+			</div>
+			<div class="courts-foot column span3">
+				<h6>courts</h6>
+				<ul class="footer-list">
+					<li><a href="http://www.oscn.net/oscn/schome/">Supreme Court of Oklahoma</a></li>
+					<li><a href="http://www.okcca.net/">Court of Criminal Appeals</a></li>					
+					<li>Court of Civil Appeals</li>
+					<li><a href="http://www.oscn.net/applications/oscn/start.asp?viewType=COURTS">District Courts</a></li>
+				</ul>
+			</div>
+			<div class="decisions-foot column span3">
+				<h6>decisions</h6>
+				<ul class="footer-list">
+					<li><a href="/decisions/">New Decisions</a></li>
+					<li><a href="http://www.oscn.net/applications/oscn/Index.asp?ftdb=STOKCSSC">Supreme Court of Oklahoma</a></li>
+					<li><a href="http://www.oscn.net/applications/oscn/Index.asp?ftdb=STOKCSCR">Court of Criminal Appeals</a></li>
+					<li><a href="http://www.oscn.net/applications/oscn/Index.asp?ftdb=STOKCSCV">Court of Civil Appeals</a></li>
+				</ul>					
+			</div>
+			<div class="programs-foot column span3">
+				<h6>programs</h6>
+				<ul class="footer-list">
+					<li><a href="http://www.thesovereigntysymposium.com/">The Sovereignty Symposium</a></li>
+					<!--<li><a href="#">Access to Justice</a></li>-->
+					<li><a href="http://www.oscn.net/static/adr/default.aspx">Alternative Dispute Resolution</a></li>
+					<li><a href="http://www.oscn.net/static/adr/default.aspx">Early Settlement Mediation</a></li>
+					<li><a href="http://www.oscn.net/Sites/CourtImprovement/default.aspx">Children's Court Improvement Program (CIP)</a></li>
+					<li><a href="/jnc/">Judicial Nominating Commission</a></li>
+					<li><a href="http://www.oscn.net/static/forms/aoc_forms/interpreter.asp">Certified Courtroom Interpreters</a></li>
+					<li><a href="http://www.oscn.net/static/forms/aoc_forms/csr.asp">Certified Shorthand Reporters</a></li>
+					<li><a href="/pages/accessibility">Accessibility ADA</a></li>
+				</ul>					
+			</div>
+		</div>
+	</div>
+	<div class="shoes">
+		<div class="sized">
+			<ul>
+				<!--<li><a href="#">site map</a></li>
+				<li><a href="#">information</a></li>
+				-->
+				<li><a href="http://www.oscn.net/applications/oscn/SimpleHelp.asp?HelpContextID=84">Contact Us</a></li>
+				<li><a href="/jobs/">Careers</a></li>
+				<li><a href="/pages/accessibility">Accessibility ADA</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+	</div>
+        <script src="/assets/js/jquery-1.11.1.min.js"></script>
+        <script src="/assets/js/bootstrap.min.js"></script>
+		<script src="/assets/js/adobe.aria.menu.min.js"></script>
+        <script src="/assets/js/navigation.js"></script>		
+        <script src="/assets/js/oscn.js"></script>	
+        <script src="/assets/js/table.sort.filter.js"></script>	
+<script>
+	if (window.NodeList && !NodeList.prototype.forEach) { NodeList.prototype.forEach = Array.prototype.forEach; }
+	
+	var d = new Date()
+	var cb = d.getFullYear().toString() + (d.getMonth()+1).toString() + ("0" + d.getDate()).slice(-2) + d.getHours()
+	
+	var anchors = document.querySelectorAll("a[href$='.pdf']")
+	anchors.forEach(function(a){
+		a.href = a.href.split('?')[0] + "?d=" + cb;		
+	});
+	
+</script>		
+<script src="/dockets/scripts/dockets.js"></script>
+<!--[if IE 7]>
+	<script>
+		var height = $(".home-banner").height();
+		$("#bg").height(height);
+	</script>
+<![endif]-->
+    </body>
+</html>
