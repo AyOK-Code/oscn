@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_17_165310) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_21_175744) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -1394,7 +1394,43 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_17_165310) do
              FROM (docket_events de
                JOIN docket_event_types docket_event_types_1 ON ((de.docket_event_type_id = docket_event_types_1.id)))
             WHERE (((docket_event_types_1.code)::text = 'P'::text) AND (de.court_case_id = court_cases.id))
-           LIMIT 1) AS possession
+           LIMIT 1) AS possession,
+      ( SELECT el.ocr_plaintiff_address
+             FROM ((eviction_letters el
+               JOIN docket_event_links del ON ((el.docket_event_link_id = del.id)))
+               JOIN docket_events de ON ((del.docket_event_id = de.id)))
+            WHERE (de.court_case_id = court_cases.id)
+           LIMIT 1) AS ocr_plaintiff_address,
+      ( SELECT el.validation_usps_address
+             FROM ((eviction_letters el
+               JOIN docket_event_links del ON ((el.docket_event_link_id = del.id)))
+               JOIN docket_events de ON ((del.docket_event_id = de.id)))
+            WHERE (de.court_case_id = court_cases.id)
+           LIMIT 1) AS valdated_address,
+      ( SELECT el.validation_usps_state_zip
+             FROM ((eviction_letters el
+               JOIN docket_event_links del ON ((el.docket_event_link_id = del.id)))
+               JOIN docket_events de ON ((del.docket_event_id = de.id)))
+            WHERE (de.court_case_id = court_cases.id)
+           LIMIT 1) AS valdated_state_zip,
+      ( SELECT el.validation_latitude
+             FROM ((eviction_letters el
+               JOIN docket_event_links del ON ((el.docket_event_link_id = del.id)))
+               JOIN docket_events de ON ((del.docket_event_id = de.id)))
+            WHERE (de.court_case_id = court_cases.id)
+           LIMIT 1) AS valdated_latitude,
+      ( SELECT el.validation_longitude
+             FROM ((eviction_letters el
+               JOIN docket_event_links del ON ((el.docket_event_link_id = del.id)))
+               JOIN docket_events de ON ((del.docket_event_id = de.id)))
+            WHERE (de.court_case_id = court_cases.id)
+           LIMIT 1) AS validation_longitude,
+      ( SELECT el.status
+             FROM ((eviction_letters el
+               JOIN docket_event_links del ON ((el.docket_event_link_id = del.id)))
+               JOIN docket_events de ON ((del.docket_event_id = de.id)))
+            WHERE (de.court_case_id = court_cases.id)
+           LIMIT 1) AS letter_status
      FROM ((((court_cases
        JOIN counties ON ((court_cases.county_id = counties.id)))
        JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
