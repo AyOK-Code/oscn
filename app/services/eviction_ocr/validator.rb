@@ -31,7 +31,7 @@ module EvictionOcr
       usps = usps?(parsed_response)
       begin
         define_attributes(parsed_response, usps)
-      rescue => e
+      rescue StandardError => e
         @eviction_letter.update(status: :error)
         Raygun.track_exception(
           e,
