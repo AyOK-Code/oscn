@@ -17,11 +17,10 @@ module Importers
       parsed_html = Nokogiri::HTML(html)
       data = OscnScraper::Parsers::PartyData.perform(parsed_html)
 
-      personal_columns = data[:personal_columns]
       aliases_column = data[:aliases_column]
       begin
         save_aliases(aliases_column)
-        save_personal(data[:birth_month],data[:birth_year])
+        save_personal(data[:birth_month], data[:birth_year])
         save_addresses(data)
       rescue StandardError => e
         Raygun.track_exception(e, custom_data: { error_type: 'Data Error', data_content: parsed_html })
@@ -39,12 +38,9 @@ module Importers
       end
     end
 
-    def save_personal(birth_month,birth_year)
-     
-     
+    def save_personal(birth_month, birth_year)
       return if birth_month.blank?
       return if birth_year.blank?
-
 
       party.update(birth_month: birth_month, birth_year: birth_year)
     end
@@ -56,7 +52,5 @@ module Importers
         PartyAlias.find_or_create_by(party: party, name: row.text.squish)
       end
     end
-
-    
   end
 end
