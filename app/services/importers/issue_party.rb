@@ -33,9 +33,12 @@ module Importers
       ip.assign_attributes(issue_party_attributes(issue_party_data))
       begin
         ip.save!
-      rescue StandardError
+      rescue StandardError => e
         message = "#{issue.court_case.case_number}: Error creating issue party"
-        logs.create_log('issues', message, issue_party_attributes)
+        logs.create_log('issues', message, issue_party_data)
+        Raygun.track_exception(e,
+                               custom_data: { error_type: 'Data Error', data_content: issue_party_data,
+                                              case_number: issue.court_case.case_number })
       end
     end
 

@@ -190,4 +190,17 @@ RSpec.describe CourtCase, type: :model do
       it { should be true }
     end
   end
+
+  describe '#defendants' do
+    it 'returns defendant parties' do
+      court_case = create(:court_case)
+      defendant = create(:party, :defendant)
+      plaintiff = create(:party, :plaintiff)
+      create(:case_party, party: defendant, court_case: court_case)
+      create(:case_party, party: plaintiff, court_case: court_case)
+
+      expect(court_case.defendants).to include defendant
+      expect(court_case.defendants).to_not include plaintiff
+    end
+  end
 end

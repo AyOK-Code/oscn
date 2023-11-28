@@ -18,7 +18,9 @@ module Importers
       attorney_object.each do |attorney_data|
         save_attorneys(attorney_data)
       rescue StandardError => e
-        Raygun.track_exception(e, custom_data: { error_type: 'Data Error', data_content: attorney_data })
+        Raygun.track_exception(e,
+                               custom_data: { error_type: 'Data Error', data_content: attorney_data,
+                                              case_number: court_case.case_number })
       end
     end
 
