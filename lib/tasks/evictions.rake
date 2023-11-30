@@ -12,7 +12,7 @@ namespace :evictions do
 
   task :ocr_extract do
     letters = EvictionLetter.past_thirty_days.historical.missing_extraction
-    bar = ProgressBar.new(count)
+    bar = ProgressBar.new(letters)
 
     letters.each do |letter|
       bar.increment!
@@ -22,7 +22,7 @@ namespace :evictions do
 
   task :ocr_validate do
     letters = EvictionLetter.past_thirty_days.has_extraction.missing_address_validation
-    bar = ProgressBar.new(count)
+    bar = ProgressBar.new(letters)
 
     letters.each do |letter|
       bar.increment!
