@@ -14,6 +14,7 @@ class EvictionLetter < ApplicationRecord
   scope :has_address_validation, -> { where(is_validated: true) }
   scope :missing_extraction, -> { where(ocr_plaintiff_address: nil) }
   scope :has_extraction, -> { where.not(ocr_plaintiff_address: nil) }
+  scope :past_thirty_days, -> { where(created_at: 30.days.ago..Date.today) }
 
   def full_name
     docket_event_link.docket_event.court_case.defendants.map(&:full_name).join(', ')
