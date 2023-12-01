@@ -23,7 +23,7 @@ module Importers
         end
         @sentences.compact!
 
-        unique.each_slice(10_000).each do |slice|
+        @sentences.each_slice(10_000).each do |slice|
           ::Doc::Sentence.upsert_all(slice, unique_by: [:doc_profile_id, :sentence_id])
         end
       end
