@@ -28,7 +28,7 @@ module Scrapers
 
       def validate_schema_from_readme
         expected_readme = File.read('app/services/scrapers/doc/supported_version_ReadMe.txt')
-        actual_readme = Bucket.new.get_object("doc/#{@dir}/ReadMe.txt").body.string
+        actual_readme = Bucket.new.get_object("doc/#{@dir}/readme.txt").body.string
         return true if actual_readme.split.join == expected_readme.split.join
 
         # Using a diff tool here to compare values did not seem to work due to strange whitespace differences
@@ -39,7 +39,7 @@ module Scrapers
 
       def download_link
         domain = 'https://oklahoma.gov'
-        request = HTTParty.get("#{domain}/doc/communications/odoc-public-inmate-data.html")
+        request = HTTParty.get("#{domain}/doc/media-relations.html")
         dom = Nokogiri::HTML(request.body)
         path = dom.css("a:contains('download here')").first['href']
         "#{domain}#{path}"
