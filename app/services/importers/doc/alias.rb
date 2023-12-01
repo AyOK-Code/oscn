@@ -24,7 +24,9 @@ module Importers
         end
 
         @aliases.compact!
-        ::Doc::Alias.upsert_all(@aliases, unique_by: :alias_index)
+        @aliases.each_slice(10_000).each do |slice|
+          ::Doc::Alias.upsert_all(slice, unique_by: :alias_index)
+        end
       end
 
       private
