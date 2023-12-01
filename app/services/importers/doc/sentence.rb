@@ -21,10 +21,11 @@ module Importers
 
           @sentences << find_and_save_sentence(data)
         end
-        non_empty = @sentences.reject { |x| !x || x.empty? }
-        grouped = non_empty.group_by { |x| [x[:doc_profile_id], x[:sentence_id]] }
-        unique = grouped.map { |_k, v| v[-1] }
-        ::Doc::Sentence.upsert_all(unique, unique_by: [:doc_profile_id, :sentence_id])
+        @sentences.compact!
+
+        unique.each_slice(10_000).each do |slice|
+          ::Doc::Sentence.upsert_all(slice, unique_by: [:doc_profile_id, :sentence_id])
+        end
       end
 
       private
