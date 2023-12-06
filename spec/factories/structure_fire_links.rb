@@ -5,7 +5,7 @@ FactoryBot.define do
     pdf { nil }
 
     trait :with_file do
-      document { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'fixtures', 'july_10th.pdf')) }
+      pdf { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'fixtures', 'july_10th.pdf')) }
     end
   end
 end
