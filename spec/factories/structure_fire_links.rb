@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :structure_fire_link do
-    url { "MyString" }
-    date { "2023-12-01" }
+    url { 'MyString' }
+    date { '2023-12-01' }
     pdf { nil }
 
     trait :with_file do
