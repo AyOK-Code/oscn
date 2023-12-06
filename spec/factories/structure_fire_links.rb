@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :structure_fire_link do
-    url { 'MyString' }
+    url { 'https://www.okc.gov/faker/showpublisheddocument/36386/638245780010170000' }
     date { '2023-12-01' }
     pdf { nil }
 
