@@ -584,21 +584,21 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_225554) do
   end
 
   create_table "structure_fire_links", force: :cascade do |t|
-    t.string "url"
-    t.date "date"
+    t.string "url", null: false
+    t.date "pdf_date_on", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "structure_fires", force: :cascade do |t|
-    t.integer "incident_number"
-    t.string "incident_type"
-    t.string "station"
-    t.date "incident_date"
-    t.integer "street_number"
-    t.string "street_prefix"
-    t.string "street_name"
-    t.string "street_type"
+    t.integer "incident_number", null: false
+    t.string "incident_type", null: false
+    t.string "station", null: false
+    t.date "incident_date", null: false
+    t.integer "street_number", null: false
+    t.string "street_prefix", default: "", null: false
+    t.string "street_name", default: "", null: false
+    t.string "street_type", default: "", null: false
     t.decimal "property_value"
     t.decimal "property_loss"
     t.decimal "content_value"
