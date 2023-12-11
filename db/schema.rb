@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_21_175744) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_11_034256) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -446,6 +446,59 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_21_175744) do
     t.boolean "is_too_many_records", default: false, null: false
   end
 
+  create_table "ok_election_precincts", force: :cascade do |t|
+    t.bigint "county_id", null: false
+    t.integer "code", null: false
+    t.integer "congressional_district", null: false
+    t.integer "state_senate_district", null: false
+    t.integer "state_house_district", null: false
+    t.integer "county_commisioner", null: false
+    t.string "poll_site"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["county_id"], name: "index_ok_election_precincts_on_county_id"
+  end
+
+  create_table "ok_election_voters", force: :cascade do |t|
+    t.bigint "precinct_id", null: false
+    t.string "last_name"
+    t.string "first_name"
+    t.string "middle_name"
+    t.string "suffix"
+    t.integer "voter_id", null: false
+    t.integer "political_affiliation", null: false
+    t.integer "status", null: false
+    t.string "street_number"
+    t.string "street_direction"
+    t.string "street_name"
+    t.string "street_type"
+    t.string "building_number"
+    t.string "city"
+    t.string "zip_code"
+    t.datetime "date_of_birth"
+    t.datetime "original_registration"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["precinct_id"], name: "index_ok_election_voters_on_precinct_id"
+  end
+
+  create_table "ok_election_votes", force: :cascade do |t|
+    t.bigint "voter_id", null: false
+    t.datetime "election_on"
+    t.bigint "voting_method_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["voter_id"], name: "index_ok_election_votes_on_voter_id"
+    t.index ["voting_method_id"], name: "index_ok_election_votes_on_voting_method_id"
+  end
+
+  create_table "ok_election_voting_methods", force: :cascade do |t|
+    t.string "code", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "okc_blotter_bookings", force: :cascade do |t|
     t.bigint "pdf_id", null: false
     t.string "first_name"
@@ -744,6 +797,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_21_175744) do
   add_foreign_key "issues", "court_cases"
   add_foreign_key "judges", "counties"
   add_foreign_key "ok2_explore_deaths", "counties"
+  add_foreign_key "ok_election_precincts", "counties"
+  add_foreign_key "ok_election_voters", "ok_election_precincts", column: "precinct_id"
+  add_foreign_key "ok_election_votes", "ok_election_voters", column: "voter_id"
+  add_foreign_key "ok_election_votes", "ok_election_voting_methods", column: "voting_method_id"
   add_foreign_key "okc_blotter_bookings", "okc_blotter_pdfs", column: "pdf_id"
   add_foreign_key "okc_blotter_bookings", "rosters"
   add_foreign_key "okc_blotter_offenses", "okc_blotter_bookings", column: "booking_id"
