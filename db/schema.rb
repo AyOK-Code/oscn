@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_21_175744) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_01_225554) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -583,6 +583,32 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_21_175744) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "structure_fire_links", force: :cascade do |t|
+    t.string "url", null: false
+    t.date "pdf_date_on", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "structure_fires", force: :cascade do |t|
+    t.integer "incident_number", null: false
+    t.string "incident_type", null: false
+    t.string "station", null: false
+    t.date "incident_date", null: false
+    t.integer "street_number", null: false
+    t.string "street_prefix", default: "", null: false
+    t.string "street_name", default: "", null: false
+    t.string "street_type", default: "", null: false
+    t.decimal "property_value"
+    t.decimal "property_loss"
+    t.decimal "content_value"
+    t.decimal "content_loss"
+    t.bigint "structure_fire_link_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["structure_fire_link_id"], name: "index_structure_fires_on_structure_fire_link_id"
+  end
+
   create_table "titles", force: :cascade do |t|
     t.string "code"
     t.string "name"
@@ -752,6 +778,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_21_175744) do
   add_foreign_key "party_addresses", "parties"
   add_foreign_key "party_aliases", "parties"
   add_foreign_key "party_htmls", "parties"
+  add_foreign_key "structure_fires", "structure_fire_links"
   add_foreign_key "tulsa_blotter_arrest_details_htmls", "tulsa_blotter_arrests", column: "arrest_id"
   add_foreign_key "tulsa_blotter_arrests", "rosters"
   add_foreign_key "tulsa_blotter_arrests_page_htmls", "tulsa_blotter_arrests", column: "arrest_id"
