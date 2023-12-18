@@ -16,7 +16,6 @@ RSpec.shared_examples 'doc_importer' do
       let(:bucket) { instance_double(Bucket) }
 
       before do
-        #binding.pry
         response = double('response', { body: double('body', { string: sample_file }) })
         allow(Bucket).to receive(:new).and_return(bucket)
         allow(bucket).to receive(:get_object).and_return(response)
@@ -24,7 +23,6 @@ RSpec.shared_examples 'doc_importer' do
 
       it 'imports the data' do
         described_class.new('2023-01').perform
-        binding.pry
         expect(class_to_import.count).to be > 0
         expect(class_to_import.first).to have_attributes(expected_attributes)
       end

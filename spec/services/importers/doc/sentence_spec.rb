@@ -17,8 +17,8 @@ RSpec.describe Importers::Doc::Sentence do
         js_date: Date.parse('Tue, 13 Apr 1920'),
         crf_number: '20-15645',
         statute_code: '21-701.7',
-        incarcerated_term_in_years: "%e" 82.67,
-        probation_term_in_years:"%e" 3.0,
+        incarcerated_term_in_years: "82.67".to_d,
+        probation_term_in_years: "3.0".to_d,
         is_death_sentence: false,
         is_life_sentence: false,
         is_life_no_parole_sentence: false

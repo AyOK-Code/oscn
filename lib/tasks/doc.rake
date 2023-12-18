@@ -15,9 +15,9 @@ namespace :doc do
     ActiveRecord::Base.transaction do
 #      Importers::Doc::OffenseCode.new(dir).perform
 #      Importers::Doc::Profile.new(dir).perform
-#     Importers::Doc::Sentence.new(dir).perform
+     Importers::Doc::Sentence.new(dir).perform
 #      Importers::Doc::Alias.new(dir).perform
-      Importers::Doc::Status.new(dir).perform
+#      Importers::Doc::Status.new(dir).perform
       # Importers::Doc::LinkCases.new(county).perform # uncommented once we add support for multiple counties
       # Importers::Doc::LinkOffenseCodes.new.perform # uncomment once this is confirmed to be working
     end
