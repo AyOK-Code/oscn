@@ -5,7 +5,7 @@ RSpec.describe Importers::Doc::Status do
   it_behaves_like('doc_importer') do
     let(:class_to_import) { ::Doc::Status }
     let(:sample_file) do
-      "0000010337SAWYER                        FRANK                         N                                 19910612INACTIVE                                          18950501MWhite                                                                                                                   501   Black                                                       INACTIVE  "
+      '0000010337SAWYER                        FRANK                         N                                 19910612INACTIVE                                          18950501MWhite                                                                                                                   501   Black                                                       INACTIVE  '
     end
     let!(:profile) { create(:doc_profile, doc_number: '0000010337') }
     let(:expected_attributes) do
