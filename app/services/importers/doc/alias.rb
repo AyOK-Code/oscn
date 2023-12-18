@@ -5,7 +5,7 @@ module Importers
 
       def initialize(dir)
         @file = Bucket.new.get_object("doc/#{dir}/vendor_alias_extract_text.dat")
-        @fields = [11, 30, 30, 30, 5]
+        @fields = [10, 30, 30, 30, 4]
         @field_pattern = "A#{fields.join('A')}"
         @bar = ProgressBar.new(@file.body.string.split("\r\n").size)
         @doc_mapping = ::Doc::Profile.pluck(:doc_number, :id).to_h

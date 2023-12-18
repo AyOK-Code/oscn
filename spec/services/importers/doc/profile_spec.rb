@@ -6,30 +6,31 @@ RSpec.describe Importers::Doc::Profile do
     let(:class_to_import) { ::Doc::Profile }
     let(:sample_file) { file_2023_01_format }
     let(:file_2023_01_format) do
-      ' 0000027399GARCIA                        ROSE                          L                                  20160711NORTH FORK CORRECTIONAL CENTER ESCAPE   19430911MHISPANIC                                BLACK                                   5 8 165 BROWN                                   Active   '
+      "0000010337SAWYER                        FRANK                         N                                 19910612INACTIVE                                          18950501MWhite                                                                                                                   501   Black                                                       INACTIVE  "
     end
     let(:file_2021_07_format) do # TODO: write legacy test for this (I don't think old date format was supported)
       ' 0000027399GARCIA                        ROSE                          L                                  11-JUL-16NORTH FORK CORRECTIONAL CENTER ESCAPE   11-SEP-43MHISPANIC                                BLACK                                   5 8 165 BROWN                                   Active   '
     end
     let(:expected_attributes) do
       {
-        doc_number: 27_399,
-        last_name: 'GARCIA',
-        first_name: 'ROSE',
-        middle_name: 'L',
+        doc_number: '0000010337'.to_i,
+        last_name: 'SAWYER',
+        first_name: 'FRANK',
+        middle_name: 'N',
         suffix: '',
-        last_move_date: Date.parse('Mon, 11 Jul 2016'),
-        facility: 'NORTH FORK CORRECTIONAL CENTER ESCAPE',
-        birth_date: Date.parse('Sat, 11 Sep 1943'),
+        last_move_date: Date.parse('19910612'),
+        facility: 'INACTIVE',
+        birth_date: Date.parse('18950501'),
         sex: 'male',
-        race: 'HISPANIC',
-        hair: 'BLACK',
+        race: 'White',
+        hair: '',
         height_ft: '5',
-        height_in: '8',
-        weight: '165',
-        eye: 'BROWN',
-        status: 'active'
+        height_in: '01',
+        weight: '',
+        eye: 'Black',
+        status: 'inactive'
       }
     end
+
   end
 end

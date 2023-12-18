@@ -30,7 +30,7 @@ module Scrapers
         expected_readme = File.read('app/services/scrapers/doc/supported_version_ReadMe.txt')
         actual_readme = Bucket.new.get_object("doc/#{@dir}/readme.txt").body.string
         return true if actual_readme.split.join == expected_readme.split.join
-
+        
         # Using a diff tool here to compare values did not seem to work due to strange whitespace differences
         raise StandardError, 'supported_version_ReadMe.txt does not match actual readme. ' \
                              'Please check for schema changes using a diff tool and update code ' \
