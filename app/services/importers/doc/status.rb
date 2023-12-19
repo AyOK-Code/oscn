@@ -51,12 +51,8 @@ module Importers
         date.present? ? Date.parse(date) : nil
       end
 
-      def field_spacing(dir)
-        if parse_date("#{dir}-01") > parse_date('2021-12-31')
-          [10, 30, 30, 30, 4, 8, 50, 8, 1, 60, 60, 1, 2, 3, 60, 10]
-        else
-          [10, 30, 30, 30, 4, 9, 50, 8, 1, 60, 60, 1, 2, 3, 60, 10]
-        end
+      def field_spacing(_dir)
+        [10, 30, 30, 30, 4, 8, 50, 8, 1, 60, 60, 1, 2, 3, 60, 10]
       end
     end
   end
