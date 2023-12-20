@@ -19,7 +19,9 @@ module Importers
           @profiles << save_profile(data)
         end
         @profiles.compact!
-        ::Doc::Profile.upsert_all(@profiles, unique_by: :doc_number)
+        @profiles.each_slice(10_000).each do |slice|
+          ::Doc::Profile.upsert_all(slice, unique_by: :doc_number)
+        end
       end
 
       private

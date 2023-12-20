@@ -22,7 +22,9 @@ module Importers
         end
 
         @statuses.compact!
-        ::Doc::Status.upsert_all(@statuses, unique_by: :status_index)
+        @statuses.each_slice(10_000).each do |slice|
+          ::Doc::Status.upsert_all(slice, unique_by: :status_index)
+        end
       end
 
       private

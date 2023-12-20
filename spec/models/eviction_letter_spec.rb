@@ -66,4 +66,13 @@ RSpec.describe EvictionLetter, type: :model do
       expect(EvictionLetter.has_extraction).to eq([eviction_letter])
     end
   end
+
+  describe '#past_thirty_days' do
+    it 'returns letters that have been created in the past 30 days' do
+      eviction_letter = create(:eviction_letter, created_at: 29.days.ago)
+      create(:eviction_letter, created_at: 31.days.ago)
+
+      expect(EvictionLetter.past_thirty_days).to eq([eviction_letter])
+    end
+  end
 end
