@@ -7,7 +7,7 @@ module Importers
       def initialize(dir)
         @sentences = []
         @file = Bucket.new.get_object("doc/#{dir}/vendor_sentence_extract_text.dat")
-        @fields = [11, 20, 20, 40, 40, 8, 40, 13, 13]
+        @fields = [10, 13, 30, 60, 8, 32, 20, 20]
         @field_pattern = "A#{fields.join('A')}"
         @bar = ProgressBar.new(file.body.string.split("\r\n").size)
         @doc_mapping = ::Doc::Profile.pluck(:doc_number, :id).to_h
@@ -39,23 +39,22 @@ module Importers
 
       def save_sentence(data)
         js_date = begin
-          Date.parse(data[5])
+          Date.parse(data[4])
         rescue StandardError
           nil
         end
         {
           doc_profile_id: doc_mapping[data[0].to_i],
           sentence_id: data[1],
-          sentencing_county: data[4],
-          consecutive_to_sentence_id: data[2],
+          sentencing_county: data[3],
           js_date: js_date,
-          crf_number: data[6],
-          statute_code: data[3],
-          incarcerated_term_in_years: data[7].to_f,
-          probation_term_in_years: data[8].to_f,
-          is_death_sentence: data[7].to_i == 9999,
-          is_life_sentence: data[7].to_i == 8888,
-          is_life_no_parole_sentence: data[7].to_i == 7777
+          crf_number: data[5],
+          statute_code: data[2],
+          incarcerated_term_in_years: data[6].to_f,
+          probation_term_in_years: data[7].to_f,
+          is_death_sentence: data[6].to_i == 9999,
+          is_life_sentence: data[6].to_i == 8888,
+          is_life_no_parole_sentence: data[6].to_i == 7777
         }
       end
     end
