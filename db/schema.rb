@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_01_225554) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_29_204337) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -446,6 +446,99 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_225554) do
     t.boolean "is_too_many_records", default: false, null: false
   end
 
+  create_table "ok_election_precincts", force: :cascade do |t|
+    t.bigint "county_id", null: false
+    t.integer "code", null: false
+    t.integer "congressional_district", null: false
+    t.integer "state_senate_district", null: false
+    t.integer "state_house_district", null: false
+    t.integer "county_commisioner", null: false
+    t.string "poll_site"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_ok_election_precincts_on_code", unique: true
+    t.index ["county_id"], name: "index_ok_election_precincts_on_county_id"
+  end
+
+  create_table "ok_election_voters", force: :cascade do |t|
+    t.bigint "precinct_id", null: false
+    t.string "last_name"
+    t.string "first_name"
+    t.string "middle_name"
+    t.string "suffix"
+    t.integer "voter_id", null: false
+    t.integer "political_affiliation", null: false
+    t.integer "status", null: false
+    t.string "street_number"
+    t.string "street_direction"
+    t.string "street_name"
+    t.string "street_type"
+    t.string "building_number"
+    t.string "city"
+    t.string "zip_code"
+    t.datetime "date_of_birth"
+    t.datetime "original_registration"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["precinct_id"], name: "index_ok_election_voters_on_precinct_id"
+    t.index ["voter_id"], name: "index_ok_election_voters_on_voter_id", unique: true
+  end
+
+  create_table "ok_election_votes", force: :cascade do |t|
+    t.bigint "voter_id", null: false
+    t.datetime "election_on"
+    t.bigint "voting_method_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["voter_id", "election_on"], name: "index_ok_election_votes_on_voter_id_and_election_on", unique: true
+    t.index ["voter_id"], name: "index_ok_election_votes_on_voter_id"
+    t.index ["voting_method_id"], name: "index_ok_election_votes_on_voting_method_id"
+  end
+
+  create_table "ok_election_voting_methods", force: :cascade do |t|
+    t.string "code", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_ok_election_voting_methods_on_code", unique: true
+  end
+
+  create_table "ok_real_estate_agents", force: :cascade do |t|
+    t.integer "license_number", null: false
+    t.string "first_name", null: false
+    t.string "last_name", null: false
+    t.string "license_type", null: false
+    t.date "license_start_on"
+    t.date "license_expiration_on", null: false
+    t.string "other_aliases"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["license_number"], name: "index_ok_real_estate_agents_on_license_number", unique: true
+  end
+
+  create_table "ok_real_estate_histories", force: :cascade do |t|
+    t.bigint "agent_id", null: false
+    t.string "license_type"
+    t.string "license_status"
+    t.date "license_effective_on"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_ok_real_estate_histories_on_agent_id"
+  end
+
+  create_table "ok_real_estate_places", force: :cascade do |t|
+    t.bigint "agent_id", null: false
+    t.string "name"
+    t.string "branch_office"
+    t.string "street"
+    t.string "city"
+    t.string "state"
+    t.string "phone_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_ok_real_estate_places_on_agent_id"
+  end
+
   create_table "okc_blotter_bookings", force: :cascade do |t|
     t.bigint "pdf_id", null: false
     t.string "first_name"
@@ -770,6 +863,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_225554) do
   add_foreign_key "issues", "court_cases"
   add_foreign_key "judges", "counties"
   add_foreign_key "ok2_explore_deaths", "counties"
+  add_foreign_key "ok_election_precincts", "counties"
+  add_foreign_key "ok_election_voters", "ok_election_precincts", column: "precinct_id"
+  add_foreign_key "ok_election_votes", "ok_election_voters", column: "voter_id"
+  add_foreign_key "ok_election_votes", "ok_election_voting_methods", column: "voting_method_id"
+  add_foreign_key "ok_real_estate_histories", "ok_real_estate_agents", column: "agent_id"
+  add_foreign_key "ok_real_estate_places", "ok_real_estate_agents", column: "agent_id"
   add_foreign_key "okc_blotter_bookings", "okc_blotter_pdfs", column: "pdf_id"
   add_foreign_key "okc_blotter_bookings", "rosters"
   add_foreign_key "okc_blotter_offenses", "okc_blotter_bookings", column: "booking_id"
