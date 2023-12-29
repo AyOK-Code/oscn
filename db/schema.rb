@@ -456,6 +456,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_11_034256) do
     t.string "poll_site"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_ok_election_precincts_on_code", unique: true
     t.index ["county_id"], name: "index_ok_election_precincts_on_county_id"
   end
 
@@ -480,6 +481,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_11_034256) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["precinct_id"], name: "index_ok_election_voters_on_precinct_id"
+    t.index ["voter_id"], name: "index_ok_election_voters_on_voter_id", unique: true
   end
 
   create_table "ok_election_votes", force: :cascade do |t|
@@ -488,6 +490,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_11_034256) do
     t.bigint "voting_method_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["voter_id", "election_on"], name: "index_ok_election_votes_on_voter_id_and_election_on", unique: true
     t.index ["voter_id"], name: "index_ok_election_votes_on_voter_id"
     t.index ["voting_method_id"], name: "index_ok_election_votes_on_voting_method_id"
   end
@@ -497,6 +500,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_11_034256) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_ok_election_voting_methods_on_code", unique: true
   end
 
   create_table "okc_blotter_bookings", force: :cascade do |t|

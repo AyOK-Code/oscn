@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :ok_election_vote, class: 'OkElection::Vote' do
-    voter { nil }
-    election_on { "2023-12-10 21:42:56" }
-    voting_method { nil }
+    voter
+    election_on { Faker::Date.between(from: 1.year.ago, to: 1.year.from_now) }
+    voting_method
   end
 end

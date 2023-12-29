@@ -6,5 +6,7 @@ class CreateOkElectionVotingMethods < ActiveRecord::Migration[7.0]
 
       t.timestamps
     end
+
+    add_index :ok_election_voting_methods, :code, unique: true
   end
 end

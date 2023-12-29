@@ -7,5 +7,7 @@ class CreateOkElectionVotes < ActiveRecord::Migration[7.0]
 
       t.timestamps
     end
+
+    add_index :ok_election_votes, [:voter_id, :election_on], unique: true
   end
 end
