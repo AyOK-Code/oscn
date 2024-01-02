@@ -21,7 +21,11 @@ module Scrapers
       date_link = parsed_data.xpath("//a[contains(text(), '#{@date}')]")[0].attribute_nodes[0].text
       pdf_link = URI.parse(date_link).open
       puts "file for #{date_text}"
-      { pdf: pdf_link }
+     fire_link =  { pdf: pdf_link,url: date_link }
+     binding.pry
+     fire_structure= {}
+     json_array = [fire_link,fire_structure]
+     return json_array
     end
   end
 end
