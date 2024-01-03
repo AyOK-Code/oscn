@@ -1,5 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe OkRealEstate::RegistrationRecord, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe 'associations' do
+    it { should belong_to(:agent).class_name('OkRealEstate::Agent') }
+  end
+
+  describe 'validations' do
+    it { should validate_presence_of(:external_id) }
+  end
 end

@@ -11,7 +11,6 @@ module Importers
       end
 
       def import_agents
-        puts 'Importing agents...'
         count = Importers::OkRealEstate::Agent.new(10, 0).fetch_count
         take = 1000
         pages = (count / take.to_f).ceil
@@ -24,7 +23,6 @@ module Importers
       end
 
       def import_agent_details
-        puts 'Importing agent details...'
         agents = ::OkRealEstate::Agent.needs_scrape
         count = agents.count
         bar = ProgressBar.new(count)

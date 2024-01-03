@@ -11,7 +11,7 @@ class CreateOkRealEstateAgents < ActiveRecord::Migration[7.0]
       t.string :license_status, null: false
       t.date :initial_license_on
       t.date :license_expiration_on
-      t.boolean :has_public_notices, null: false
+      t.boolean :has_public_notices, null: false, default: false
       t.datetime :scraped_on
 
       t.timestamps

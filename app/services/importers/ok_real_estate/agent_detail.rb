@@ -14,7 +14,8 @@ module Importers
       end
 
       def perform
-        data = HTTParty.get(base_url)
+        response = HTTParty.get(base_url)
+        data = JSON.parse(response)
         agent.update(scraped_on: DateTime.now)
 
         process_places(data)

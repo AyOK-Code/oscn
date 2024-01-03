@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_30_034308) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_30_024500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -446,16 +446,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_30_034308) do
     t.boolean "is_too_many_records", default: false, null: false
   end
 
-  create_table "ok_real_estate_agent_places", force: :cascade do |t|
-    t.bigint "agent_id", null: false
-    t.bigint "places_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["agent_id", "places_id"], name: "index_ok_real_estate_agent_places_on_agent_id_and_places_id", unique: true
-    t.index ["agent_id"], name: "index_ok_real_estate_agent_places_on_agent_id"
-    t.index ["places_id"], name: "index_ok_real_estate_agent_places_on_places_id"
-  end
-
   create_table "ok_real_estate_agents", force: :cascade do |t|
     t.string "external_id", null: false
     t.string "first_name", null: false
@@ -467,7 +457,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_30_034308) do
     t.string "license_status", null: false
     t.date "initial_license_on"
     t.date "license_expiration_on"
-    t.boolean "has_public_notices", null: false
+    t.boolean "has_public_notices", default: false, null: false
     t.datetime "scraped_on"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -476,6 +466,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_30_034308) do
 
   create_table "ok_real_estate_places", force: :cascade do |t|
     t.string "external_id", null: false
+    t.bigint "agent_id", null: false
     t.date "start_date"
     t.date "end_date"
     t.boolean "primary", default: false, null: false
@@ -493,6 +484,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_30_034308) do
     t.boolean "is_branch_office", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_ok_real_estate_places_on_agent_id"
     t.index ["external_id"], name: "index_ok_real_estate_places_on_external_id", unique: true
   end
 
@@ -847,8 +839,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_30_034308) do
   add_foreign_key "issues", "court_cases"
   add_foreign_key "judges", "counties"
   add_foreign_key "ok2_explore_deaths", "counties"
-  add_foreign_key "ok_real_estate_agent_places", "ok_real_estate_agents", column: "agent_id"
-  add_foreign_key "ok_real_estate_agent_places", "ok_real_estate_places", column: "places_id"
+  add_foreign_key "ok_real_estate_places", "ok_real_estate_agents", column: "agent_id"
   add_foreign_key "ok_real_estate_registration_histories", "ok_real_estate_agents", column: "agent_id"
   add_foreign_key "ok_real_estate_registration_records", "ok_real_estate_agents", column: "agent_id"
   add_foreign_key "okc_blotter_bookings", "okc_blotter_pdfs", column: "pdf_id"

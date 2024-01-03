@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :ok_real_estate_registration_record, class: 'OkRealEstate::RegistrationRecord' do
-    external_id { 1 }
-    agent { nil }
+    external_id { Faker::Number.unique.number(digits: 8) }
+    association :agent, factory: :ok_real_estate_agent
     license_number { 1 }
     license_category { 'MyString' }
     status { 'MyString' }

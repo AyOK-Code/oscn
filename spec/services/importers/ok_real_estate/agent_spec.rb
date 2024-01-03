@@ -14,11 +14,12 @@ module Importers
       end
 
       describe '#perform' do
-        let(:fixture_file) { File.read('spec/fixtures/agent.json') }
+        let(:fixture_file) { File.read('spec/fixtures/importers/ok_real_estate/agent.json') }
         let(:fixture_data) { JSON.parse(fixture_file) }
 
         before do
-          stub_request(:get, /orec.us.thentiacloud.net/).to_return(body: fixture_file)
+          stub_request(:get, /orec.us.thentiacloud.net/).to_return(body: fixture_file.to_json,
+                                                                   headers: { 'Content-Type' => 'application/json' })
         end
 
         it 'imports agents from fixture data' do
@@ -34,15 +35,16 @@ module Importers
       end
 
       describe '#fetch_count' do
-        let(:fixture_file) { File.read('spec/fixtures/agent.json') }
+        let(:fixture_file) { File.read('spec/fixtures/importers/ok_real_estate/agent.json') }
         let(:fixture_data) { JSON.parse(fixture_file) }
 
         before do
-          stub_request(:get, /orec.us.thentiacloud.net/).to_return(body: fixture_file)
+          stub_request(:get, /orec.us.thentiacloud.net/).to_return(body: fixture_file.to_json,
+                                                                   headers: { 'Content-Type' => 'application/json' })
         end
 
         it 'returns the correct count from fixture data' do
-          agent_importer = Agent.new(10, 0)
+          agent_importer = described_class.new(10, 0)
           expect(agent_importer.fetch_count).to eq(fixture_data['resultCount'])
         end
       end
