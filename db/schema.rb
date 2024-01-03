@@ -10,7 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+
 ActiveRecord::Schema[7.0].define(version: 2023_12_01_225554) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -333,7 +335,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_225554) do
   create_table "events", force: :cascade do |t|
     t.bigint "court_case_id", null: false
     t.bigint "party_id"
-    t.datetime "event_at", precision: nil, null: false
+    t.datetime "event_at", null: false
     t.string "event_name"
     t.string "docket"
     t.datetime "created_at", null: false
@@ -446,6 +448,75 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_225554) do
     t.boolean "is_too_many_records", default: false, null: false
   end
 
+  create_table "ok_real_estate_agents", force: :cascade do |t|
+    t.string "external_id", null: false
+    t.string "first_name", null: false
+    t.string "last_name"
+    t.string "middle_name"
+    t.string "other_name"
+    t.integer "license_number", null: false
+    t.string "license_category", null: false
+    t.string "license_status", null: false
+    t.date "initial_license_on"
+    t.date "license_expiration_on"
+    t.boolean "has_public_notices", default: false, null: false
+    t.datetime "scraped_on"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_id"], name: "index_ok_real_estate_agents_on_external_id", unique: true
+  end
+
+  create_table "ok_real_estate_places", force: :cascade do |t|
+    t.string "external_id", null: false
+    t.bigint "agent_id", null: false
+    t.date "start_date"
+    t.date "end_date"
+    t.boolean "primary", default: false, null: false
+    t.string "registrant"
+    t.string "phone"
+    t.string "position"
+    t.string "email"
+    t.boolean "active", default: false, null: false
+    t.string "employer_name"
+    t.string "business_address"
+    t.string "business_city"
+    t.string "business_state"
+    t.string "business_zip_code"
+    t.string "organization"
+    t.boolean "is_branch_office", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_ok_real_estate_places_on_agent_id"
+    t.index ["external_id"], name: "index_ok_real_estate_places_on_external_id", unique: true
+  end
+
+  create_table "ok_real_estate_registration_histories", force: :cascade do |t|
+    t.string "external_id", null: false
+    t.bigint "agent_id", null: false
+    t.string "license_category"
+    t.string "status"
+    t.date "effective_on"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_ok_real_estate_registration_histories_on_agent_id"
+    t.index ["external_id"], name: "index_ok_real_estate_registration_histories_on_external_id", unique: true
+  end
+
+  create_table "ok_real_estate_registration_records", force: :cascade do |t|
+    t.string "external_id", null: false
+    t.bigint "agent_id", null: false
+    t.integer "license_number"
+    t.string "license_category"
+    t.string "status"
+    t.date "effective_on"
+    t.date "initial_registration_on"
+    t.date "expiry_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_ok_real_estate_registration_records_on_agent_id"
+    t.index ["external_id"], name: "index_ok_real_estate_registration_records_on_external_id", unique: true
+  end
+
   create_table "okc_blotter_bookings", force: :cascade do |t|
     t.bigint "pdf_id", null: false
     t.string "first_name"
@@ -458,8 +529,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_225554) do
     t.string "inmate_number", null: false
     t.string "booking_number", null: false
     t.string "booking_type"
-    t.datetime "booking_date", precision: nil, null: false
-    t.datetime "release_date", precision: nil
+    t.datetime "booking_date", null: false
+    t.datetime "release_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "roster_id"
@@ -482,7 +553,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_225554) do
   end
 
   create_table "okc_blotter_pdfs", force: :cascade do |t|
-    t.datetime "parsed_on", precision: nil
+    t.datetime "parsed_on"
     t.date "date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -770,6 +841,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_225554) do
   add_foreign_key "issues", "court_cases"
   add_foreign_key "judges", "counties"
   add_foreign_key "ok2_explore_deaths", "counties"
+  add_foreign_key "ok_real_estate_places", "ok_real_estate_agents", column: "agent_id"
+  add_foreign_key "ok_real_estate_registration_histories", "ok_real_estate_agents", column: "agent_id"
+  add_foreign_key "ok_real_estate_registration_records", "ok_real_estate_agents", column: "agent_id"
   add_foreign_key "okc_blotter_bookings", "okc_blotter_pdfs", column: "pdf_id"
   add_foreign_key "okc_blotter_bookings", "rosters"
   add_foreign_key "okc_blotter_offenses", "okc_blotter_bookings", column: "booking_id"
@@ -968,8 +1042,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_225554) do
   add_index "report_warrants", ["party_id", "code"], name: "index_report_warrants_on_party_id_and_code"
 
   create_view "case_stats", materialized: true, sql_definition: <<-SQL
-      SELECT court_cases.id AS court_case_id,
-      (court_cases.closed_on - court_cases.filed_on) AS length_of_case_in_days,
+      SELECT id AS court_case_id,
+      (closed_on - filed_on) AS length_of_case_in_days,
       ( SELECT count(*) AS count
              FROM counts
             WHERE (court_cases.id = counts.court_case_id)) AS counts_count,
@@ -1176,25 +1250,25 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_225554) do
              FROM clean_ocso
             WHERE (clean_ocso.ocso_resolved_at IS NULL)
           )
-   SELECT added_defendant_counts.ocso_id,
-      added_defendant_counts.ocso_first_name,
-      added_defendant_counts.ocso_last_name,
-      added_defendant_counts.ocso_middle_name,
-      added_defendant_counts.ocso_birth_date,
-      added_defendant_counts.ocso_bond_amount,
-      added_defendant_counts.ocso_issued,
-      added_defendant_counts.ocso_counts,
-      added_defendant_counts.ocso_resolved_at,
-      added_defendant_counts.ocso_case_number,
-      added_defendant_counts.case_type,
-      added_defendant_counts.full_year,
-      added_defendant_counts.last_case_number,
-      added_defendant_counts.clean_case_number,
-      added_defendant_counts.link,
-      added_defendant_counts.defendant_count,
+   SELECT ocso_id,
+      ocso_first_name,
+      ocso_last_name,
+      ocso_middle_name,
+      ocso_birth_date,
+      ocso_bond_amount,
+      ocso_issued,
+      ocso_counts,
+      ocso_resolved_at,
+      ocso_case_number,
+      case_type,
+      full_year,
+      last_case_number,
+      clean_case_number,
+      link,
+      defendant_count,
           CASE
-              WHEN (added_defendant_counts.defendant_count = 0) THEN NULL::bigint
-              WHEN (added_defendant_counts.defendant_count = 1) THEN ( SELECT count(*) AS count
+              WHEN (defendant_count = 0) THEN NULL::bigint
+              WHEN (defendant_count = 1) THEN ( SELECT count(*) AS count
                  FROM (((docket_events
                    JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
                    JOIN counties ON ((court_cases.county_id = counties.id)))
@@ -1204,7 +1278,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_225554) do
                            JOIN parties ON ((case_parties.party_id = parties.id)))
                            JOIN party_types ON ((parties.party_type_id = party_types.id)))
                         WHERE (((party_types.name)::text = 'defendant'::text) AND (case_parties.court_case_id = court_cases.id))) = 1)))
-              WHEN (added_defendant_counts.defendant_count > 1) THEN ( SELECT count(*) AS count
+              WHEN (defendant_count > 1) THEN ( SELECT count(*) AS count
                  FROM ((((docket_events
                    JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
                    JOIN counties ON ((court_cases.county_id = counties.id)))
@@ -1214,8 +1288,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_225554) do
               ELSE NULL::bigint
           END AS warrant_count,
           CASE
-              WHEN (added_defendant_counts.defendant_count = 0) THEN NULL::bigint
-              WHEN (added_defendant_counts.defendant_count = 1) THEN ( SELECT count(*) AS count
+              WHEN (defendant_count = 0) THEN NULL::bigint
+              WHEN (defendant_count = 1) THEN ( SELECT count(*) AS count
                  FROM (((docket_events
                    JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
                    JOIN counties ON ((court_cases.county_id = counties.id)))
@@ -1225,7 +1299,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_225554) do
                            JOIN parties ON ((case_parties.party_id = parties.id)))
                            JOIN party_types ON ((parties.party_type_id = party_types.id)))
                         WHERE (((party_types.name)::text = 'defendant'::text) AND (case_parties.court_case_id = court_cases.id))) = 1)))
-              WHEN (added_defendant_counts.defendant_count > 1) THEN ( SELECT count(*) AS count
+              WHEN (defendant_count > 1) THEN ( SELECT count(*) AS count
                  FROM ((((docket_events
                    JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
                    JOIN counties ON ((court_cases.county_id = counties.id)))
@@ -1235,8 +1309,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_225554) do
               ELSE NULL::bigint
           END AS return_warrant_count,
           CASE
-              WHEN (added_defendant_counts.defendant_count = 0) THEN NULL::character varying
-              WHEN (added_defendant_counts.defendant_count = 1) THEN ( SELECT docket_event_types.code
+              WHEN (defendant_count = 0) THEN NULL::character varying
+              WHEN (defendant_count = 1) THEN ( SELECT docket_event_types.code
                  FROM (((docket_events
                    JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
                    JOIN counties ON ((court_cases.county_id = counties.id)))
@@ -1248,7 +1322,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_225554) do
                         WHERE (((party_types.name)::text = 'defendant'::text) AND (case_parties.court_case_id = court_cases.id))) = 1))
                 ORDER BY docket_events.event_on DESC
                LIMIT 1)
-              WHEN (added_defendant_counts.defendant_count > 1) THEN ( SELECT docket_event_types.code
+              WHEN (defendant_count > 1) THEN ( SELECT docket_event_types.code
                  FROM ((((docket_events
                    JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
                    JOIN counties ON ((court_cases.county_id = counties.id)))
