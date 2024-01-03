@@ -2,7 +2,7 @@ module Importers
   module OkRealEstate
     class Agent
       attr_reader :take, :skip
-      
+
       def initialize(take, skip)
         @take = take
         @skip = skip
@@ -33,7 +33,7 @@ module Importers
         end
       end
 
-      def get_count
+      def fetch_count
         url = build_url(take, skip)
         data = HTTParty.get(url)
         data['resultCount']

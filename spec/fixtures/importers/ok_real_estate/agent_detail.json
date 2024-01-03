@@ -1,0 +1,110 @@
+{
+  "id": "5fe149a9fee7340388fcb992",
+  "name": null,
+  "firstName": "Stephanie",
+  "lastName": "Abbott",
+  "middleName": null,
+  "otherName": "BUCKMASTER, STEPHANIE DEE (PREV)",
+  "licenseNumber": "135122",
+  "licenseCategory": "Sales Associate",
+  "licenseStatus": "Active",
+  "placeOfPracticeName": null,
+  "placeOfPracticeStreet": null,
+  "placeOfPracticeCity": "Oklahoma City, OKC, Edmond",
+  "initialLicenseDate": "1999-04-30",
+  "licenseExpirationDate": "2026-03-31",
+  "hasPublicNotices": false,
+  "placesOfPractice": [
+    {
+      "id": "6001ae2381edb570d715e0a5",
+      "name": "",
+      "startDate": "Jan-15-2021",
+      "endDate": "",
+      "primary": false,
+      "registrant": null,
+      "phone": "(405) 590-4246",
+      "position": "",
+      "email": "",
+      "active": false,
+      "employerName": "Askin Group LLC - Branch Office - 200160",
+      "businessAddress": "9520 N May Ave #110",
+      "businessCity": "Oklahoma City",
+      "businessState": "Oklahoma",
+      "businessZipCode": "73120",
+      "organization": "",
+      "practiceLimitations": [],
+      "isBranchOffice": true
+    }
+  ],
+  "certification": [],
+  "educationDetails": [],
+  "registrationRecords": [
+    {
+      "id": "5fdc2624cebfa31590763580",
+      "name": null,
+      "licenseNumber": "135122",
+      "classOfRegistration": "Sales Associate",
+      "registrationStatus": "Active",
+      "effectiveDate": "Mar-08-2023",
+      "initialRegistrationDate": "Apr-30-1999",
+      "expiryDate": "Mar-31-2026"
+    }
+  ],
+  "registrationHistory": [
+    {
+      "id": "6408fc8381edb552d683a9f9",
+      "classOfRegistration": "Sales Associate",
+      "registrationStatus": "Active",
+      "effectiveDate": "Mar-08-2023"
+    },
+    {
+      "id": "5fe4114dcebfa3256cd2096c",
+      "classOfRegistration": "Sales Associate",
+      "registrationStatus": "Active",
+      "effectiveDate": "Mar-31-2020"
+    },
+    {
+      "id": "650ca4ba2f4f44edbe1ab2c9",
+      "classOfRegistration": "Sales Associate",
+      "registrationStatus": "Active",
+      "effectiveDate": "Mar-01-2017"
+    },
+    {
+      "id": "650ca4992f4f44edbe1aa82d",
+      "classOfRegistration": "Sales Associate",
+      "registrationStatus": "Active",
+      "effectiveDate": "Mar-27-2014"
+    },
+    {
+      "id": "650ca442ac48c354bddf9d7f",
+      "classOfRegistration": "Sales Associate",
+      "registrationStatus": "Active",
+      "effectiveDate": "Mar-15-2011"
+    },
+    {
+      "id": "650ca40104f4366c186a63b7",
+      "classOfRegistration": "Sales Associate",
+      "registrationStatus": "Active",
+      "effectiveDate": "Apr-07-2008"
+    },
+    {
+      "id": "650c90f504f4366c18693533",
+      "classOfRegistration": "Sales Associate",
+      "registrationStatus": "Active",
+      "effectiveDate": "Apr-05-2005"
+    },
+    {
+      "id": "650c90daac48c354bdde6865",
+      "classOfRegistration": "Sales Associate",
+      "registrationStatus": "Active",
+      "effectiveDate": "Apr-01-2002"
+    },
+    {
+      "id": "650c908e2f4f44edbe19ace0",
+      "classOfRegistration": "Provisional Sales Associate",
+      "registrationStatus": "Active",
+      "effectiveDate": "Apr-30-1999"
+    }
+  ],
+  "publicNotices": []
+}
