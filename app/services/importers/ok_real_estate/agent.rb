@@ -14,8 +14,7 @@ module Importers
 
       def perform
         url = build_url(take, skip)
-        response = HTTParty.get(url)
-        data = JSON.parse(response)
+        data = HTTParty.get(url)
 
         data['result'].each do |agent_json|
           a = find_or_initialize_agent(agent_json)
@@ -37,8 +36,7 @@ module Importers
 
       def fetch_count
         url = build_url(take, skip)
-        response = HTTParty.get(url)
-        data = JSON.parse(response)
+        data = HTTParty.get(url)
         data['resultCount']
       end
 

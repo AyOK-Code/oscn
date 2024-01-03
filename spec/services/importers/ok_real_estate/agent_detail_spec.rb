@@ -19,8 +19,8 @@ RSpec.describe Importers::OkRealEstate::AgentDetail do
       create(:ok_real_estate_agent, external_id: '5fe149a9fee7340388fcb992')
     end
     before do
-      stub_request(:get, /orec.us.thentiacloud.net/).to_return(body: fixture_file.to_json,
-                                                               headers: { 'Content-Type' => 'application/json' })
+      stub_request(:get, /orec.us.thentiacloud.net/).to_return(body: fixture_file,
+                                                               headers: { content_type: 'application/json' })
       allow(::OkRealEstate::Agent).to receive(:find_by).with(external_id: '5fe149a9fee7340388fcb992').and_return(agent)
     end
 
