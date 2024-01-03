@@ -17,7 +17,8 @@ module Importers
       fire_link.save!
 
       fire_structure = ::StructureFire.find_or_initialize_by(incident_number: jsons[1][:incident_number])
-      fire_structure.assign_attributes(jsons[1], structure_fire_link: fire_link.id)
+      fire_structure.assign_attributes(jsons[1])
+      fire_structure.structure_fire_link = fire_link.id
       fire_structure.save!
     end
   end
