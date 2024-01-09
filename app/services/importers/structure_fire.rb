@@ -12,14 +12,16 @@ module Importers
     end
 
     def perform
-      fire_link = ::StructureFireLink.find_or_initialize_by(url: jsons[0][:url], pdf_date_on: jsons[0][:pdf_date_on])
-      fire_link.pdf.attach(jsons[0][:pdf])
+      pdf_date_on = Date.strptime(@jsons[0][:pdf_date_on],"%m/%d/%Y")
+      fire_link = ::StructureFireLink.find_or_initialize_by(url: @jsons[0][:url], pdf_date_on: pdf_date_on)
+      fire_link.pdf.attach(io: File.open(@jsons[0][:filepath]), filename: "#{@jsons[0][:filepath]}.pdf")
       fire_link.save!
-
-      fire_structure = ::StructureFire.find_or_initialize_by(incident_number: jsons[1][:incident_number])
-      fire_structure.assign_attributes(jsons[1])
+      if  @jsons[1] != {} 
+      fire_structure = ::StructureFire.find_or_initialize_by(incident_number: @jsons[1][:incident_number])
+      fire_structure.assign_attributes(@jsons[1])
       fire_structure.structure_fire_link = fire_link.id
       fire_structure.save!
+      end
     end
   end
 end
