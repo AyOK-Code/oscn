@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_30_024500) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_10_213316) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -1452,6 +1452,30 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_30_024500) do
       court_cases.filed_on AS case_filed_on,
       court_cases.closed_on AS case_closed_on,
       court_cases.case_number,
+      ( SELECT
+                  CASE
+                      WHEN (count(
+                      CASE
+                          WHEN (issue_parties.disposition_on IS NULL) THEN 1
+                          ELSE NULL::integer
+                      END) > 0) THEN NULL::date
+                      ELSE max(issue_parties.disposition_on)
+                  END AS max
+             FROM issue_parties
+            WHERE (issue_parties.issue_id = issues.id)
+            GROUP BY court_cases.id) AS max_judgement_date,
+      ( SELECT
+                  CASE
+                      WHEN (count(
+                      CASE
+                          WHEN (issue_parties.disposition_on IS NULL) THEN 1
+                          ELSE NULL::integer
+                      END) > 0) THEN NULL::integer
+                      ELSE (max(issue_parties.disposition_on) - court_cases.filed_on)
+                  END AS difference
+             FROM issue_parties
+            WHERE (issue_parties.issue_id = issues.id)
+            GROUP BY court_cases.id) AS days_to_judgement,
       ( SELECT string_agg((parties.full_name)::text, '; '::text) AS string_agg
              FROM ((parties
                JOIN case_parties ON ((case_parties.party_id = parties.id)))
@@ -1467,16 +1491,131 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_30_024500) do
                JOIN verdicts ON ((verdicts.id = issue_parties.verdict_id)))
                JOIN parties ON ((issue_parties.party_id = parties.id)))
             WHERE (issue_parties.issue_id = issues.id)) AS verdict,
+      ( SELECT string_agg(DISTINCT
+                  CASE verdicts.name
+                      WHEN 'bankruptcy filed'::text THEN 'Bankruptcy Filed'::text
+                      WHEN 'closed juvenile age 18'::text THEN 'Juvenile'::text
+                      WHEN 'closed juvenile age 18, dismissed'::text THEN 'Juvenile'::text
+                      WHEN 'consolidated'::text THEN 'Transferred'::text
+                      WHEN 'consolidated, transferred to another jurisdiction'::text THEN 'Transferred'::text
+                      WHEN 'default judgement'::text THEN 'Default Judgment'::text
+                      WHEN 'default judgement, deferred deprived/neglected'::text THEN 'Default Judgment'::text
+                      WHEN 'default judgement, dismissed'::text THEN 'Default Judgment'::text
+                      WHEN 'default judgement, dismissed - contested'::text THEN 'Default Judgment'::text
+                      WHEN 'default judgement, dismissed - release and satisfied'::text THEN 'Default Judgment'::text
+                      WHEN 'default judgement, dismissed - settled'::text THEN 'Default Judgment'::text
+                      WHEN 'default judgement, dismissed - voluntary dismissal'::text THEN 'Default Judgment'::text
+                      WHEN 'default judgement, dismissed - with prejudice'::text THEN 'Default Judgment'::text
+                      WHEN 'default judgement, dismissed without prejudice'::text THEN 'Default Judgment'::text
+                      WHEN 'default judgement, dismissed, judgement entered'::text THEN 'Default Judgment'::text
+                      WHEN 'default judgement, dismissed, judgement for plaintiff'::text THEN 'Default Judgment'::text
+                      WHEN 'default judgement, final judgment'::text THEN 'Default Judgment'::text
+                      WHEN 'default judgement, judgement entered'::text THEN 'Default Judgment'::text
+                      WHEN 'default judgement, judgement for defendant'::text THEN 'Default Judgment'::text
+                      WHEN 'default judgement, judgement for plaintiff'::text THEN 'Default Judgment'::text
+                      WHEN 'default judgement, other'::text THEN 'Default Judgment'::text
+                      WHEN 'default judgement, summary judgement entered'::text THEN 'Default Judgment'::text
+                      WHEN 'default judgement, vacated (order or judgment)'::text THEN 'Default Judgment'::text
+                      WHEN 'deferred'::text THEN 'Deferred'::text
+                      WHEN 'deferred deprived/neglected'::text THEN 'Deferred'::text
+                      WHEN 'deferred deprived/neglected, dismissed'::text THEN 'Deferred'::text
+                      WHEN 'deferred in need of supervision, dismissed'::text THEN 'Deferred'::text
+                      WHEN 'deferred in need of treatment'::text THEN 'Deferred'::text
+                      WHEN 'discharge filed'::text THEN 'Dismissed'::text
+                      WHEN 'discharge filed, dismissed'::text THEN 'Dismissed'::text
+                      WHEN 'discharge filed, dismissed without prejudice'::text THEN 'Dismissed'::text
+                      WHEN 'dismissed'::text THEN 'Dismissed'::text
+                      WHEN 'dismissed - contested'::text THEN 'Dismissed'::text
+                      WHEN 'dismissed - contested, judgement entered'::text THEN 'Judgment'::text
+                      WHEN 'dismissed - court order'::text THEN 'Dismissed'::text
+                      WHEN 'dismissed - demurrer sustained'::text THEN 'Dismissed'::text
+                      WHEN 'dismissed - demurrer sustained, dismissed - failure to obtain service'::text THEN 'Dismissed'::text
+                      WHEN 'dismissed - failure to obtain service'::text THEN 'Dismissed'::text
+                      WHEN 'dismissed - hold all case actions'::text THEN 'Dismissed'::text
+                      WHEN 'dismissed - lack of service'::text THEN 'Dismissed'::text
+                      WHEN 'dismissed - lack of service, dismissed - with prejudice'::text THEN 'Dismissed'::text
+                      WHEN 'dismissed - quash sustained'::text THEN 'Dismissed'::text
+                      WHEN 'dismissed - release and satisfied'::text THEN 'Dismissed - Satisfied'::text
+                      WHEN 'dismissed - release and satisfied, judgement for plaintiff'::text THEN 'Dismissed - Satisfied'::text
+                      WHEN 'dismissed - settled'::text THEN 'Dismissed - Settlement'::text
+                      WHEN 'dismissed - settled, dismissed - with prejudice'::text THEN 'Dismissed - Settlement'::text
+                      WHEN 'dismissed - voluntary dismissal'::text THEN 'Dismissed'::text
+                      WHEN 'dismissed - with prejudice'::text THEN 'Dismissed'::text
+                      WHEN 'dismissed - with prejudice, judgement entered'::text THEN 'Judgment'::text
+                      WHEN 'dismissed - with prejudice, judgement for plaintiff'::text THEN 'Judgment'::text
+                      WHEN 'dismissed - with prejudice, vacated (order or judgment)'::text THEN 'Dismissed'::text
+                      WHEN 'dismissed without prejudice'::text THEN 'Dismissed'::text
+                      WHEN 'dismissed without prejudice, dismissed - with prejudice'::text THEN 'Dismissed'::text
+                      WHEN 'dismissed without prejudice, judgement entered'::text THEN 'Judgment'::text
+                      WHEN 'dismissed without prejudice, judgement for plaintiff'::text THEN 'Judgment'::text
+                      WHEN 'dismissed without prejudice, order approving settlement'::text THEN 'Dismissed - Settlement'::text
+                      WHEN 'dismissed without prejudice, paternity established (decree or order)'::text THEN 'Dismissed'::text
+                      WHEN 'dismissed, dismissed - release and satisfied'::text THEN 'Dismissed - Satisfied'::text
+                      WHEN 'dismissed, dismissed - settled'::text THEN 'Dismissed - Settlement'::text
+                      WHEN 'dismissed, dismissed - with prejudice'::text THEN 'Dismissed'::text
+                      WHEN 'dismissed, dismissed without prejudice'::text THEN 'Dismissed'::text
+                      WHEN 'dismissed, final judgment'::text THEN 'Judgment'::text
+                      WHEN 'dismissed, judgement entered'::text THEN 'Judgment'::text
+                      WHEN 'dismissed, judgement for defendant'::text THEN 'Judgment'::text
+                      WHEN 'dismissed, judgement for plaintiff'::text THEN 'Judgment'::text
+                      WHEN 'dismissed, name change (order or other)'::text THEN 'Dismissed'::text
+                      WHEN 'dismissed, other'::text THEN 'Dismissed'::text
+                      WHEN 'dismissed, vacated (order or judgment)'::text THEN 'Dismissed'::text
+                      WHEN 'final judgment'::text THEN 'Judgment'::text
+                      WHEN 'final order'::text THEN 'Judgment'::text
+                      WHEN 'judgement entered'::text THEN 'Judgment'::text
+                      WHEN 'judgement entered, judgement for defendant'::text THEN 'Judgment'::text
+                      WHEN 'judgement entered, judgement for plaintiff'::text THEN 'Judgment'::text
+                      WHEN 'judgement entered, other'::text THEN 'Judgment'::text
+                      WHEN 'judgement entered, vacated (order or judgment)'::text THEN 'Judgment'::text
+                      WHEN 'judgement for defendant'::text THEN 'Judgment'::text
+                      WHEN 'judgement for defendant, judgement for plaintiff'::text THEN 'Judgment'::text
+                      WHEN 'judgement for plaintiff'::text THEN 'Judgment'::text
+                      WHEN 'judgement for plaintiff, judgement in rem'::text THEN 'Judgment'::text
+                      WHEN 'judgement for plaintiff, paternity established (decree or order)'::text THEN 'Judgment'::text
+                      WHEN 'judgement for plaintiff, transferred to another jurisdiction'::text THEN 'Judgment'::text
+                      WHEN 'judgement for plaintiff, vacated (order or judgment)'::text THEN 'Judgment'::text
+                      WHEN 'judgement on pleading'::text THEN 'Judgment'::text
+                      WHEN 'letters filed'::text THEN 'Other'::text
+                      WHEN 'name change (order or other)'::text THEN 'Other'::text
+                      WHEN 'order approving settlement'::text THEN 'Judgment'::text
+                      WHEN 'other'::text THEN 'Other'::text
+                      WHEN 'paternity established (decree or order)'::text THEN 'Other'::text
+                      WHEN 'protective order denied'::text THEN 'Other'::text
+                      WHEN 'rights of majority granted (order or other)'::text THEN 'Judgment'::text
+                      WHEN 'stayed pending action other jurisdiction'::text THEN 'Other'::text
+                      WHEN 'summary judgement entered'::text THEN 'Judgment'::text
+                      WHEN 'transferred to another jurisdiction'::text THEN 'Transferred'::text
+                      WHEN 'transferred to federal court'::text THEN 'Transferred'::text
+                      WHEN 'vacated (order or judgment)'::text THEN 'Dismissed'::text
+                      ELSE 'Unknown'::text
+                  END, ', '::text) AS string_agg
+             FROM ((issue_parties
+               JOIN verdicts ON ((verdicts.id = issue_parties.verdict_id)))
+               JOIN parties ON ((issue_parties.party_id = parties.id)))
+            WHERE (issue_parties.issue_id = issues.id)) AS simple_judgement,
       ( SELECT string_agg(DISTINCT (issue_parties.verdict_details)::text, ', '::text) AS string_agg
              FROM ((issue_parties
                JOIN verdicts ON ((verdicts.id = issue_parties.verdict_id)))
                JOIN parties ON ((issue_parties.party_id = parties.id)))
             WHERE (issue_parties.issue_id = issues.id)) AS verdict_details,
-      ( SELECT count(parties.id) AS count
+      ( SELECT count(DISTINCT parties.id) AS count
              FROM ((parties
                JOIN case_parties ON ((case_parties.party_id = parties.id)))
                JOIN party_types ON ((parties.party_type_id = party_types.id)))
             WHERE ((case_parties.court_case_id = court_cases.id) AND ((party_types.name)::text = 'defendant'::text))) AS defendant_count,
+      ( SELECT count(DISTINCT parties.id) AS count
+             FROM (((counsels
+               JOIN counsel_parties ON (((counsels.id = counsel_parties.counsel_id) AND (counsel_parties.court_case_id = court_cases.id))))
+               JOIN parties ON ((counsel_parties.party_id = parties.id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+            WHERE ((party_types.name)::text = 'defendant'::text)) AS defendant_represented_parties_count,
+      ( SELECT count(parties.id) AS count
+             FROM (((counsels
+               JOIN counsel_parties ON (((counsels.id = counsel_parties.counsel_id) AND (counsel_parties.court_case_id = court_cases.id))))
+               JOIN parties ON ((counsel_parties.party_id = parties.id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+            WHERE ((party_types.name)::text = 'plaintiff'::text)) AS plaintiff_represented_parties_count,
       ( SELECT DISTINCT parties.full_name
              FROM ((parties
                JOIN case_parties ON ((case_parties.party_id = parties.id)))
@@ -1505,7 +1644,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_30_024500) do
                JOIN docket_event_links del ON ((el.docket_event_link_id = del.id)))
                JOIN docket_events de ON ((del.docket_event_id = de.id)))
             WHERE (de.court_case_id = court_cases.id)
-           LIMIT 1) AS valdated_address,
+           LIMIT 1) AS validated_address,
       ( SELECT el.validation_usps_state_zip
              FROM ((eviction_letters el
                JOIN docket_event_links del ON ((el.docket_event_link_id = del.id)))
@@ -1535,6 +1674,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_30_024500) do
        JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
        JOIN issues ON ((court_cases.id = issues.court_case_id)))
        JOIN count_codes ON ((issues.count_code_id = count_codes.id)))
-    WHERE (((count_codes.code)::text = ANY (ARRAY['SCFED1'::text, 'SCFED2'::text, 'FED1'::text, 'FED2'::text, 'ENTRY'::text])) AND ((counties.name)::text = 'Oklahoma'::text));
+    WHERE (((count_codes.code)::text = ANY (ARRAY['SCFED1'::text, 'SCFED2'::text, 'FED1'::text, 'FED2'::text, 'ENTRY'::text])) AND ((counties.name)::text = 'Oklahoma'::text))
+    ORDER BY court_cases.filed_on;
   SQL
 end
