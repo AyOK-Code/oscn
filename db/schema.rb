@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_10_213316) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_16_173410) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -366,6 +366,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_10_213316) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.jsonb "validation_object", default: {}, null: false
+    t.string "validation_city", default: "", null: false
+    t.string "validation_zip_code", default: "", null: false
+    t.string "validation_state", default: "", null: false
     t.index ["docket_event_link_id"], name: "index_eviction_letters_on_docket_event_link_id"
   end
 

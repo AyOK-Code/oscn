@@ -53,7 +53,10 @@ module EvictionOcr
         validation_usps_address: usps ? usps_first_line(parsed_response) : first_line(parsed_response),
         validation_usps_state_zip: usps ? usps_city_state_zip(parsed_response) : city_state_zip(parsed_response),
         validation_latitude: latitude(parsed_response),
-        validation_longitude: longitude(parsed_response)
+        validation_longitude: longitude(parsed_response),
+        validation_city: usps ? usps_city(parsed_response) : city(parsed_response),
+        validation_state: usps ? usps_state(parsed_response) : state(parsed_response),
+        validation_zip_code: usps ? usps_zip(parsed_response) : zip_code(parsed_response)
       }
     end
 
@@ -77,6 +80,18 @@ module EvictionOcr
       parsed_response['uspsData']['standardizedAddress']['firstAddressLine']
     end
 
+    def usps_city(parsed_response)
+      parsed_response['uspsData']['standardizedAddress']['city']
+    end
+
+    def usps_state(parsed_response)
+      parsed_response['uspsData']['standardizedAddress']['state']
+    end
+
+    def usps_zip(parsed_response)
+      parsed_response['uspsData']['standardizedAddress']['zipCode']
+    end
+
     def usps_city_state_zip(parsed_response)
       parsed_response['uspsData']['standardizedAddress']['cityStateZipAddressLine']
     end
@@ -90,6 +105,18 @@ module EvictionOcr
       state = parsed_response['address']['postalAddress']['administrativeArea']
       zip = parsed_response['address']['postalAddress']['postalCode']
       "#{city} #{state} #{zip}"
+    end
+
+    def city(parsed_response)
+      parsed_response['address']['postalAddress']['locality']
+    end
+
+    def state(parsed_response)
+      parsed_response['address']['postalAddress']['administrativeArea']
+    end
+
+    def zip_code(parsed_response)
+      parsed_response['address']['postalAddress']['postalCode']
     end
 
     def latitude(parsed_response)
