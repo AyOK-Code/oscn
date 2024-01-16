@@ -28,22 +28,19 @@ module EvictionOcr
     end
 
     def new_attributes(parsed_response)
-      usps = usps?(parsed_response)
-      begin
-        define_attributes(parsed_response, usps)
-      rescue StandardError => e
-        @eviction_letter.update(status: :error)
-        Raygun.track_exception(
-          e,
-          custom_data: { eviction_letter_id: eviction_letter.id, parsed_response: parsed_response }
-        )
-        nil
-      end
+      define_attributes(parsed_response)
+    rescue StandardError => e
+      @eviction_letter.update(status: :error)
+      Raygun.track_exception(e,
+                             custom_data: { eviction_letter_id: eviction_letter.id,
+                                            parsed_response: parsed_response })
+      nil
     end
 
     private
 
-    def define_attributes(parsed_response, usps)
+    def define_attributes(parsed_response)
+      usps = parsed_response['uspsData'].present?
       {
         status: 'validated',
         is_validated: true,
@@ -53,7 +50,10 @@ module EvictionOcr
         validation_usps_address: usps ? usps_first_line(parsed_response) : first_line(parsed_response),
         validation_usps_state_zip: usps ? usps_city_state_zip(parsed_response) : city_state_zip(parsed_response),
         validation_latitude: latitude(parsed_response),
-        validation_longitude: longitude(parsed_response)
+        validation_longitude: longitude(parsed_response),
+        validation_city: usps ? usps_city(parsed_response) : city(parsed_response),
+        validation_state: usps ? usps_state(parsed_response) : state(parsed_response),
+        validation_zip_code: usps ? usps_zip(parsed_response) : zip_code(parsed_response)
       }
     end
 
@@ -69,12 +69,20 @@ module EvictionOcr
       parsed_response['verdict']['hasInferredComponents']
     end
 
-    def usps?(parsed_response)
-      parsed_response['uspsData'].present?
-    end
-
     def usps_first_line(parsed_response)
       parsed_response['uspsData']['standardizedAddress']['firstAddressLine']
+    end
+
+    def usps_city(parsed_response)
+      parsed_response['uspsData']['standardizedAddress']['city']
+    end
+
+    def usps_state(parsed_response)
+      parsed_response['uspsData']['standardizedAddress']['state']
+    end
+
+    def usps_zip(parsed_response)
+      parsed_response['uspsData']['standardizedAddress']['zipCode']
     end
 
     def usps_city_state_zip(parsed_response)
@@ -90,6 +98,18 @@ module EvictionOcr
       state = parsed_response['address']['postalAddress']['administrativeArea']
       zip = parsed_response['address']['postalAddress']['postalCode']
       "#{city} #{state} #{zip}"
+    end
+
+    def city(parsed_response)
+      parsed_response['address']['postalAddress']['locality']
+    end
+
+    def state(parsed_response)
+      parsed_response['address']['postalAddress']['administrativeArea']
+    end
+
+    def zip_code(parsed_response)
+      parsed_response['address']['postalAddress']['postalCode']
     end
 
     def latitude(parsed_response)

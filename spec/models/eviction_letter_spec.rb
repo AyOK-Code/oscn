@@ -69,10 +69,19 @@ RSpec.describe EvictionLetter, type: :model do
 
   describe '#past_thirty_days' do
     it 'returns letters that have been created in the past 30 days' do
-      eviction_letter = create(:eviction_letter, created_at: 29.days.ago)
-      create(:eviction_letter, created_at: 31.days.ago)
+      docket_event = create(:docket_event, event_on: 20.days.ago)
+      docket_event_link = create(:docket_event_link, docket_event_id: docket_event.id)
+      eviction_letter = create(:eviction_letter, docket_event_link_id: docket_event_link.id)
 
       expect(EvictionLetter.past_thirty_days).to eq([eviction_letter])
+    end
+
+    it 'does not return letters that have been created more than 30 days ago' do
+      docket_event = create(:docket_event, event_on: 40.days.ago)
+      docket_event_link = create(:docket_event_link, docket_event_id: docket_event.id)
+      create(:eviction_letter, docket_event_link_id: docket_event_link.id)
+
+      expect(EvictionLetter.past_thirty_days).to eq([])
     end
   end
 end

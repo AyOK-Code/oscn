@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_10_213316) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_16_190710) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -366,6 +366,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_10_213316) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.jsonb "validation_object", default: {}, null: false
+    t.string "validation_city"
+    t.string "validation_zip_code"
+    t.string "validation_state"
     t.index ["docket_event_link_id"], name: "index_eviction_letters_on_docket_event_link_id"
   end
 
@@ -1610,12 +1613,24 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_10_213316) do
                JOIN parties ON ((counsel_parties.party_id = parties.id)))
                JOIN party_types ON ((parties.party_type_id = party_types.id)))
             WHERE ((party_types.name)::text = 'defendant'::text)) AS defendant_represented_parties_count,
-      ( SELECT count(parties.id) AS count
+      ( SELECT string_agg(DISTINCT (parties.full_name)::text, '; '::text) AS string_agg
+             FROM (((counsels
+               JOIN counsel_parties ON (((counsels.id = counsel_parties.counsel_id) AND (counsel_parties.court_case_id = court_cases.id))))
+               JOIN parties ON ((counsel_parties.party_id = parties.id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+            WHERE ((party_types.name)::text = 'defendant'::text)) AS defendant_represented_party,
+      ( SELECT count(DISTINCT parties.id) AS count
              FROM (((counsels
                JOIN counsel_parties ON (((counsels.id = counsel_parties.counsel_id) AND (counsel_parties.court_case_id = court_cases.id))))
                JOIN parties ON ((counsel_parties.party_id = parties.id)))
                JOIN party_types ON ((parties.party_type_id = party_types.id)))
             WHERE ((party_types.name)::text = 'plaintiff'::text)) AS plaintiff_represented_parties_count,
+      ( SELECT string_agg(DISTINCT (parties.full_name)::text, '; '::text) AS string_agg
+             FROM (((counsels
+               JOIN counsel_parties ON (((counsels.id = counsel_parties.counsel_id) AND (counsel_parties.court_case_id = court_cases.id))))
+               JOIN parties ON ((counsel_parties.party_id = parties.id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+            WHERE ((party_types.name)::text = 'plaintiff'::text)) AS plaintiff_represented_party,
       ( SELECT DISTINCT parties.full_name
              FROM ((parties
                JOIN case_parties ON ((case_parties.party_id = parties.id)))
