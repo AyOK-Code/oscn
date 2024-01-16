@@ -366,9 +366,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_16_190710) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.jsonb "validation_object", default: {}, null: false
-    t.string "validation_city", default: "", null: false
-    t.string "validation_zip_code", default: "", null: false
-    t.string "validation_state", default: "", null: false
+    t.string "validation_city"
+    t.string "validation_zip_code"
+    t.string "validation_state"
     t.index ["docket_event_link_id"], name: "index_eviction_letters_on_docket_event_link_id"
   end
 

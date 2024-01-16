@@ -28,22 +28,19 @@ module EvictionOcr
     end
 
     def new_attributes(parsed_response)
-      usps = usps?(parsed_response)
-      begin
-        define_attributes(parsed_response, usps)
-      rescue StandardError => e
-        @eviction_letter.update(status: :error)
-        Raygun.track_exception(
-          e,
-          custom_data: { eviction_letter_id: eviction_letter.id, parsed_response: parsed_response }
-        )
-        nil
-      end
+      define_attributes(parsed_response)
+    rescue StandardError => e
+      @eviction_letter.update(status: :error)
+      Raygun.track_exception(e,
+                             custom_data: { eviction_letter_id: eviction_letter.id,
+                                            parsed_response: parsed_response })
+      nil
     end
 
     private
 
-    def define_attributes(parsed_response, usps)
+    def define_attributes(parsed_response)
+      usps = parsed_response['uspsData'].present?
       {
         status: 'validated',
         is_validated: true,
@@ -70,10 +67,6 @@ module EvictionOcr
 
     def inferred_components?(parsed_response)
       parsed_response['verdict']['hasInferredComponents']
-    end
-
-    def usps?(parsed_response)
-      parsed_response['uspsData'].present?
     end
 
     def usps_first_line(parsed_response)
