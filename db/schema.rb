@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_16_190710) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_16_202402) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -1666,6 +1666,24 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_16_190710) do
                JOIN docket_events de ON ((del.docket_event_id = de.id)))
             WHERE (de.court_case_id = court_cases.id)
            LIMIT 1) AS valdated_state_zip,
+      ( SELECT el.validation_city
+             FROM ((eviction_letters el
+               JOIN docket_event_links del ON ((el.docket_event_link_id = del.id)))
+               JOIN docket_events de ON ((del.docket_event_id = de.id)))
+            WHERE (de.court_case_id = court_cases.id)
+           LIMIT 1) AS validation_city,
+      ( SELECT el.validation_zip_code
+             FROM ((eviction_letters el
+               JOIN docket_event_links del ON ((el.docket_event_link_id = del.id)))
+               JOIN docket_events de ON ((del.docket_event_id = de.id)))
+            WHERE (de.court_case_id = court_cases.id)
+           LIMIT 1) AS validation_zip_code,
+      ( SELECT el.validation_state
+             FROM ((eviction_letters el
+               JOIN docket_event_links del ON ((el.docket_event_link_id = del.id)))
+               JOIN docket_events de ON ((del.docket_event_id = de.id)))
+            WHERE (de.court_case_id = court_cases.id)
+           LIMIT 1) AS validation_state,
       ( SELECT el.validation_latitude
              FROM ((eviction_letters el
                JOIN docket_event_links del ON ((el.docket_event_link_id = del.id)))
