@@ -15,22 +15,20 @@ module Importers
     def perform
       html = party.party_html.html
       parsed_html = Nokogiri::HTML(html)
-      personal_columns = personal_html(parsed_html)
-      aliases_column = aliases_html(parsed_html)
+      data = OscnScraper::Parsers::PartyData.perform(parsed_html)
 
+      aliases_column = data[:aliases_column]
       begin
         save_aliases(aliases_column)
-        save_personal(personal_columns)
-        save_addresses(parsed_html)
+        save_personal(data[:birth_month], data[:birth_year])
+        save_addresses(data)
       rescue StandardError => e
-        Raygun.track_exception(e,
-                               custom_data: { error_type: 'Data Error', data_content: parsed_html,
-                                              oscn_id: party.oscn_id })
+        Raygun.track_exception(e, custom_data: { error_type: 'Data Error', data_content: parsed_html })
       end
     end
 
-    def save_addresses(parsed_html)
-      address_row = address_html(parsed_html)
+    def save_addresses(data)
+      address_row = data[:address_row]
       return if address_row.count < 2
 
       address_row.each_with_index do |row, index|
@@ -40,11 +38,11 @@ module Importers
       end
     end
 
-    def save_personal(personal_columns)
-      string = personal_columns[2]&.text&.split('/')
-      return if string.blank?
+    def save_personal(birth_month, birth_year)
+      return if birth_month.blank?
+      return if birth_year.blank?
 
-      party.update(birth_month: month(string), birth_year: year(string))
+      party.update(birth_month: birth_month, birth_year: birth_year)
     end
 
     def save_aliases(aliases_column)
@@ -53,26 +51,6 @@ module Importers
 
         PartyAlias.find_or_create_by(party: party, name: row.text.squish)
       end
-    end
-
-    def month(string)
-      string[0].to_i
-    end
-
-    def year(string)
-      string[1].to_i
-    end
-
-    def personal_html(parsed_html)
-      parsed_html.css('.personal tr td')
-    end
-
-    def aliases_html(parsed_html)
-      parsed_html.css('.partymain tr td')[1].children
-    end
-
-    def address_html(parsed_html)
-      parsed_html.css('.addresses tr')
     end
   end
 end
