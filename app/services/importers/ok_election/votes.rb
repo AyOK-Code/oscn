@@ -1,39 +1,44 @@
 module Importers
   module OkElection
     class Votes
-      attr_reader :file, :data, :votes, :voting_methods
+      attr_reader :bucket, :voting_methods
 
       def initialize
         @bucket = Bucket.new
-        @file = @bucket.get_object('ok_election/voter_history.csv')
-        @data = file.body.read
-        @votes = CSV.parse(data, headers: true)
-        @voting_methods = OkElectionBoard::VotingMethod.pluck(:code, :id).to_h
+        @voting_methods = ::OkElection::VotingMethod.pluck(:code, :id).to_h
       end
 
       def self.perform
-        new.perform
+        Rails.logger.silence { new.perform }
       end
 
       def perform
-        bar = ProgressBar.new(votes.count)
+        objects = bucket.list_objects('ok_election/voter_history')
+        objects['contents'].each do |object|
+          puts "Processing #{object['key']}"
+          file = bucket.get_object(object['key'])
+          next unless file.content_type == 'text/csv'
 
-        votes_data = []
+          votes = CSV.parse(file.body.read, headers: true)
+          bar = ProgressBar.new(votes.count)
+          votes_data = []
 
-        votes.each do |vote|
-          voter_id = OkElectionBoard::Voter.find_by(voter_id: vote['VoterID'].to_i).id
-          voting_method_id = voting_methods[vote['VotingMethod']]
+          votes.each do |vote|
+            bar.increment!
+            voter_id = ::OkElection::Voter.find_by(voter_id: vote['VoterID'].to_i).id
+            voting_method_id = voting_methods[vote['VotingMethod']]
 
-          next if voter_id.nil? || voting_method_id.nil?
+            next if voter_id.nil? || voting_method_id.nil?
 
-          votes_data << { voter_id: voter_id,
-                          election_date: parse_date(vote['ElectionDate']),
-                          voting_method_id: voting_method_id }
-          bar.increment!
-        end
-
-        votes.each_slice(10_000) do |slice|
-          OkElectionBoard::Vote.upsert_all(slice, unique_by: [:voter_id, :election_date])
+            votes_data << { 
+                            voter_id: voter_id,
+                            election_on: parse_date(vote['ElectionDate']),
+                            voting_method_id: voting_method_id 
+                          }
+          end
+          votes_data.each_slice(10_000) do |slice|
+            ::OkElection::Vote.upsert_all(slice, unique_by: [:voter_id, :election_on])
+          end
         end
       end
 

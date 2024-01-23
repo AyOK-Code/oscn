@@ -1,15 +1,11 @@
 module Importers
   module OkElection
     class Voters
-      attr_reader :file, :data, :voters, :precincts, :zip_codes
+      attr_reader :bucket, :precincts
 
       def initialize
         @bucket = Bucket.new
-        @file = @bucket.get_object('ok_election/voters.csv')
-        @data = file.body.read
-        @voters = CSV.parse(data, headers: true)
-        @precincts = OkElection::Precinct.pluck(:code, :id).to_h
-        @zip_codes = ZipCode.pluck(:number, :id).to_h
+        @precincts = ::OkElection::Precinct.all.pluck(:code, :id).to_h
       end
 
       def self.perform
@@ -17,19 +13,23 @@ module Importers
       end
 
       def perform
-        bar = ProgressBar.new(voters.count)
+        objects = bucket.list_objects('ok_election/voter_registration')
+        objects['contents'].each do |object|
+          puts "Processing #{object['key']}"
+          file = bucket.get_object(object['key'])
+          next unless file.content_type == 'text/csv'
 
-        # Upsert the voter data 10,000 rows at a time
-        voter_data = []
-        voters.each do |voter|
-          bar.increment!
-          voter_data << voter_data(voter)
+          voters = CSV.parse(file.body.read, headers: true, encoding: 'Windows-1252:UTF-8')
+          bar = ProgressBar.new(voters.count)
+          voter_data = []
 
-          OkElection::Voter.upsert_all(voter_data)
-        end
-
-        voters.each_slice(10_000) do |slice|
-          OkElection::Voter.upsert_all(slice, unique_by: :voter_id)
+          voters.each do |voter|
+            bar.increment!
+            voter_data << voter_data(voter)
+          end
+          voter_data.each_slice(10_000) do |slice|
+            ::OkElection::Voter.upsert_all(slice, unique_by: :voter_id)
+          end
         end
       end
 
@@ -42,8 +42,7 @@ module Importers
       end
 
       def voter_data(voter)
-        precinct_id = precincts[voter[0].to_i]
-        zip_code_id = zip_codes[voter['Zip'].to_i]
+        precinct_id = precincts[voter['Precinct'].to_i]
         registration_date = parse_date(voter['OriginalRegistration'])
         date_of_birth = parse_date(voter['DateOfBirth'])
 
@@ -54,15 +53,15 @@ module Importers
           first_name: voter['FirstName'],
           middle_name: voter['MiddleName'],
           suffix: voter['Suffix'],
-          political_affiliation: OkElection::Voter.political_affiliations[voter['PolitalAff']],
-          status: voter['Status'] == 'A' ? OkElection::Voter.statuses['active'] : OkElection::Voter.statuses['inactive'],
+          political_affiliation: ::OkElection::Voter.political_affiliations[voter['PolitalAff']],
+          status: voter['Status'] == 'A' ? 'active' : 'inactive',
           street_number: voter['StreetNum'],
           street_direction: voter['StreetDir'],
           street_name: voter['StreetName'],
           street_type: voter['StreetType'],
           building_number: voter['BldgNum'],
           city: voter['City'],
-          zip_code_id: zip_code_id,
+          zip_code: voter['Zip'],
           date_of_birth: date_of_birth,
           original_registration: registration_date
         }

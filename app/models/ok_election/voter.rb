@@ -1,6 +1,5 @@
 class OkElection::Voter < ApplicationRecord
   belongs_to :precinct, class_name: 'OkElection::Precinct'
-  belongs_to :zip_code
   has_many :votes, class_name: 'OkElection::Vote', dependent: :destroy
 
   validates :precinct_id, :voter_id, :political_affiliation, :status, presence: true
