@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_23_225147) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_06_225445) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -1671,7 +1671,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_23_225147) do
                JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
                JOIN issues ON ((court_cases.id = issues.court_case_id)))
                JOIN count_codes ON ((issues.count_code_id = count_codes.id)))
-            WHERE (((count_codes.code)::text = ANY (ARRAY['SCFED1'::text, 'SCFED2'::text, 'FED1'::text, 'FED2'::text, 'ENTRY'::text])) AND ((counties.name)::text = 'Oklahoma'::text))
+            WHERE (((count_codes.code)::text = ANY (ARRAY['SCFED1'::text, 'SCFED2'::text, 'FED1'::text, 'FED2'::text, 'ENTRY'::text])) AND ((counties.name)::text = 'Oklahoma'::text) AND (court_cases.is_error IS FALSE))
           )
    SELECT court_case_id,
       case_filed_on,
