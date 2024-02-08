@@ -4,10 +4,10 @@ namespace :historical do
   desc 'Populates historical eviction pdfs'
   task :letters, [:year] => [:environment] do |_t, args|
     ReportOklahomaEviction.filed_year(args.year).each do |r|
-      EvictionLetter.find_or_create_by(
-        docket_event_link_id: r.docket_link_id,
-        status: :historical
+      letter = EvictionLetter.find_or_initialize_by(
+        docket_event_link_id: r.docket_link_id
       )
+      letter.save
     end
   end
 
