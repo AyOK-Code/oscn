@@ -59,9 +59,9 @@ module EvictionOcr
         validation_state: usps ? usps_state(parsed_response) : state(parsed_response),
         validation_zip_code: usps ? usps_zip(parsed_response) : zip_code(parsed_response),
         is_metadata_present: meta,
-        is_po_box: meta ? parsed_response['metadata']['poBox'] : false,
-        is_business: meta ? parsed_response['metadata']['business'] : false,
-        is_residential: meta ? parsed_response['metadata']['residential'] : false
+        is_po_box: meta ? parsed_response['metadata']['poBox'] || false : false,
+        is_business: meta ? parsed_response['metadata']['business'] || false : false,
+        is_residential: meta ? parsed_response['metadata']['residential'] || false : false
       }
     end
     # rubocop:enable Metrics/CyclomaticComplexity
