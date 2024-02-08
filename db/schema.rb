@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_06_225445) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_08_161618) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -370,6 +370,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_06_225445) do
     t.string "validation_city"
     t.string "validation_zip_code"
     t.string "validation_state"
+    t.boolean "is_metadata_present", default: false, null: false
+    t.boolean "is_po_box", default: false, null: false
+    t.boolean "is_business", default: false, null: false
+    t.boolean "is_residential", default: false, null: false
     t.index ["docket_event_link_id"], name: "index_eviction_letters_on_docket_event_link_id"
   end
 

@@ -41,6 +41,7 @@ module EvictionOcr
 
     def define_attributes(parsed_response)
       usps = parsed_response['uspsData'].present?
+      meta = parsed_response['metadata'].present?
       {
         status: 'validated',
         is_validated: true,
@@ -53,7 +54,11 @@ module EvictionOcr
         validation_longitude: longitude(parsed_response),
         validation_city: usps ? usps_city(parsed_response) : city(parsed_response),
         validation_state: usps ? usps_state(parsed_response) : state(parsed_response),
-        validation_zip_code: usps ? usps_zip(parsed_response) : zip_code(parsed_response)
+        validation_zip_code: usps ? usps_zip(parsed_response) : zip_code(parsed_response),
+        is_metadata_present: meta,
+        is_po_box: meta ? parsed_response['metadata']['poBox'] : false,
+        is_business: meta ? parsed_response['metadata']['business'] : false,
+        is_residential: meta ? parsed_response['metadata']['residential'] : false
       }
     end
 
