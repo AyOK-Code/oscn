@@ -4,6 +4,10 @@ class ReportOklahomaEviction < ApplicationRecord
   scope :filed_year, ->(year) { where(case_filed_on: Date.new(year.to_i - 1, 12, 31)..Date.new(year.to_i, 12, 31)) }
   scope :past_thirty_days, -> { where(case_filed_on: 30.days.ago..Date.today) }
 
+  def self.refresh
+    Scenic.database.refresh_materialized_view(:report_oklahoma_evictions, concurrently: false, cascade: false)
+  end
+
   def docket_link_id
     docket_event_type_id = DocketEventType.find_by(code: 'P').id
     docket = court_case.docket_events.where(docket_event_type_id: docket_event_type_id).first
