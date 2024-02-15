@@ -3,4 +3,9 @@ namespace :ok_real_estate do
   task import: [:environment] do
     Importers::OkRealEstate::Import.perform
   end
+
+  desc 'Pull Agent details'
+  task agent_details: [:environment] do
+    Importers::OkRealEstate::Import.new.import_agent_details
+  end
 end
