@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_15_212333) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_15_215329) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -347,6 +347,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_15_212333) do
     t.index ["party_id"], name: "index_events_on_party_id"
   end
 
+  create_table "eviction_files", force: :cascade do |t|
+    t.datetime "sent_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "eviction_letters", force: :cascade do |t|
     t.integer "status", default: 0, null: false
     t.bigint "docket_event_link_id", null: false
@@ -374,7 +380,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_15_212333) do
     t.boolean "is_po_box", default: false, null: false
     t.boolean "is_business", default: false, null: false
     t.boolean "is_residential", default: false, null: false
+    t.bigint "eviction_file_id"
     t.index ["docket_event_link_id"], name: "index_eviction_letters_on_docket_event_link_id"
+    t.index ["eviction_file_id"], name: "index_eviction_letters_on_eviction_file_id"
   end
 
   create_table "issue_parties", force: :cascade do |t|
@@ -901,6 +909,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_15_212333) do
   add_foreign_key "events", "event_types"
   add_foreign_key "events", "parties"
   add_foreign_key "eviction_letters", "docket_event_links"
+  add_foreign_key "eviction_letters", "eviction_files"
   add_foreign_key "issue_parties", "issues"
   add_foreign_key "issue_parties", "parties"
   add_foreign_key "issue_parties", "verdicts"
