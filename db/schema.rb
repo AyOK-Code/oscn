@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_08_161618) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_15_212333) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -1717,6 +1717,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_08_161618) do
               WHEN ((verdict ~ 'settled'::text) OR (verdict ~ 'settlement'::text)) THEN 'Dismissed - Settlement'::text
               WHEN ((verdict ~ 'dismissed'::text) OR (verdict ~ 'vacated'::text)) THEN 'Dismissed'::text
               WHEN (verdict = 'discharge filed'::text) THEN 'Dismissed'::text
+              WHEN (case_closed_on IS NULL) THEN 'Active Case'::text
               ELSE 'Other'::text
           END AS simple_judgement
      FROM view_data;
