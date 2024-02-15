@@ -12,7 +12,6 @@ class AzureFireExtractor
 
   def perform
     response = HTTParty.post(request_url, body: request_body, headers: headers)
-    binding.pry
     if response.code.to_i == 202
       operation_url = response['Operation-Location']
       # Poll the operation URL to get the result
@@ -22,14 +21,25 @@ class AzureFireExtractor
         sleep(2)
         response = HTTParty.get(operation_url, headers: headers)
         poll_result = JSON.parse(response.body)
+        
         break if poll_result['status'] != 'running'
       end
       result = {}
-      poll_result['analyzeResult']['documents'][0]['fields'].each do |name, field|
+       cell_array =poll_result['analyzeResult']['tables'][0]['cells']
+        amount= cell_array.count
+      1.upto(amount) do |i|
+        
+        
         result[name.to_s] = field['valueString']
+        cell_name =cell_array.find {|cell| cell['columnIndex']==i && cell['rowIndex']==0}['content']
+        cell_value =cell_array.find {|cell| cell['columnIndex']==i && cell['rowIndex']==1}['content']
+        results[cell_name] = cell_value
+        binding.pry
       end
     end
     result
+    binding.pry
+
   end
 
   private
