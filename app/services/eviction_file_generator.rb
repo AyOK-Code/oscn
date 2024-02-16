@@ -43,14 +43,14 @@ class EvictionFileGenerator
 
   def add_row(eviction_letter)
     [
-          eviction_letter.first_defendant.first_name,
-          eviction_letter.first_defendant.last_name,
-          '', # Company: Placeholder
-          eviction_letter.validation_usps_address,
-          '', # Address2: Placeholder
-          eviction_letter.validation_city,
-          eviction_letter.validation_state,
-          eviction_letter.validation_zip_code
+      eviction_letter.first_defendant.first_name,
+      eviction_letter.first_defendant.last_name,
+      '', # Company: Placeholder
+      eviction_letter.validation_usps_address,
+      '', # Address2: Placeholder
+      eviction_letter.validation_city,
+      eviction_letter.validation_state,
+      eviction_letter.validation_zip_code
     ]
   end
 end
