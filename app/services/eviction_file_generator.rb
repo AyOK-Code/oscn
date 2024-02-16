@@ -38,7 +38,7 @@ class EvictionFileGenerator
   private
 
   def add_headers
-    %w[First Last Company Address1 Address2 City State Zip]
+    %w[First Last Company Address1 Address2 City State Zip CaseNumber Defendants ScheduledCourtDate CaseLink]
   end
 
   def add_row(eviction_letter)
@@ -50,7 +50,11 @@ class EvictionFileGenerator
       '', # Address2: Placeholder
       eviction_letter.validation_city,
       eviction_letter.validation_state,
-      eviction_letter.validation_zip_code
+      eviction_letter.validation_zip_code,
+      eviction_letter.docket_event_link.docket_event.court_case.case_number,
+      eviction_letter.full_name,
+      eviction_letter.docket_event_link.docket_event.court_case.events.first&.event_at,
+      eviction_letter.docket_event_link.docket_event.court_case.oscn_link
     ]
   end
 end

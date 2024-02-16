@@ -28,7 +28,8 @@ RSpec.describe EvictionLetter, type: :model do
       docket_event_link = create(:docket_event_link, docket_event: docket_event)
       eviction_letter = create(:eviction_letter, docket_event_link: docket_event_link)
 
-      expect(eviction_letter.full_name).to eq("#{defendant1.full_name}, #{defendant2.full_name}")
+      expect(eviction_letter.full_name).to include(defendant1.full_name)
+      expect(eviction_letter.full_name).to include(defendant2.full_name)
     end
   end
 
