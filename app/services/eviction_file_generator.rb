@@ -5,7 +5,7 @@ class EvictionFileGenerator
   attr_reader :eviction_letters
 
   def initialize
-    @eviction_letters = EvictionLetter.past_day
+    @eviction_letters = EvictionLetter.file_pull(Date.today)
   end
 
   def generate
