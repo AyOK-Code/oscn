@@ -2,9 +2,10 @@ require 'csv'
 require 'tempfile'
 
 class EvictionFileGenerator
-  attr_reader :eviction_letters
+  attr_reader :eviction_letters, :date
 
   def initialize(date)
+    @date = date
     @eviction_letters = EvictionLetter.file_pull(date)
   end
 
@@ -34,7 +35,7 @@ class EvictionFileGenerator
 
     # Save to EvictionFile
     eviction_file = EvictionFile.new
-    eviction_file.sent_at = Time.zone.now
+    eviction_file.sent_at = date
     eviction_file.file.attach(io: File.open(temp_file.path), filename: "eviction_letters_#{Time.zone.now.to_date}.csv")
     # Mail to quickprint
     eviction_file.save
