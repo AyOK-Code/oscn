@@ -10,6 +10,11 @@ namespace :evictions do
     end
   end
 
+  task :eviction_file, [:date] => [:environment] do |_t, args|
+    date = args[:date].to_date
+    EvictionFileGenerator.generate(date)
+  end
+
   task ocr_nightly: :environment do
     letters = EvictionLetter.past_thirty_days.historical.missing_extraction
     bar = ProgressBar.new(letters.count)

@@ -4,8 +4,12 @@ require 'tempfile'
 class EvictionFileGenerator
   attr_reader :eviction_letters
 
-  def initialize
-    @eviction_letters = EvictionLetter.file_pull(Date.today)
+  def initialize(date)
+    @eviction_letters = EvictionLetter.file_pull(date)
+  end
+
+  def self.generate(date)
+    new(date).generate
   end
 
   def generate
@@ -25,11 +29,12 @@ class EvictionFileGenerator
     # Output the path to the tempfile for reference
     puts "CSV file generated at: #{temp_file.path}"
 
-    # Ensure you return the file path if needed elsewhere
+    # Ensure you return the file path if needed generateelsewhere
     temp_file.path
 
     # Save to EvictionFile
-    eviction_file = EvictionFile.create
+    eviction_file = EvictionFile.new
+    eviction_file.sent_at = Time.zone.now
     eviction_file.file.attach(io: File.open(temp_file.path), filename: "eviction_letters_#{Time.zone.now.to_date}.csv")
     # Mail to quickprint
     eviction_file.save
