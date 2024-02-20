@@ -134,7 +134,9 @@ RSpec.describe EvictionLetter, type: :model do
       context 'when tuesday, thursday, saturday, sunday' do
         it 'raises an error' do
           travel_to Date.new(2024, 2, 20) do
-            expect { EvictionLetter.file_pull(Date.today) }.to raise_error('Invalid date: mailer only happens on M, W, F')
+            expect do
+              EvictionLetter.file_pull(Date.today)
+            end.to raise_error('Invalid date: mailer only happens on M, W, F')
           end
         end
       end

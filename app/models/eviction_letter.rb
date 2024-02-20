@@ -27,9 +27,7 @@ class EvictionLetter < ApplicationRecord
     finish = date - 1.day
     if date.monday?
       start = date - 4.days
-    elsif date.wednesday?
-      start = date - 3.days
-    elsif date.friday?
+    elsif date.wednesday? || date.friday?
       start = date - 3.days
     end
 
