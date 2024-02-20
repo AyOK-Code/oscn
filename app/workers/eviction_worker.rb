@@ -1,6 +1,6 @@
 # Worker that scrapes the Party page on OSCN
 # Ex: https://www.oscn.net/dockets/GetPartyRecord.aspx?db=oklahoma&id=5515773
-class EvictionExtractionWorker
+class EvictionWorker
   include Sidekiq::Worker
   include Sidekiq::Throttled::Worker
   sidekiq_options retry: 5
