@@ -10,23 +10,13 @@ namespace :evictions do
     end
   end
 
-  task ocr_extract: :environment do
+  task ocr_nightly: :environment do
     letters = EvictionLetter.past_thirty_days.historical.missing_extraction
     bar = ProgressBar.new(letters.count)
 
     letters.each do |letter|
       bar.increment!
-      EvictionOcr::Extractor.perform(letter.id)
-    end
-  end
-
-  task ocr_validate: :environment do
-    letters = EvictionLetter.past_thirty_days.has_extraction.missing_address_validation
-    bar = ProgressBar.new(letters.count)
-
-    letters.each do |letter|
-      bar.increment!
-      EvictionOcr::Validator.perform(letter.id)
+      EvictionWorker.perform_async(letter.id)
     end
   end
 

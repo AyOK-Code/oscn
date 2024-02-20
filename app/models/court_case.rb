@@ -47,4 +47,8 @@ class CourtCase < ApplicationRecord
   def defendants
     parties.defendant
   end
+
+  def oscn_link
+    "https://www.oscn.net/dockets/GetCaseInformation.aspx?db=#{county.name}&number=#{case_number}"
+  end
 end
