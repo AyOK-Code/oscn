@@ -3,7 +3,7 @@ namespace :evictions do
     ReportOklahomaEviction.past_thirty_days.each do |eviction|
       next if eviction.docket_link_id.nil?
 
-      EvictionLetter.find_or_initialize_by(
+      eviction_letter = EvictionLetter.find_or_initialize_by(
         docket_event_link_id: eviction.docket_link_id
       )
       next if eviction_letter.status.in?(%w[extracted validated mailed])
