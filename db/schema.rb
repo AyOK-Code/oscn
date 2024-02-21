@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_15_215329) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_21_175644) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -381,7 +381,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_15_215329) do
     t.boolean "is_business", default: false, null: false
     t.boolean "is_residential", default: false, null: false
     t.bigint "eviction_file_id"
-    t.index ["docket_event_link_id"], name: "index_eviction_letters_on_docket_event_link_id"
+    t.index ["docket_event_link_id"], name: "index_eviction_letters_on_docket_event_link_id", unique: true
     t.index ["eviction_file_id"], name: "index_eviction_letters_on_eviction_file_id"
   end
 

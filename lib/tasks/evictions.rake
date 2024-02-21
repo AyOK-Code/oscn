@@ -3,10 +3,14 @@ namespace :evictions do
     ReportOklahomaEviction.past_thirty_days.each do |eviction|
       next if eviction.docket_link_id.nil?
 
-      EvictionLetter.find_or_create_by(
-        docket_event_link_id: eviction.docket_link_id,
-        status: :historical
+      EvictionLetter.find_or_initialize_by(
+        docket_event_link_id: eviction.docket_link_id
       )
+      next if eviction_letter.status.in?(%w[extracted validated mailed])
+      next if eviction_letter.eviction_file_id.present?
+
+      eviction_letter.status = 'historical'
+      eviction_letter.save
     end
   end
 

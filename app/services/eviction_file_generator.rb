@@ -39,6 +39,8 @@ class EvictionFileGenerator
     eviction_file.file.attach(io: File.open(temp_file.path), filename: "eviction_letters_#{Time.zone.now.to_date}.csv")
     # Mail to quickprint
     eviction_file.save
+
+    eviction_letters.update_all(eviction_file_id: eviction_file.id)
   end
 
   private
