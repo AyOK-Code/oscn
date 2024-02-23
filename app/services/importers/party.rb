@@ -34,6 +34,7 @@ module Importers
       if party
         party.update(full_name: party_data[:name])
         save_existing_party_to_case(party)
+        Matchers::PartyNameSplitter.new(party).perform
       else
         create_and_save_party_to_case(oscn_id, party_data)
       end
@@ -74,6 +75,7 @@ module Importers
       end
       return if party.nil?
 
+      Matchers::PartyNameSplitter.new(party).perform
       create_case_party(court_case.id, party.id)
     end
 
@@ -97,6 +99,7 @@ module Importers
       end
       return if party.nil?
 
+      Matchers::PartyNameSplitter.new(party).perform
       create_case_party(court_case.id, party.id)
     end
 

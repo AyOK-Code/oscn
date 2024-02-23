@@ -43,5 +43,9 @@ FactoryBot.define do
     trait :misdemeanor do
       case_type { CaseType.find_by(abbreviation: 'CM') || create(:case_type, :misdemeanor) }
     end
+
+    trait :small_claim do
+      case_type { CaseType.find_by(abbreviation: 'SC') || create(:case_type, :small_claim) }
+    end
   end
 end
