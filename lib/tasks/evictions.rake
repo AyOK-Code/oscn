@@ -43,7 +43,7 @@ namespace :evictions do
 
   desc 'Queue up recent evictions cases'
   task recent_cases: [:environment] do
-    court_cases = CourtCase.distinct.for_county_name('Oklahoma').small_claims.days_young(3).without_pdf
+    court_cases = CourtCase.distinct.for_county_name('Oklahoma').small_claims.days_young(3)
     bar = ProgressBar.new(court_cases.length)
 
     court_cases.each do |c|

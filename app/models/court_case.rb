@@ -38,7 +38,6 @@ class CourtCase < ApplicationRecord
   scope :not_in_queue, -> { where(enqueued: false) }
   scope :small_claims, -> { joins(:case_type).where(case_types: { abbreviation: 'SC' }) }
   scope :days_young, ->(days) { where('filed_on >= ?', days.days.ago) }
-  scope :without_pdf, -> { joins(docket_events: :links).where(docket_event_links: { id: nil }) }
 
   delegate :html, to: :case_html
 
