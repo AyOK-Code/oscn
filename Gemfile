@@ -15,6 +15,7 @@ gem 'image_processing', '~> 1.12'
 gem 'jbuilder', '~> 2.7'
 gem 'jwt'
 gem 'kaminari'
+gem 'mailgun-ruby', '~>1.2.14'
 gem 'monetize'
 gem 'ok2explore', git: 'https://github.com/AyOK-Code/ok2explore', ref: 'fdf184d'
 gem 'ocso_scraper', git: 'https://github.com/AyOK-Code/ocso_scraper', ref: '4023411'
@@ -65,6 +66,7 @@ end
 
 group :development do
   gem 'rails-erd'
+  gem 'letter_opener'
   gem 'listen', '~> 3.2'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
