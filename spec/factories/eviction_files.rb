@@ -5,7 +5,8 @@ FactoryBot.define do
 
     trait :with_file do
       after(:build) do |eviction_file|
-        eviction_file.file.attach(io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'eviction-letters.csv')), filename: 'eviction-letters.csv', content_type: 'application/csv')
+        eviction_file.file.attach(io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'eviction-letters.csv')),
+                                  filename: 'eviction-letters.csv', content_type: 'application/csv')
       end
     end
   end
