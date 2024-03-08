@@ -23,6 +23,8 @@ module Scrapers
 
         data.css('tr').each do |row|
           save_case(row, date)
+        rescue StandardError => e
+          Raygun.track_exception(e)
         end
       end
     end
