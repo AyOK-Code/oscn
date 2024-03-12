@@ -12,7 +12,7 @@ RSpec.describe EvictionLetter, type: :model do
         eviction_letter = create(:eviction_letter, is_validated: false)
         create(:eviction_letter, is_validated: true)
 
-        expect(EvictionLetter.missing_address_validation).to eq([eviction_letter])
+        expect(described_class.missing_address_validation).to eq([eviction_letter])
       end
     end
 
@@ -21,7 +21,7 @@ RSpec.describe EvictionLetter, type: :model do
         create(:eviction_letter, is_validated: false)
         eviction_letter = create(:eviction_letter, is_validated: true)
 
-        expect(EvictionLetter.has_address_validation).to eq([eviction_letter])
+        expect(described_class.has_address_validation).to eq([eviction_letter])
       end
     end
 
@@ -30,7 +30,7 @@ RSpec.describe EvictionLetter, type: :model do
         eviction_letter = create(:eviction_letter, ocr_plaintiff_address: nil)
         create(:eviction_letter, ocr_plaintiff_address: '123 Main St')
 
-        expect(EvictionLetter.missing_extraction).to eq([eviction_letter])
+        expect(described_class.missing_extraction).to eq([eviction_letter])
       end
     end
 
@@ -39,7 +39,7 @@ RSpec.describe EvictionLetter, type: :model do
         create(:eviction_letter, ocr_plaintiff_address: nil)
         eviction_letter = create(:eviction_letter, ocr_plaintiff_address: '123 Main St')
 
-        expect(EvictionLetter.has_extraction).to eq([eviction_letter])
+        expect(described_class.has_extraction).to eq([eviction_letter])
       end
     end
 
@@ -49,7 +49,7 @@ RSpec.describe EvictionLetter, type: :model do
         docket_event_link = create(:docket_event_link, docket_event_id: docket_event.id)
         eviction_letter = create(:eviction_letter, docket_event_link_id: docket_event_link.id)
 
-        expect(EvictionLetter.past_thirty_days).to eq([eviction_letter])
+        expect(described_class.past_thirty_days).to eq([eviction_letter])
       end
 
       it 'does not return letters that have been created more than 30 days ago' do
@@ -57,7 +57,7 @@ RSpec.describe EvictionLetter, type: :model do
         docket_event_link = create(:docket_event_link, docket_event_id: docket_event.id)
         create(:eviction_letter, docket_event_link_id: docket_event_link.id)
 
-        expect(EvictionLetter.past_thirty_days).to eq([])
+        expect(described_class.past_thirty_days).to eq([])
       end
     end
 
@@ -108,7 +108,7 @@ RSpec.describe EvictionLetter, type: :model do
         it 'raises an error' do
           travel_to Date.new(2024, 2, 20) do
             expect do
-              EvictionLetter.calculate_dates(Date.today)
+              described_class.calculate_dates(Date.today)
             end.to raise_error('Invalid date: mailer only happens on M, W, F')
           end
         end
@@ -116,6 +116,21 @@ RSpec.describe EvictionLetter, type: :model do
     end
 
     describe '.file_pull' do
+      context 'when has file' do
+        it 'returns letters that have not been mailed' do
+          travel_to Date.new(2024, 2, 19) do
+            days = (1..3).to_a.sample
+            court_case = create(:court_case, filed_on: days.days.ago)
+            docket_event = create(:docket_event, court_case: court_case)
+            docket_event_link = create(:docket_event_link, docket_event: docket_event)
+            file = create(:eviction_file)
+            create(:eviction_letter, docket_event_link: docket_event_link, eviction_file: file)
+
+            expect(described_class.file_pull(Date.today)).to eq([])
+          end
+        end
+      end
+
       context 'when monday' do
         it 'returns letters from F, Sa, Su on Monday' do
           travel_to Date.new(2024, 2, 19) do
@@ -125,7 +140,7 @@ RSpec.describe EvictionLetter, type: :model do
             docket_event_link = create(:docket_event_link, docket_event: docket_event)
             eviction_letter = create(:eviction_letter, docket_event_link: docket_event_link)
 
-            expect(EvictionLetter.file_pull(Date.today)).to eq([eviction_letter])
+            expect(described_class.file_pull(Date.today)).to eq([eviction_letter])
           end
         end
 
@@ -134,7 +149,7 @@ RSpec.describe EvictionLetter, type: :model do
             days = (4..6).to_a.sample
             create(:court_case, filed_on: days.days.ago)
 
-            expect(EvictionLetter.file_pull(Date.today)).to eq([])
+            expect(described_class.file_pull(Date.today)).to eq([])
           end
         end
       end
@@ -148,7 +163,7 @@ RSpec.describe EvictionLetter, type: :model do
             docket_event_link = create(:docket_event_link, docket_event: docket_event)
             eviction_letter = create(:eviction_letter, docket_event_link: docket_event_link)
 
-            expect(EvictionLetter.file_pull(Date.today)).to eq([eviction_letter])
+            expect(described_class.file_pull(Date.today)).to eq([eviction_letter])
           end
         end
 
@@ -157,7 +172,7 @@ RSpec.describe EvictionLetter, type: :model do
             days = (3..6).to_a.sample
             create(:court_case, filed_on: days.days.ago)
 
-            expect(EvictionLetter.file_pull(Date.today)).to eq([])
+            expect(described_class.file_pull(Date.today)).to eq([])
           end
         end
       end
@@ -171,7 +186,7 @@ RSpec.describe EvictionLetter, type: :model do
             docket_event_link = create(:docket_event_link, docket_event: docket_event)
             eviction_letter = create(:eviction_letter, docket_event_link: docket_event_link)
 
-            expect(EvictionLetter.file_pull(Date.today)).to eq([eviction_letter])
+            expect(described_class.file_pull(Date.today)).to eq([eviction_letter])
           end
         end
 
@@ -180,7 +195,7 @@ RSpec.describe EvictionLetter, type: :model do
             days = (3..6).to_a.sample
             create(:court_case, filed_on: days.days.ago)
 
-            expect(EvictionLetter.file_pull(Date.today)).to eq([])
+            expect(described_class.file_pull(Date.today)).to eq([])
           end
         end
       end
@@ -189,7 +204,7 @@ RSpec.describe EvictionLetter, type: :model do
         it 'raises an error' do
           travel_to Date.new(2024, 2, 20) do
             expect do
-              EvictionLetter.file_pull(Date.today)
+              described_class.file_pull(Date.today)
             end.to raise_error('Invalid date: mailer only happens on M, W, F')
           end
         end
@@ -229,7 +244,7 @@ RSpec.describe EvictionLetter, type: :model do
       eviction_letter = create(:eviction_letter, is_validated: false)
       create(:eviction_letter, is_validated: true)
 
-      expect(EvictionLetter.missing_address_validation).to eq([eviction_letter])
+      expect(described_class.missing_address_validation).to eq([eviction_letter])
     end
   end
 
@@ -238,7 +253,7 @@ RSpec.describe EvictionLetter, type: :model do
       create(:eviction_letter, is_validated: false)
       eviction_letter = create(:eviction_letter, is_validated: true)
 
-      expect(EvictionLetter.has_address_validation).to eq([eviction_letter])
+      expect(described_class.has_address_validation).to eq([eviction_letter])
     end
   end
 
@@ -247,7 +262,7 @@ RSpec.describe EvictionLetter, type: :model do
       eviction_letter = create(:eviction_letter, ocr_plaintiff_address: nil)
       create(:eviction_letter, ocr_plaintiff_address: '123 Main St')
 
-      expect(EvictionLetter.missing_extraction).to eq([eviction_letter])
+      expect(described_class.missing_extraction).to eq([eviction_letter])
     end
   end
 
@@ -256,7 +271,7 @@ RSpec.describe EvictionLetter, type: :model do
       create(:eviction_letter, ocr_plaintiff_address: nil)
       eviction_letter = create(:eviction_letter, ocr_plaintiff_address: '123 Main St')
 
-      expect(EvictionLetter.has_extraction).to eq([eviction_letter])
+      expect(described_class.has_extraction).to eq([eviction_letter])
     end
   end
 
@@ -266,7 +281,7 @@ RSpec.describe EvictionLetter, type: :model do
       docket_event_link = create(:docket_event_link, docket_event_id: docket_event.id)
       eviction_letter = create(:eviction_letter, docket_event_link_id: docket_event_link.id)
 
-      expect(EvictionLetter.past_thirty_days).to eq([eviction_letter])
+      expect(described_class.past_thirty_days).to eq([eviction_letter])
     end
 
     it 'does not return letters that have been created more than 30 days ago' do
@@ -274,7 +289,7 @@ RSpec.describe EvictionLetter, type: :model do
       docket_event_link = create(:docket_event_link, docket_event_id: docket_event.id)
       create(:eviction_letter, docket_event_link_id: docket_event_link.id)
 
-      expect(EvictionLetter.past_thirty_days).to eq([])
+      expect(described_class.past_thirty_days).to eq([])
     end
   end
 end

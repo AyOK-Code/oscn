@@ -15,6 +15,7 @@ class EvictionLetter < ApplicationRecord
   scope :has_address_validation, -> { where(is_validated: true) }
   scope :missing_extraction, -> { where(ocr_plaintiff_address: nil) }
   scope :has_extraction, -> { where.not(ocr_plaintiff_address: nil) }
+  scope :without_file, -> { where(eviction_file_id: nil) }
   scope :past_day, -> { where('created_at >= ?', 1.day.ago) }
   scope :past_thirty_days, lambda {
                              joins(docket_event_link: :docket_event)
@@ -41,6 +42,7 @@ class EvictionLetter < ApplicationRecord
     finish = dates[:finish]
 
     joins(docket_event_link: { docket_event: :court_case })
+      .without_file
       .where(court_cases: { filed_on: start..finish })
   end
 
