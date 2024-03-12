@@ -65,7 +65,13 @@ RSpec.describe EvictionLetter, type: :model do
       context 'when monday' do
         it 'returns the start and finish dates' do
           travel_to Date.new(2024, 2, 19) do
-            expect(EvictionLetter.calculate_dates(Date.today)).to eq({ start: 4.days.ago, finish: 1.day.ago })
+            expected_start = Date.new(2024, 2, 16)
+            expected_finish = Date.new(2024, 2, 18)
+
+            result = described_class.calculate_dates(Date.today)
+
+            expect(result[:start]).to eq expected_start
+            expect(result[:finish]).to eq expected_finish
           end
         end
       end
@@ -73,7 +79,13 @@ RSpec.describe EvictionLetter, type: :model do
       context 'when wednesday' do
         it 'returns the start and finish dates' do
           travel_to Date.new(2024, 2, 21) do
-            expect(EvictionLetter.calculate_dates(Date.today)).to eq({ start: 3.days.ago, finish: 1.day.ago })
+            expected_start = Date.new(2024, 2, 19)
+            expected_finish = Date.new(2024, 2, 20)
+
+            result = described_class.calculate_dates(Date.today)
+
+            expect(result[:start]).to eq expected_start
+            expect(result[:finish]).to eq expected_finish
           end
         end
       end
@@ -81,7 +93,13 @@ RSpec.describe EvictionLetter, type: :model do
       context 'when friday' do
         it 'returns the start and finish dates' do
           travel_to Date.new(2024, 2, 23) do
-            expect(EvictionLetter.calculate_dates(Date.today)).to eq({ start: 3.days.ago, finish: 1.day.ago })
+            expected_start = Date.new(2024, 2, 21)
+            expected_finish = Date.new(2024, 2, 22)
+
+            result = described_class.calculate_dates(Date.today)
+
+            expect(result[:start]).to eq expected_start
+            expect(result[:finish]).to eq expected_finish
           end
         end
       end
