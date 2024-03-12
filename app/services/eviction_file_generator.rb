@@ -2,11 +2,12 @@ require 'csv'
 require 'tempfile'
 
 class EvictionFileGenerator
-  attr_reader :eviction_letters, :date
+  attr_reader :eviction_letters, :date, :date_range
 
   def initialize(date)
     @date = date
     @eviction_letters = EvictionLetter.file_pull(date)
+    @date_range = EvictionLetter.calculate_dates(date)
   end
 
   def self.generate(date)
@@ -35,11 +36,12 @@ class EvictionFileGenerator
 
     # Save to EvictionFile
     eviction_file = EvictionFile.new
-    eviction_file.generated_at = date
-    eviction_file.file.attach(io: File.open(temp_file.path), filename: "eviction_letters_#{Time.zone.now.to_date}.csv")
+    eviction_file.generated_at = DateTime.current
+    eviction_file.file.attach(io: File.open(temp_file.path),
+                              filename: "eviction_letters_#{date.strftime('%Y-%m-%d')}.csv")
     # Mail to quickprint
     eviction_file.save
-
+    EvictionsMailer.file_email(eviction_file.id, date_range).deliver_now
     eviction_letters.update_all(eviction_file_id: eviction_file.id)
   end
 
@@ -61,8 +63,19 @@ class EvictionFileGenerator
       eviction_letter.validation_zip_code,
       eviction_letter.docket_event_link.docket_event.court_case.case_number,
       eviction_letter.full_name,
-      eviction_letter.docket_event_link.docket_event.court_case.events.first&.event_at,
+      scheduled_court_date(eviction_letter),
       eviction_letter.docket_event_link.docket_event.court_case.oscn_link
     ]
+  end
+
+  def scheduled_court_date(eviction_letter)
+    eviction_letter
+      .docket_event_link
+      .docket_event
+      .court_case
+      .events
+      .first
+      &.event_at
+      &.in_time_zone('Central Time (US & Canada)')
   end
 end

@@ -21,17 +21,27 @@ class EvictionLetter < ApplicationRecord
                                .where(docket_events: { event_on: 30.days.ago..Date.today })
                            }
 
-  def self.file_pull(date)
+  def self.calculate_dates(date)
     raise 'Invalid date: mailer only happens on M, W, F' unless date.monday? || date.wednesday? || date.friday?
 
     finish = date - 1.day
-    if date.monday?
-      start = date - 4.days
-    elsif date.wednesday? || date.friday?
-      start = date - 3.days
-    end
+    start = if date.monday?
+              date - 3.days
+            else # for Wednesday and Friday
+              date - 2.days
+            end
 
-    joins(docket_event_link: { docket_event: :court_case }).where(court_cases: { filed_on: start..finish })
+    { start: start, finish: finish }
+  end
+
+  # Method to perform the file pull operation using the calculated dates
+  def self.file_pull(date)
+    dates = calculate_dates(date) # Get start and finish dates
+    start = dates[:start]
+    finish = dates[:finish]
+
+    joins(docket_event_link: { docket_event: :court_case })
+      .where(court_cases: { filed_on: start..finish })
   end
 
   def full_name
