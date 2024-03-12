@@ -62,8 +62,19 @@ class EvictionFileGenerator
       eviction_letter.validation_zip_code,
       eviction_letter.docket_event_link.docket_event.court_case.case_number,
       eviction_letter.full_name,
-      eviction_letter.docket_event_link.docket_event.court_case.events.first&.event_at&.in_time_zone('Central Time (US & Canada)'),
+      scheduled_court_date(eviction_letter),
       eviction_letter.docket_event_link.docket_event.court_case.oscn_link
     ]
+  end
+
+  def scheduled_court_date(eviction_letter)
+    eviction_letter
+      .docket_event_link
+      .docket_event
+      .court_case
+      .events
+      .first
+      &.event_at
+      &.in_time_zone('Central Time (US & Canada)')
   end
 end
