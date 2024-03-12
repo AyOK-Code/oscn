@@ -2,11 +2,12 @@ require 'csv'
 require 'tempfile'
 
 class EvictionFileGenerator
-  attr_reader :eviction_letters, :date
+  attr_reader :eviction_letters, :date, :date_range
 
   def initialize(date)
     @date = date
     @eviction_letters = EvictionLetter.file_pull(date)
+    @date_range = EvictionLetter.calculate_dates(date)
   end
 
   def self.generate(date)
@@ -35,11 +36,11 @@ class EvictionFileGenerator
 
     # Save to EvictionFile
     eviction_file = EvictionFile.new
-    eviction_file.generated_at = date
+    eviction_file.generated_at = DateTime.current
     eviction_file.file.attach(io: File.open(temp_file.path), filename: "eviction_letters_#{Time.zone.now.to_date}.csv")
     # Mail to quickprint
     eviction_file.save
-
+    EvictionsMailer.file_email(eviction_file.id, date_range).deliver_now
     eviction_letters.update_all(eviction_file_id: eviction_file.id)
   end
 

@@ -61,6 +61,42 @@ RSpec.describe EvictionLetter, type: :model do
       end
     end
 
+    describe '.calculate_dates' do
+      context 'when monday' do
+        it 'returns the start and finish dates' do
+          travel_to Date.new(2024, 2, 19) do
+            expect(EvictionLetter.calculate_dates(Date.today)).to eq({ start: 4.days.ago, finish: 1.day.ago })
+          end
+        end
+      end
+
+      context 'when wednesday' do
+        it 'returns the start and finish dates' do
+          travel_to Date.new(2024, 2, 21) do
+            expect(EvictionLetter.calculate_dates(Date.today)).to eq({ start: 3.days.ago, finish: 1.day.ago })
+          end
+        end
+      end
+
+      context 'when friday' do
+        it 'returns the start and finish dates' do
+          travel_to Date.new(2024, 2, 23) do
+            expect(EvictionLetter.calculate_dates(Date.today)).to eq({ start: 3.days.ago, finish: 1.day.ago })
+          end
+        end
+      end
+
+      context 'when tuesday, thursday, saturday, sunday' do
+        it 'raises an error' do
+          travel_to Date.new(2024, 2, 20) do
+            expect do
+              EvictionLetter.calculate_dates(Date.today)
+            end.to raise_error('Invalid date: mailer only happens on M, W, F')
+          end
+        end
+      end
+    end
+
     describe '.file_pull' do
       context 'when monday' do
         it 'returns letters from F, Sa, Su on Monday' do
