@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_06_204347) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_13_210703) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -1535,6 +1535,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_204347) do
            SELECT court_cases.id AS court_case_id,
               court_cases.filed_on AS case_filed_on,
               court_cases.closed_on AS case_closed_on,
+              ( SELECT eviction_letters.eviction_file_id
+                     FROM ((eviction_letters
+                       JOIN docket_event_links ON ((docket_event_links.id = eviction_letters.docket_event_link_id)))
+                       JOIN docket_events ON ((docket_event_links.docket_event_id = docket_events.id)))
+                    WHERE (docket_events.court_case_id = court_cases.id)
+                   LIMIT 1) AS eviction_file_id,
               court_cases.case_number,
               ( SELECT
                           CASE
@@ -1715,6 +1721,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_204347) do
       valdated_latitude,
       validation_longitude,
       letter_status,
+      eviction_file_id,
           CASE
               WHEN (verdict ~ 'juvenile'::text) THEN 'Juvenile'::text
               WHEN (verdict ~ 'default judgement'::text) THEN 'Default Judgement'::text
