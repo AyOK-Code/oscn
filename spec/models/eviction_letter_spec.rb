@@ -166,7 +166,7 @@ RSpec.describe EvictionLetter, type: :model do
             court_case = create(:court_case, filed_on: days.days.ago)
             docket_event = create(:docket_event, court_case: court_case)
             docket_event_link = create(:docket_event_link, docket_event: docket_event)
-            eviction_letter = create(:eviction_letter, docket_event_link: docket_event_link)
+            eviction_letter = create(:eviction_letter, :with_zip_code, :with_address, docket_event_link: docket_event_link)
 
             expect(described_class.file_pull(Date.today)).to eq([eviction_letter])
           end
@@ -189,7 +189,7 @@ RSpec.describe EvictionLetter, type: :model do
             court_case = create(:court_case, filed_on: days.days.ago)
             docket_event = create(:docket_event, court_case: court_case)
             docket_event_link = create(:docket_event_link, docket_event: docket_event)
-            eviction_letter = create(:eviction_letter, docket_event_link: docket_event_link)
+            eviction_letter = create(:eviction_letter, :with_zip_code, :with_address, docket_event_link: docket_event_link)
 
             expect(described_class.file_pull(Date.today)).to eq([eviction_letter])
           end
@@ -212,7 +212,7 @@ RSpec.describe EvictionLetter, type: :model do
             court_case = create(:court_case, filed_on: days.days.ago)
             docket_event = create(:docket_event, court_case: court_case)
             docket_event_link = create(:docket_event_link, docket_event: docket_event)
-            eviction_letter = create(:eviction_letter, docket_event_link: docket_event_link)
+            eviction_letter = create(:eviction_letter, :with_zip_code, :with_address, docket_event_link: docket_event_link)
 
             expect(described_class.file_pull(Date.today)).to eq([eviction_letter])
           end
