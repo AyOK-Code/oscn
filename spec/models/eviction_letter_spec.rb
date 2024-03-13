@@ -145,6 +145,20 @@ RSpec.describe EvictionLetter, type: :model do
         end
       end
 
+      context 'when has incomplete address' do
+        it 'does not return short addresses' do
+          travel_to Date.new(2024, 2, 19) do
+            days = (1..3).to_a.sample
+            court_case = create(:court_case, filed_on: days.days.ago)
+            docket_event = create(:docket_event, court_case: court_case)
+            docket_event_link = create(:docket_event_link, docket_event: docket_event)
+            create(:eviction_letter, docket_event_link: docket_event_link, validation_usps_address: '123 Main St')
+
+            expect(described_class.file_pull(Date.today)).to eq([])
+          end
+        end
+      end
+
       context 'when monday' do
         it 'returns letters from F, Sa, Su on Monday' do
           travel_to Date.new(2024, 2, 19) do
