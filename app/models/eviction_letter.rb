@@ -16,6 +16,7 @@ class EvictionLetter < ApplicationRecord
   scope :missing_extraction, -> { where(ocr_plaintiff_address: nil) }
   scope :has_extraction, -> { where.not(ocr_plaintiff_address: nil) }
   scope :without_file, -> { where(eviction_file_id: nil) }
+  scope :with_zip_code, -> { where.not(validation_zip_code: nil) }
   scope :past_day, -> { where('created_at >= ?', 1.day.ago) }
   scope :past_thirty_days, lambda {
                              joins(docket_event_link: :docket_event)
@@ -43,6 +44,7 @@ class EvictionLetter < ApplicationRecord
 
     joins(docket_event_link: { docket_event: :court_case })
       .without_file
+      .with_zip_code
       .where(court_cases: { filed_on: start..finish })
   end
 
