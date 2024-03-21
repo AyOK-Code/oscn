@@ -15,7 +15,7 @@ class EvictionFileGenerator
   end
 
   def generate
-    csv_string = CSV.generate do |csv|
+    csv_string = CSV.generate(force_quotes: true) do |csv|
       csv << add_headers
 
       eviction_letters.each do |eviction_letter|
@@ -77,5 +77,6 @@ class EvictionFileGenerator
       .first
       &.event_at
       &.in_time_zone('Central Time (US & Canada)')
+      &.strftime('%m/%d/%Y %I:%M %p')
   end
 end
