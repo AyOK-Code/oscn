@@ -51,7 +51,7 @@ class EvictionLetter < ApplicationRecord
   end
 
   def full_name
-    docket_event_link.docket_event.court_case.defendants.map(&:full_name).join(', ')
+    docket_event_link.docket_event.court_case.defendants.map(&:full_name).join('; ')
   end
 
   def first_defendant
