@@ -3,6 +3,7 @@ class AzureFireExtractor
   attr_reader :url
 
   def initialize(url)
+    # in development parameter should be public url like so https://oklahomaevictions.blob.core.windows.net/okc-structure-fires/07_10_2023.pdf, will change to url of pdf in production
     @url = url
   end
 
@@ -12,6 +13,7 @@ class AzureFireExtractor
 
   def perform
     response = HTTParty.post(request_url, body: request_body, headers: headers)
+    puts "response code: #{response.code.to_i}" 
     if response.code.to_i == 202
       operation_url = response['Operation-Location']
       # Poll the operation URL to get the result
@@ -26,15 +28,17 @@ class AzureFireExtractor
       end
       result = {}
        cell_array =poll_result['analyzeResult']['tables'][0]['cells']
-        amount= cell_array.count
-      1.upto(amount) do |i|
+        amount= (cell_array.count/2)-1
+      0.upto(amount) do |i|
+
+        puts "i count: #{i}" 
+
         
-        
-        result[name.to_s] = field['valueString']
-        cell_name =cell_array.find {|cell| cell['columnIndex']==i && cell['rowIndex']==0}['content']
-        cell_value =cell_array.find {|cell| cell['columnIndex']==i && cell['rowIndex']==1}['content']
-        results[cell_name] = cell_value
-        binding.pry
+
+        cell_name = cell_array.find {|cell| cell['columnIndex']==i && cell['rowIndex']==0}['content']
+        cell_value = cell_array.find {|cell| cell['columnIndex']==i && cell['rowIndex']==1}['content']
+        result[cell_name] = cell_value
+        #binding.pry
       end
     end
     result
