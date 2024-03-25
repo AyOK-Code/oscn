@@ -17,7 +17,7 @@ namespace :evictions do
   task eviction_file: [:environment] do
     date = Date.current
     return if date.saturday? || date.sunday? || date.thursday? || date.tuesday?
-    
+
     EvictionFileGenerator.generate(date)
   end
 
