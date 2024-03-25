@@ -14,10 +14,13 @@ module Importers
 
       def perform
         objects = bucket.list_objects('ok_election/voter_registration')
-        objects['contents'].each do |object|
+        objects['contents'].each_with_index do |object, i|
           puts "Processing #{object['key']}"
+          next unless object['key'] == 'ok_election/voter_registrations/CTY55_vr.csv'
+          
           file = bucket.get_object(object['key'])
           next unless file.content_type == 'text/csv'
+          
 
           voters = CSV.parse(file.body.read, headers: true, encoding: 'Windows-1252:UTF-8')
           bar = ProgressBar.new(voters.count)

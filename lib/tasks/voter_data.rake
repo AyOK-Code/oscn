@@ -1,24 +1,24 @@
 require 'progress_bar'
 require 'csv'
 
-namespace :migrate do
+namespace :import do
   desc 'Pull in Voting Methods'
   task voting_methods: :environment do
-    OkElection::VotingMethods.perform
+    Importers::OkElection::VotingMethods.perform
   end
 
   desc 'Pull in Voter History'
   task votes: :environment do
-    OkElection::Votes.perform
+    Importers::OkElection::Votes.perform
   end
 
   desc 'Pull in Precincts'
   task precincts: :environment do
-    OkElection::Precincts.perform
+    Importers::OkElection::Precincts.perform
   end
 
   desc 'Pull in Voters'
   task voters: :environment do
-    OkElection::Voters.perform
+    Importers::OkElection::Voters.perform
   end
 end
