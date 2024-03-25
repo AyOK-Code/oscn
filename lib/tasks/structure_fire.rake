@@ -1,7 +1,7 @@
 require 'open-uri'
 
 namespace :save do
-  desc 'Pull judges for a county'
+  desc 'Pull structure fire pdfs'
   task structure_fire: :environment do
     year = 2023
     start_date = Date.parse('07/10/2023')
@@ -15,7 +15,10 @@ namespace :save do
         day_int = format('%02d', i)
         month_int = format('%02d', Date::MONTHNAMES.index(month[:month].capitalize))
         jsons = Scrapers::StructureFireExtraction.new(year, month[:month], "#{month_int}/#{day_int}/2023").perform
-        Importers::StructureFire.new(jsons).perform
+        binding.pry
+        #fire_link = Importers::StructureFireLink.new(jsons).perform
+        fire_struct = Importers::StructureFire.perform
+       #binding.pry
       end
     end
   end

@@ -45,6 +45,8 @@ Rails.application.configure do
   # New connection handling
   config.active_record.legacy_connection_handling = false
 
+  Rails.application.routes.default_url_options[:host] = "https://www.okc.gov"
+
 
   # Raises error for missing translations.
   # config.action_view.raise_on_missing_translations = true
