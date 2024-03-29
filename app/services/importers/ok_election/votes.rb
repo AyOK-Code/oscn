@@ -15,9 +15,8 @@ module Importers
       def perform
         objects = bucket.list_objects('ok_election/voter_history')
         objects['contents'].each do |object|
-          puts "Processing #{object['key']}"
           next unless object['key'] == 'ok_election/voter_history/CTY55_vh.csv'
-          
+
           file = bucket.get_object(object['key'])
           next unless file.content_type == 'text/csv'
 
@@ -27,24 +26,37 @@ module Importers
 
           votes.each do |vote|
             bar.increment!
-            voter_id = ::OkElection::Voter.find_by(voter_id: vote['VoterID'].to_i).id
+            voter_id = voter_id(vote['VoterID'].to_i).id
             voting_method_id = voting_methods[vote['VotingMethod']]
 
             next if voter_id.nil? || voting_method_id.nil?
 
-            votes_data << { 
-                            voter_id: voter_id,
-                            election_on: parse_date(vote['ElectionDate']),
-                            voting_method_id: voting_method_id 
-                          }
+            votes_data << voter_attributes(voter_id, vote, voting_method_id)
           end
-          votes_data.each_slice(10_000) do |slice|
-            ::OkElection::Vote.upsert_all(slice, unique_by: [:voter_id, :election_on])
-          end
+
+          insert_votes(votes_data)
         end
       end
 
       private
+
+      def insert_votes(votes_data)
+        votes_data.each_slice(10_000) do |slice|
+          ::OkElection::Vote.upsert_all(slice, unique_by: [:voter_id, :election_on])
+        end
+      end
+
+      def voter_attributes(vote)
+        {
+          voter_id: voter_id,
+          election_on: parse_date(vote['ElectionDate']),
+          voting_method_id: voting_method_id
+        }
+      end
+
+      def voter_id(voter_id)
+        ::OkElection::Voter.find_by(voter_id: voter_id).id
+      end
 
       def parse_date(date)
         return nil if date.blank?

@@ -18,7 +18,7 @@ module Importers
       def perform
         bar = ProgressBar.new(precincts.count)
         @precincts.each do |precinct|
-          p = ::OkElection::Precinct.find_or_initialize_by(code: precinct["PrecinctCode"])
+          p = ::OkElection::Precinct.find_or_initialize_by(code: precinct['PrecinctCode'])
           p.update(precinct_attributes(precinct))
           bar.increment!
         end
@@ -28,16 +28,16 @@ module Importers
 
       def precinct_attributes(precinct)
         {
-          county_id: counties[precinct["PrecinctCode"][0..1].to_i],
-          congressional_district: precinct["CongressionalDistrict"],
-          state_senate_district: precinct["StateSenateDistrict"],
-          state_house_district: precinct["StateHouseDistrict"],
-          county_commissioner: precinct["CountyCommissioner"],
-          poll_site: precinct["PollSite"],
-          poll_site_address: precinct["PollSiteAddress"],
-          poll_site_address2: precinct["PollSiteAddress2"],
-          poll_site_city: precinct["PollSiteCity"],
-          poll_site_zip: precinct["PollSiteZip"]
+          county_id: counties[precinct['PrecinctCode'][0..1].to_i],
+          congressional_district: precinct['CongressionalDistrict'],
+          state_senate_district: precinct['StateSenateDistrict'],
+          state_house_district: precinct['StateHouseDistrict'],
+          county_commissioner: precinct['CountyCommissioner'],
+          poll_site: precinct['PollSite'],
+          poll_site_address: precinct['PollSiteAddress'],
+          poll_site_address2: precinct['PollSiteAddress2'],
+          poll_site_city: precinct['PollSiteCity'],
+          poll_site_zip: precinct['PollSiteZip']
         }
       end
     end
