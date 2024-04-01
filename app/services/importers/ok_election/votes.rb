@@ -46,7 +46,7 @@ module Importers
         end
       end
 
-      def voter_attributes(vote)
+      def voter_attributes(voter_id, vote, voting_method_id) 
         {
           voter_id: voter_id,
           election_on: parse_date(vote['ElectionDate']),
