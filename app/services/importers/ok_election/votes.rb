@@ -24,7 +24,7 @@ module Importers
           bar = ProgressBar.new(votes.count)
           votes_data = []
 
-          votes.each do |vote|
+          votes.each_with_index do |vote, index|
             bar.increment!
             voter_id = voter_id(vote['VoterID'].to_i)
             voting_method_id = voting_methods[vote['VotingMethod']]
@@ -32,6 +32,11 @@ module Importers
             next if voter_id.nil? || voting_method_id.nil?
 
             votes_data << voter_attributes(voter_id, vote, voting_method_id)
+
+            if index % 10000 == 0
+              insert_votes(votes_data)
+              votes_data = []
+            end
           end
 
           insert_votes(votes_data)
@@ -41,9 +46,7 @@ module Importers
       private
 
       def insert_votes(votes_data)
-        votes_data.each_slice(10_000) do |slice|
-          ::OkElection::Vote.upsert_all(slice, unique_by: [:voter_id, :election_on])
-        end
+        ::OkElection::Vote.upsert_all(votes_data, unique_by: [:voter_id, :election_on])
       end
 
       def voter_attributes(voter_id, vote, voting_method_id) 
