@@ -26,7 +26,7 @@ module Importers
 
           votes.each do |vote|
             bar.increment!
-            voter_id = voter_id(vote['VoterID'].to_i).id
+            voter_id = voter_id(vote['VoterID'].to_i)
             voting_method_id = voting_methods[vote['VotingMethod']]
 
             next if voter_id.nil? || voting_method_id.nil?
