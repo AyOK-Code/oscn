@@ -7,7 +7,7 @@ module Importers
 
       def perform
         data.each do |vm|
-          ::OkElection::VotingMethod.create!(
+          ::OkElection::VotingMethod.find_or_create_by!(
             code: vm[:code],
             name: vm[:name]
           )

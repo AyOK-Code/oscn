@@ -1,15 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe Importers::OkElection::VotingMethods do
-  before do
-    # TODO: Create fixture file
-    let(:sample_file) { CSV.parse('path/to/file', headers: true) }
-    allow(Bucket.new).to receive(:get_object).and_return(sample_file)
-  end
-
   describe 'perform' do
     it 'imports the voting methods data' do
-      skip
+      described_class.perform
+      expect(OkElection::VotingMethod.count).to eq(9)
+    end
+
+    it 'does not import duplicate voting methods' do
+      described_class.perform
+      described_class.perform
+      expect(OkElection::VotingMethod.count).to eq(9)
     end
   end
 end
