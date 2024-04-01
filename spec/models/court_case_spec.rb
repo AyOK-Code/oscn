@@ -171,6 +171,31 @@ RSpec.describe CourtCase, type: :model do
     end
   end
 
+  describe 'small_claims' do
+    it 'only returns small claims cases' do
+      small_claim = create(:court_case, :small_claim)
+      create(:court_case)
+
+      expect(described_class.small_claims.count).to eq 1
+      expect(described_class.small_claims).to include small_claim
+    end
+  end
+
+  describe 'days_young' do
+    it 'returns cases filed within the given number of days' do
+      travel_to(Date.new(2021, 1, 1)) do
+        recent = create(:court_case, filed_on: Date.new(2020, 12, 29))
+        old = create(:court_case, filed_on: Date.new(2020, 11, 11))
+
+        scoped_data = described_class.days_young(30)
+
+        expect(scoped_data.count).to eq 1
+        expect(scoped_data).to include recent
+        expect(scoped_data).to_not include old
+      end
+    end
+  end
+
   describe '#error?' do
     subject { court_case.error?}
     context 'when there are any associations present' do

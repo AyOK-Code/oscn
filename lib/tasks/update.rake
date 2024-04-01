@@ -10,6 +10,7 @@ namespace :update do
 
   desc 'Refresh the materialized views for the database'
   task refresh_views: [:environment] do
+    ReportOklahomaEviction.refresh
     ReportWarrants.refresh
     ReportFinesAndFees.refresh
     ReportArrestingAgency.refresh
@@ -22,7 +23,7 @@ namespace :update do
   task party_name: [:environment] do
     parties = Party.defendant.where(first_name: nil)
     bar = ProgressBar.new(parties.count)
-    # TODO: Move to party importer task
+    # DONE: Move to party importer task
     parties.each do |p|
       bar.increment!
       Matchers::PartyNameSplitter.new(p).perform
