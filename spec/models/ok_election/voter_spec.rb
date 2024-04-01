@@ -15,7 +15,7 @@ RSpec.describe OkElection::Voter, type: :model do
 
   describe 'enums' do
     it do
-      should define_enum_for(:party)
+      should define_enum_for(:political_affiliation)
         .with_values(
           REP: 1,
           DEM: 2,

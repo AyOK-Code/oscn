@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe OkElection::Precinct, type: :model do
   describe 'associations' do
     it { should belong_to(:county) }
-    it { should have_many(:voters).dependent(:destroy) }
+    it { should have_many(:voters).class_name('OkElection::Voter').dependent(:destroy) }
     it { should have_many(:votes).through(:voters) }
   end
 
