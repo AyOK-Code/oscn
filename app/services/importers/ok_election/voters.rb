@@ -16,7 +16,8 @@ module Importers
         objects = bucket.list_objects('ok_election/voter_registration')
         objects['contents'].each_with_index do |object, _i|
           puts "Processing #{object['key']}"
-          next unless object['key'] == 'ok_election/voter_registrations/CTY55_vr.csv'
+          # next unless object['key'] == 'ok_election/voter_registrations/CTY55_vr.csv'
+          next unless object['key'] == 'ok_election/voter_registrations/CTY72_vr.csv'
 
           file = bucket.get_object(object['key'])
           next unless file.content_type == 'text/csv'
