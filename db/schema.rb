@@ -1530,6 +1530,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_13_210703) do
        JOIN count_codes ON ((issues.count_code_id = count_codes.id)))
     WHERE (((count_codes.code)::text = ANY (ARRAY['SCFED1'::text, 'SCFED2'::text, 'FED1'::text, 'FED2'::text, 'ENTRY'::text])) AND ((counties.name)::text = 'Tulsa'::text));
   SQL
+
   create_view "report_oklahoma_evictions", materialized: true, sql_definition: <<-SQL
       WITH view_data AS (
            SELECT court_cases.id AS court_case_id,

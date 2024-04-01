@@ -13,6 +13,10 @@ class Bucket
     s3.get_object(bucket: ENV.fetch('BUCKETEER_BUCKET_NAME', nil), key: filepath)
   end
 
+  def list_objects(filepath)
+    s3.list_objects(bucket: ENV.fetch('BUCKETEER_BUCKET_NAME', nil), prefix: filepath)
+  end
+
   private
 
   def client
