@@ -6,7 +6,7 @@ module Importers
       def initialize(dir)
         @statutes = []
         @file = Bucket.new.get_object("doc/#{dir}/vendor_offense_extract_text.dat")
-        @fields = [38, 40, 1]
+        @fields = [30, 60, 1]
         @field_pattern = "A#{fields.join('A')}"
         @bar = ProgressBar.new(@file.body.string.split("\r\n").size)
       end
