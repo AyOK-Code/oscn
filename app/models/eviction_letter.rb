@@ -47,7 +47,8 @@ class EvictionLetter < ApplicationRecord
       .without_file
       .with_zip_code
       .complete_address
-      .where(court_cases: { filed_on: start..finish })
+      .where('court_cases.filed_on >= ?', start)
+      .where('court_cases.filed_on <= ?', finish)
   end
 
   def full_name
