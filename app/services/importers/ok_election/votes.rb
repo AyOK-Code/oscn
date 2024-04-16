@@ -12,6 +12,7 @@ module Importers
         Rails.logger.silence { new.perform }
       end
 
+      # rubocop:disable Metrics/CyclomaticComplexity
       def perform
         objects = bucket.list_objects('ok_election/voter_history')
         objects['contents'].each do |object|
@@ -33,7 +34,7 @@ module Importers
 
             votes_data << voter_attributes(voter_id, vote, voting_method_id)
 
-            if index % 10000 == 0
+            if (index % 10_000).zero?
               insert_votes(votes_data)
               votes_data = []
             end
@@ -42,6 +43,7 @@ module Importers
           insert_votes(votes_data)
         end
       end
+      # rubocop:enable Metrics/CyclomaticComplexity
 
       private
 
@@ -49,7 +51,7 @@ module Importers
         ::OkElection::Vote.upsert_all(votes_data, unique_by: [:voter_id, :election_on])
       end
 
-      def voter_attributes(voter_id, vote, voting_method_id) 
+      def voter_attributes(voter_id, vote, voting_method_id)
         {
           voter_id: voter_id,
           election_on: parse_date(vote['ElectionDate']),
