@@ -3,8 +3,8 @@ class AzureFireExtractor
   attr_reader :url
 
   def initialize(url)
-    # in development parameter should be public url like so https://oklahomaevictions.blob.core.windows.net/okc-structure-fires/07_10_2023.pdf, will change to url of pdf in production
-    @url = url
+    @url = 'https://oklahomaevictions.blob.core.windows.net/okc-structure-fires/07_10_2023.pdf'
+    # @url = url
   end
 
   def self.perform(url)
@@ -12,7 +12,7 @@ class AzureFireExtractor
   end
 
   def perform
-    response = HTTParty.post(request_url, body: request_body, headers: headers)
+    response = HTTParty.post(url, body: request_body, headers: headers)
     puts "response code: #{response.code.to_i}" 
     if response.code.to_i == 202
       operation_url = response['Operation-Location']
@@ -32,13 +32,9 @@ class AzureFireExtractor
       0.upto(amount) do |i|
 
         puts "i count: #{i}" 
-
-        
-
         cell_name = cell_array.find {|cell| cell['columnIndex']==i && cell['rowIndex']==0}['content']
         cell_value = cell_array.find {|cell| cell['columnIndex']==i && cell['rowIndex']==1}['content']
         result[cell_name] = cell_value
-        #binding.pry
       end
     end
     result
@@ -57,7 +53,7 @@ class AzureFireExtractor
   end
 
   def model_id
-    ENV.fetch('AZURE_FORM_MODEL_ID')
+    ENV.fetch('AZURE_STRUCTURE_FIRE_MODEL_ID')
   end
 
   def headers
