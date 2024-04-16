@@ -29,7 +29,7 @@ module Importers
         agents.each_with_index do |agent, i|
           bar.increment!
           Importers::OkRealEstate::AgentDetail.perform(agent.external_id)
-          sleep rand(1..5)
+          sleep rand(1..3)
           break if i > 1000
         end
       end

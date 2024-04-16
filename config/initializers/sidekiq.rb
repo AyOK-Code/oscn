@@ -33,6 +33,10 @@ Sidekiq::Throttled::Registry.add(:ok2explore, **{
   threshold: { limit: ENV.fetch('OK2EXPLORE_THROTTLE', 20).to_i, period: 1.minute },
   concurrency: { limit: ENV.fetch('OK2EXPLORE_CONCURRENCY', 3).to_i },
 })
-  
+
+Sidekiq::Throttled::Registry.add(:eviction_ocr, **{
+  threshold: { limit: 10, period: 1.minute },
+  concurrency: { limit: 1 },
+})
 
 Sidekiq::Throttled.setup!

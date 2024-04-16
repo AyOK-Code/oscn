@@ -162,8 +162,10 @@ counties = [
   { name: 'Woodward', fips_code: '153' }
 ]
 
-counties.each do |county|
-  County.find_or_create_by!(county)
+counties.each_with_index do |county, i|
+  c = County.find_or_initialize_by(county)
+  c.ok_code = i + 1
+  c.save!
 end
 
 party_types = [

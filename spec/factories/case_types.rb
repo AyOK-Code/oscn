@@ -13,5 +13,10 @@ FactoryBot.define do
       name { 'CRIMINAL MISDEMEANOR' }
       abbreviation { 'CM' }
     end
+
+    trait :small_claim do
+      name { 'SMALL CLAIMS' }
+      abbreviation { 'SC' }
+    end
   end
 end
