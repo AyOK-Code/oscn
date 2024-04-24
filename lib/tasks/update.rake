@@ -8,9 +8,13 @@ namespace :update do
     Scrapers::Case.perform
   end
 
+  desc 'Refresh Oklahoma Evictions'
+  task refresh_evictions: [:environment] do
+    ReportOklahomaEviction.refresh
+  end
+
   desc 'Refresh the materialized views for the database'
   task refresh_views: [:environment] do
-    ReportOklahomaEviction.refresh
     ReportWarrants.refresh
     ReportFinesAndFees.refresh
     ReportArrestingAgency.refresh
