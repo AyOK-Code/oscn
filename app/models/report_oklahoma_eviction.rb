@@ -5,7 +5,7 @@ class ReportOklahomaEviction < ApplicationRecord
   scope :past_thirty_days, -> { where(case_filed_on: 30.days.ago..Date.today) }
 
   def self.refresh
-    Scenic.database.refresh_materialized_view(:report_oklahoma_evictions, concurrently: false, cascade: false)
+    Scenic.database.refresh_materialized_view(:report_oklahoma_evictions, concurrently: true, cascade: false)
   end
 
   def docket_link_id

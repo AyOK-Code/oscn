@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_13_210703) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_24_144144) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -1530,7 +1530,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_13_210703) do
        JOIN count_codes ON ((issues.count_code_id = count_codes.id)))
     WHERE (((count_codes.code)::text = ANY (ARRAY['SCFED1'::text, 'SCFED2'::text, 'FED1'::text, 'FED2'::text, 'ENTRY'::text])) AND ((counties.name)::text = 'Tulsa'::text));
   SQL
-
   create_view "report_oklahoma_evictions", materialized: true, sql_definition: <<-SQL
       WITH view_data AS (
            SELECT court_cases.id AS court_case_id,
@@ -1742,7 +1741,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_13_210703) do
   SQL
   add_index "report_oklahoma_evictions", ["case_closed_on"], name: "index_report_oklahoma_evictions_on_case_closed_on"
   add_index "report_oklahoma_evictions", ["case_filed_on"], name: "index_report_oklahoma_evictions_on_case_filed_on"
-  add_index "report_oklahoma_evictions", ["court_case_id"], name: "index_report_oklahoma_evictions_on_court_case_id"
+  add_index "report_oklahoma_evictions", ["court_case_id"], name: "index_report_oklahoma_evictions_on_court_case_id", unique: true
   add_index "report_oklahoma_evictions", ["max_judgement_date"], name: "index_report_oklahoma_evictions_on_max_judgement_date"
 
 end
