@@ -18,7 +18,7 @@ module Importers
         fire_link.pdf.attach(io: File.open(@jsons[0][:filepath]), filename: "#{@jsons[0][:filepath]}.pdf")
       end
       fire_link.save!
-    return fire_link
+      fire_link
     end
   end
 end
