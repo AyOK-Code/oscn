@@ -15,7 +15,11 @@ class EvictionsMailer < ApplicationMailer
 
     @eviction_file.update!(sent_at: Time.zone.now)
 
-    mail(to: ENV.fetch('EVICTIONS_EMAIL', 'hmitchell@9bcorp.com'), subject: "Evictions File ID: #{@eviction_file.id}",
-         reply_to: 'info@arnallfamilyfoundation.org')
+    mail(
+      to: ENV.fetch('EVICTIONS_EMAIL_TO', 'hmitchell@9bcorp.com'),
+      cc: ENV.fetch('EVICTIONS_EMAIL_CC', 'hmitchell@9bcorp.com').split(','),
+      subject: "Evictions File ID: #{@eviction_file.id}",
+      reply_to: 'info@arnallfamilyfoundation.org'
+    )
   end
 end
