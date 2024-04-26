@@ -2,7 +2,7 @@ class ReportOklahomaEviction < ApplicationRecord
   belongs_to :court_case
 
   scope :filed_year, ->(year) { where(case_filed_on: Date.new(year.to_i - 1, 12, 31)..Date.new(year.to_i, 12, 31)) }
-  scope :past_thirty_days, -> { where(case_filed_on: 30.days.ago..Date.today) }
+  scope :recent_evictions, -> { where(case_filed_on: 4.days.ago..1.day.from_now) }
 
   def self.refresh
     Scenic.database.refresh_materialized_view(:report_oklahoma_evictions, concurrently: true, cascade: false)

@@ -21,7 +21,7 @@ class EvictionLetter < ApplicationRecord
   scope :past_day, -> { where('created_at >= ?', 1.day.ago) }
   scope :past_thirty_days, lambda {
                              joins(docket_event_link: :docket_event)
-                               .where(docket_events: { event_on: 30.days.ago..Date.today })
+                               .where(docket_events: { event_on: 30.days.ago..1.day.from_now })
                            }
 
   def self.calculate_dates(date)
