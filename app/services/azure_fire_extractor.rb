@@ -29,12 +29,13 @@ class AzureFireExtractor
       cell_array = poll_result['analyzeResult']['tables'][0]['cells']
       rows_of_data = cell_array.map { |cell| cell['rowIndex'] }.max
       puts "rows_of_data: #{rows_of_data}"
-      
+
       (0..rows_of_data).each do |i|
         next if i.zero?
+
         puts "index: #{i}"
         row_data = {}
-        cell_array.filter{ |cell| cell['rowIndex'] == i }.each_with_index do |cell, index|
+        cell_array.filter { |cell| cell['rowIndex'] == i }.each_with_index do |cell, index|
           columnIndexes = cell['columnIndex']
           cell_name = cell_array.find { |cell| cell['columnIndex'] == index && (cell['rowIndex']).zero? }['content']
           cell_value = cell_array.find { |cell| cell['columnIndex'] == index && cell['rowIndex'] == i }['content']

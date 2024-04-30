@@ -1,7 +1,7 @@
 module Importers
   class StructureFireLink
     attr_reader :date, :year, :month, :url, :full_month
-    
+
     def initialize(date, full_month = true)
       @date = date
       @year = date.year.to_s
@@ -18,11 +18,11 @@ module Importers
       start_date = date.beginning_of_month.to_date
       end_date = date.end_of_month.to_date
 
-      if full_month
-        dates = (start_date..end_date).to_a
-      else
-        dates = [date]
-      end
+      dates = if full_month
+                (start_date..end_date).to_a
+              else
+                [date]
+              end
       html = HTTParty.get(url, headers: headers)
       parsed_data = Nokogiri::HTML(html)
       bar = ProgressBar.new(dates.count)
@@ -48,9 +48,9 @@ module Importers
 
     def date_node(parsed_data, d)
       date_search = d.strftime('%-m/%-d/%Y')
-      begin 
+      begin
         parsed_data.xpath("//a[contains(text(), '#{date_search}')]")[0].attribute_nodes[0].text
-      rescue
+      rescue StandardError
         date_search = d.strftime('%m/%d/%Y')
         parsed_data.xpath("//a[contains(text(), '#{date_search}')]")[0].attribute_nodes[0].text
       end
@@ -62,7 +62,7 @@ module Importers
         'Referer' => "https://www.okc.gov/departments/fire/daily-structure-fires/#{@year}/#{@month}",
         'Accept-Encoding' => 'gzip, deflate, br, zstd',
         'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-        'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+        'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36'
       }
     end
 
@@ -71,7 +71,7 @@ module Importers
         'Content-Type' => 'application/pdf',
         'Referer' => "https://www.okc.gov/departments/fire/daily-structure-fires/#{@year}/#{@month}",
         'Accept-Encoding' => 'gzip, deflate',
-        "Accept" => "application/pdf, text/plain;q=0.5",
+        'Accept' => 'application/pdf, text/plain;q=0.5',
         'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36'
       }
     end
