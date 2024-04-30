@@ -1,7 +1,6 @@
 namespace :structure_fire do
   desc 'Pull structure fire pdfs'
   task historical_files: :environment do
-    year = 2023
     start_date = Date.parse('07/10/2023')
     end_date = Date.today
 
