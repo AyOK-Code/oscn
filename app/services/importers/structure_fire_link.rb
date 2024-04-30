@@ -76,9 +76,17 @@ module Importers
         'Referer' => "https://www.okc.gov/departments/fire/daily-structure-fires/#{@year}/#{@month}",
         'Accept-Encoding' => 'gzip, deflate',
         'Accept' => 'application/pdf, text/plain;q=0.5',
+        'Cookie' => cookies.map { |k, v| "#{k}=#{v}" }.join('; '),
         'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36'
       }
     end
     # rubocop:enable Layout/LineLength
+
+    # rubocop:disable Layout/LineLength
+    def cookies
+      {
+        'ASP.NET_SessionId' => 'jaoy52aoy1ob0j5j1wrpgb3n'
+      }
+    end
   end
 end
