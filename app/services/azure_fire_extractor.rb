@@ -1,3 +1,4 @@
+# TODO: Refactor perform method to reduce complexity
 class AzureFireExtractor
   attr_reader :url, :endpoint
 
@@ -10,6 +11,9 @@ class AzureFireExtractor
     new(url).perform
   end
 
+  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/PerceivedComplexity
+  # rubocop:disable Metrics/CyclomaticComplexity
   def perform
     response = HTTParty.post(request_url, body: request_body, headers: headers)
     puts "response code: #{response.code.to_i}"
@@ -35,10 +39,9 @@ class AzureFireExtractor
 
         puts "index: #{i}"
         row_data = {}
-        cell_array.filter { |cell| cell['rowIndex'] == i }.each_with_index do |cell, index|
-          columnIndexes = cell['columnIndex']
-          cell_name = cell_array.find { |cell| cell['columnIndex'] == index && (cell['rowIndex']).zero? }['content']
-          cell_value = cell_array.find { |cell| cell['columnIndex'] == index && cell['rowIndex'] == i }['content']
+        cell_array.filter { |c| c['rowIndex'] == i }.each_with_index do |cells, index|
+          cell_name = cells.find { |c| c['columnIndex'] == index && (c['rowIndex']).zero? }['content']
+          cell_value = cells.find { |c| c['columnIndex'] == index && c['rowIndex'] == i }['content']
           puts "cell_name: #{cell_name}; cell_value: #{cell_value}"
           row_data[cell_name] = cell_value
         end
@@ -48,12 +51,11 @@ class AzureFireExtractor
 
     ::Importers::StructureFire.perform(result)
   end
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/CyclomaticComplexity
 
   private
-
-  def endpoint
-    'https://eastus.api.cognitive.microsoft.com/'
-  end
 
   def api_key
     ENV.fetch('AZURE_FORM_API_KEY')

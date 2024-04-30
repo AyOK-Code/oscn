@@ -2,7 +2,7 @@ module Importers
   class StructureFireLink
     attr_reader :date, :year, :month, :url, :full_month
 
-    def initialize(date, full_month = true)
+    def initialize(date, full_month: true)
       @date = date
       @year = date.year.to_s
       @month = date.strftime('%B').downcase
@@ -31,7 +31,7 @@ module Importers
         sleep (1..3).to_a.sample
         bar.increment!
         filename = d.strftime('%Y-%m-%d')
-        filepath = "fire_pdfs/#{filename}.pdf"
+
         begin
           date_link = date_node(parsed_data, d)
           pdf_data = HTTParty.get(date_link, headers: pdf_headers, follow_redirects: true)
@@ -46,16 +46,17 @@ module Importers
 
     private
 
-    def date_node(parsed_data, d)
-      date_search = d.strftime('%-m/%-d/%Y')
+    def date_node(parsed_data, date_object)
+      date_search = date_object.strftime('%-m/%-d/%Y')
       begin
         parsed_data.xpath("//a[contains(text(), '#{date_search}')]")[0].attribute_nodes[0].text
       rescue StandardError
-        date_search = d.strftime('%m/%d/%Y')
+        date_search = date_object.strftime('%m/%d/%Y')
         parsed_data.xpath("//a[contains(text(), '#{date_search}')]")[0].attribute_nodes[0].text
       end
     end
 
+    # rubocop:disable Layout/LineLength
     def headers
       {
         'Content-Type' => 'text/html',
@@ -65,7 +66,9 @@ module Importers
         'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36'
       }
     end
+    # rubocop:enable Layout/LineLength
 
+    # rubocop:disable Layout/LineLength
     def pdf_headers
       {
         'Content-Type' => 'application/pdf',
@@ -75,5 +78,6 @@ module Importers
         'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36'
       }
     end
+    # rubocop:enable Layout/LineLength
   end
 end
