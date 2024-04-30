@@ -1,6 +1,6 @@
 namespace :evictions do
   task create_letters: :environment do
-    ReportOklahomaEviction.past_thirty_days.each do |eviction|
+    ReportOklahomaEviction.recent_evictions.each do |eviction|
       next if eviction.docket_link_id.nil?
 
       eviction_letter = EvictionLetter.find_or_initialize_by(
@@ -22,7 +22,7 @@ namespace :evictions do
   end
 
   task ocr_nightly: :environment do
-    letters = EvictionLetter.past_thirty_days.historical.missing_extraction
+    letters = EvictionLetter.recent_evictions.historical.missing_extraction
     bar = ProgressBar.new(letters.count)
 
     letters.each do |letter|

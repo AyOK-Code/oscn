@@ -19,9 +19,10 @@ class EvictionLetter < ApplicationRecord
   scope :with_zip_code, -> { where.not(validation_zip_code: nil) }
   scope :complete_address, -> { where('length(validation_usps_address) >= 10') }
   scope :past_day, -> { where('created_at >= ?', 1.day.ago) }
+  scope :recent_evictions, -> { where('created_at >= ?', 3.days.ago) }
   scope :past_thirty_days, lambda {
                              joins(docket_event_link: :docket_event)
-                               .where(docket_events: { event_on: 30.days.ago..Date.today })
+                               .where(docket_events: { event_on: 30.days.ago..1.day.from_now })
                            }
 
   def self.calculate_dates(date)
@@ -40,8 +41,8 @@ class EvictionLetter < ApplicationRecord
   # Method to perform the file pull operation using the calculated dates
   def self.file_pull(date)
     dates = calculate_dates(date) # Get start and finish dates
-    start = dates[:start]
-    finish = dates[:finish]
+    start = dates[:start].to_date
+    finish = dates[:finish].to_date
 
     joins(docket_event_link: { docket_event: :court_case })
       .without_file
