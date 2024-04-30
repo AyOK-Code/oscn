@@ -39,6 +39,7 @@ module Importers
           fire_link.pdf.attach(io: StringIO.new(pdf_data), filename: "#{filename}.pdf")
           fire_link.save!
         rescue StandardError => e
+          puts "Error processing #{d}: #{e}"
           Raygun.track_exception(e, custom_data: { date: d, url: date_link, filename: 'StructureFireLink' })
         end
       end
