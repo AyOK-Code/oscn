@@ -18,14 +18,13 @@ namespace :structure_fire do
   desc 'Extract data from structure fire pdfs'
   task extract_data: :environment do
     StructureFireLink.pending.each do |link|
-      binding.pry
       begin
         results = AzureFireExtractor.new(link.pdf.url).perform
         Importers::StructureFire.perform(results)
         link.update(status: 1)
       rescue StandardError => e
         puts "Error processing #{link.pdf_date_on}: #{e}"
-        # link.update(status: 2)
+        link.update(status: 2)
       end
     end
   end
