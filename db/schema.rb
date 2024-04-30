@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_24_144144) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_30_164041) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -731,10 +731,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_24_144144) do
   end
 
   create_table "structure_fire_links", force: :cascade do |t|
-    t.string "url", null: false
+    t.string "external_url", null: false
     t.date "pdf_date_on", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "status", default: 0, null: false
   end
 
   create_table "structure_fires", force: :cascade do |t|
