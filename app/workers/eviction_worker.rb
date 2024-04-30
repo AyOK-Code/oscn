@@ -1,5 +1,4 @@
-# Worker that scrapes the Party page on OSCN
-# Ex: https://www.oscn.net/dockets/GetPartyRecord.aspx?db=oklahoma&id=5515773
+# Worker that gets the most recent eviction cases
 class EvictionWorker
   include Sidekiq::Worker
   include Sidekiq::Throttled::Worker

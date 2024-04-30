@@ -27,6 +27,10 @@ Rails.application.configure do
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
+  config.active_storage.url_options = {
+    protocol: 'http', # Development typically doesn't use HTTPS
+    host: 'localhost:3000', # Ensure this matches the host and port of your dev server
+  }
 
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
@@ -45,8 +49,6 @@ Rails.application.configure do
 
   # New connection handling
   config.active_record.legacy_connection_handling = false
-
-  Rails.application.routes.default_url_options[:host] = "https://www.okc.gov"
 
 
   # Raises error for missing translations.

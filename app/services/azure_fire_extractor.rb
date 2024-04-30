@@ -1,9 +1,9 @@
 class AzureFireExtractor
-  attr_reader :url
+  attr_reader :url, :endpoint
 
-  def initialize(_url)
-    @url = 'https://oklahomaevictions.blob.core.windows.net/okc-structure-fires/07_10_2023.pdf'
-    # @url = url
+  def initialize(url)
+    @url = url
+    @endpoint = 'https://eastus.api.cognitive.microsoft.com/'
   end
 
   def self.perform(url)
@@ -11,7 +11,7 @@ class AzureFireExtractor
   end
 
   def perform
-    response = HTTParty.post(url, body: request_body, headers: headers)
+    response = HTTParty.post(request_url, body: request_body, headers: headers)
     puts "response code: #{response.code.to_i}"
     if response.code.to_i == 202
       operation_url = response['Operation-Location']
@@ -25,18 +25,27 @@ class AzureFireExtractor
 
         break if poll_result['status'] != 'running'
       end
-      result = {}
+      result = []
       cell_array = poll_result['analyzeResult']['tables'][0]['cells']
-      amount = (cell_array.count / 2) - 1
-      0.upto(amount) do |i|
-        puts "i count: #{i}"
-        cell_name = cell_array.find { |cell| cell['columnIndex'] == i && (cell['rowIndex']).zero? }['content']
-        cell_value = cell_array.find { |cell| cell['columnIndex'] == i && cell['rowIndex'] == 1 }['content']
-        result[cell_name] = cell_value
+      rows_of_data = cell_array.map { |cell| cell['rowIndex'] }.max
+      puts "rows_of_data: #{rows_of_data}"
+      
+      (0..rows_of_data).each do |i|
+        next if i.zero?
+        puts "index: #{i}"
+        row_data = {}
+        cell_array.filter{ |cell| cell['rowIndex'] == i }.each_with_index do |cell, index|
+          columnIndexes = cell['columnIndex']
+          cell_name = cell_array.find { |cell| cell['columnIndex'] == index && (cell['rowIndex']).zero? }['content']
+          cell_value = cell_array.find { |cell| cell['columnIndex'] == index && cell['rowIndex'] == i }['content']
+          puts "cell_name: #{cell_name}; cell_value: #{cell_value}"
+          row_data[cell_name] = cell_value
+        end
+        result << row_data
       end
     end
-    result
-    binding.pry
+
+    ::Importers::StructureFire.perform(result)
   end
 
   private

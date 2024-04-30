@@ -1,27 +1,34 @@
-require 'open-uri'
 module Importers
-  # Pulls accurate data from the OK Bar Association
-  # TODO: Figure out refresh schedule
   class StructureFire
-    def initialize(url)
-      @url = url
+    def initialize(data)
+      @data = data
     end
 
-    def self.perform
-      new(@url).perform
+    def self.perform(data)
+      new(data).perform
     end
 
     def perform
-      fire_link = ::StructureFireLink.find_or_initialize_by(url: @url)
-      fire_link.save!
-      binding.pry
-      fire_structure = ::StructureFire.find_or_initialize_by(incident_number: @jsons[1][:incident_number])
-      fire_structure.assign_attributes(@jsons[1])
-      fire_structure.structure_fire_link = fire_link.id
-      fire_structure.save!
-    rescue StandardError => e
-      puts e
-      binding.pry
+      puts "result: #{result}"
+      result.each do |fire|
+        sf = StructureFire.find_or_initialize_by(
+          incident_number: fire['Incident Number'],
+        )
+        sf.assign_attributes(
+          incident_type: fire['Incident Type'],
+          station: fire['Station'],
+          incident_date: Date.strptime(fire['Days in Incident Date'], "%m/%d/%y"),
+          street_number: fire['Location Street Number or Mile Post'],
+          street_prefix: fire['Location Street Prefix'],
+          street_name: fire['Location Street or Highway Name'],
+          street_type: fire['Location Street Type'],
+          property_value: fire['Estimated Property Value'],
+          property_loss: fire['Estimated Property Loss'],
+          content_value: fire['Estimated Content Value'],
+          content_loss: fire['Estimated Content Loss']
+        )
+        sf.save!
+      end
     end
   end
 end
