@@ -21,6 +21,8 @@ class EvictionFileGenerator
       eviction_letters.each do |eviction_letter|
         csv << add_row(eviction_letter)
       end
+      test_row = ENV.fetch('EVICTIONS_TEST_ROW', nil)
+      csv << test_row.split('||') if test_row
     end
 
     # Create and write to a temporary file

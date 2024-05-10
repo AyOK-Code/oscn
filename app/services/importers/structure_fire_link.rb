@@ -82,7 +82,6 @@ module Importers
     end
     # rubocop:enable Layout/LineLength
 
-    # rubocop:disable Layout/LineLength
     def cookies
       {
         'ASP.NET_SessionId' => 'jaoy52aoy1ob0j5j1wrpgb3n'
