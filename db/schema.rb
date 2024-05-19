@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_30_164041) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_19_192652) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -1745,4 +1745,29 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_30_164041) do
   add_index "report_oklahoma_evictions", ["court_case_id"], name: "index_report_oklahoma_evictions_on_court_case_id", unique: true
   add_index "report_oklahoma_evictions", ["max_judgement_date"], name: "index_report_oklahoma_evictions_on_max_judgement_date"
 
+  create_view "report_oklahoma_domestics", sql_definition: <<-SQL
+      SELECT court_cases.case_number,
+      parties.first_name,
+      parties.last_name,
+      court_cases.filed_on,
+      counts.number AS count_number,
+      counts.as_filed AS count_filed_as,
+      counts.offense_on,
+      counts.disposition_on,
+      verdicts.name,
+      ( SELECT count(*) AS count
+             FROM (docket_events
+               JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
+            WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying])::text[])))) AS warrants_issued
+     FROM ((((((court_cases
+       JOIN counties ON ((court_cases.county_id = counties.id)))
+       JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
+       JOIN counts ON ((counts.court_case_id = court_cases.id)))
+       JOIN parties ON ((counts.party_id = parties.id)))
+       JOIN verdicts ON ((counts.verdict_id = verdicts.id)))
+       JOIN count_codes ON ((counts.disposed_statute_code_id = count_codes.id)))
+    WHERE (((counties.name)::text = 'Oklahoma'::text) AND (court_cases.filed_on > '2000-01-01'::date) AND (court_cases.id IN ( SELECT DISTINCT counts_1.court_case_id
+             FROM counts counts_1
+            WHERE ((counts_1.charge)::text ~~* '%domes%'::text))));
+  SQL
 end
