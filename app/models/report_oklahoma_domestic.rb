@@ -1,2 +1,2 @@
-class ReportOklahomaDomestic < ApplicationRecord  
+class ReportOklahomaDomestic < ApplicationRecord
 end
