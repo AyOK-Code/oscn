@@ -1,0 +1,2 @@
+class ReportOklahomaDomestic < ApplicationRecord
+end
