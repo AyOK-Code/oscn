@@ -36,7 +36,7 @@ module Importers
       end
 
       def import_variable
-        response = HTTParty.get(variable_url).as_json()
+        response = HTTParty.get(variable_url).as_json
         variables.each do |variable|
           variables_map[variable] = {
             name: variable,
