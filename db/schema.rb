@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_19_192652) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_26_172112) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -77,6 +77,34 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_19_192652) do
     t.integer "oscn_id", null: false
     t.string "name", null: false
     t.string "abbreviation", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "census_data", force: :cascade do |t|
+    t.bigint "statistic_id", null: false
+    t.integer "amount"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "area_id", null: false
+    t.string "area_type", null: false
+    t.index ["statistic_id"], name: "index_census_data_on_statistic_id"
+  end
+
+  create_table "census_statistics", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "label", null: false
+    t.bigint "survey_id", null: false
+    t.string "concept", null: false
+    t.string "group", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["survey_id"], name: "index_census_statistics_on_survey_id"
+  end
+
+  create_table "census_surveys", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "year", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -882,6 +910,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_19_192652) do
   add_foreign_key "case_parties", "court_cases"
   add_foreign_key "case_parties", "parties"
   add_foreign_key "case_parties", "rosters"
+  add_foreign_key "census_data", "census_statistics", column: "statistic_id"
+  add_foreign_key "census_statistics", "census_surveys", column: "survey_id"
   add_foreign_key "counsel_parties", "counsels"
   add_foreign_key "counsel_parties", "court_cases"
   add_foreign_key "counsel_parties", "parties"
