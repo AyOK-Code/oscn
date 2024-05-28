@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe Importers::Census::Import do
   describe '#perform' do
     it 'imports data for county' do
+      Rails.application.load_seed
       VCR.use_cassette 'census_for_county' do
         importer = described_class.new(
           ['B25039_002E'],
@@ -21,7 +22,7 @@ RSpec.describe Importers::Census::Import do
         expect(statistic).to have_attributes(
           name: 'B25039_002E'
         )
-        expect(statistic.data.first.area).to have_attributes(
+        expect(statistic.datas.first.area).to have_attributes(
           name: 'Oklahoma'
         )
       end
