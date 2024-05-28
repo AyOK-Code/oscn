@@ -98,6 +98,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_26_205011) do
     t.bigint "survey_id", null: false
     t.string "concept", null: false
     t.string "group", null: false
+    t.string "predicate_type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["survey_id"], name: "index_census_statistics_on_survey_id"

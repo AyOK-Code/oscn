@@ -1,13 +1,13 @@
 module Importers
   module Census
     class Import
-      SURVEY_ACS1 = "acs1"
-      SURVEY_ACS5 = "acs5"
+      SURVEY_ACS1 = 'acs1'
+      SURVEY_ACS5 = 'acs5'
 
-      COUNTIES_OKLAHOMA = "Oklahoma"
-      COUNTIES_TULSA = "Tulsa"
+      COUNTIES_OKLAHOMA = 'Oklahoma'
+      COUNTIES_TULSA = 'Tulsa'
 
-      STATE_OKLAHOMA_FIPS = "40"
+      STATE_OKLAHOMA_FIPS = '40'
 
       attr_accessor :variables, :survey, :year, :county_names, :state_fips, :zips, :statistics
 
@@ -15,8 +15,7 @@ module Importers
                      survey,
                      year,
                      county_names: false,
-                     zips: false
-      )
+                     zips: false)
         @variables = variables
         @survey = survey
         @year = year
@@ -42,9 +41,10 @@ module Importers
           statistics[variable] = ::Census::Statistic.find_or_create_by(
             survey: survey,
             name: variable,
-            label: response['variables'][variable]["label"],
-            concept: response['variables'][variable]["concept"],
-            group: response['variables'][variable]["group"]
+            label: response['variables'][variable]['label'],
+            concept: response['variables'][variable]['concept'],
+            group: response['variables'][variable]['group'],
+            predicate_type: response['variables'][variable]['predicateType']
           )
         end
       end
@@ -57,11 +57,11 @@ module Importers
         variables.each do |variable|
           variable_column_index = header_row.index(variable)
           data_rows.each do |data|
-            if county_names
-              area = ::County.find_by(fips_code: data[area_column_index])
-            else
-              area = ::ZipCode.find_or_create_by(name: data[area_column_index].slice!("ZCTA5 "))
-            end
+            area = if county_names
+                     ::County.find_by(fips_code: data[area_column_index])
+                   else
+                     ::ZipCode.find_or_create_by(name: data[area_column_index])
+                   end
             ::Census::Data.find_or_create_by(
               statistic: statistics[variable],
               area: area,
@@ -76,17 +76,17 @@ module Importers
       end
 
       def data_url
-        url = "https://api.census.gov/data/#{year}/acs/#{survey}?" +
-          "get=NAME,#{variables.join(',')}&for="
+        url = "https://api.census.gov/data/#{year}/acs/#{survey}?" \
+              "get=NAME,#{variables.join(',')}&for="
 
         if county_names
           county_fips = ::County.where(name: county_names).pluck(:fips_code)
-          url += "county:#{county_fips.join(",")}"
+          url += "county:#{county_fips.join(',')}&in=state:#{state_fips}"
         elsif zips
-          url += "zips:#{zips.join(",")}" if zips
+          url += "zip%20code%20tabulation%20area:#{zips.join(',')}" if zips
         end
 
-        url += "&in=state:#{state_fips}&key=#{key}"
+        url += "&key=#{key}"
         url
       end
 

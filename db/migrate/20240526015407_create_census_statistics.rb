@@ -6,6 +6,7 @@ class CreateCensusStatistics < ActiveRecord::Migration[7.0]
       t.references :survey, null: false, foreign_key: { to_table: :census_surveys }
       t.string :concept, null: false
       t.string :group, null: false
+      t.string :predicate_type, null: false
 
       t.timestamps
     end
