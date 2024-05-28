@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe Importers::Census::Import do
   describe '#perform' do
-    ENV['CENSUS_KEY'] = 'b33136401e0ddf4cdaa05bb4d6a4be93271c9681'
     it 'imports data for county' do
       VCR.use_cassette 'census_for_county' do
         importer = described_class.new(
