@@ -4,26 +4,26 @@ module Importers
       SURVEY_ACS1 = "acs1"
       SURVEY_ACS5 = "acs5"
 
-      COUNTIES_OKC = "109"
-      COUNTIES_TULSA = "143"
+      COUNTIES_OKLAHOMA = "Oklahoma"
+      COUNTIES_TULSA = "Tulsa"
 
-      STATE_OKLAHOMA = "40"
+      STATE_OKLAHOMA_FIPS = "40"
 
-      attr_accessor :variables, :survey, :year, :counties, :state, :zips, :variables_map
+      attr_accessor :variables, :survey, :year, :county_names, :state_fips, :zips, :statistics
 
       def initialize(variables,
                      survey,
                      year,
-                     counties: false,
+                     county_names: false,
                      zips: false
       )
         @variables = variables
         @survey = survey
         @year = year
-        @counties = counties
-        @state = STATE_OKLAHOMA
+        @county_names = county_names
+        @state_fips = STATE_OKLAHOMA_FIPS
         @zips = zips
-        @variables_map = {}
+        @statistics = {}
       end
 
       def self.perform(*args)
@@ -37,13 +37,15 @@ module Importers
 
       def import_variable
         response = HTTParty.get(variable_url).as_json
+        survey = ::Census::Survey.find_or_create_by name: @survey, year: @year
         variables.each do |variable|
-          variables_map[variable] = {
+          statistics[variable] = ::Census::Statistic.find_or_create_by(
+            survey: survey,
             name: variable,
             label: response['variables'][variable]["label"],
             concept: response['variables'][variable]["concept"],
             group: response['variables'][variable]["group"]
-          }
+          )
         end
       end
 
@@ -51,15 +53,20 @@ module Importers
         response = HTTParty.get(data_url)
         header_row = response[0]
         data_rows = response.slice(1...)
-        area_grouping_index = 0
+        area_column_index = -1
         variables.each do |variable|
-          variable_index = header_row.index(variable)
+          variable_column_index = header_row.index(variable)
           data_rows.each do |data|
-            variables_map[variable]["data"] = {
-              grouping_type: counties ? "County" : "ZipCode",
-              grouping_value: counties ? data[area_grouping_index] : data[area_grouping_index].slice!("ZCTA5 "),
-              value: data[variable_index]
-            }
+            if county_names
+              area = ::County.find_by(fips_code: data[area_column_index])
+            else
+              area = ::ZipCode.find_or_create_by(name: data[area_column_index].slice!("ZCTA5 "))
+            end
+            ::Census::Data.find_or_create_by(
+              statistic: statistics[variable],
+              area: area,
+              amount: data[variable_column_index]
+            )
           end
         end
       end
@@ -72,13 +79,14 @@ module Importers
         url = "https://api.census.gov/data/#{year}/acs/#{survey}?" +
           "get=NAME,#{variables.join(',')}&for="
 
-        if counties
-          url += "county:#{counties.join(",")}"
+        if county_names
+          county_fips = ::County.where(name: county_names).pluck(:fips_code)
+          url += "county:#{county_fips.join(",")}"
         elsif zips
           url += "zips:#{zips.join(",")}" if zips
         end
 
-        url += "&in=state:#{state}&key=#{key}"
+        url += "&in=state:#{state_fips}&key=#{key}"
         url
       end
 

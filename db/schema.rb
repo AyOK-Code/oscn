@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_26_172112) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_26_205011) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -84,10 +84,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_26_172112) do
   create_table "census_data", force: :cascade do |t|
     t.bigint "statistic_id", null: false
     t.integer "amount"
+    t.string "area_type", null: false
+    t.bigint "area_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "area_id", null: false
-    t.string "area_type", null: false
+    t.index ["area_type", "area_id"], name: "index_census_data_on_area"
     t.index ["statistic_id"], name: "index_census_data_on_statistic_id"
   end
 
@@ -901,6 +902,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_26_172112) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_verdicts_on_name", unique: true
+  end
+
+  create_table "zip_codes", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
