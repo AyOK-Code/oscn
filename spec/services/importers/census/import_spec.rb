@@ -29,7 +29,7 @@ RSpec.describe Importers::Census::Import do
 
         oklahoma_county_data = statistic.datas.first
         expect(oklahoma_county_data).to have_attributes(
-          amount: 2009,
+          amount: "2009",
           area_type: 'County'
         )
         expect(oklahoma_county_data.area).to have_attributes(
