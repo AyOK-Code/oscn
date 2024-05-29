@@ -20,9 +20,19 @@ RSpec.describe Importers::Census::Import do
           year: 2021
         )
         expect(statistic).to have_attributes(
-          name: 'B25039_002E'
+          name: 'B25039_002E',
+          label: 'Estimate!!Median year householder moved into unit --!!Total:!!Owner occupied',
+          concept: 'MEDIAN YEAR HOUSEHOLDER MOVED INTO UNIT BY TENURE',
+          group: 'B25039',
+          predicate_type: 'string'
         )
-        expect(statistic.datas.first.area).to have_attributes(
+
+        oklahoma_county_data = statistic.datas.first
+        expect(oklahoma_county_data).to have_attributes(
+          amount: 2009,
+          area_type: 'County'
+        )
+        expect(oklahoma_county_data.area).to have_attributes(
           name: 'Oklahoma'
         )
       end
@@ -33,10 +43,10 @@ RSpec.describe Importers::Census::Import do
           ['B25039_002E'],
           Importers::Census::Import::SURVEY_ACS5,
           2021,
-          zips: ['74011']
+          zips: Importers::Census::Import::ZIPS_OKLAHOMA_COUNTY
         )
         expect { importer.perform }.not_to raise_error
-        expect(Census::Data.first.area.name).to eq '74011'
+        expect(Census::Data.all.includes(:area).map {|data| data.area.name}).to include '73020'
       end
     end
   end
