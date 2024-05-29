@@ -83,7 +83,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_26_205011) do
 
   create_table "census_data", force: :cascade do |t|
     t.bigint "statistic_id", null: false
-    t.integer "amount"
+    t.string "amount"
     t.string "area_type", null: false
     t.bigint "area_id", null: false
     t.datetime "created_at", null: false
