@@ -7,27 +7,27 @@ RSpec.describe CourtCaseWorker, type: :worker do
     let(:case_number) { 'CF-2018-1016' }
 
     it 'imports case HTML and court case data when scrape_case is true' do
-      allow(::Importers::CaseHtml).to receive(:perform)
-      allow(::Importers::CourtCase).to receive(:perform)
-      expect(::Importers::CaseHtml).to receive(:perform).with(county.id, case_number)
-      expect(::Importers::CourtCase).to receive(:perform).with(county.id, case_number)
+      allow(Importers::CaseHtml).to receive(:perform)
+      allow(Importers::CourtCase).to receive(:perform)
+      expect(Importers::CaseHtml).to receive(:perform).with(county.id, case_number)
+      expect(Importers::CourtCase).to receive(:perform).with(county.id, case_number)
 
       subject.perform(county.id, case_number, true)
     end
 
     it 'does not import case HTML but imports court case data when scrape_case is false' do
-      allow(::Importers::CaseHtml).to receive(:perform)
-      allow(::Importers::CourtCase).to receive(:perform)
-      expect(::Importers::CaseHtml).not_to receive(:perform)
-      expect(::Importers::CourtCase).to receive(:perform).with(county.id, case_number)
+      allow(Importers::CaseHtml).to receive(:perform)
+      allow(Importers::CourtCase).to receive(:perform)
+      expect(Importers::CaseHtml).not_to receive(:perform)
+      expect(Importers::CourtCase).to receive(:perform).with(county.id, case_number)
 
       subject.perform(county.id, case_number, false)
     end
 
     it 'updates court case status to not enqueued' do
       court_case.update(enqueued: true)
-      allow(::Importers::CaseHtml).to receive(:perform)
-      allow(::Importers::CourtCase).to receive(:perform)
+      allow(Importers::CaseHtml).to receive(:perform)
+      allow(Importers::CourtCase).to receive(:perform)
 
       subject.perform(county.id, case_number, true)
       expect(court_case.reload.enqueued).to be false

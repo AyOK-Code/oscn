@@ -6,7 +6,7 @@ RSpec.describe DailyFilingWorker, type: :worker do
     let(:date) { Date.today }
 
     it 'calls the DailyFiling scraper with the provided arguments' do
-      expect(::Scrapers::DailyFiling).to receive(:perform).with(county_name, date)
+      expect(Scrapers::DailyFiling).to receive(:perform).with(county_name, date)
       subject.perform(county_name, date)
     end
 

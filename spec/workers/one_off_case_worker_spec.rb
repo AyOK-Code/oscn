@@ -9,7 +9,7 @@ RSpec.describe OneOffCaseWorker, type: :worker do
     context 'when the CourtCase does not exist' do
       it 'calls the OneOffCase scraper' do
         allow(CourtCase).to receive(:find_by).and_return(nil)
-        expect(::Scrapers::OneOffCase).to receive(:perform).with(county.name, court_case.case_number)
+        expect(Scrapers::OneOffCase).to receive(:perform).with(county.name, court_case.case_number)
 
         subject.perform(county.name, case_number)
       end
@@ -20,9 +20,9 @@ RSpec.describe OneOffCaseWorker, type: :worker do
 
       it 'does not call OneOffCase' do
         allow(CourtCase).to receive(:find_by).and_return(court_case)
-        allow(::Importers::CourtCase).to receive(:perform)
-        expect(::Scrapers::OneOffCase).to_not receive(:perform).with(county.name, court_case.case_number)
-        expect(::Importers::CourtCase).to receive(:perform).with(county.id, case_number)
+        allow(Importers::CourtCase).to receive(:perform)
+        expect(Scrapers::OneOffCase).to_not receive(:perform).with(county.name, court_case.case_number)
+        expect(Importers::CourtCase).to receive(:perform).with(county.id, case_number)
 
         subject.perform(county.name, case_number)
       end
