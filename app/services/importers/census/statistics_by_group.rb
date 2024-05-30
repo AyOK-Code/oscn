@@ -1,6 +1,6 @@
 module Importers
   module Census
-    class Group
+    class StatisticsByGroup
       attr_accessor :survey, :group, :group_variable_types, :table_type
 
       def initialize(
@@ -52,7 +52,10 @@ module Importers
       end
 
       def group_url
-        "https://api.census.gov/data/#{survey.year}/acs/#{survey.name}#{table_type ? "/#{table_type}" : ''}/groups/#{group}.json"
+        url = "https://api.census.gov/data/#{survey.year}/acs/#{survey.name}"
+        url += "/#{table_type}" if table_type
+        url += "/groups/#{group}.json"
+        url
       end
     end
   end
