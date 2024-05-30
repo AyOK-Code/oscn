@@ -1,4 +1,7 @@
 class County < ApplicationRecord
+  OKLAHOMA = 'Oklahoma'
+  TULSA = 'Tulsa'
+
   has_many :court_cases, dependent: :destroy
   has_many :case_not_founds, dependent: :destroy
   has_many :datas, class_name: 'Census::Data', as: :area, dependent: :destroy

@@ -1,36 +1,34 @@
 module Importers
   module Census
     class Import
-      SURVEY_ACS1 = 'acs1'
-      SURVEY_ACS5 = 'acs5'
-
-      COUNTIES_OKLAHOMA = 'Oklahoma'
-      COUNTIES_TULSA = 'Tulsa'
-
-      ZIPS_OKLAHOMA_COUNTY = %w[
-          73003 73007 73008 73013 73020 73034 73045 73049 73054 73066 73083 73084 73097 73101 73102 73103 73104 73105
-          73106 73107 73108 73109 73110 73110 73111 73112 73113 73114 73115 73115 73116 73116 73117 73118 73119 73120
-          73120 73121 73122 73122 73123 73123 73124 73125 73126 73127 73128 73129 73130 73130 73131 73132 73132 73134
-          73135 73135 73136 73137 73140 73140 73141 73142 73143 73144 73145 73145 73146 73147 73148 73149 73150 73151
-          73152 73153 73153 73154 73155 73156 73157 73159 73162 73163 73164 73167 73169 73172 73177 73178 73179 73180
-          73189 73195]
-
       STATE_OKLAHOMA_FIPS = '40'
 
-      attr_accessor :variables, :survey, :year, :county_names, :state_fips, :zips, :statistics
+      attr_accessor :variables, :group, :group_variable_types, :survey, :survey_name, :year, :county_names, :state_fips,
+                    :zips, :table_type
 
-      def initialize(variables,
-                     survey,
-                     year,
-                     county_names: false,
-                     zips: false)
-        @variables = variables
-        @survey = survey
+      def initialize(
+        survey_name,
+        year,
+        variables: nil,
+        group: nil,
+        group_variable_types: nil,
+        table_type: nil,
+        county_names: nil,
+        zips: nil
+      )
+
+        raise ArgumentError, 'Variable list or group is required' unless variables || group
+        raise ArgumentError, 'County names or zips list is required' unless county_names || zips
+
+        @survey_name = survey_name
         @year = year
+        @variables = variables
+        @group = group
+        @group_variable_types = group_variable_types
+        @table_type = table_type
         @county_names = county_names
-        @state_fips = STATE_OKLAHOMA_FIPS
         @zips = zips
-        @statistics = {}
+        @state_fips = STATE_OKLAHOMA_FIPS
       end
 
       def self.perform(*args)
@@ -38,54 +36,90 @@ module Importers
       end
 
       def perform
-        import_statistic
         import_data
       end
 
-      def import_statistic
+      def statistics
+        return import_variables if variables
+
+        import_group
+      end
+
+      def import_group
+        ::Importers::Census::Group.perform(
+          survey,
+          group,
+          **{
+            group_variable_types: group_variable_types,
+            table_type: table_type
+          }.compact
+        )
+      end
+
+      def import_variables
         response = HTTParty.get(variable_url).as_json
-        survey = ::Census::Survey.find_or_create_by name: @survey, year: @year
         variables.each do |variable|
+          variable_json = response['variables'][variable]
+
           statistics[variable] = ::Census::Statistic.find_or_create_by(
             survey: survey,
             name: variable,
-            label: response['variables'][variable]['label'],
-            concept: response['variables'][variable]['concept'],
-            group: response['variables'][variable]['group'],
-            predicate_type: response['variables'][variable]['predicateType']
+            label: variable_json['label'],
+            concept: variable_json['concept'],
+            group: variable_json['group'],
+            predicate_type: variable_json['predicateType']
           )
         end
       end
 
+      def survey
+        @survey ||= ::Census::Survey.find_or_create_by name: survey_name, year: year
+      end
+
       def import_data
-        response = HTTParty.get(data_url)
-        header_row = response[0]
-        data_rows = response.slice(1...)
-        area_column_index = -1
-        variables.each do |variable|
-          variable_column_index = header_row.index(variable)
-          data_rows.each do |data|
-            area = if county_names
-                     ::County.find_by(fips_code: data[area_column_index])
-                   else
-                     ::ZipCode.find_or_create_by(name: data[area_column_index])
-                   end
-            ::Census::Data.find_or_create_by(
-              statistic: statistics[variable],
-              area: area,
-              amount: data[variable_column_index]
-            )
+        statistics.each_slice(49) do |variables_set|
+          variables_set = variables_set.to_h
+          response = HTTParty.get(data_url(variables_set.keys))
+          header_row = response[0]
+          data_rows = response.slice(1...)
+          area_column_index = -1
+          variables_set.each do |variable, statistic_obj|
+            variable_column_index = header_row.index(variable)
+            data_rows.each do |data|
+              area = if county_names
+                       ::County.find_by(fips_code: data[area_column_index])
+                     else
+                       ::ZipCode.find_or_create_by(name: data[area_column_index])
+                     end
+              ::Census::Data.find_or_create_by(
+                statistic: statistic_obj,
+                area: area,
+                amount: data[variable_column_index]
+              )
+            end
           end
         end
       end
 
-      def variable_url
-        "https://api.census.gov/data/#{year}/acs/acs1/variables.json"
+      def correct_variable_type?(variable)
+        last_letters_regex = /.+[1-9](.+)/
+        match = last_letters_regex.match(variable)
+        return false unless match
+
+        match.captures[0].in? group_variable_types
       end
 
-      def data_url
-        url = "https://api.census.gov/data/#{year}/acs/#{survey}?" \
-              "get=NAME,#{variables.join(',')}&for="
+      def group_url
+        "https://api.census.gov/data/#{year}/acs/#{survey_name}#{table_type ? "/#{table_type}" : ''}/groups/#{group}.json"
+      end
+
+      def variable_url
+        "https://api.census.gov/data/#{year}/acs/#{survey_name}/variables.json"
+      end
+
+      def data_url(variables_set)
+        url = "https://api.census.gov/data/#{year}/acs/#{survey_name}#{table_type ? "/#{table_type}" : ''}?" \
+              "get=NAME,#{variables_set.join(',')}&for="
 
         if county_names
           county_fips = ::County.where(name: county_names).pluck(:fips_code)
@@ -94,12 +128,8 @@ module Importers
           url += "zip%20code%20tabulation%20area:#{zips.join(',')}" if zips
         end
 
-        url += "&key=#{key}"
+        url += "&key=#{ENV.fetch('CENSUS_KEY')}"
         url
-      end
-
-      def key
-        ENV.fetch('CENSUS_KEY')
       end
     end
   end

@@ -1,15 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe Importers::Census::Import do
+  before do
+    ENV['CENSUS_KEY'] = 'b33136401e0ddf4cdaa05bb4d6a4be93271c9681'
+  end
   describe '#perform' do
     it 'imports data for county' do
       Rails.application.load_seed
       VCR.use_cassette 'census_for_county' do
         importer = described_class.new(
-          ['B25039_002E'],
-          Importers::Census::Import::SURVEY_ACS5,
+          Census::Survey::ACS5,
           2021,
-          county_names: [Importers::Census::Import::COUNTIES_OKLAHOMA]
+          variables: ['B25039_002E'],
+          county_names: [County::OKLAHOMA]
         )
         expect { importer.perform }.not_to raise_error
 
@@ -29,7 +32,7 @@ RSpec.describe Importers::Census::Import do
 
         oklahoma_county_data = statistic.datas.first
         expect(oklahoma_county_data).to have_attributes(
-          amount: "2009",
+          amount: '2009',
           area_type: 'County'
         )
         expect(oklahoma_county_data.area).to have_attributes(
@@ -37,16 +40,33 @@ RSpec.describe Importers::Census::Import do
         )
       end
     end
+    it 'imports data for group' do
+      ENV['CENSUS_KEY'] = 'b33136401e0ddf4cdaa05bb4d6a4be93271c9681'
+      Rails.application.load_seed
+      VCR.use_cassette 'census_for_group' do
+        importer = described_class.new(
+          Census::Survey::ACS5,
+          2021,
+          group: 'DP03',
+          zips: ZipCode::ZIPS_OKLAHOMA_COUNTY,
+          table_type: 'profile'
+        )
+        expect { importer.perform }.not_to raise_error
+
+        statistic = Census::Statistic.first
+        expect(statistic.name).to start_with('DP03')
+      end
+    end
     it 'imports data for zips' do
       VCR.use_cassette 'census_for_zips' do
         importer = described_class.new(
-          ['B25039_002E'],
-          Importers::Census::Import::SURVEY_ACS5,
+          Census::Survey::ACS5,
           2021,
-          zips: Importers::Census::Import::ZIPS_OKLAHOMA_COUNTY
+          variables: ['B25039_002E'],
+          zips: ZipCode::ZIPS_OKLAHOMA_COUNTY
         )
         expect { importer.perform }.not_to raise_error
-        expect(Census::Data.all.includes(:area).map {|data| data.area.name}).to include '73020'
+        expect(Census::Data.all.includes(:area).map { |data| data.area.name }).to include '73020'
       end
     end
   end
