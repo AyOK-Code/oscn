@@ -59,6 +59,8 @@ module Importers
 
         if county_names
           county_fips = ::County.where(name: county_names).pluck(:fips_code)
+          raise ActiveRecord::RecordNotFound if county_fips.length < county_names.length
+
           url += "county:#{county_fips.join(',')}&in=state:#{state_fips}"
         elsif zips
           url += "zip%20code%20tabulation%20area:#{zips.join(',')}" if zips

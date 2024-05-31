@@ -1,0 +1,54 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.census.gov/data/2018/acs/acs5?for=county:109&get=NAME,B25039_002E&in=state:40&key=<CENSUS_KEY>
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      Cache-Control:
+      - max-age=60, must-revalidate
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET,POST
+      Access-Control-Allow-Headers:
+      - Origin, X-Requested-With, Content-Type, Accept
+      Referrer-Policy:
+      - same-origin
+      Content-Security-Policy:
+      - default-src 'self'; img-src 'self' data:; object-src 'none'; script-src 'self'
+        'unsafe-inline'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none';
+        upgrade-insecure-requests; block-all-mixed-content
+      X-Content-Type-Options:
+      - nosniff
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Fri, 31 May 2024 17:19:42 GMT
+      Strict-Transport-Security:
+      - max-age=31536000
+      Set-Cookie:
+      - TS010383f0=01283c52a4ce0bcc160601949b2369b3001009ad888c87a84649c45569b5aedd1979a05b3c2987e2fe4ab7c63bd8bf58bc2a161d29;
+        Path=/; Domain=.api.census.gov;
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        [["NAME","B25039_002E","state","county"],
+        ["Oklahoma County, Oklahoma","2005","40","109"]]
+  recorded_at: Fri, 31 May 2024 17:19:41 GMT
+recorded_with: VCR 6.1.0
