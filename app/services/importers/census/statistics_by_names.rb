@@ -14,8 +14,8 @@ module Importers
         @table_type = table_type
       end
 
-      def self.perform(*args)
-        new(*args).perform
+      def self.perform(*args, **kwargs)
+        new(*args, **kwargs).perform
       end
 
       def perform

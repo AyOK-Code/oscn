@@ -1,9 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Importers::Census::Import do
-  before do
-    ENV['CENSUS_KEY'] = 'b33136401e0ddf4cdaa05bb4d6a4be93271c9681'
-  end
   describe '#perform' do
     it 'imports data for county' do
       Rails.application.load_seed
@@ -41,7 +38,6 @@ RSpec.describe Importers::Census::Import do
       end
     end
     it 'imports data for group' do
-      ENV['CENSUS_KEY'] = 'b33136401e0ddf4cdaa05bb4d6a4be93271c9681'
       Rails.application.load_seed
       VCR.use_cassette 'census_for_group' do
         importer = described_class.new(
