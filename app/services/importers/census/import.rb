@@ -18,7 +18,10 @@ module Importers
       )
 
         raise ArgumentError, 'Variable list or group is required' unless variables || group
+        raise ArgumentError, 'Please specify only variables or group' if variables && group
+
         raise ArgumentError, 'County names or zips list is required' unless county_names || zips
+        raise ArgumentError, 'Please specify only county_names or zips' if county_names && zips
 
         @survey_name = survey_name
         @year = year
