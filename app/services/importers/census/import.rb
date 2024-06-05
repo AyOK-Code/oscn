@@ -17,12 +17,6 @@ module Importers
         zips: nil
       )
 
-        raise ArgumentError, 'Variable list or group is required' unless variables || group
-        raise ArgumentError, 'Please specify only variables or group' if variables && group
-
-        raise ArgumentError, 'County names or zips list is required' unless county_names || zips
-        raise ArgumentError, 'Please specify only county_names or zips' if county_names && zips
-
         @survey_name = survey_name
         @year = year
         @variables = variables
@@ -35,7 +29,20 @@ module Importers
         super()
       end
 
+      def validate_statistic_lookup_method
+        raise ArgumentError, 'Variable list or group is required to look up statistics' unless variables || group
+        raise ArgumentError, 'Please specify only variables or group to look up statistics' if variables && group
+      end
+
+      def validate_area_type
+        raise ArgumentError, 'County names or zips list is required' unless county_names || zips
+        raise ArgumentError, 'Please specify only county_names or zips' if county_names && zips
+      end
+
       def perform
+        validate_statistic_lookup_method
+        validate_area_type
+
         import_statistics
         import_data
       end
