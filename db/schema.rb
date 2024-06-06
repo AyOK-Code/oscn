@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_13_210703) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_05_223122) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -77,6 +77,36 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_13_210703) do
     t.integer "oscn_id", null: false
     t.string "name", null: false
     t.string "abbreviation", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "census_data", force: :cascade do |t|
+    t.bigint "statistic_id", null: false
+    t.string "amount"
+    t.string "area_type", null: false
+    t.bigint "area_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["area_type", "area_id"], name: "index_census_data_on_area"
+    t.index ["statistic_id"], name: "index_census_data_on_statistic_id"
+  end
+
+  create_table "census_statistics", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "label", null: false
+    t.bigint "survey_id", null: false
+    t.string "concept", null: false
+    t.string "group", null: false
+    t.string "predicate_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["survey_id"], name: "index_census_statistics_on_survey_id"
+  end
+
+  create_table "census_surveys", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "year", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -403,7 +433,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_13_210703) do
     t.integer "number"
     t.string "name"
     t.bigint "court_case_id", null: false
-    t.bigint "count_code_id", null: false
+    t.bigint "count_code_id"
     t.date "filed_on"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -731,10 +761,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_13_210703) do
   end
 
   create_table "structure_fire_links", force: :cascade do |t|
-    t.string "url", null: false
+    t.string "external_url", null: false
     t.date "pdf_date_on", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "status", default: 0, null: false
   end
 
   create_table "structure_fires", force: :cascade do |t|
@@ -874,6 +905,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_13_210703) do
     t.index ["name"], name: "index_verdicts_on_name", unique: true
   end
 
+  create_table "zip_codes", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "case_htmls", "court_cases"
@@ -881,6 +918,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_13_210703) do
   add_foreign_key "case_parties", "court_cases"
   add_foreign_key "case_parties", "parties"
   add_foreign_key "case_parties", "rosters"
+  add_foreign_key "census_data", "census_statistics", column: "statistic_id"
+  add_foreign_key "census_statistics", "census_surveys", column: "survey_id"
   add_foreign_key "counsel_parties", "counsels"
   add_foreign_key "counsel_parties", "court_cases"
   add_foreign_key "counsel_parties", "parties"
@@ -1741,7 +1780,32 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_13_210703) do
   SQL
   add_index "report_oklahoma_evictions", ["case_closed_on"], name: "index_report_oklahoma_evictions_on_case_closed_on"
   add_index "report_oklahoma_evictions", ["case_filed_on"], name: "index_report_oklahoma_evictions_on_case_filed_on"
-  add_index "report_oklahoma_evictions", ["court_case_id"], name: "index_report_oklahoma_evictions_on_court_case_id"
+  add_index "report_oklahoma_evictions", ["court_case_id"], name: "index_report_oklahoma_evictions_on_court_case_id", unique: true
   add_index "report_oklahoma_evictions", ["max_judgement_date"], name: "index_report_oklahoma_evictions_on_max_judgement_date"
 
+  create_view "report_oklahoma_domestics", sql_definition: <<-SQL
+      SELECT court_cases.case_number,
+      parties.first_name,
+      parties.last_name,
+      court_cases.filed_on,
+      counts.number AS count_number,
+      counts.as_filed AS count_filed_as,
+      counts.offense_on,
+      counts.disposition_on,
+      verdicts.name,
+      ( SELECT count(*) AS count
+             FROM (docket_events
+               JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
+            WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying])::text[])))) AS warrants_issued
+     FROM ((((((court_cases
+       JOIN counties ON ((court_cases.county_id = counties.id)))
+       JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
+       JOIN counts ON ((counts.court_case_id = court_cases.id)))
+       JOIN parties ON ((counts.party_id = parties.id)))
+       JOIN verdicts ON ((counts.verdict_id = verdicts.id)))
+       JOIN count_codes ON ((counts.disposed_statute_code_id = count_codes.id)))
+    WHERE (((counties.name)::text = 'Oklahoma'::text) AND (court_cases.filed_on > '2000-01-01'::date) AND (court_cases.id IN ( SELECT DISTINCT counts_1.court_case_id
+             FROM counts counts_1
+            WHERE ((counts_1.charge)::text ~~* '%domes%'::text))));
+  SQL
 end
