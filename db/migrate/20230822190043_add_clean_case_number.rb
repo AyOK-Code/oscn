@@ -18,7 +18,7 @@ class AddCleanCaseNumberToCourtCases < ActiveRecord::Migration[7.0]
   def get_case_number_sql(column_name)
     sql = <<-SQL
       select CASE
-                 WHEN case_number::text ~ '^([A-Za-z]{2,3})?-?[0-9]{2,4}-[0-9]{2,8}'
+                 WHEN case_number::text ~ '^([A-Za-z]{2,3})?-?[0-9]{2,4}-[0-9]{1,8}'
                      THEN
                      (
                          (
@@ -49,7 +49,7 @@ class AddCleanCaseNumberToCourtCases < ActiveRecord::Migration[7.0]
                                              END
                                              ) || '-'
                              ) ||
-                         regexp_replace("substring"(case_number, '-([0-9]{2,8})$'), '^0+', '')
+                         regexp_replace("substring"(case_number, '-([0-9]{1,8})$'), '^0+', '')
                      )
                  ELSE NULL::text
                  END
