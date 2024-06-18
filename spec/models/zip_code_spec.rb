@@ -6,6 +6,6 @@ RSpec.describe ZipCode, type: :model do
   end
 
   describe 'associations' do
-    it { should have_many(:datas).dependent(:destroy) }
+    it { should have_many(:census_datas).dependent(:destroy) }
   end
 end

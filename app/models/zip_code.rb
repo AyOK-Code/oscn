@@ -8,7 +8,7 @@ class ZipCode < ApplicationRecord
     73189 73195
   ]
 
-  has_many :datas, class_name: 'Census::Data', as: :area, dependent: :destroy
+  has_many :census_datas, class_name: 'Census::Data', as: :area, dependent: :destroy
 
   validates :name, presence: true
 end
