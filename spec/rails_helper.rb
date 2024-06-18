@@ -115,6 +115,7 @@ VCR.configure do |c|
     AWS_LAMBDA_KEY
     AWS_LAMBDA_SECRET
     AWS_LAMBDA_REGION
+    CENSUS_KEY
   ]
   env_keys.each do |key|
     c.filter_sensitive_data("<#{key}>") { ENV.fetch(key, nil) }

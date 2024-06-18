@@ -22,6 +22,9 @@ Metrics/BlockLength:
     - 'spec/**/*'
     - 'lib/tasks/update.rake'
     - 'lib/tasks/doc.rake'
+Metrics/ParameterLists:
+  Exclude:
+    - 'app/services/importers/census/import.rb'
 Layout/LineLength:
   Exclude:
     - 'spec/services/importers/doc/*'
