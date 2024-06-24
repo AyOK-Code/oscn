@@ -48,11 +48,10 @@ class CreateOkSosTables < ActiveRecord::Migration[7.0]
       t.string "city" # todo: should this be on the zip table?
       t.string "state" # todo: should this be on the zip table?
       t.string "zip_string"
-      t.bigint "zip_code_id"
       t.integer "zip_extension"
       t.string "country"
 
-      t.referenes "zip_code", name: "zip_codes"
+      t.references "zip_code", name: "zip_codes"
 
       t.timestamps
     end
@@ -203,7 +202,7 @@ class CreateOkSosTables < ActiveRecord::Migration[7.0]
       t.bigint "document_number"
       t.bigint "associated_entity_id", null: false
       t.bigint "primary_capacity_id"
-      t.bigint "capacity_id" # new?
+      t.bigint "external_capacity_id" # prefix?
       t.string "associated_entity_name"
       t.string "entity_filing_number"
       t.datetime "entity_filing_date"
