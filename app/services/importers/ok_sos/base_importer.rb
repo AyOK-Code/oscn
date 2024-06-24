@@ -1,3 +1,5 @@
+require 'csv'
+
 module Importers
   module OkSos
     class BaseImporter < ApplicationService
@@ -6,21 +8,16 @@ module Importers
       end
 
       def do_import
-        columns = []
-        Bucket.new.get_object(file_path).each_with_index do |row, i|
-          if i.zero?
-            columns = row.split('~')
-            next
-          end
-
-          data = columns.zip(row).to_h
-          import_row data
+        file = Bucket.new.get_object(file_path).body.string
+        rows = CSV.parse(file, col_sep: ",", quote_char:'"', headers: true).map(&:to_h)
+        rows.each do |row|
+          import_row row
         end
       end
 
-      def import_row data
+      def import_row(data)
         import_class.create(
-          attributes
+          attributes(data)
         )
       end
 
@@ -33,8 +30,12 @@ module Importers
       end
 
       def import_class
-        klass_name = "::OkSos::#{self.class.name.demodulize}"
+        klass_name = "::OkSos::#{self.class.name.demodulize.singularize}"
         Object.const_get(klass_name)
+      end
+
+      def parse_date(date)
+        Date::strptime(date, "%m/%d/%Y")
       end
     end
   end
