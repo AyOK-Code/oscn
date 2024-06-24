@@ -1,5 +1,5 @@
 module Importers
-  module OkSecretaryOfState
+  module OkSos
     class SplitFiles < ApplicationService
       PREFIX_FILE_MAP = {
         # 01~FILING_NUMBER~STATUS_ID~CORP_TYPE_ID~ADDRESS_ID~NAME~PERPETUAL_FLAG~CREATION_DATE~EXPIRATION_DATE~INACTIVE_DATE~FORMATION_DATE~REPORT_DUE_DATE~TAX_ID~FICTITIOUS_NAME~FOREIGN_FEIN~FOREIGN_STATE~FOREIGN_COUNTRY~FOREIGN_FORMATION_DATE~EXPIRATION_TYPE~LAST_REPORT_FILED_DATE~TELNO~OTC_SUSPENSION_FLAG~CONSENT_NAME_FLAG~
@@ -53,19 +53,8 @@ module Importers
             columns = row.clone
             row = row.map(&:downcase)
             file_name = "/Users/sabrinaleggett/Downloads/#{PREFIX_FILE_MAP[columns[0]]}.csv" # todo: where to write this?
-            # puts "writing new file #{file_name}"
-            # puts "first row: #{row_string}"
-            puts "create_table \"#{PREFIX_FILE_MAP[columns[0]]}\", force: :cascade do |t|"
-            columns.each{|col|
-              if col["_date"]
-                puts "t.datetime  \"#{col}\""
-              else
-                puts "t.string \"#{col}\""
-                end
-            }
-            puts "end"
-            puts ""
-          end
+            puts "writing new file #{file_name}"
+            puts "first row: #{row_string}"
             File.delete(file_name) if File.exists? file_name
             file = File.open(file_name, 'w')
           elsif columns.length > row.length
