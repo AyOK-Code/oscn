@@ -15,7 +15,7 @@ module Importers
         # 06~FILING_NUMBER~DOCUMENT_NUMBER~ASSOCIATED_ENTITY_ID~ ~PRIMARY_CAPACITY_ID~CAPACITY_ID~ASSOCIATED_ENTITY_NAME~ENTITY_FILING_NUMBER~ENTITY_FILING_DATE~INACTIVE_DATE~JURISDICTION_STATE~JURISDICTION_COUNTRY~
         "06": 'associated_entities',
         # 07~STOCK_ID~FILING_NUMBER~STOCK_TYPE_ID~STOCK_SERIES~SHARE_VOLUME~PAR_VALUE~
-        "07": 'stock_types',
+        "07": 'stock_data',
         # 08~FILING_NUMBER~QUALIFY_FLAG~UNLIMITED_FLAG~ACTUAL_AMT_INVESTED~PD_ON_CREDIT~TOT_AUTH_CAPITAL~
         "08": 'stock_infos',
         # 09~STOCK_TYPE_ID~STOCK_TYPE_DESC~
@@ -47,24 +47,43 @@ module Importers
         merged_row = '' # multiple rows may need to get merged if there is a \r or \n in a string column
         combined_csvs.each do |row_string|
           row_string = row_string.encode('UTF-8', invalid: :replace)
-          row = row_string.split('~')
+          row = row_string.strip.split('~')
           is_new_csv = !columns || columns[0] != row[0]
           if is_new_csv && merged_row.blank?
-            columns = row
-            file_name = "/Users/sabrinaleggett/Downloads/#{PREFIX_FILE_MAP[columns[0]]}.csv" #todo: where to write this?
-            puts "writing new file #{file_name}"
-            puts "first row: #{row_string}"
+            columns = row.clone
+            row = row.map(&:downcase)
+            file_name = "/Users/sabrinaleggett/Downloads/#{PREFIX_FILE_MAP[columns[0]]}.csv" # todo: where to write this?
+            # puts "writing new file #{file_name}"
+            # puts "first row: #{row_string}"
+            puts "create_table \"#{PREFIX_FILE_MAP[columns[0]]}\", force: :cascade do |t|"
+            columns.each{|col|
+              if col["_date"]
+                puts "t.datetime  \"#{col}\""
+              else
+                puts "t.string \"#{col}\""
+                end
+            }
+            puts "end"
+            puts ""
+          end
             File.delete(file_name) if File.exists? file_name
             file = File.open(file_name, 'w')
           elsif columns.length > row.length
             row_string = row_string.delete("\n").delete("\r")
             merged_row += row_string
-            is_complete_row = columns.length == merged_row.split('~').length
+            row = merged_row.split('~')
+            is_complete_row = columns.length == row.length
             next unless is_complete_row
           end
-          file.puts(merged_row.present? ? merged_row : row_string)
+          final_row = fix_csv_format(row)
+          file.puts(final_row)
           merged_row = ''
         end
+      end
+
+      def fix_csv_format(row)
+        row.delete_at(0)
+        row.map { |x| "\"#{x.gsub('"', '\"')}\"" }.join(',')+ "\n"
       end
 
       def combined_csvs
