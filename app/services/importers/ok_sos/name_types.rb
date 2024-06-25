@@ -1,0 +1,16 @@
+module Importers
+  module OkSos
+    class NameTypes < BaseImporter
+      def attributes(data)
+        {
+          name_type_id: data['name_type_id'],
+          name_type: data['name_type']
+        }
+      end
+
+      def update_by
+        [:name_type_id]
+      end
+    end
+  end
+end

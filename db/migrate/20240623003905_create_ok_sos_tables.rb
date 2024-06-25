@@ -47,7 +47,7 @@ class CreateOkSosTables < ActiveRecord::Migration[7.0]
       t.string "address2"
       t.string "city" # todo: should this be on the zip table?
       t.string "state" # todo: should this be on the zip table?
-      t.string "zip_string"
+      t.string "zip_string" # todo: not sure if we need
       t.integer "zip_extension"
       t.string "country"
 
@@ -118,7 +118,7 @@ class CreateOkSosTables < ActiveRecord::Migration[7.0]
     create_table "ok_sos_corp_filings" do |t|
       t.string "filing_number" # new?
       t.string "document_number"
-      t.string "filing_type"
+      t.string "external_filing_type"
       t.datetime "entry_date"
       t.datetime "filing_date"
       t.datetime "effective_date"
@@ -175,16 +175,19 @@ class CreateOkSosTables < ActiveRecord::Migration[7.0]
       t.float "pd_on_credit"
       t.float "tot_auth_capital"
 
-      t.references ["entity"], to_table: "ok_sos_stock_infos"
+      t.references ["entity"], to_table: "ok_sos_entities"
 
       t.timestamps
     end
 
     create_table "ok_sos_agents" do |t|
+      t.bigint "filing_number" # ?
+      t.bigint "external_address_id" # ?
       t.string "business_name"
       t.string "agent_last_name"
       t.string "agent_first_name"
       t.string "agent_middle_name"
+      t.string "agent_suffix_id" # ?
       t.datetime "creation_date"
       t.datetime "inactive_date"
       t.string "normalized_name"
