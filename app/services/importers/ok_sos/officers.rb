@@ -12,9 +12,9 @@ module Importers
           middle_name: data['middle_name'],
           external_suffix_id: data['suffix_id'],
           external_address_id: data['address_id'],
-          creation_date: data['creation_date'],
-          inactive_date: data['inactive_date'],
-          last_modified_date: data['last_modified_date'],
+          creation_date: parse_date(data['creation_date']),
+          inactive_date: parse_date(data['inactive_date']),
+          last_modified_date: parse_date(data['last_modified_date']),
           entity_address: OkSos::EntityAddress.find_by(address_id: data['entity_address_id']),
           entity: OkSos::Entity.find_by(filing_number: data['entity_address_id']),
           suffix: get_cached(OkSos::Suffix, :suffix_id, data['agent_suffix_id'])

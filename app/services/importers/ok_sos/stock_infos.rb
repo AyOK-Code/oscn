@@ -15,7 +15,7 @@ module Importers
       end
 
       def update_by
-        [:stock_id]
+        [] # fix
       end
     end
   end

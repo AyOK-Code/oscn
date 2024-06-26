@@ -3,8 +3,8 @@ require 'csv'
 module Importers
   module OkSos
     class BaseImporter < ApplicationService
-      def init
-        @model_cache = []
+      def initialize
+        @model_cache = ActiveSupport::HashWithIndifferentAccess.new({})
       end
 
       def perform
@@ -41,21 +41,28 @@ module Importers
       end
 
       def parse_date(date)
+        nil_dates = ["00/00/0000"]
+        return nil if nil_dates.include? date
         Date::strptime(date, "%m/%d/%Y")
       end
 
       def model_cache(klass, key)
-        return @model_cache[klass] if @model_cache[klass]
+        cache_key = klass.to_s
+        return @model_cache[cache_key] if @model_cache[cache_key]
 
-        @model_cache[klass] = klass.all.map{|x| [x[key], x]}.to_h
-        @model_cache[klass]
+        @model_cache[cache_key] = klass.all.map{|x| [x[key], x]}.to_h
+        @model_cache[cache_key]
       end
 
-      def get_cached(klass, key, value)
+      def get_cached(klass, key, value, create: false)
+        return nil unless value.present? && value != "0"
+
         return model_cache(klass, key)[value] if model_cache(klass, key)[value]
 
-        new_model = klass.create!(key => value) # this assumes only requires one field
-        @model_cache[klass][key] = new_model
+        raise ActiveRecord::RecordNotFound unless create
+
+        new_model = klass.create!(key => value)
+        @model_cache[klass.to_s][key] = new_model
         new_model
       end
     end
