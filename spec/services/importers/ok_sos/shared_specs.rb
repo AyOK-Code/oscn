@@ -5,7 +5,6 @@ RSpec.shared_examples 'ok_sos_importer' do
 
     # context "with a sample file" do
 
-      let(:sample_file) { File.read('spec/fixtures/importers/ok_sos/audit_logs.csv') }
       let(:bucket) { instance_double(Bucket) }
 
       before do
