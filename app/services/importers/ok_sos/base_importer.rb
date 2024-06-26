@@ -50,19 +50,19 @@ module Importers
         cache_key = klass.to_s
         return @model_cache[cache_key] if @model_cache[cache_key]
 
-        @model_cache[cache_key] = klass.all.map{|x| [x[key], x]}.to_h
+        @model_cache[cache_key] = klass.all.map{|x| [x[key].to_s, x]}.to_h
         @model_cache[cache_key]
       end
 
       def get_cached(klass, key, value, create: false)
         return nil unless value.present? && value != "0"
 
-        return model_cache(klass, key)[value] if model_cache(klass, key)[value]
+        return model_cache(klass, key)[value.to_s] if model_cache(klass, key)[value.to_s]
 
         raise ActiveRecord::RecordNotFound unless create
 
         new_model = klass.create!(key => value)
-        @model_cache[klass.to_s][key] = new_model
+        @model_cache[klass.to_s][key.to_s] = new_model
         new_model
       end
     end

@@ -11,8 +11,8 @@ module Importers
           effective_date: parse_date(data['effective_date']),
           effective_cond_flag: parse_date(data['effective_cond_flag']),
           inactive_date: parse_date(data['inactive_date']),
-          filing_type_id: get_cached(OkSos::FilingType, :filing_type_id, data['filing_type']),
-          entity: OkSos::Entity.find_by(filing_number: data['filing_number'])
+          filing_type_id: get_cached(::OkSos::FilingType, :filing_type_id, data['filing_type']),
+          entity: ::OkSos::Entity.find_by(filing_number: data['filing_number'])
         }
       end
 

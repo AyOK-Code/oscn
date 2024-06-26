@@ -9,8 +9,8 @@ module Importers
           actual_amount_invested: data['actual_amount_invested'],
           pd_on_credit: data['pd_on_credit'],
           tot_auth_capital: data['tot_auth_capital'],
-          entity: OkSos::Entity.find_by(filing_number: data['filing_number']),
-          stock_type: get_cached(OkSos::StockType, :stock_type_id, data['stock_type_id'])
+          entity: ::OkSos::Entity.find_by(filing_number: data['filing_number']),
+          stock_type: get_cached(::OkSos::StockType, :stock_type_id, data['stock_type_id'])
         }
       end
 

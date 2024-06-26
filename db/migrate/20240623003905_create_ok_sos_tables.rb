@@ -204,10 +204,11 @@ class CreateOkSosTables < ActiveRecord::Migration[7.0]
       t.bigint "filing_number" # new?
       t.bigint "document_number"
       t.bigint "associated_entity_id", null: false
+      t.bigint "associated_entity_corp_type_id"
       t.bigint "primary_capacity_id"
       t.bigint "external_capacity_id" # prefix?
       t.string "associated_entity_name"
-      t.string "entity_filing_number"
+      t.bigint "entity_filing_number"
       t.datetime "entity_filing_date"
       t.datetime "inactive_date"
       t.string "jurisdiction_state"

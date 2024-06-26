@@ -831,10 +831,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
   end
 
   create_table "ok_sos_agents", force: :cascade do |t|
+    t.bigint "filing_number"
+    t.bigint "external_address_id"
     t.string "business_name"
     t.string "agent_last_name"
     t.string "agent_first_name"
     t.string "agent_middle_name"
+    t.string "agent_suffix_id"
     t.datetime "creation_date"
     t.datetime "inactive_date"
     t.string "normalized_name"
@@ -853,10 +856,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.bigint "filing_number"
     t.bigint "document_number"
     t.bigint "associated_entity_id", null: false
+    t.bigint "associated_entity_corp_type_id"
     t.bigint "primary_capacity_id"
     t.bigint "external_capacity_id"
     t.string "associated_entity_name"
-    t.string "entity_filing_number"
+    t.bigint "entity_filing_number"
     t.datetime "entity_filing_date"
     t.datetime "inactive_date"
     t.string "jurisdiction_state"
@@ -924,9 +928,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
 
   create_table "ok_sos_entities", force: :cascade do |t|
     t.bigint "filing_number", null: false
-    t.integer "status_id"
+    t.bigint "status_id"
     t.bigint "external_corp_type_id", null: false
-    t.bigint "external_address_id", null: false
+    t.bigint "external_address_id"
     t.string "name"
     t.integer "perpetual_flag"
     t.datetime "creation_date"
@@ -946,11 +950,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.integer "otc_suspension_flag"
     t.string "consent_name_flag"
     t.bigint "corp_type_id", null: false
-    t.bigint "address_id"
+    t.bigint "entity_address_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["address_id"], name: "index_ok_sos_entities_on_address_id"
     t.index ["corp_type_id"], name: "index_ok_sos_entities_on_corp_type_id"
+    t.index ["entity_address_id"], name: "index_ok_sos_entities_on_entity_address_id"
   end
 
   create_table "ok_sos_entity_addresses", force: :cascade do |t|
@@ -1040,7 +1044,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
   create_table "ok_sos_stock_data", force: :cascade do |t|
     t.integer "stock_id", null: false
     t.integer "filing_number"
-    t.integer "external_stock_type_id"
+    t.integer "external_stock_type_id", null: false
     t.integer "stock_series"
     t.float "share_volume"
     t.float "par_value"
