@@ -87,9 +87,9 @@ class CreateOkSosTables < ActiveRecord::Migration[7.0]
 
     create_table "ok_sos_entities" do |t|
       t.bigint "filing_number", null: false
-      t.integer "status_id"
+      t.bigint "status_id"
       t.bigint "external_corp_type_id", null: false # prefixed!!
-      t.bigint "external_address_id", null: false # prefixed!!
+      t.bigint "external_address_id" # prefixed!!
       t.string "name"
       t.integer "perpetual_flag"
       t.datetime "creation_date"
@@ -110,7 +110,7 @@ class CreateOkSosTables < ActiveRecord::Migration[7.0]
       t.string "consent_name_flag"
 
       t.references "corp_type", null: false, to_table: "ok_sos_corp_types"
-      t.references "address", to_table: "ok_sos_address"
+      t.references "entity_address", to_table: "ok_sos_entity_addresses"
 
       t.timestamps
     end
@@ -148,7 +148,7 @@ class CreateOkSosTables < ActiveRecord::Migration[7.0]
 
       t.references "name_type", to_table: "ok_sos_name_types"
       t.references "name_status", to_table: "ok_sos_name_status"
-      t.references "entity", to_table: "ok_sos_entity"
+      t.references "entity", to_table: "ok_sos_entities" #todo: this seems like should be required
 
       t.timestamps
     end
@@ -156,7 +156,7 @@ class CreateOkSosTables < ActiveRecord::Migration[7.0]
     create_table "ok_sos_stock_data" do |t|
       t.integer "stock_id", null: false
       t.integer "filing_number" # new?
-      t.integer "external_stock_type_id" # prefix?
+      t.integer "external_stock_type_id", null: false # prefix?
       t.integer "stock_series"
       t.float "share_volume"
       t.float "par_value"
@@ -175,7 +175,7 @@ class CreateOkSosTables < ActiveRecord::Migration[7.0]
       t.float "pd_on_credit"
       t.float "tot_auth_capital"
 
-      t.references ["entity"], to_table: "ok_sos_entities"
+      t.references ["entity"], to_table: "ok_sos_entities" # required?
 
       t.timestamps
     end
