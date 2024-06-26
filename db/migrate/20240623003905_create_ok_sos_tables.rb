@@ -116,8 +116,9 @@ class CreateOkSosTables < ActiveRecord::Migration[7.0]
     end
 
     create_table "ok_sos_corp_filings" do |t|
-      t.string "filing_number" # new?
-      t.string "document_number"
+      t.bigint "filing_number" # new?
+      t.bigint "document_number"
+      t.bigint "external_filing_type_id"
       t.string "external_filing_type"
       t.datetime "entry_date"
       t.datetime "filing_date"

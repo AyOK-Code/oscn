@@ -896,8 +896,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
   end
 
   create_table "ok_sos_corp_filings", force: :cascade do |t|
-    t.string "filing_number"
-    t.string "document_number"
+    t.bigint "filing_number"
+    t.bigint "document_number"
+    t.bigint "external_filing_type_id"
     t.string "external_filing_type"
     t.datetime "entry_date"
     t.datetime "filing_date"
