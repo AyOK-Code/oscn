@@ -4,7 +4,7 @@ module Importers
       def attributes(data)
         {
           corp_type_id: data['corp_type_id'],
-          corp_type_description: data['corp_type_description']
+          corp_type_description: data['corp_type']
         }
       end
 
