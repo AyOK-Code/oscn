@@ -1,6 +1,7 @@
 module Importers
   module OkSos
     class SplitFiles < ApplicationService
+      attr_accessor :combined_file_name
       PREFIX_FILE_MAP = {
         # 01~FILING_NUMBER~STATUS_ID~CORP_TYPE_ID~ADDRESS_ID~NAME~PERPETUAL_FLAG~CREATION_DATE~EXPIRATION_DATE~INACTIVE_DATE~FORMATION_DATE~REPORT_DUE_DATE~TAX_ID~FICTITIOUS_NAME~FOREIGN_FEIN~FOREIGN_STATE~FOREIGN_COUNTRY~FOREIGN_FORMATION_DATE~EXPIRATION_TYPE~LAST_REPORT_FILED_DATE~TELNO~OTC_SUSPENSION_FLAG~CONSENT_NAME_FLAG~
         "01": 'entities',
@@ -41,22 +42,26 @@ module Importers
         "99": 'etc_error'
       }.stringify_keys
 
+      def initialize(combined_file_name)
+        @combined_file_name = combined_file_name
+      end
+
       def perform
         columns = nil
-        file = nil
+        file = ''
+        file_name = ''
         merged_row = '' # multiple rows may need to get merged if there is a \r or \n in a string column
-        combined_csvs.each do |row_string|
-          row_string = row_string.encode('UTF-8', invalid: :replace)
+        combined_csvs.encode('UTF-8', invalid: :replace).split("\n").each do |row_string|
           row = row_string.strip.split('~')
           is_new_csv = !columns || columns[0] != row[0]
           if is_new_csv && merged_row.blank?
+            write_file(file, file_name) if file.present?
             columns = row.clone
             row = row.map(&:downcase)
-            file_name = "/Users/sabrinaleggett/Downloads/#{PREFIX_FILE_MAP[columns[0]]}.csv" # todo: where to write this?
+            file_name = "ok_sos/#{folder_prefix}/#{PREFIX_FILE_MAP[columns[0]]}.csv" # todo: where to write this?
             puts "writing new file #{file_name}"
             puts "first row: #{row_string}"
-            File.delete(file_name) if File.exists? file_name
-            file = File.open(file_name, 'w')
+            file = ''
           elsif columns.length > row.length
             row_string = row_string.delete("\n").delete("\r")
             merged_row += row_string
@@ -64,10 +69,15 @@ module Importers
             is_complete_row = columns.length == row.length
             next unless is_complete_row
           end
-          final_row = fix_csv_format(row)
-          file.puts(final_row)
+          formatted_row = fix_csv_format(row)
+          file += formatted_row
           merged_row = ''
         end
+        write_file(file, file_name)
+      end
+
+      def write_file(file, name)
+        Bucket.new.put_object("ok_sos/#{folder_prefix}/#{name}", file)
       end
 
       def fix_csv_format(row)
@@ -75,8 +85,13 @@ module Importers
         row.map { |x| "\"#{x.gsub('"', '\"').squish}\"" }.join(',')+ "\n"
       end
 
+      def folder_prefix
+        combined_file_name.gsub(".txt")
+      end
+
       def combined_csvs
-        File.new('/Users/sabrinaleggett/Downloads/CORP_MSTR_240504.txt')
+        response = Bucket.new.get_object("ok_sos/#{combined_file_name}")
+        response.body.read
       end
     end
   end
