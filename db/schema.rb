@@ -1044,17 +1044,17 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
 
   create_table "ok_sos_stock_data", force: :cascade do |t|
     t.integer "stock_id", null: false
-    t.integer "filing_number"
+    t.bigint "filing_number"
     t.integer "external_stock_type_id", null: false
     t.integer "stock_series"
     t.float "share_volume"
     t.float "par_value"
-    t.bigint "[\"entity\"]_id"
-    t.bigint "[\"stock_type\"]_id", null: false
+    t.bigint "entity_id"
+    t.bigint "stock_type_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["[\"entity\"]_id"], name: "index_ok_sos_stock_data_on_[\"entity\"]_id"
-    t.index ["[\"stock_type\"]_id"], name: "index_ok_sos_stock_data_on_[\"stock_type\"]_id"
+    t.index ["entity_id"], name: "index_ok_sos_stock_data_on_entity_id"
+    t.index ["stock_type_id"], name: "index_ok_sos_stock_data_on_stock_type_id"
   end
 
   create_table "ok_sos_stock_infos", force: :cascade do |t|
@@ -1064,10 +1064,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.float "actual_amount_invested"
     t.float "pd_on_credit"
     t.float "tot_auth_capital"
-    t.bigint "[\"entity\"]_id"
+    t.bigint "entity_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["[\"entity\"]_id"], name: "index_ok_sos_stock_infos_on_[\"entity\"]_id"
+    t.index ["entity_id"], name: "index_ok_sos_stock_infos_on_entity_id"
   end
 
   create_table "ok_sos_stock_types", force: :cascade do |t|

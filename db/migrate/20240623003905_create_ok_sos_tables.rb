@@ -156,14 +156,14 @@ class CreateOkSosTables < ActiveRecord::Migration[7.0]
 
     create_table "ok_sos_stock_data" do |t|
       t.integer "stock_id", null: false
-      t.integer "filing_number" # new?
+      t.bigint "filing_number" # new?
       t.integer "external_stock_type_id", null: false # prefix?
       t.integer "stock_series"
       t.float "share_volume"
       t.float "par_value"
 
-      t.references ["entity"], to_table: "ok_sos_entities"
-      t.references ["stock_type"], null: false, to_table: "ok_sos_stock_types"
+      t.references "entity", to_table: "ok_sos_entities"
+      t.references "stock_type", null: false, to_table: "ok_sos_stock_types"
 
       t.timestamps
     end
@@ -176,7 +176,7 @@ class CreateOkSosTables < ActiveRecord::Migration[7.0]
       t.float "pd_on_credit"
       t.float "tot_auth_capital"
 
-      t.references ["entity"], to_table: "ok_sos_entities" # required?
+      t.references "entity", to_table: "ok_sos_entities" # required?
 
       t.timestamps
     end

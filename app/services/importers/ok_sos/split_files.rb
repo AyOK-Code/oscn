@@ -72,7 +72,7 @@ module Importers
 
       def fix_csv_format(row)
         row.delete_at(0)
-        row.map { |x| "\"#{x.gsub('"', '\"')}\"" }.join(',')+ "\n"
+        row.map { |x| "\"#{x.gsub('"', '\"')}\"".squish }.join(',')+ "\n"
       end
 
       def combined_csvs
