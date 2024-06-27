@@ -966,7 +966,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.string "state"
     t.string "zip_string"
     t.integer "zip_extension"
-    t.string "county"
+    t.string "country"
     t.bigint "zip_code_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

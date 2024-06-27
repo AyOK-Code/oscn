@@ -21,8 +21,8 @@ RSpec.describe Importers::OkSos::Names do
         all_counties_flag: 'LIST',
         consent_filing_number: nil,
         search_id: 1,
-        transfer_to: ' ',
-        received_from: ' ',
+        transfer_to: '',
+        received_from: '',
         name_type_id: name_type.id,
         name_status_id: name_status.id,
         entity_id: entity.id

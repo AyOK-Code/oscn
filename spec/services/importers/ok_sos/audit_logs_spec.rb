@@ -12,10 +12,10 @@ RSpec.describe Importers::OkSos::AuditLogs do
         audit_date: DateTime.parse("2003-06-16 00:00:00.000000000 -0500"),
         table_id: 33,
         field_id: 211,
-        previous_value: " ",
+        previous_value: "",
         current_value: "3512010000 - DOMESTIC LIMITED LIABILITY COMPANY - ARTICLES OF ORGANIZATION - 06/16/2003",
         action: "ADD",
-        audit_comment: " "
+        audit_comment: ""
       }
     }
   end

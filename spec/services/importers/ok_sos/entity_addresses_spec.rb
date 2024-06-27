@@ -9,7 +9,7 @@ RSpec.describe Importers::OkSos::EntityAddresses do
       {
         address_id: 10,
         address1: '421 NW 13th St, Suite 210',
-        address2: ' ',
+        address2: '',
         city: 'OKLAHOMA CITY',
         state: 'OK',
         zip_string: '73103',
