@@ -4,7 +4,7 @@ module Importers
       def attributes(data)
         {
           name_status_id: data['name_status_id'],
-          name_status: data['name_status']
+          name_status: data['status']
         }
       end
 

@@ -966,7 +966,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.string "state"
     t.string "zip_string"
     t.integer "zip_extension"
-    t.string "country"
+    t.string "county"
     t.bigint "zip_code_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -998,12 +998,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.bigint "filing_number"
     t.bigint "name_id", null: false
     t.string "name"
-    t.string "external_name_status_id"
-    t.string "external_name_type_id"
+    t.bigint "external_name_status_id"
+    t.bigint "external_name_type_id"
     t.datetime "creation_date"
     t.datetime "inactive_date"
     t.datetime "expire_date"
-    t.integer "all_counties_flag"
+    t.string "all_counties_flag"
     t.bigint "consent_filing_number"
     t.bigint "search_id"
     t.string "transfer_to"

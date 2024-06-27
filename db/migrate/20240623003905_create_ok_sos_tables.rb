@@ -136,12 +136,12 @@ class CreateOkSosTables < ActiveRecord::Migration[7.0]
       t.bigint "filing_number" # new?
       t.bigint "name_id", null: false
       t.string "name"
-      t.string "external_name_status_id" # prefixed
-      t.string "external_name_type_id" # prefixed
+      t.bigint "external_name_status_id" # prefixed
+      t.bigint "external_name_type_id" # prefixed
       t.datetime "creation_date"
       t.datetime "inactive_date"
       t.datetime "expire_date"
-      t.integer "all_counties_flag"
+      t.string "all_counties_flag"
       t.bigint "consent_filing_number"
       t.bigint "search_id"
       t.string "transfer_to"
