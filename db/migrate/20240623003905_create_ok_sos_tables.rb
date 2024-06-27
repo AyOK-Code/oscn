@@ -49,7 +49,7 @@ class CreateOkSosTables < ActiveRecord::Migration[7.0]
       t.string "state" # todo: should this be on the zip table?
       t.string "zip_string" # todo: not sure if we need
       t.integer "zip_extension"
-      t.string "country"
+      t.string "county"
 
       t.references "zip_code", name: "zip_codes"
 
