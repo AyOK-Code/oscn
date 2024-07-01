@@ -1,7 +1,7 @@
 module Importers
   module OkSos
     class SplitFiles < ApplicationService
-      attr_accessor :combined_file_name
+      attr_accessor :combined_zip_name
       PREFIX_FILE_MAP = {
         # 01~FILING_NUMBER~STATUS_ID~CORP_TYPE_ID~ADDRESS_ID~NAME~PERPETUAL_FLAG~CREATION_DATE~EXPIRATION_DATE~INACTIVE_DATE~FORMATION_DATE~REPORT_DUE_DATE~TAX_ID~FICTITIOUS_NAME~FOREIGN_FEIN~FOREIGN_STATE~FOREIGN_COUNTRY~FOREIGN_FORMATION_DATE~EXPIRATION_TYPE~LAST_REPORT_FILED_DATE~TELNO~OTC_SUSPENSION_FLAG~CONSENT_NAME_FLAG~
         "01": 'entities',
@@ -42,23 +42,56 @@ module Importers
         "99": 'etc_error'
       }.stringify_keys
 
-      def initialize(combined_file_name)
-        @combined_file_name = combined_file_name
+      def initialize(combined_zip_name)
+        @combined_zip_name = combined_zip_name
+        @combined_file = nil
+        @csvs = {}
       end
 
       def perform
+        download_combined_csv
+        split_files
+      end
+
+      def import_files
+        [
+          :audit_logs,
+          :capacities,
+          :corp_statuses,
+          :corp_types,
+          :filing_types,
+          :entity_addresses,
+          :name_statuses,
+          :name_types,
+          :suffixes,
+          :stock_types,
+          :entities,
+          :corp_filings,
+          :names,
+          :stock_data,
+          :stock_infos,
+          :agents,
+          :associated_entities,
+          :officers
+        ].each do |file|
+          klass = Object.const_get(file.classify)
+          klass.perform(@csvs[file])
+        end
+      end
+
+      def split_files
         columns = nil
         file = ''
         file_name = ''
         merged_row = '' # multiple rows may need to get merged if there is a \r or \n in a string column
-        combined_csvs.encode('UTF-8', invalid: :replace).split("\n").each do |row_string|
+        File.new(@combined_file.path).each_line do |row_string|
           row = row_string.strip.split('~')
           is_new_csv = !columns || columns[0] != row[0]
           if is_new_csv && merged_row.blank?
             write_file(file, file_name) if file.present?
             columns = row.clone
             row = row.map(&:downcase)
-            file_name = "ok_sos/#{folder_prefix}/#{PREFIX_FILE_MAP[columns[0]]}.csv" # todo: where to write this?
+            file_name = PREFIX_FILE_MAP[columns[0]]
             puts "writing new file #{file_name}"
             puts "first row: #{row_string}"
             file = ''
@@ -77,7 +110,9 @@ module Importers
       end
 
       def write_file(file, name)
-        Bucket.new.put_object("ok_sos/#{folder_prefix}/#{name}", file)
+        @csvs[name] = Tempfile.new("#{name}.csv")
+        @csvs[name].write(file)
+        @csvs[name].close
       end
 
       def fix_csv_format(row)
@@ -86,12 +121,17 @@ module Importers
       end
 
       def folder_prefix
-        combined_file_name.gsub(".txt")
+        combined_zip_name.gsub(".txt")
       end
 
-      def combined_csvs
-        response = Bucket.new.get_object("ok_sos/#{combined_file_name}")
-        response.body.read
+      def download_combined_csv
+        response = Bucket.new.get_object("ok_sos/#{combined_zip_name}")
+        Zip::InputStream.open(response.body) do |io|
+          io.get_next_entry
+          @combined_file = Tempfile.new(combined_zip_name)
+          @combined_file.write(io.read.encode('UTF-8', invalid: :replace, undef: :replace))
+          @combined_file.close
+        end
       end
     end
   end
