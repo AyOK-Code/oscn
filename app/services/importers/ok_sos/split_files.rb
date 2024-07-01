@@ -81,20 +81,28 @@ module Importers
 
       def split_files
         columns = nil
-        file = ''
         file_name = ''
         merged_row = '' # multiple rows may need to get merged if there is a \r or \n in a string column
-        File.new(@combined_file.path).each_line do |row_string|
+        line = 0
+        File.new(@combined_file.path).each do |row_string|
+          line += 1
+          # if line%1000 == 0
+          #   puts line
+          #   puts `ps -o rss #{Process.pid}`.lines.last.to_i
+          # end
           row = row_string.strip.split('~')
           is_new_csv = !columns || columns[0] != row[0]
           if is_new_csv && merged_row.blank?
-            write_file(file, file_name) if file.present?
+            if file_name.present?
+              @csvs[file_name].close
+              line = 0
+            end
             columns = row.clone
             row = row.map(&:downcase)
             file_name = PREFIX_FILE_MAP[columns[0]]
             puts "writing new file #{file_name}"
             puts "first row: #{row_string}"
-            file = ''
+            @csvs[file_name] = Tempfile.new("#{file_name}.csv")
           elsif columns.length > row.length
             row_string = row_string.delete("\n").delete("\r")
             merged_row += row_string
@@ -103,16 +111,9 @@ module Importers
             next unless is_complete_row
           end
           formatted_row = fix_csv_format(row)
-          file += formatted_row
+          @csvs[file_name].write(formatted_row)
           merged_row = ''
         end
-        write_file(file, file_name)
-      end
-
-      def write_file(file, name)
-        @csvs[name] = Tempfile.new("#{name}.csv")
-        @csvs[name].write(file)
-        @csvs[name].close
       end
 
       def fix_csv_format(row)
@@ -128,9 +129,13 @@ module Importers
         response = Bucket.new.get_object("ok_sos/#{combined_zip_name}")
         Zip::InputStream.open(response.body) do |io|
           io.get_next_entry
+          # puts Process.pid
+          # puts `ps -o rss #{Process.pid}`.lines.last.to_i
           @combined_file = Tempfile.new(combined_zip_name)
           @combined_file.write(io.read.encode('UTF-8', invalid: :replace, undef: :replace))
+          # puts `ps -o rss #{Process.pid}`.lines.last.to_i
           @combined_file.close
+          # puts `ps -o rss #{Process.pid}`.lines.last.to_i
         end
       end
     end
