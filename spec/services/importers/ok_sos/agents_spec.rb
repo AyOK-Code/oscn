@@ -5,7 +5,7 @@ RSpec.describe Importers::OkSos::Agents do
   it_behaves_like 'ok_sos_importer' do
     let!(:address) { create(:ok_sos_entity_address, address_id: 4047286) }
     let!(:entity) { create(:ok_sos_entity, filing_number: 3513036711) }
-    let(:sample_file) { File.read('spec/fixtures/importers/ok_sos/agents.csv') }
+    let(:sample_file) { 'spec/fixtures/importers/ok_sos/agents.csv' }
     let(:record) { OkSos::Agent.find_by(filing_number: 3513036711) } # todo: update this with real key?
     let(:expected_attributes) {
       {

@@ -2,22 +2,10 @@ require 'rails_helper'
 
 RSpec.shared_examples 'ok_sos_importer' do
   describe '#perform' do
+    it 'does the import' do
+      described_class.perform(sample_file)
 
-    # context "with a sample file" do
-
-      let(:bucket) { instance_double(Bucket) }
-
-      before do
-        response = double('response', { body: double('body', { string: sample_file }) })
-        allow(Bucket).to receive(:new).and_return(bucket)
-        allow(bucket).to receive(:get_object).and_return(response)
-      end
-
-      it 'does the import' do
-        described_class.perform
-
-        expect(record).to have_attributes expected_attributes
-      end
-    # end
+      expect(record).to have_attributes expected_attributes
+    end
   end
 end
