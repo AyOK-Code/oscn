@@ -51,6 +51,7 @@ module Importers
       def perform
         download_combined_csv
         split_files
+        import_files
       end
 
       def import_files
@@ -74,8 +75,9 @@ module Importers
           :associated_entities,
           :officers
         ].each do |file|
-          klass = Object.const_get(file.classify)
-          klass.perform(@csvs[file])
+          klass = Object.const_get("::Importers::OkSos::#{file.to_s.classify.pluralize}")
+          puts "importing #{klass}"
+          klass.perform(@csvs[file.to_s].path)
         end
       end
 
@@ -83,25 +85,21 @@ module Importers
         columns = nil
         file_name = ''
         merged_row = '' # multiple rows may need to get merged if there is a \r or \n in a string column
-        line = 0
+        line_count = `wc -l "#{@combined_file.path}"`.strip.split(' ')[0].to_i
+        puts "Splitting csv. Combined csv line count is: #{line_count}"
+        bar = ProgressBar.create(total: line_count, length: 160, format: '%a |%b>>%i| %p%% %t')
         File.new(@combined_file.path).each do |row_string|
-          line += 1
-          # if line%1000 == 0
-          #   puts line
-          #   puts `ps -o rss #{Process.pid}`.lines.last.to_i
-          # end
+          bar.increment
           row = row_string.strip.split('~')
           is_new_csv = !columns || columns[0] != row[0]
           if is_new_csv && merged_row.blank?
             if file_name.present?
               @csvs[file_name].close
-              line = 0
             end
             columns = row.clone
             row = row.map(&:downcase)
             file_name = PREFIX_FILE_MAP[columns[0]]
-            puts "writing new file #{file_name}"
-            puts "first row: #{row_string}"
+            bar.log "Writing new file #{file_name}. First row: #{row_string}"
             @csvs[file_name] = Tempfile.new("#{file_name}.csv")
           elsif columns.length > row.length
             row_string = row_string.delete("\n").delete("\r")
@@ -110,13 +108,14 @@ module Importers
             is_complete_row = columns.length == row.length
             next unless is_complete_row
           end
-          formatted_row = fix_csv_format(row)
+          formatted_row = format_row(row)
           @csvs[file_name].write(formatted_row)
           merged_row = ''
         end
+        puts "CSV splitting complete"
       end
 
-      def fix_csv_format(row)
+      def format_row(row)
         row.delete_at(0)
         row.map { |x| "\"#{x.gsub('"', '\"').squish}\"" }.join(',')+ "\n"
       end
@@ -126,16 +125,13 @@ module Importers
       end
 
       def download_combined_csv
+        puts "Downloading combined csv zip file from aws."
         response = Bucket.new.get_object("ok_sos/#{combined_zip_name}")
         Zip::InputStream.open(response.body) do |io|
           io.get_next_entry
-          # puts Process.pid
-          # puts `ps -o rss #{Process.pid}`.lines.last.to_i
           @combined_file = Tempfile.new(combined_zip_name)
           @combined_file.write(io.read.encode('UTF-8', invalid: :replace, undef: :replace))
-          # puts `ps -o rss #{Process.pid}`.lines.last.to_i
           @combined_file.close
-          # puts `ps -o rss #{Process.pid}`.lines.last.to_i
         end
       end
     end

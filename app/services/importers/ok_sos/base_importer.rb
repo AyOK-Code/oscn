@@ -3,7 +3,9 @@ require 'csv'
 module Importers
   module OkSos
     class BaseImporter < ApplicationService
-      def initialize
+      attr_accessor :file_path
+      def initialize(file_path)
+        @file_path = file_path
         @model_cache = ActiveSupport::HashWithIndifferentAccess.new({})
       end
 
@@ -12,23 +14,19 @@ module Importers
       end
 
       def do_import
-        file = Bucket.new.get_object(file_path).body.string
-        rows = CSV.parse(file, col_sep: ",", quote_char:'"', headers: true).map(&:to_h)
-        rows.each do |row|
-          import_row row
+        puts 'importing csv in batches'
+        rows = []
+        line_count = `wc -l "#{@file_path}"`.strip.split(' ')[0].to_i - 1
+        bar = ProgressBar.create(total: line_count/10_000, length: 160, format: '%a |%b>>%i| %p%% %t') if line_count> 10_000
+        CSV
+          .foreach(file_path, col_sep: ',', quote_char:'"', headers: true, liberal_parsing: true) do |row|
+          rows << attributes(row)
+          if rows.count%10_000 == 0 || rows.count == line_count
+            bar.increment if bar
+            import_class.insert_all(rows)
+            rows = []
+          end
         end
-      end
-
-      def import_row(data)
-        # import_class.create_or_update_by(
-        #   update_by,
-        #   attributes(data)
-        # )
-        import_class.create!(attributes(data))
-      end
-
-      def file_path
-        "/ok_sos/#{import_type}.csv"
       end
 
       def import_type
@@ -41,9 +39,9 @@ module Importers
       end
 
       def parse_date(date)
-        nil_dates = ["00/00/0000"]
+        nil_dates = ['00/00/0000']
         return nil if nil_dates.include? date
-        Date::strptime(date, "%m/%d/%Y")
+        Date::strptime(date, '%m/%d/%Y')
       end
 
       def model_cache(klass, key)
@@ -55,7 +53,7 @@ module Importers
       end
 
       def get_cached(klass, key, value, create: false)
-        return nil unless value.present? && value != "0"
+        return nil unless value.present? && value != '0'
 
         return model_cache(klass, key)[value.to_s] if model_cache(klass, key)[value.to_s]
 

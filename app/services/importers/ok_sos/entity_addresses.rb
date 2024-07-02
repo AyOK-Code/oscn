@@ -8,10 +8,10 @@ module Importers
           address2: data['address2'],
           city: data['city'],
           state: data['state'],
-          zip_string: data['zip_code'],
+          zip_string: data['ip_code'],
           zip_extension: data['zip_extension'],
           country: data['county'],
-          zip_code: get_cached(::ZipCode, :name, data['zip_string'], create: true)
+          zip_code_id: get_cached(::ZipCode, :name, data['zip_string'], create: true)&.id
         }
       end
 
