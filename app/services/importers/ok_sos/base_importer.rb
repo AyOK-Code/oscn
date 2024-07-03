@@ -41,8 +41,9 @@ module Importers
         puts '#{error_rows.count} errors.'
         puts 'first 10 errors:'
         error_rows.slice(10).each do |error_row|
-          puts error_row[:row].join ","
-          puts error_row[:error]
+          error_row.each do |k, v|
+            puts "#{k}: #{v}"
+          end
         end
       end
 

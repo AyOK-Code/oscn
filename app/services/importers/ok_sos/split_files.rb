@@ -86,7 +86,7 @@ module Importers
         file_name = ''
         merged_row = '' # multiple rows may need to get merged if there is a \r or \n in a string column
         line_count = `wc -l "#{@combined_file.path}"`.strip.split(' ')[0].to_i
-        puts "Splitting csv. Combined csv line count is: #{line_count}"
+        puts "Start time: #{Time.now}. Splitting csv. Combined csv line count is: #{line_count}"
         bar = ProgressBar.create(total: line_count, length: 160, format: '%a |%b>>%i| %p%% %t')
         File.new(@combined_file.path).each do |row_string|
           bar.increment
@@ -112,7 +112,7 @@ module Importers
           @csvs[file_name].write(formatted_row)
           merged_row = ''
         end
-        puts "CSV splitting complete"
+        puts "CSV splitting complete. End time: #{Time.now}"
       end
 
       def format_row(row)
