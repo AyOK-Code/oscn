@@ -623,215 +623,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.index ["external_id"], name: "index_ok_real_estate_registration_records_on_external_id", unique: true
   end
 
-  create_table "ok_secretary_of_state_agents", force: :cascade do |t|
-    t.string "business_name"
-    t.string "agent_last_name"
-    t.string "agent_first_name"
-    t.string "agent_middle_name"
-    t.datetime "creation_date"
-    t.datetime "inactive_date"
-    t.string "normalized_name"
-    t.integer "sos_ra_flag"
-    t.bigint "ok_secretary_of_state_suffix_id"
-    t.bigint "ok_secretary_of_state_entity_address_id"
-    t.bigint "ok_secretary_of_state_entity_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["ok_secretary_of_state_entity_address_id"], name: "index_agents_on_entity_address_id"
-    t.index ["ok_secretary_of_state_entity_id"], name: "index_agents_on_entity_id"
-    t.index ["ok_secretary_of_state_suffix_id"], name: "index_agents_on_suffix_id"
-  end
-
-  create_table "ok_secretary_of_state_associated_entities", force: :cascade do |t|
-    t.bigint "document_number"
-    t.bigint "associated_entity_id", null: false
-    t.bigint "ok_secretary_of_state_corp_type_id"
-    t.bigint "ok_secretary_of_state_capacity_id", null: false
-    t.bigint "ok_secretary_of_state_entity_id"
-    t.bigint "primary_capacity_id"
-    t.string "associated_entity_name"
-    t.string "entity_filing_number"
-    t.datetime "entity_filing_date"
-    t.datetime "inactive_date"
-    t.string "jurisdiction_state"
-    t.string "jurisdiction_country"
-    t.index ["ok_secretary_of_state_capacity_id"], name: "index_associated_entities_on_capacity_id"
-    t.index ["ok_secretary_of_state_corp_type_id"], name: "index_associated_entities_on_corp_type_id"
-    t.index ["ok_secretary_of_state_entity_id"], name: "index_associated_entities_on_entity_id"
-  end
-
-  create_table "ok_secretary_of_state_audit_logs", force: :cascade do |t|
-    t.string "reference_number", null: false
-    t.datetime "audit_date"
-    t.integer "table_id"
-    t.integer "field_id"
-    t.string "previous_value"
-    t.string "current_value"
-    t.string "action"
-    t.string "audit_comment"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "ok_secretary_of_state_capacities", force: :cascade do |t|
-    t.integer "capacity_id", null: false
-    t.string "description"
-  end
-
-  create_table "ok_secretary_of_state_corp_filings", force: :cascade do |t|
-    t.bigint "ok_secretary_of_state_filing_type_id"
-    t.bigint "ok_secretary_of_state_entity_id"
-    t.string "document_number"
-    t.string "filing_type"
-    t.datetime "entry_date"
-    t.datetime "filing_date"
-    t.datetime "effective_date"
-    t.integer "effective_condition_flag"
-    t.datetime "inactive_date"
-    t.index ["ok_secretary_of_state_entity_id"], name: "index_corp_filings_on_entity_id"
-    t.index ["ok_secretary_of_state_filing_type_id"], name: "index_corp_filings_on_filing_type_id"
-  end
-
-  create_table "ok_secretary_of_state_corp_statuses", force: :cascade do |t|
-    t.integer "status_id", null: false
-    t.string "status_description"
-  end
-
-  create_table "ok_secretary_of_state_corp_types", force: :cascade do |t|
-    t.integer "corp_type_id", null: false
-    t.string "corp_type_description"
-  end
-
-  create_table "ok_secretary_of_state_entities", force: :cascade do |t|
-    t.bigint "filing_number", null: false
-    t.integer "status_id"
-    t.bigint "ok_secretary_of_state_corp_type_id", null: false
-    t.bigint "ok_secretary_of_state_entity_address_id"
-    t.string "name"
-    t.integer "perpetual_flag"
-    t.datetime "creation_date"
-    t.datetime "expiration_date"
-    t.datetime "inactive_date"
-    t.datetime "formation_date"
-    t.datetime "report_due_date"
-    t.integer "tax_id"
-    t.string "fictitious_name"
-    t.datetime "foreign_fein"
-    t.string "foreign_state"
-    t.string "foreign_country"
-    t.datetime "foreign_formation_date"
-    t.string "expiration_type"
-    t.datetime "last_report_filed_date"
-    t.string "telno"
-    t.integer "otc_suspension_flag"
-    t.string "consent_name_flag"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["ok_secretary_of_state_corp_type_id"], name: "index_entities_on_corp_type"
-    t.index ["ok_secretary_of_state_entity_address_id"], name: "index_entities_on_entity_address"
-  end
-
-  create_table "ok_secretary_of_state_entity_addresses", force: :cascade do |t|
-    t.bigint "address_id", null: false
-    t.string "address1"
-    t.string "address2"
-    t.string "city"
-    t.string "state"
-    t.string "zip_string"
-    t.bigint "zip_code_id"
-    t.integer "zip_extension"
-    t.string "country"
-    t.index ["zip_code_id"], name: "index_ok_secretary_of_state_entity_addresses_on_zip_code_id"
-  end
-
-  create_table "ok_secretary_of_state_filing_types", force: :cascade do |t|
-    t.integer "filing_type_id", null: false
-    t.string "filing_type"
-  end
-
-  create_table "ok_secretary_of_state_name_statuses", force: :cascade do |t|
-    t.integer "name_status_id", null: false
-    t.string "name_status"
-  end
-
-  create_table "ok_secretary_of_state_name_types", force: :cascade do |t|
-    t.integer "name_type_id", null: false
-    t.string "name_type"
-  end
-
-  create_table "ok_secretary_of_state_names", force: :cascade do |t|
-    t.bigint "ok_secretary_of_state_name_type_id"
-    t.bigint "ok_secretary_of_state_name_status_id"
-    t.bigint "ok_secretary_of_state_entity_id"
-    t.bigint "name_id", null: false
-    t.string "name"
-    t.datetime "creation_date"
-    t.datetime "inactive_date"
-    t.datetime "expire_date"
-    t.integer "all_counties_flag"
-    t.bigint "consent_filing_number"
-    t.bigint "search_id"
-    t.string "transfer_to"
-    t.string "received_from"
-    t.index ["ok_secretary_of_state_entity_id"], name: "index_names_on_entity_id"
-    t.index ["ok_secretary_of_state_name_status_id"], name: "index_names_on_name_status"
-    t.index ["ok_secretary_of_state_name_type_id"], name: "index_names_on_name_type"
-  end
-
-  create_table "ok_secretary_of_state_officers", force: :cascade do |t|
-    t.bigint "ok_secretary_of_state_entity_address_id"
-    t.bigint "ok_secretary_of_state_suffix_id"
-    t.bigint "ok_secretary_of_state_entity_id"
-    t.integer "officer_id", null: false
-    t.string "officer_title"
-    t.string "business_name"
-    t.string "officer_last_name"
-    t.string "officer_first_name"
-    t.string "officer_middle_name"
-    t.datetime "creation_date"
-    t.datetime "inactive_date"
-    t.datetime "last_modified_date"
-    t.string "normalized_name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["ok_secretary_of_state_entity_address_id"], name: "index_officers_on_entity_address_id"
-    t.index ["ok_secretary_of_state_entity_id"], name: "index_officers_on_entity_id"
-    t.index ["ok_secretary_of_state_suffix_id"], name: "index_officers_on_suffix_id"
-  end
-
-  create_table "ok_secretary_of_state_stock_data", force: :cascade do |t|
-    t.bigint "ok_secretary_of_state_stock_type_id", null: false
-    t.bigint "ok_secretary_of_state_entity_id"
-    t.integer "stock_id", null: false
-    t.integer "stock_series"
-    t.float "share_volume"
-    t.float "par_value"
-    t.index ["ok_secretary_of_state_entity_id"], name: "index_stock_data_filing_number_on_entity_id"
-    t.index ["ok_secretary_of_state_stock_type_id"], name: "index_stock_data_stock_type_on_stock_type_id"
-  end
-
-  create_table "ok_secretary_of_state_stock_infos", force: :cascade do |t|
-    t.bigint "ok_secretary_of_state_entity_id"
-    t.integer "qualify_flag"
-    t.integer "unlimited_flag"
-    t.float "actual_amount_invested"
-    t.float "pd_on_credit"
-    t.float "tot_auth_capital"
-    t.index ["ok_secretary_of_state_entity_id"], name: "index_stock_infos_on_entity_id"
-  end
-
-  create_table "ok_secretary_of_state_stock_types", force: :cascade do |t|
-    t.integer "stock_type_id", null: false
-    t.string "stock_type_description"
-  end
-
-  create_table "ok_secretary_of_state_suffixes", force: :cascade do |t|
-    t.integer "suffix_id", null: false
-    t.string "suffix"
-  end
-
   create_table "ok_sos_agents", force: :cascade do |t|
-    t.bigint "filing_number"
+    t.bigint "filing_number", null: false
     t.bigint "external_address_id"
     t.string "business_name"
     t.string "agent_last_name"
@@ -849,13 +642,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.datetime "updated_at", null: false
     t.index ["entity_address_id"], name: "index_ok_sos_agents_on_entity_address_id"
     t.index ["entity_id"], name: "index_ok_sos_agents_on_entity_id"
+    t.index ["filing_number"], name: "index_ok_sos_agents_on_filing_number", unique: true
     t.index ["suffix_id"], name: "index_ok_sos_agents_on_suffix_id"
   end
 
   create_table "ok_sos_associated_entities", force: :cascade do |t|
     t.bigint "filing_number"
     t.bigint "document_number"
-    t.bigint "associated_entity_id", null: false
+    t.bigint "associated_entity_id"
     t.bigint "associated_entity_corp_type_id"
     t.bigint "primary_capacity_id"
     t.bigint "external_capacity_id"
@@ -873,6 +667,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.index ["capacity_id"], name: "index_ok_sos_associated_entities_on_capacity_id"
     t.index ["corp_type_id"], name: "index_ok_sos_associated_entities_on_corp_type_id"
     t.index ["entity_id"], name: "index_ok_sos_associated_entities_on_entity_id"
+    t.index ["filing_number", "associated_entity_id"], name: "index_ok_sos_ass_entities_on_filing_number_and_ass_entity_id", unique: true
   end
 
   create_table "ok_sos_audit_logs", force: :cascade do |t|
@@ -886,6 +681,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.string "audit_comment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["reference_number"], name: "index_ok_sos_audit_logs_on_reference_number", unique: true
   end
 
   create_table "ok_sos_capacities", force: :cascade do |t|
@@ -893,6 +689,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["capacity_id"], name: "index_ok_sos_capacities_on_capacity_id", unique: true
   end
 
   create_table "ok_sos_corp_filings", force: :cascade do |t|
@@ -910,6 +707,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["entity_id"], name: "index_ok_sos_corp_filings_on_entity_id"
+    t.index ["filing_number", "document_number"], name: "index_ok_sos_corp_filings_on_filing_number_and_document_number", unique: true
     t.index ["filing_type_id"], name: "index_ok_sos_corp_filings_on_filing_type_id"
   end
 
@@ -918,6 +716,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.string "status_description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["status_id"], name: "index_ok_sos_corp_statuses_on_status_id", unique: true
   end
 
   create_table "ok_sos_corp_types", force: :cascade do |t|
@@ -925,6 +724,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.string "corp_type_description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["corp_type_id"], name: "index_ok_sos_corp_types_on_corp_type_id", unique: true
   end
 
   create_table "ok_sos_entities", force: :cascade do |t|
@@ -956,6 +756,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.datetime "updated_at", null: false
     t.index ["corp_type_id"], name: "index_ok_sos_entities_on_corp_type_id"
     t.index ["entity_address_id"], name: "index_ok_sos_entities_on_entity_address_id"
+    t.index ["filing_number"], name: "index_ok_sos_entities_on_filing_number", unique: true
   end
 
   create_table "ok_sos_entity_addresses", force: :cascade do |t|
@@ -970,6 +771,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.bigint "zip_code_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["address_id"], name: "index_ok_sos_entity_addresses_on_address_id", unique: true
     t.index ["zip_code_id"], name: "index_ok_sos_entity_addresses_on_zip_code_id"
   end
 
@@ -978,6 +780,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.string "filing_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["filing_type_id"], name: "index_ok_sos_filing_types_on_filing_type_id", unique: true
   end
 
   create_table "ok_sos_name_statuses", force: :cascade do |t|
@@ -985,6 +788,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.string "name_status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name_status_id"], name: "index_ok_sos_name_statuses_on_name_status_id", unique: true
   end
 
   create_table "ok_sos_name_types", force: :cascade do |t|
@@ -992,6 +796,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.string "name_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name_type_id"], name: "index_ok_sos_name_types_on_name_type_id", unique: true
   end
 
   create_table "ok_sos_names", force: :cascade do |t|
@@ -1014,6 +819,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["entity_id"], name: "index_ok_sos_names_on_entity_id"
+    t.index ["filing_number", "name_id"], name: "index_ok_sos_names_on_filing_number_and_name_id", unique: true
     t.index ["name_status_id"], name: "index_ok_sos_names_on_name_status_id"
     t.index ["name_type_id"], name: "index_ok_sos_names_on_name_type_id"
   end
@@ -1039,6 +845,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.datetime "updated_at", null: false
     t.index ["entity_address_id"], name: "index_ok_sos_officers_on_entity_address_id"
     t.index ["entity_id"], name: "index_ok_sos_officers_on_entity_id"
+    t.index ["filing_number", "officer_id"], name: "index_ok_sos_officers_on_filing_number_and_officer_id", unique: true
     t.index ["suffix_id"], name: "index_ok_sos_officers_on_suffix_id"
   end
 
@@ -1054,11 +861,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["entity_id"], name: "index_ok_sos_stock_data_on_entity_id"
+    t.index ["filing_number", "stock_id"], name: "index_ok_sos_stock_data_on_filing_number_and_stock_id", unique: true
     t.index ["stock_type_id"], name: "index_ok_sos_stock_data_on_stock_type_id"
   end
 
   create_table "ok_sos_stock_infos", force: :cascade do |t|
-    t.bigint "filing_number"
+    t.bigint "filing_number", null: false
     t.integer "qualify_flag"
     t.integer "unlimited_flag"
     t.float "actual_amount_invested"
@@ -1068,6 +876,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["entity_id"], name: "index_ok_sos_stock_infos_on_entity_id"
+    t.index ["filing_number"], name: "index_ok_sos_stock_infos_on_filing_number", unique: true
   end
 
   create_table "ok_sos_stock_types", force: :cascade do |t|
@@ -1075,6 +884,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.string "stock_type_description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["stock_type_id"], name: "index_ok_sos_stock_types_on_stock_type_id", unique: true
   end
 
   create_table "ok_sos_suffixes", force: :cascade do |t|
@@ -1082,6 +892,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.string "suffix"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["suffix_id"], name: "index_ok_sos_suffixes_on_suffix_id", unique: true
   end
 
   create_table "okc_blotter_bookings", force: :cascade do |t|
@@ -1481,7 +1292,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
       ( SELECT count(*) AS count
              FROM (docket_events
                JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-            WHERE ((docket_events.party_id = parties.id) AND ((docket_event_types.code)::text = ANY (ARRAY[('WAI$'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('WAI'::character varying)::text, ('WAIMV'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAR'::character varying)::text])))) AS warrants_count,
+            WHERE ((docket_events.party_id = parties.id) AND ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'BWIFAR'::character varying])::text[])))) AS warrants_count,
       ( SELECT sum(docket_events.amount) AS sum
              FROM docket_events
             WHERE (docket_events.party_id = parties.id)) AS total_fined,
@@ -1559,7 +1370,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
               ELSE NULL::text
           END AS shortdescription,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY (ARRAY[('BWIFA'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFAR'::character varying)::text])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIFAR'::character varying])::text[])) THEN true
               ELSE false
           END AS is_failure_to_appear,
           CASE
@@ -1575,11 +1386,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
               ELSE false
           END AS is_failure_to_comply,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY (ARRAY[('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIAA'::character varying)::text, ('BWIAR'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAA'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying])::text[])) THEN true
               ELSE false
           END AS is_bench_warrant_issued,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY (ARRAY[('WAI'::character varying)::text, ('WAI$'::character varying)::text])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['WAI'::character varying, 'WAI$'::character varying])::text[])) THEN true
               ELSE false
           END AS is_arrest_warrant_issued,
           CASE
@@ -1595,7 +1406,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
               ELSE false
           END AS is_cause,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY (ARRAY[('BWIMW'::character varying)::text, ('WAIMW'::character varying)::text])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIMW'::character varying, 'WAIMW'::character varying])::text[])) THEN true
               ELSE false
           END AS is_material_witness,
           CASE
@@ -1607,7 +1418,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
               ELSE false
           END AS is_material_rule_8,
           CASE
-              WHEN ((docket_event_types.code)::text = ANY (ARRAY[('BWIS$'::character varying)::text, ('BWIS'::character varying)::text])) THEN true
+              WHEN ((docket_event_types.code)::text = ANY ((ARRAY['BWIS$'::character varying, 'BWIS'::character varying])::text[])) THEN true
               ELSE false
           END AS is_service_by_sheriff,
           CASE
@@ -1626,7 +1437,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
        JOIN docket_event_types ON ((docket_event_types.id = docket_events.docket_event_type_id)))
        JOIN court_cases ON ((court_cases.id = docket_events.court_case_id)))
        JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
-    WHERE ((docket_event_types.code)::text = ANY (ARRAY[('WAI$'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('WAI'::character varying)::text, ('WAIMV'::character varying)::text, ('WAIMW'::character varying)::text, ('RETBW'::character varying)::text, ('RETWA'::character varying)::text]));
+    WHERE ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWIFC'::character varying, 'BWIFAR'::character varying, 'BWICA'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'RETBW'::character varying, 'RETWA'::character varying])::text[]));
   SQL
   add_index "report_warrants", ["party_id", "code"], name: "index_report_warrants_on_party_id_and_code"
 
@@ -1651,7 +1462,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
       ( SELECT count(*) AS count
              FROM (docket_events
                JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-            WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY (ARRAY[('WAI$'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('WAI'::character varying)::text, ('WAIMV'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAR'::character varying)::text])))) AS warrants_count
+            WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'BWIFAR'::character varying])::text[])))) AS warrants_count
      FROM court_cases;
   SQL
   add_index "case_stats", ["court_case_id"], name: "index_case_stats_on_court_case_id"
@@ -1728,7 +1539,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
           CASE
               WHEN (( SELECT count(*) AS count
                  FROM report_warrants
-                WHERE ((parties.id = report_warrants.party_id) AND ((report_warrants.code)::text = ANY (ARRAY[('WAI$'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('WAI'::character varying)::text, ('WAIMV'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAR'::character varying)::text])))) > ( SELECT count(*) AS count
+                WHERE ((parties.id = report_warrants.party_id) AND ((report_warrants.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'BWIFAR'::character varying])::text[])))) > ( SELECT count(*) AS count
                  FROM report_warrants
                 WHERE ((parties.id = report_warrants.party_id) AND ((report_warrants.code)::text = 'RETWA'::text)))) THEN 'Yes'::text
               ELSE 'No'::text
@@ -1740,7 +1551,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
               WHEN (( SELECT count(*) AS count
                  FROM (docket_events
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY (ARRAY[('WAI$'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('WAI'::character varying)::text, ('WAIMV'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAR'::character varying)::text])))) > 0) THEN 'Yes'::text
+                WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying, 'BWIFAR'::character varying])::text[])))) > 0) THEN 'Yes'::text
               ELSE 'No'::text
           END AS warrant_on_case,
       pleas.name AS plea,
@@ -1862,7 +1673,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
                    JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
                    JOIN counties ON ((court_cases.county_id = counties.id)))
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY (ARRAY[('BWIFP'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIAR'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIS$'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWIMW'::character varying)::text, ('WAI$'::character varying)::text, ('WAI'::character varying)::text, ('BWIS'::character varying)::text])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
                          FROM ((case_parties
                            JOIN parties ON ((case_parties.party_id = parties.id)))
                            JOIN party_types ON ((parties.party_type_id = party_types.id)))
@@ -1873,7 +1684,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
                    JOIN counties ON ((court_cases.county_id = counties.id)))
                    JOIN parties ON ((docket_events.party_id = parties.id)))
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY (ARRAY[('BWIFP'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIAR'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIS$'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWIMW'::character varying)::text, ('WAI$'::character varying)::text, ('WAI'::character varying)::text, ('BWIS'::character varying)::text])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2))))
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2))))
               ELSE NULL::bigint
           END AS warrant_count,
           CASE
@@ -1883,7 +1694,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
                    JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
                    JOIN counties ON ((court_cases.county_id = counties.id)))
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY (ARRAY[('RETBW'::character varying)::text, ('RETWA'::character varying)::text])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['RETBW'::character varying, 'RETWA'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
                          FROM ((case_parties
                            JOIN parties ON ((case_parties.party_id = parties.id)))
                            JOIN party_types ON ((parties.party_type_id = party_types.id)))
@@ -1894,7 +1705,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
                    JOIN counties ON ((court_cases.county_id = counties.id)))
                    JOIN parties ON ((docket_events.party_id = parties.id)))
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY (ARRAY[('RETBW'::character varying)::text, ('RETWA'::character varying)::text])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2))))
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['RETBW'::character varying, 'RETWA'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2))))
               ELSE NULL::bigint
           END AS return_warrant_count,
           CASE
@@ -1904,7 +1715,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
                    JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
                    JOIN counties ON ((court_cases.county_id = counties.id)))
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY (ARRAY[('BWIFP'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIAR'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIS$'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWIMW'::character varying)::text, ('WAI$'::character varying)::text, ('WAI'::character varying)::text, ('BWIS'::character varying)::text])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
                          FROM ((case_parties
                            JOIN parties ON ((case_parties.party_id = parties.id)))
                            JOIN party_types ON ((parties.party_type_id = party_types.id)))
@@ -1917,7 +1728,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
                    JOIN counties ON ((court_cases.county_id = counties.id)))
                    JOIN parties ON ((docket_events.party_id = parties.id)))
                    JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY (ARRAY[('BWIFP'::character varying)::text, ('WAIMW'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIAR'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIS$'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWIMW'::character varying)::text, ('WAI$'::character varying)::text, ('WAI'::character varying)::text, ('BWIS'::character varying)::text])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2)))
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2)))
                 ORDER BY docket_events.event_on DESC
                LIMIT 1)
               ELSE NULL::character varying
@@ -2265,7 +2076,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
       ( SELECT count(*) AS count
              FROM (docket_events
                JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-            WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY (ARRAY[('WAI$'::character varying)::text, ('BWIFAP'::character varying)::text, ('BWIFA'::character varying)::text, ('BWIFC'::character varying)::text, ('BWIAR'::character varying)::text, ('BWIAA'::character varying)::text, ('BWICA'::character varying)::text, ('BWIFAR'::character varying)::text, ('BWIFAA'::character varying)::text, ('BWIFP'::character varying)::text, ('BWIMW'::character varying)::text, ('BWIR8'::character varying)::text, ('BWIS'::character varying)::text, ('BWIS$'::character varying)::text, ('WAI'::character varying)::text, ('WAIMV'::character varying)::text, ('WAIMW'::character varying)::text])))) AS warrants_issued
+            WHERE ((docket_events.court_case_id = court_cases.id) AND ((docket_event_types.code)::text = ANY ((ARRAY['WAI$'::character varying, 'BWIFAP'::character varying, 'BWIFA'::character varying, 'BWIFC'::character varying, 'BWIAR'::character varying, 'BWIAA'::character varying, 'BWICA'::character varying, 'BWIFAR'::character varying, 'BWIFAA'::character varying, 'BWIFP'::character varying, 'BWIMW'::character varying, 'BWIR8'::character varying, 'BWIS'::character varying, 'BWIS$'::character varying, 'WAI'::character varying, 'WAIMV'::character varying, 'WAIMW'::character varying])::text[])))) AS warrants_issued
      FROM ((((((court_cases
        JOIN counties ON ((court_cases.county_id = counties.id)))
        JOIN case_types ON ((court_cases.case_type_id = case_types.id)))

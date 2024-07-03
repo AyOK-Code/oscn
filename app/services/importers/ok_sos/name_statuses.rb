@@ -7,10 +7,6 @@ module Importers
           name_status: data['status']
         }
       end
-
-      def update_by
-        [:name_status_id]
-      end
     end
   end
 end

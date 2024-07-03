@@ -7,10 +7,6 @@ module Importers
           suffix: data['suffix']
         }
       end
-
-      def update_by
-        [:suffix_id]
-      end
     end
   end
 end

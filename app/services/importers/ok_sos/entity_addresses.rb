@@ -14,10 +14,6 @@ module Importers
           zip_code_id: get_cached(::ZipCode, :name, data['zip_code'], create: true)&.id
         }
       end
-
-      def update_by
-        [:address_id]
-      end
     end
   end
 end

@@ -20,10 +20,6 @@ module Importers
           corp_type_id: get_cached(::OkSos::CorpType, :corp_type_id, data['associated_entity_corp_type_id'])&.id
         }
       end
-
-      def update_by
-        [:associated_entity_id]
-      end
     end
   end
 end

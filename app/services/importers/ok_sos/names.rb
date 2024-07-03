@@ -18,12 +18,8 @@ module Importers
           received_from: data['received_from'],
           name_type_id: get_cached(::OkSos::NameType, :name_type_id, data['name_type_id'])&.id,
           name_status_id: get_cached(::OkSos::NameStatus, :name_status_id, data['name_status_id'])&.id,
-          entity_id: data['filing_number'] ? ::OkSos::Entity.find_by!(filing_number: data['filing_number'])&.id : nil
+          entity_id: data['filing_number'] ? ::OkSos::Entity.find_by(filing_number: data['filing_number'])&.id : nil
         }
-      end
-
-      def update_by
-        [:name_id]
       end
     end
   end

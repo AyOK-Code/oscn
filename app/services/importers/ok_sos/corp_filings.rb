@@ -16,10 +16,6 @@ module Importers
           entity_id: ::OkSos::Entity.find_by(filing_number: data['filing_number'])&.id
         }
       end
-
-      def update_by
-        [:document_number] #todo: check this
-      end
     end
   end
 end

@@ -7,10 +7,6 @@ module Importers
           stock_type_description: data['stock_type_desc']
         }
       end
-
-      def update_by
-        [:stock_type_id]
-      end
     end
   end
 end

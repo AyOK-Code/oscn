@@ -19,11 +19,6 @@ module Importers
           suffix_id: get_cached(::OkSos::Suffix, :suffix_id, data['agent_suffix_id'])&.id
         }
       end
-
-      def update_by
-        # todo: check this
-        [:filing_number, :agent_suffix_id, :agent_last_name, :agent_last_name]
-      end
     end
   end
 end

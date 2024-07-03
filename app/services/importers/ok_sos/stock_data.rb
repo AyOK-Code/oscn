@@ -14,10 +14,6 @@ module Importers
         }
       end
 
-      def update_by
-        [:stock_id]
-      end
-
       def import_class
         ::OkSos::StockData
       end

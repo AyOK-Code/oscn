@@ -7,10 +7,6 @@ module Importers
           description: data['description']
         }
       end
-
-      def update_by
-        [:capacity_id]
-      end
     end
   end
 end

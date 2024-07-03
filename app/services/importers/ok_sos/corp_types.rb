@@ -7,10 +7,6 @@ module Importers
           corp_type_description: data['corp_type']
         }
       end
-
-      def update_by
-        [:corp_type_id]
-      end
     end
   end
 end
