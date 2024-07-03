@@ -4,6 +4,7 @@ module Importers
   module OkSos
     class BaseImporter < ApplicationService
       attr_accessor :file_path
+
       def initialize(file_path)
         @file_path = file_path
         @model_cache = ActiveSupport::HashWithIndifferentAccess.new({})
@@ -16,16 +17,32 @@ module Importers
       def do_import
         puts 'importing csv in batches'
         rows = []
-        line_count = `wc -l "#{@file_path}"`.strip.split(' ')[0].to_i - 1
-        bar = ProgressBar.create(total: line_count/10_000, length: 160, format: '%a |%b>>%i| %p%% %t') if line_count> 10_000
+        error_rows = []
+        line_count = `wc -l "#{@file_path}"`.strip.split[0].to_i - 1
+        if line_count > 10_000
+          bar = ProgressBar.create(total: line_count / 10_000, length: 160,
+                                   format: '%a |%b>>%i| %p%% %t')
+        end
         CSV
-          .foreach(file_path, col_sep: ',', quote_char:'"', headers: true, liberal_parsing: true) do |row|
-          rows << attributes(row)
-          if rows.count%10_000 == 0 || rows.count == line_count
-            bar.increment if bar
+          .foreach(file_path, col_sep: ',', quote_char: '"', headers: true, liberal_parsing: true) do |row|
+          begin
+            rows << attributes(row)
+          rescue StandardError => e
+            error_rows << { row: row, e: e }
+          end
+          if ((rows + error_rows).count % 10_000).zero? || rows.count == line_count
+            bar&.increment
             import_class.insert_all(rows)
             rows = []
           end
+        end
+        return unless error_rows.present?
+
+        puts '#{error_rows.count} errors.'
+        puts 'first 10 errors:'
+        error_rows.slice(10).each do |error_row|
+          puts error_row[:row].join ","
+          puts error_row[:error]
         end
       end
 
@@ -41,14 +58,19 @@ module Importers
       def parse_date(date)
         nil_dates = ['00/00/0000']
         return nil if nil_dates.include? date
-        Date::strptime(date, '%m/%d/%Y')
+
+        begin
+          Date.strptime(date, '%m/%d/%Y')
+        rescue StandardError => _e
+          nil
+        end
       end
 
       def model_cache(klass, key)
         cache_key = klass.to_s
         return @model_cache[cache_key] if @model_cache[cache_key]
 
-        @model_cache[cache_key] = klass.all.map{|x| [x[key].to_s, x]}.to_h
+        @model_cache[cache_key] = klass.all.to_h { |x| [x[key].to_s, x] }
         @model_cache[cache_key]
       end
 
@@ -60,7 +82,7 @@ module Importers
         raise ActiveRecord::RecordNotFound unless create
 
         new_model = klass.create!(key => value)
-        @model_cache[klass.to_s][key.to_s] = new_model
+        @model_cache[klass.to_s][value.to_s] = new_model
         new_model
       end
     end
