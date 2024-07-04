@@ -7,6 +7,10 @@ module Importers
           corp_type_description: data['corp_type']
         }
       end
+
+      def unique_by
+        [:corp_type_id]
+      end
     end
   end
 end

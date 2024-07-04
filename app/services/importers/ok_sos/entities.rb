@@ -29,6 +29,10 @@ module Importers
           entity_address_id: data['address_id'] ? ::OkSos::EntityAddress.find_by(address_id: data['address_id'])&.id : nil,
         }
       end
+
+      def unique_by
+        [:filing_number]
+      end
     end
   end
 end

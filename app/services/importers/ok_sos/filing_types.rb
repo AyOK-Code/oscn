@@ -7,6 +7,10 @@ module Importers
           filing_type: data['filing_type']
         }
       end
+
+      def unique_by
+        [:filing_type_id]
+      end
     end
   end
 end

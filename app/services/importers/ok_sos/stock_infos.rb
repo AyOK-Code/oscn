@@ -12,6 +12,10 @@ module Importers
           entity_id: ::OkSos::Entity.find_by(filing_number: data['filing_number'])&.id,
         }
       end
+
+      def unique_by
+        [:filing_number]
+      end
     end
   end
 end

@@ -13,6 +13,10 @@ module Importers
           audit_comment: data['audit_comment']
         }
       end
+
+      def unique_by
+        [:reference_number]
+      end
     end
   end
 end

@@ -7,6 +7,10 @@ module Importers
           stock_type_description: data['stock_type_desc']
         }
       end
+
+      def unique_by
+        [:stock_type_id]
+      end
     end
   end
 end

@@ -7,6 +7,10 @@ module Importers
           status_description: data['status_description']
         }
       end
+
+      def unique_by
+        [:status_id]
+      end
     end
   end
 end

@@ -19,6 +19,10 @@ module Importers
           suffix_id: get_cached(::OkSos::Suffix, :suffix_id, data['agent_suffix_id'])&.id
         }
       end
+
+      def unique_by
+        [:filing_number]
+      end
     end
   end
 end

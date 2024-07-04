@@ -18,9 +18,9 @@ module Importers
         puts 'importing csv in batches'
         rows = []
         error_rows = []
-        line_count = `wc -l "#{@file_path}"`.strip.split[0].to_i - 1
-        if line_count > 10_000
-          bar = ProgressBar.create(total: line_count / 10_000, length: 160,
+        row_count = File.read(file_path).strip().scan(/\n/).length
+        if row_count > 10_000
+          bar = ProgressBar.create(total: row_count / 10_000, length: 160,
                                    format: '%a |%b>>%i| %p%% %t')
         end
         CSV
@@ -30,7 +30,7 @@ module Importers
           rescue StandardError => e
             error_rows << { row: row, e: e }
           end
-          if ((rows + error_rows).count % 10_000).zero? || rows.count == line_count
+          if ((rows + error_rows).count % 10_000).zero? || rows.count == row_count
             bar&.increment
             import_class.upsert_all(rows, unique_by: unique_by)
             rows = []

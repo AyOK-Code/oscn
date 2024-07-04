@@ -17,6 +17,10 @@ module Importers
       def import_class
         ::OkSos::StockData
       end
+
+      def unique_by
+        [:filing_number, :stock_id]
+      end
     end
   end
 end

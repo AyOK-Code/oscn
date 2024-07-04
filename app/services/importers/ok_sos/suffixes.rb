@@ -7,6 +7,10 @@ module Importers
           suffix: data['suffix']
         }
       end
+
+      def unique_by
+        [:suffix_id]
+      end
     end
   end
 end

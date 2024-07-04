@@ -7,6 +7,10 @@ module Importers
           name_type: data['name_description']
         }
       end
+
+      def unique_by
+        [:name_type_id]
+      end
     end
   end
 end

@@ -7,6 +7,10 @@ module Importers
           description: data['description']
         }
       end
+
+      def unique_by
+        [:capacity_id]
+      end
     end
   end
 end
