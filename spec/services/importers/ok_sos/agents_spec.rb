@@ -16,7 +16,7 @@ RSpec.describe Importers::OkSos::Agents do
         :agent_first_name => "WILLIAM",
         :agent_middle_name => "",
         :agent_suffix_id => "0",
-        :creation_date => DateTime.parse("2021-12-09 00:00:00.000000000 -0600"),
+        :creation_date => DateTime.parse("2021-12-09"),
         :inactive_date => nil,
         :normalized_name => "",
         :sos_ra_flag => 0,

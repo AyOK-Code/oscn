@@ -9,7 +9,7 @@ RSpec.describe Importers::OkSos::AuditLogs do
     let(:expected_attributes) {
       {
         reference_number: "3512010000",
-        audit_date: DateTime.parse("2003-06-16 00:00:00.000000000 -0500"),
+        audit_date: DateTime.parse("2003-06-16"),
         table_id: 33,
         field_id: 211,
         previous_value: "",

@@ -15,7 +15,7 @@ RSpec.describe Importers::OkSos::EntityAddresses do
         zip_string: '73103',
         zip_extension: nil,
         country: 'USA',
-        zip_code_id: ::ZipCode.find_by(name: 73_103)
+        zip_code_id: ::ZipCode.find_by(name: 73_103).id
       }
     end
   end

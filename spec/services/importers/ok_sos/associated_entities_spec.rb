@@ -18,7 +18,7 @@ RSpec.describe Importers::OkSos::AssociatedEntities do
         :external_capacity_id => 1,
         :associated_entity_name => "PROMPTI, INC.",
         :entity_filing_number => 999999999, #todo: is this typically valid entity?
-        :entity_filing_date => DateTime.parse("2022-08-05 00:00:00.000000000 -0500"),
+        :entity_filing_date => DateTime.parse("2022-08-05"),
         :inactive_date => nil,
         :jurisdiction_state => "DE",
         :jurisdiction_country => "USA",
