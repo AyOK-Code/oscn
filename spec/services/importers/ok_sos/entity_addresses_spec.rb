@@ -3,7 +3,7 @@ require 'services/importers/ok_sos/shared_specs'
 
 RSpec.describe Importers::OkSos::EntityAddresses do
   it_behaves_like 'ok_sos_importer' do
-    let(:sample_file) { File.read('spec/fixtures/importers/ok_sos/entity_addresses.csv') }
+    let(:sample_file) { 'spec/fixtures/importers/ok_sos/entity_addresses.csv' }
     let(:record) { ::OkSos::EntityAddress.find_by!(address_id: 10) }
     let(:expected_attributes) do
       {

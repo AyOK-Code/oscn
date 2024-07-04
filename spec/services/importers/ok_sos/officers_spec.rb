@@ -5,7 +5,7 @@ RSpec.describe Importers::OkSos::Officers do
   it_behaves_like 'ok_sos_importer' do
     let!(:entity_address) { create(:ok_sos_entity_address, address_id: 3904005)}
     let!(:entity) { create(:ok_sos_entity, filing_number: 3512964051)}
-    let(:sample_file) { File.read('spec/fixtures/importers/ok_sos/officers.csv') }
+    let(:sample_file) { 'spec/fixtures/importers/ok_sos/officers.csv' }
     let(:record) { ::OkSos::Officer.find_by!(officer_id: 1) }
     let(:expected_attributes) do
       {

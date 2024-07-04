@@ -4,7 +4,7 @@ require 'services/importers/ok_sos/shared_specs'
 
 RSpec.describe Importers::OkSos::AuditLogs do
   it_behaves_like 'ok_sos_importer' do
-    let(:sample_file) { File.read('spec/fixtures/importers/ok_sos/audit_logs.csv') }
+    let(:sample_file) { 'spec/fixtures/importers/ok_sos/audit_logs.csv' }
     let(:record) {OkSos::AuditLog.find_by(reference_number: "3512010000")}
     let(:expected_attributes) {
       {

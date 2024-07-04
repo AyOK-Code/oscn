@@ -6,7 +6,7 @@ RSpec.describe Importers::OkSos::AssociatedEntities do
     let!(:capacity) { create(:ok_sos_capacity, capacity_id: 1) }
     let!(:entity) { create(:ok_sos_entity, filing_number: 3512995133) }
     let!(:corp_type) { create(:ok_sos_corp_type, corp_type_id: 13) }
-    let(:sample_file) { File.read('spec/fixtures/importers/ok_sos/associated_entities.csv') }
+    let(:sample_file) { 'spec/fixtures/importers/ok_sos/associated_entities.csv' }
     let(:record) { ::OkSos::AssociatedEntity.find_by!(filing_number: 3512995133) } # todo: update this with real key?
     let(:expected_attributes) {
       {

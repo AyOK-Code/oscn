@@ -5,7 +5,7 @@ RSpec.describe Importers::OkSos::CorpFilings do
   it_behaves_like 'ok_sos_importer' do
     let!(:filing_type) { create(:ok_sos_filing_type, filing_type_id: 19_033 )}
     let!(:entity) { create(:ok_sos_entity, filing_number: 3_513_036_711 )}
-    let(:sample_file) { File.read('spec/fixtures/importers/ok_sos/corp_filings.csv') }
+    let(:sample_file) { 'spec/fixtures/importers/ok_sos/corp_filings.csv' }
     let(:record) { ::OkSos::CorpFiling.find_by!(document_number: 52_158_420_002) } #todo: replace with real id
     let(:expected_attributes) {
       {

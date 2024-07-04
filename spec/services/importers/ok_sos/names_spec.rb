@@ -6,7 +6,7 @@ RSpec.describe Importers::OkSos::Names do
     let!(:name_type) { create(:ok_sos_name_type, name_type_id: 1) }
     let!(:name_status) { create(:ok_sos_name_status, name_status_id: 3) }
     let!(:entity) { create(:ok_sos_entity, filing_number: 3_513_036_711) }
-    let(:sample_file) { File.read('spec/fixtures/importers/ok_sos/names.csv') }
+    let(:sample_file) { 'spec/fixtures/importers/ok_sos/names.csv' }
     let(:record) { ::OkSos::Name.find_by!(name_id: 1) }
     let(:expected_attributes) do
       {

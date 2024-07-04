@@ -4,7 +4,7 @@ require 'services/importers/ok_sos/shared_specs'
 RSpec.describe Importers::OkSos::StockInfos do
   it_behaves_like 'ok_sos_importer' do
     let!(:entity) { create(:ok_sos_entity, filing_number: 3_513_037_087) }
-    let(:sample_file) { File.read('spec/fixtures/importers/ok_sos/stock_infos.csv') }
+    let(:sample_file) { 'spec/fixtures/importers/ok_sos/stock_infos.csv' }
     let(:record) { ::OkSos::StockInfo.find_by!(filing_number: 3_513_037_087) } # todo: update with real key
     let(:expected_attributes) do
       {
