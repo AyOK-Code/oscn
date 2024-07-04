@@ -32,15 +32,15 @@ module Importers
           end
           if ((rows + error_rows).count % 10_000).zero? || rows.count == line_count
             bar&.increment
-            import_class.insert_all(rows)
+            import_class.upsert_all(rows, unique_by: unique_by)
             rows = []
           end
         end
         return unless error_rows.present?
 
-        puts '#{error_rows.count} errors.'
-        puts 'first 10 errors:'
-        error_rows.slice(10).each do |error_row|
+        puts "#{error_rows.count} errors."
+        puts 'first errors (up to 10):'
+        error_rows[0..10].each do |error_row|
           error_row.each do |k, v|
             puts "#{k}: #{v}"
           end
