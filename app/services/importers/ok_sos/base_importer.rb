@@ -4,12 +4,13 @@ module Importers
   module OkSos
     class BaseImporter < ApplicationService
       attr_accessor :file_path
-      BATCH_SIZE = 10_000
 
+      BATCH_SIZE = 10_000
 
       def initialize(file_path)
         @file_path = file_path
         @model_cache = ActiveSupport::HashWithIndifferentAccess.new({})
+        super()
       end
 
       def perform
@@ -20,7 +21,7 @@ module Importers
         puts "importing csv in batches of #{BATCH_SIZE}"
         rows = []
         error_rows = []
-        row_count = File.read(file_path).strip.scan(/\n/).length
+        row_count = File.read(file_path).strip.scan("\n").length
         if row_count > BATCH_SIZE
           bar = ProgressBar.create(total: row_count / BATCH_SIZE, length: 160,
                                    format: '%a |%b>>%i| %p%% %t')
@@ -40,7 +41,7 @@ module Importers
             error_rows = []
           end
         end
-        return unless error_rows.present?
+        nil unless error_rows.present?
       end
 
       def check_and_fix_duplicates(rows)
@@ -52,11 +53,9 @@ module Importers
 
           if !ignore_duplicates && duplicates.count > BATCH_SIZE * 0.05
             raise StandardError 'Too high a percentage of duplicates in batch. Check your unique keys'
-          else
-            puts 'Inserting first values.'
           end
-        else
-          print 'No duplicates found.'
+
+          puts 'Inserting first values.'
         end
         grouped_rows.values.map(&:first)
       end

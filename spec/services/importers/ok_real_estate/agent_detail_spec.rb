@@ -21,7 +21,7 @@ RSpec.describe Importers::OkRealEstate::AgentDetail do
     before do
       stub_request(:get, /orec.us.thentiacloud.net/).to_return(body: fixture_file,
                                                                headers: { content_type: 'application/json' })
-      allow(::OkRealEstate::Agent).to receive(:find_by).with(external_id: '5fe149a9fee7340388fcb992').and_return(agent)
+      allow(OkRealEstate::Agent).to receive(:find_by).with(external_id: '5fe149a9fee7340388fcb992').and_return(agent)
     end
 
     it 'updates agent and processes data from fixture' do

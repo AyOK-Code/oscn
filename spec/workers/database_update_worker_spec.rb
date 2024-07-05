@@ -7,7 +7,7 @@ RSpec.describe DatabaseUpdateWorker, type: :worker do
     let(:args) { { 'county_id' => county_id, 'case_number' => case_number } }
 
     it 'calls the CourtCase importer with the provided arguments' do
-      expect(::Importers::CourtCase).to receive(:perform).with(county_id, case_number)
+      expect(Importers::CourtCase).to receive(:perform).with(county_id, case_number)
 
       subject.perform(args)
     end

@@ -10,9 +10,9 @@ RSpec.describe Importers::OkcBlotter::Pdf do
         ENV['BUCKETEER_BUCKET_NAME'] = 'bucket-name' # aws s3 changes behavior if bucket is uppercase or has underscores
         VCR.use_cassette 'scrape_pdf' do
           Importers::OkcBlotter::Pdf.perform('2022-10-20')
-          expect(::OkcBlotter::Pdf.count).to be > 0
-          expect(::OkcBlotter::Booking.count).to be > 0
-          expect(::OkcBlotter::Offense.count).to be > 0
+          expect(OkcBlotter::Pdf.count).to be > 0
+          expect(OkcBlotter::Booking.count).to be > 0
+          expect(OkcBlotter::Offense.count).to be > 0
         end
       end
     end

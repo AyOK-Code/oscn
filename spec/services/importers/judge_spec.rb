@@ -5,7 +5,7 @@ RSpec.describe Importers::Judge do
     let(:file_path) { 'spec/fixtures/importers/judge.json' }
     let(:test_data) { parse_json(file_path) }
     let(:court_case) { create(:court_case) }
-    let(:log) { ::Importers::Logger.new(court_case) }
+    let(:log) { Importers::Logger.new(court_case) }
     it 'add specs' do
       # variable in judge importer, judge doesnt specify json, could it maybe just take in a string?
       judge_test = create(:judge, name: 'Palumbo, Amy')

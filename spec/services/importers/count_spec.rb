@@ -7,7 +7,7 @@ RSpec.describe Importers::Count do
     let(:court_case) { create(:court_case) }
     let(:party) { create(:party, full_name: 'PIT, ANTHONY LEE') }
 
-    let(:log) { ::Importers::Logger.new(court_case) }
+    let(:log) { Importers::Logger.new(court_case) }
     it 'logs counts with missing parties' do
       described_class.perform(test_data, court_case, log)
       expect(log.nil?).to eq(false)

@@ -25,7 +25,7 @@ RSpec.describe Importers::OkRealEstate::Agent do
       expect { agent_importer.perform }.not_to raise_error
 
       fixture_data['result'].each do |agent_json|
-        agent = ::OkRealEstate::Agent.find_by(external_id: agent_json['id'])
+        agent = OkRealEstate::Agent.find_by(external_id: agent_json['id'])
         expect(agent).not_to be_nil
       end
     end

@@ -1,5 +1,3 @@
 FactoryBot.define do
-  factory :ok_sos_audit_log, class: 'OkSos::AuditLog' do
-    
-  end
+  factory :ok_sos_audit_log, class: 'OkSos::AuditLog'
 end

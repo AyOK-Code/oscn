@@ -11,10 +11,10 @@ RSpec.describe Importers::TulsaBlotter::DailyImport do
           Importers::TulsaBlotter::DailyImport.perform # NOTE: vcr has been shortened
         end
 
-        expect(::TulsaBlotter::PageHtml.count).to be > 0
-        expect(::TulsaBlotter::Arrest.count).to be > 0
-        expect(::TulsaBlotter::ArrestDetailsHtml.count).to be > 0
-        expect(::TulsaBlotter::Offense.count).to be > 0
+        expect(TulsaBlotter::PageHtml.count).to be > 0
+        expect(TulsaBlotter::Arrest.count).to be > 0
+        expect(TulsaBlotter::ArrestDetailsHtml.count).to be > 0
+        expect(TulsaBlotter::Offense.count).to be > 0
       end
     end
 
@@ -26,25 +26,25 @@ RSpec.describe Importers::TulsaBlotter::DailyImport do
       end
 
       it 'creates new pages' do
-        page_html_count = ::TulsaBlotter::PageHtml.count
+        page_html_count = TulsaBlotter::PageHtml.count
         VCR.use_cassette 'tulsa_blotter_shortened' do
           Importers::TulsaBlotter::DailyImport.perform
         end
-        expect(::TulsaBlotter::PageHtml.count).to be page_html_count * 2
+        expect(TulsaBlotter::PageHtml.count).to be page_html_count * 2
       end
 
       it 'updates all data that was already present without creating new records' do
-        arrest_count = ::TulsaBlotter::Arrest.count
-        arrest_detail_count = ::TulsaBlotter::ArrestDetailsHtml.count
-        offense_count = ::TulsaBlotter::Offense.count
+        arrest_count = TulsaBlotter::Arrest.count
+        arrest_detail_count = TulsaBlotter::ArrestDetailsHtml.count
+        offense_count = TulsaBlotter::Offense.count
 
         VCR.use_cassette 'tulsa_blotter_shortened' do
           Importers::TulsaBlotter::DailyImport.perform
         end
 
-        expect(::TulsaBlotter::Arrest.count).to be arrest_count
-        expect(::TulsaBlotter::ArrestDetailsHtml.count).to be arrest_detail_count
-        expect(::TulsaBlotter::Offense.count).to be offense_count
+        expect(TulsaBlotter::Arrest.count).to be arrest_count
+        expect(TulsaBlotter::ArrestDetailsHtml.count).to be arrest_detail_count
+        expect(TulsaBlotter::Offense.count).to be offense_count
       end
     end
 

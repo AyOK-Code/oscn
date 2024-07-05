@@ -24,7 +24,7 @@ module Importers
         end
         links = docket_event.links.count
 
-        return unless links != expected_links
+        nil unless links != expected_links
       end
 
       def save_docket_event_link(link_data)

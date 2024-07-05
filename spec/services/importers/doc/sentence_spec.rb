@@ -3,7 +3,7 @@ require 'services/importers/doc/shared_specs'
 
 RSpec.describe Importers::Doc::Sentence do
   it_behaves_like('doc_importer') do
-    let(:class_to_import) { ::Doc::Sentence }
+    let(:class_to_import) { Doc::Sentence }
     let(:sample_file) do
       '0000010337000103370100121-701.7                      Bryan                                                       1920041320-15645                        82.67               3.00                '
     end

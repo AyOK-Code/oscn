@@ -3,7 +3,7 @@ require 'services/importers/doc/shared_specs'
 
 RSpec.describe Importers::Doc::Status do
   it_behaves_like('doc_importer') do
-    let(:class_to_import) { ::Doc::Status }
+    let(:class_to_import) { Doc::Status }
     let(:sample_file) do
       '0000010337SAWYER                        FRANK                         N                                 19910612INACTIVE                                          18950501MWhite                                                                                                                   501   Black                                                       INACTIVE  '
     end

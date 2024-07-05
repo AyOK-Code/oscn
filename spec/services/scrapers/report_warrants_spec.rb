@@ -6,9 +6,9 @@ RSpec.describe Scrapers::OcsoWarrants do
     # remove the x from it to test
     xit 'upserts the result of scraping the ocso site' do
       VCR.use_cassette 'ocso' do
-        warrants_count = ::Ocso::Warrant.count
+        warrants_count = Ocso::Warrant.count
         described_class.perform
-        expect(::Ocso::Warrant.count).to be > warrants_count
+        expect(Ocso::Warrant.count).to be > warrants_count
       end
     end
   end
