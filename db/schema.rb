@@ -681,7 +681,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.string "audit_comment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["reference_number"], name: "index_ok_sos_audit_logs_on_reference_number", unique: true
+    t.index ["reference_number", "audit_date", "table_id", "field_id", "previous_value", "current_value", "action"], name: "index_sos_audit_logs_cols", unique: true
   end
 
   create_table "ok_sos_capacities", force: :cascade do |t|

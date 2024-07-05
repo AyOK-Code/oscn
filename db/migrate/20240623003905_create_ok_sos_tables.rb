@@ -1,7 +1,7 @@
 class CreateOkSosTables < ActiveRecord::Migration[7.0]
   def change
     create_table "ok_sos_audit_logs" do |t|
-      t.string "reference_number", null: false, index: { unique: true }
+      t.string "reference_number", null: false
       t.datetime "audit_date"
       t.integer "table_id"
       t.integer "field_id"
@@ -11,6 +11,10 @@ class CreateOkSosTables < ActiveRecord::Migration[7.0]
       t.string "audit_comment"
 
       t.timestamps
+
+      t.index [:reference_number, :audit_date, :table_id, :field_id, :previous_value, :current_value, :action],
+              unique: true,
+              name: :index_sos_audit_logs_cols
     end
 
     create_table "ok_sos_capacities" do |t|

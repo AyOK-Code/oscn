@@ -4,6 +4,8 @@ module Importers
   module OkSos
     class BaseImporter < ApplicationService
       attr_accessor :file_path
+      BATCH_SIZE = 10_000
+
 
       def initialize(file_path)
         @file_path = file_path
@@ -15,12 +17,12 @@ module Importers
       end
 
       def do_import
-        puts 'importing csv in batches'
+        puts "importing csv in batches of #{BATCH_SIZE}"
         rows = []
         error_rows = []
-        row_count = File.read(file_path).strip().scan(/\n/).length
-        if row_count > 10_000
-          bar = ProgressBar.create(total: row_count / 10_000, length: 160,
+        row_count = File.read(file_path).strip.scan(/\n/).length
+        if row_count > BATCH_SIZE
+          bar = ProgressBar.create(total: row_count / BATCH_SIZE, length: 160,
                                    format: '%a |%b>>%i| %p%% %t')
         end
         CSV
@@ -30,21 +32,38 @@ module Importers
           rescue StandardError => e
             error_rows << { row: row, e: e }
           end
-          if ((rows + error_rows).count % 10_000).zero? || rows.count == row_count
+          if ((rows + error_rows).count % BATCH_SIZE).zero? || rows.count == row_count
+            rows = check_and_fix_duplicates(rows)
             bar&.increment
             import_class.upsert_all(rows, unique_by: unique_by)
             rows = []
+            error_rows = []
           end
         end
         return unless error_rows.present?
+      end
 
-        puts "#{error_rows.count} errors."
-        puts 'first errors (up to 10):'
-        error_rows[0..10].each do |error_row|
-          error_row.each do |k, v|
-            puts "#{k}: #{v}"
+      def check_and_fix_duplicates(rows)
+        grouped_rows = rows.group_by { |v| unique_by.map { |unique_key| v[unique_key] } }
+        duplicates = grouped_rows.select { |_k, v| v.size > 1 }
+        if duplicates.present?
+          print "#{duplicates.count} duplicates found in batch. First duplicates (up to 20):"
+          puts duplicates.values.flatten[0...20]
+
+          if !ignore_duplicates && duplicates.count > BATCH_SIZE * 0.05
+            raise StandardError 'Too high a percentage of duplicates in batch. Check your unique keys'
+          else
+            puts 'Inserting first values.'
           end
+        else
+          print 'No duplicates found.'
         end
+        grouped_rows.values.map(&:first)
+      end
+
+      def print_errors(error_rows)
+        puts "#{error_rows.count} errors in batch. First errors (up to 10):"
+        puts error_rows[0...10]
       end
 
       def import_type
@@ -85,6 +104,10 @@ module Importers
         new_model = klass.create!(key => value)
         @model_cache[klass.to_s][value.to_s] = new_model
         new_model
+      end
+
+      def ignore_duplicates
+        false
       end
     end
   end

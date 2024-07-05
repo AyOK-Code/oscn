@@ -15,7 +15,11 @@ module Importers
       end
 
       def unique_by
-        [:reference_number]
+        [:reference_number, :audit_date, :table_id, :field_id, :previous_value, :current_value, :action]
+      end
+
+      def ignore_duplicates
+        true
       end
     end
   end
