@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_26_205011) do
+ActiveRecord::Schema[7.0].define(version: 2024_07_08_201128) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -1792,6 +1792,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_26_205011) do
       counts.as_filed AS count_filed_as,
       counts.offense_on,
       counts.disposition_on,
+      counts.charge AS disposed_as,
       verdicts.name,
       ( SELECT count(*) AS count
              FROM (docket_events
@@ -1802,10 +1803,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_26_205011) do
        JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
        JOIN counts ON ((counts.court_case_id = court_cases.id)))
        JOIN parties ON ((counts.party_id = parties.id)))
-       JOIN verdicts ON ((counts.verdict_id = verdicts.id)))
-       JOIN count_codes ON ((counts.disposed_statute_code_id = count_codes.id)))
+       LEFT JOIN verdicts ON ((counts.verdict_id = verdicts.id)))
+       LEFT JOIN count_codes ON ((counts.disposed_statute_code_id = count_codes.id)))
     WHERE (((counties.name)::text = 'Oklahoma'::text) AND (court_cases.filed_on > '2000-01-01'::date) AND (court_cases.id IN ( SELECT DISTINCT counts_1.court_case_id
              FROM counts counts_1
-            WHERE ((counts_1.charge)::text ~~* '%domes%'::text))));
+            WHERE ((counts_1.as_filed)::text ~~* '%domes%'::text))));
   SQL
 end
