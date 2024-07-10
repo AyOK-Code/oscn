@@ -11,7 +11,7 @@ module Importers
           sentence = ::Doc::Sentence.where(sentencing_county: sentencing_county)
           county = County.find_by('lower(name) = ?', sentencing_county.downcase)
           
-          doc_sent = DocSentencingCounty.find_or_initialize_by(name: sentencing_county)
+          doc_sent = Doc::SentencingCounty.find_or_initialize_by(name: sentencing_county)
           doc_sent.county = county if county.present?
           doc_sent.save
           
