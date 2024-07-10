@@ -13,6 +13,7 @@ namespace :doc do
       Importers::Doc::OffenseCode.new(dir).perform
       Importers::Doc::Profile.new(dir).perform
       Importers::Doc::Sentence.new(dir).perform
+      Importers::Doc::ConsecutiveSentence.new(dir).perform
       Importers::Doc::Alias.new(dir).perform
       Importers::Doc::Status.new(dir).perform
     end

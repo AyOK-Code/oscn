@@ -2,7 +2,7 @@ require 'json'
 module Importers
   module Doc
     class Sentence
-      attr_accessor :file, :fields, :field_pattern, :bar, :doc_mapping, :sentence_mapping
+      attr_accessor :file, :fields, :field_pattern, :bar, :doc_mapping
 
       def initialize(dir)
         @sentences = []
@@ -11,7 +11,6 @@ module Importers
         @field_pattern = "A#{fields.join('A')}"
         @bar = ProgressBar.new(file.body.string.split("\r\n").size)
         @doc_mapping = ::Doc::Profile.pluck(:doc_number, :id).to_h
-        @sentence_mapping = ::Doc::OffenseCode.pluck(:statute_code, :id).to_h
       end
 
       def perform
@@ -21,14 +20,14 @@ module Importers
 
           @sentences << find_and_save_sentence(data)
 
-          if @sentences.size >= 10_000
-            slice = @sentences.compact
-            ::Doc::Sentence.upsert_all(slice, unique_by: [:doc_profile_id, :sentence_id])
-            @sentences = []
-          end
+          next unless @sentences.size >= 10_000
+
+          slice = @sentences.compact
+          ::Doc::Sentence.upsert_all(slice, unique_by: [:doc_profile_id, :sentence_id])
+          @sentences = []
         end
         slice = @sentences.compact
-        ::Doc::Sentence.upsert_all(slice, unique_by: [:doc_profile_id, :sentence_id])        
+        ::Doc::Sentence.upsert_all(slice, unique_by: [:doc_profile_id, :sentence_id])
       end
 
       private

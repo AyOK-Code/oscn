@@ -4,7 +4,7 @@ module Importers
       attr_accessor :counties
 
       def initialize
-        @counties = ::County.all  
+        @counties = ::County.all
       end
 
       def perform

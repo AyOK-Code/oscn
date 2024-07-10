@@ -18,15 +18,15 @@ module Importers
 
           @profiles << save_profile(data)
 
-          if @profiles.size >= 10_000
-            slice = @profiles.compact
-            ::Doc::Profile.upsert_all(slice, unique_by: :doc_number)
-            @profiles = []
-          end
+          next unless @profiles.size >= 10_000
+
+          slice = @profiles.compact
+          ::Doc::Profile.upsert_all(slice, unique_by: :doc_number)
+          @profiles = []
         end
-        
+
         slice = @profiles.compact!
-        ::Doc::Profile.upsert_all(slice, unique_by: :doc_number)
+        ::Doc::Profile.upsert_all(slice, unique_by: :doc_number) if slice.present?
       end
 
       private
