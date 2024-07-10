@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_07_08_201128) do
+ActiveRecord::Schema[7.0].define(version: 2024_07_10_130156) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "plpgsql"
@@ -283,6 +283,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_08_201128) do
     t.string "sentence_id", null: false
     t.string "consecutive_to_sentence_id"
     t.bigint "doc_sentencing_county_id"
+    t.virtual "clean_case_number", type: :string, as: "\nCASE\n    WHEN ((crf_number)::text ~ 'CF-\\d{4}-[0-9]{1,4}'::text) THEN crf_number\n    WHEN ((crf_number)::text ~ '\\d{4}-[0-9]{1,4}'::text) THEN (('CF-'::text || (crf_number)::text))::character varying\n    WHEN ((crf_number)::text ~ '\\d{2}-[0-9]{1,4}'::text) THEN (('CF-20'::text || (crf_number)::text))::character varying\n    ELSE NULL::character varying\nEND", stored: true
     t.index ["court_case_id"], name: "index_doc_sentences_on_court_case_id"
     t.index ["doc_offense_code_id"], name: "index_doc_sentences_on_doc_offense_code_id"
     t.index ["doc_profile_id", "sentence_id"], name: "index_doc_sentences_on_doc_profile_id_and_sentence_id", unique: true

@@ -6,7 +6,7 @@ module Importers
 
       def initialize(dir)
         @sentences = []
-        @file = Bucket.new.get_object("doc/#{dir}/vendor_sentence_extract_text.dat")
+        @file = Bucket.new.get_object("doc/#{dir}/Vendor_Sentence_Extract_Text.dat")
         @fields = [10, 13, 30, 60, 8, 32, 20, 20]
         @field_pattern = "A#{fields.join('A')}"
         @bar = ProgressBar.new(file.body.string.split("\r\n").size)
@@ -20,12 +20,15 @@ module Importers
           data = line.unpack(field_pattern).map(&:squish)
 
           @sentences << find_and_save_sentence(data)
-        end
-        @sentences.compact!
 
-        @sentences.each_slice(10_000).each do |slice|
-          ::Doc::Sentence.upsert_all(slice, unique_by: [:doc_profile_id, :sentence_id])
+          if @sentences.size >= 10_000
+            slice = @sentences.compact
+            ::Doc::Sentence.upsert_all(slice, unique_by: [:doc_profile_id, :sentence_id])
+            @sentences = []
+          end
         end
+        slice = @sentences.compact
+        ::Doc::Sentence.upsert_all(slice, unique_by: [:doc_profile_id, :sentence_id])        
       end
 
       private
