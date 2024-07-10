@@ -26,8 +26,9 @@ module Importers
           ::Doc::Sentence.upsert_all(slice, unique_by: [:doc_profile_id, :sentence_id])
           @sentences = []
         end
+        
         slice = @sentences.compact
-        ::Doc::Sentence.upsert_all(slice, unique_by: [:doc_profile_id, :sentence_id])
+        ::Doc::Sentence.upsert_all(slice, unique_by: [:doc_profile_id, :sentence_id]) if slice.present?
       end
 
       private
