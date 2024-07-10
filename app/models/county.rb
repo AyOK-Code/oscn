@@ -6,6 +6,7 @@ class County < ApplicationRecord
   has_many :case_not_founds, dependent: :destroy
   has_many :census_datas, class_name: 'Census::Data', as: :area, dependent: :destroy
   belongs_to :district_attorney, optional: true
+  has_one :doc_sentencing_county, class_name: 'Doc::SentencingCounty'
 
   validates :name, :fips_code, presence: true
 

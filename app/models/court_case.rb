@@ -41,6 +41,11 @@ class CourtCase < ApplicationRecord
 
   delegate :html, to: :case_html
 
+  def self.mapping(county_id)
+    where(county_id: county_id)
+      .pluck(:case_number, :id).transform_keys { |case_number| "#{county_id}-#{case_number}" }
+  end
+
   def error?
     associations = [parties, current_judge, counsels, counts, events, docket_events]
     associations.all?(&:blank?) || docket_events.any?(&:error?)

@@ -12,7 +12,6 @@ RSpec.describe Importers::Doc::Sentence do
       {
         doc_profile_id: profile.id,
         sentence_id: '0001033701001',
-        sentencing_county: 'Bryan',
         consecutive_to_sentence_id: nil,
         js_date: Date.parse('Tue, 13 Apr 1920'),
         crf_number: '20-15645',

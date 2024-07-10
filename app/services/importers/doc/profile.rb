@@ -5,7 +5,7 @@ module Importers
 
       def initialize(dir)
         @profiles = []
-        @file = Bucket.new.get_object("doc/#{dir}/vendor_profile_extract_text.dat")
+        @file = Bucket.new.get_object("doc/#{dir}/Vendor_Profile_Extract_Text.dat")
         @fields = field_spacing(dir)
         @field_pattern = "A#{fields.join('A')}"
         @bar = ProgressBar.new(file.body.string.split("\r\n").size)
@@ -17,11 +17,16 @@ module Importers
           data = line.unpack(field_pattern).map(&:squish)
 
           @profiles << save_profile(data)
-        end
-        @profiles.compact!
-        @profiles.each_slice(10_000).each do |slice|
+
+          next unless @profiles.size >= 10_000
+
+          slice = @profiles.compact
           ::Doc::Profile.upsert_all(slice, unique_by: :doc_number)
+          @profiles = []
         end
+
+        slice = @profiles.compact!
+        ::Doc::Profile.upsert_all(slice, unique_by: :doc_number) if slice.present?
       end
 
       private
@@ -44,7 +49,6 @@ module Importers
           weight: data[13],
           eye: data[14],
           status: parse_status(data[15])
-
         }
       end
 
