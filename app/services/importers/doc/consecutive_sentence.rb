@@ -28,7 +28,8 @@ module Importers
       def collect_sentences_to_update(data, sentences_to_update)
         sentence_id = sentence_mapping[data[0]]
         consecutive_sentence_id = sentence_mapping[data[1]]
-
+        return unless sentence_id && consecutive_sentence_id
+        
         sentences_to_update << { id: sentence_id, consecutive_to_sentence_id: consecutive_sentence_id }
       end
 
