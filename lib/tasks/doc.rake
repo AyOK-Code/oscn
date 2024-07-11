@@ -9,14 +9,12 @@ namespace :doc do
   desc 'Scrape DOC for most recent file and import'
   task :import, [:dir] => [:environment] do |_t, args|
     dir = args.dir
-    ActiveRecord::Base.transaction do
-      Importers::Doc::OffenseCode.new(dir).perform
-      Importers::Doc::Profile.new(dir).perform
-      Importers::Doc::Sentence.new(dir).perform
-      Importers::Doc::ConsecutiveSentence.new(dir).perform
-      Importers::Doc::Alias.new(dir).perform
-      Importers::Doc::Status.new(dir).perform
-    end
+    Importers::Doc::OffenseCode.new(dir).perform
+    Importers::Doc::Profile.new(dir).perform
+    Importers::Doc::Sentence.new(dir).perform
+    Importers::Doc::ConsecutiveSentence.new(dir).perform
+    Importers::Doc::Alias.new(dir).perform
+    Importers::Doc::Status.new(dir).perform
   end
 
   desc 'Link DOC data to other datasets'
