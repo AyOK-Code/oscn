@@ -43,7 +43,7 @@ class CourtCase < ApplicationRecord
 
   def self.mapping(county_id)
     where(county_id: county_id)
-      .pluck(:case_number, :id).transform_keys { |case_number| "#{county_id}-#{case_number}" }
+      .pluck(:case_number, :id).map { |case_number, id| ["#{county_id}-#{case_number}", id] }.to_h
   end
 
   def error?
