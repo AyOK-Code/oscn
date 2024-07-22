@@ -4,7 +4,7 @@ RSpec.describe Importers::Party do
   describe '#perform' do
     let(:test_data) { parse_json(file_path) }
     let(:court_case) { create(:court_case) }
-    let(:log) { Importers::Logger.new(court_case) }
+    let(:log) { ::Importers::Logger.new(court_case) }
 
     context 'party has its own page with an oscn id' do
       let(:file_path) { 'spec/fixtures/importers/party_data.json' }
@@ -32,7 +32,7 @@ RSpec.describe Importers::Party do
         it 'updates a party name if it changes' do
           create(:party, oscn_id: 18_498_184, full_name: 'PENA,  ANT  RAMIRO')
           described_class.perform(test_data, court_case, log)
-          party = Party.find_by(oscn_id: 18_498_184)
+          party = ::Party.find_by(oscn_id: 18_498_184)
           expect(party.full_name).to eq 'PENA,  ANTHONY  RAMIRO'
         end
 

@@ -3,7 +3,7 @@ require 'services/importers/doc/shared_specs'
 
 RSpec.describe Importers::Doc::Profile do
   it_behaves_like('doc_importer') do
-    let(:class_to_import) { Doc::Profile }
+    let(:class_to_import) { ::Doc::Profile }
     let(:sample_file) { file_2023_01_format }
     let(:file_2023_01_format) do
       '0000010337SAWYER                        FRANK                         N                                 19910612INACTIVE                                          18950501MWhite                                                                                                                   501   Black                                                       INACTIVE  '

@@ -3,7 +3,7 @@ require 'services/importers/doc/shared_specs'
 
 RSpec.describe Importers::Doc::Alias do
   it_behaves_like('doc_importer') do
-    let(:class_to_import) { Doc::Alias }
+    let(:class_to_import) { ::Doc::Alias }
     let(:sample_file) do
       '0000022574HOGNER                        CLARENCE                                                        '
     end

@@ -5,7 +5,7 @@ RSpec.describe Importers::Logger do
   let(:test_data) { parse_json(file_path) }
   let(:court_case) { create(:court_case) }
   let(:party) { create(:party, full_name: 'PIT, ANTHONY LEE') }
-  let(:log) { Importers::Logger.new(court_case) }
+  let(:log) { ::Importers::Logger.new(court_case) }
   describe '#update_logs' do
     it 'updates  court case log if logs are present with a log' do
       count_data = test_data.first

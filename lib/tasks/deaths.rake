@@ -39,7 +39,7 @@ namespace :scrape do
 
       puts "Found #{records.count} records."
       records.each do |data|
-        Importers::Ok2Explore::Death.perform(data)
+        ::Importers::Ok2Explore::Death.perform(data)
       end
       record.update(is_success: true)
     end

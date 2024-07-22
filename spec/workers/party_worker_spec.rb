@@ -5,8 +5,8 @@ RSpec.describe PartyWorker, type: :worker do
     let(:oscn_id) { '5515773' }
 
     it 'imports party HTML and data, and updates the party status' do
-      expect(Importers::PartyHtml).to receive(:perform).with(oscn_id)
-      expect(Importers::PartyData).to receive(:perform).with(oscn_id)
+      expect(::Importers::PartyHtml).to receive(:perform).with(oscn_id)
+      expect(::Importers::PartyData).to receive(:perform).with(oscn_id)
 
       party = create(:party, oscn_id: oscn_id, enqueued: true)
 
