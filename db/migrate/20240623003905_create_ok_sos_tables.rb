@@ -40,7 +40,7 @@ class CreateOkSosTables < ActiveRecord::Migration[7.0]
 
     create_table "ok_sos_filing_types" do |t|
       t.integer "filing_type_id", null: false, index: { unique: true }
-      t.string "filing_type"
+      t.string "description"
 
       t.timestamps
     end
@@ -62,14 +62,14 @@ class CreateOkSosTables < ActiveRecord::Migration[7.0]
 
     create_table "ok_sos_name_statuses" do |t|
       t.integer "name_status_id", null: false, index: { unique: true }
-      t.string "name_status"
+      t.string "description"
 
       t.timestamps
     end
 
     create_table "ok_sos_name_types" do |t|
       t.integer "name_type_id", null: false, index: { unique: true }
-      t.string "name_type"
+      t.string "name_description"
 
       t.timestamps
     end

@@ -8,7 +8,7 @@ RSpec.describe Importers::OkSos::NameStatuses do
     let(:expected_attributes) do
       {
         name_status_id: 1,
-        name_status: 'In use'
+        description: 'In use'
       }
     end
   end

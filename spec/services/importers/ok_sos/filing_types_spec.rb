@@ -8,7 +8,7 @@ RSpec.describe Importers::OkSos::FilingTypes do
     let(:expected_attributes) do
       {
         filing_type_id: 3027,
-        filing_type: 'Certificate of Amendment (Prior To Effective Date)'
+        description: 'Certificate of Amendment (Prior To Effective Date)'
       }
     end
   end

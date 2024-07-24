@@ -8,7 +8,7 @@ RSpec.describe Importers::OkSos::NameTypes do
     let(:expected_attributes) do
       {
         name_type_id: 1,
-        name_type: 'Legal'
+        name_description: 'Legal'
       }
     end
   end

@@ -1,5 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe OkSos::EntityAddress, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe 'associations' do
+    it { should belong_to(:zip_code).class_name('ZipCode').optional }
+    it { should have_many(:officers).class_name('OkSos::Officer') }
+  end
 end

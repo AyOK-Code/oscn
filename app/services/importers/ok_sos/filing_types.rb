@@ -4,7 +4,7 @@ module Importers
       def attributes(data)
         {
           filing_type_id: data['filing_type_id'],
-          filing_type: data['filing_type']
+          description: data['filing_type']
         }
       end
 

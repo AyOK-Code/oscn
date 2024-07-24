@@ -4,7 +4,7 @@ module Importers
       def attributes(data)
         {
           name_type_id: data['name_type_id'],
-          name_type: data['name_description']
+          name_description: data['name_description']
         }
       end
 

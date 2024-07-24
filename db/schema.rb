@@ -283,6 +283,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
     t.string "sentence_id", null: false
     t.string "consecutive_to_sentence_id"
     t.bigint "doc_sentencing_county_id"
+    t.virtual "clean_case_number", type: :string, as: "\nCASE\n    WHEN ((crf_number)::text ~ 'CF-\\d{4}-[0-9]{1,4}'::text) THEN crf_number\n    WHEN ((crf_number)::text ~ '\\d{4}-[0-9]{1,4}'::text) THEN (('CF-'::text || (crf_number)::text))::character varying\n    WHEN ((crf_number)::text ~ '\\d{2}-[0-9]{1,4}'::text) THEN (('CF-20'::text || (crf_number)::text))::character varying\n    ELSE NULL::character varying\nEND", stored: true
     t.index ["court_case_id"], name: "index_doc_sentences_on_court_case_id"
     t.index ["doc_offense_code_id"], name: "index_doc_sentences_on_doc_offense_code_id"
     t.index ["doc_profile_id", "sentence_id"], name: "index_doc_sentences_on_doc_profile_id_and_sentence_id", unique: true
@@ -777,7 +778,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
 
   create_table "ok_sos_filing_types", force: :cascade do |t|
     t.integer "filing_type_id", null: false
-    t.string "filing_type"
+    t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["filing_type_id"], name: "index_ok_sos_filing_types_on_filing_type_id", unique: true
@@ -785,7 +786,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
 
   create_table "ok_sos_name_statuses", force: :cascade do |t|
     t.integer "name_status_id", null: false
-    t.string "name_status"
+    t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name_status_id"], name: "index_ok_sos_name_statuses_on_name_status_id", unique: true
@@ -793,7 +794,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
 
   create_table "ok_sos_name_types", force: :cascade do |t|
     t.integer "name_type_id", null: false
-    t.string "name_type"
+    t.string "name_description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name_type_id"], name: "index_ok_sos_name_types_on_name_type_id", unique: true
@@ -2072,6 +2073,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
       counts.as_filed AS count_filed_as,
       counts.offense_on,
       counts.disposition_on,
+      counts.charge AS disposed_as,
       verdicts.name,
       ( SELECT count(*) AS count
              FROM (docket_events
@@ -2082,10 +2084,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_23_003905) do
        JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
        JOIN counts ON ((counts.court_case_id = court_cases.id)))
        JOIN parties ON ((counts.party_id = parties.id)))
-       JOIN verdicts ON ((counts.verdict_id = verdicts.id)))
-       JOIN count_codes ON ((counts.disposed_statute_code_id = count_codes.id)))
+       LEFT JOIN verdicts ON ((counts.verdict_id = verdicts.id)))
+       LEFT JOIN count_codes ON ((counts.disposed_statute_code_id = count_codes.id)))
     WHERE (((counties.name)::text = 'Oklahoma'::text) AND (court_cases.filed_on > '2000-01-01'::date) AND (court_cases.id IN ( SELECT DISTINCT counts_1.court_case_id
              FROM counts counts_1
-            WHERE ((counts_1.charge)::text ~~* '%domes%'::text))));
+            WHERE ((counts_1.as_filed)::text ~~* '%domes%'::text))));
   SQL
 end
