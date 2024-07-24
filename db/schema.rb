@@ -624,6 +624,278 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_10_130156) do
     t.index ["external_id"], name: "index_ok_real_estate_registration_records_on_external_id", unique: true
   end
 
+  create_table "ok_sos_agents", force: :cascade do |t|
+    t.bigint "filing_number", null: false
+    t.bigint "external_address_id"
+    t.string "business_name"
+    t.string "agent_last_name"
+    t.string "agent_first_name"
+    t.string "agent_middle_name"
+    t.string "agent_suffix_id"
+    t.datetime "creation_date"
+    t.datetime "inactive_date"
+    t.string "normalized_name"
+    t.integer "sos_ra_flag"
+    t.bigint "suffix_id"
+    t.bigint "entity_address_id"
+    t.bigint "entity_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["entity_address_id"], name: "index_ok_sos_agents_on_entity_address_id"
+    t.index ["entity_id"], name: "index_ok_sos_agents_on_entity_id"
+    t.index ["filing_number"], name: "index_ok_sos_agents_on_filing_number", unique: true
+    t.index ["suffix_id"], name: "index_ok_sos_agents_on_suffix_id"
+  end
+
+  create_table "ok_sos_associated_entities", force: :cascade do |t|
+    t.bigint "filing_number"
+    t.bigint "document_number"
+    t.bigint "associated_entity_id"
+    t.bigint "associated_entity_corp_type_id"
+    t.bigint "primary_capacity_id"
+    t.bigint "external_capacity_id"
+    t.string "associated_entity_name"
+    t.bigint "entity_filing_number"
+    t.datetime "entity_filing_date"
+    t.datetime "inactive_date"
+    t.string "jurisdiction_state"
+    t.string "jurisdiction_country"
+    t.bigint "capacity_id", null: false
+    t.bigint "corp_type_id"
+    t.bigint "entity_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["capacity_id"], name: "index_ok_sos_associated_entities_on_capacity_id"
+    t.index ["corp_type_id"], name: "index_ok_sos_associated_entities_on_corp_type_id"
+    t.index ["entity_id"], name: "index_ok_sos_associated_entities_on_entity_id"
+    t.index ["filing_number", "associated_entity_id"], name: "index_ok_sos_ass_entities_on_filing_number_and_ass_entity_id", unique: true
+  end
+
+  create_table "ok_sos_audit_logs", force: :cascade do |t|
+    t.string "reference_number", null: false
+    t.datetime "audit_date"
+    t.integer "table_id"
+    t.integer "field_id"
+    t.string "previous_value"
+    t.string "current_value"
+    t.string "action"
+    t.string "audit_comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["reference_number", "audit_date", "table_id", "field_id", "previous_value", "current_value", "action"], name: "index_sos_audit_logs_cols", unique: true
+  end
+
+  create_table "ok_sos_capacities", force: :cascade do |t|
+    t.integer "capacity_id", null: false
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["capacity_id"], name: "index_ok_sos_capacities_on_capacity_id", unique: true
+  end
+
+  create_table "ok_sos_corp_filings", force: :cascade do |t|
+    t.bigint "filing_number"
+    t.bigint "document_number"
+    t.bigint "external_filing_type_id"
+    t.string "external_filing_type"
+    t.datetime "entry_date"
+    t.datetime "filing_date"
+    t.datetime "effective_date"
+    t.integer "effective_cond_flag"
+    t.datetime "inactive_date"
+    t.bigint "filing_type_id"
+    t.bigint "entity_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["entity_id"], name: "index_ok_sos_corp_filings_on_entity_id"
+    t.index ["filing_number", "document_number"], name: "index_ok_sos_corp_filings_on_filing_number_and_document_number", unique: true
+    t.index ["filing_type_id"], name: "index_ok_sos_corp_filings_on_filing_type_id"
+  end
+
+  create_table "ok_sos_corp_statuses", force: :cascade do |t|
+    t.integer "status_id", null: false
+    t.string "status_description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["status_id"], name: "index_ok_sos_corp_statuses_on_status_id", unique: true
+  end
+
+  create_table "ok_sos_corp_types", force: :cascade do |t|
+    t.integer "corp_type_id", null: false
+    t.string "corp_type_description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["corp_type_id"], name: "index_ok_sos_corp_types_on_corp_type_id", unique: true
+  end
+
+  create_table "ok_sos_entities", force: :cascade do |t|
+    t.bigint "filing_number", null: false
+    t.bigint "status_id"
+    t.bigint "external_corp_type_id", null: false
+    t.bigint "external_address_id"
+    t.string "name"
+    t.integer "perpetual_flag"
+    t.datetime "creation_date"
+    t.datetime "expiration_date"
+    t.datetime "inactive_date"
+    t.datetime "formation_date"
+    t.datetime "report_due_date"
+    t.integer "tax_id"
+    t.string "fictitious_name"
+    t.datetime "foreign_fein"
+    t.string "foreign_state"
+    t.string "foreign_country"
+    t.datetime "foreign_formation_date"
+    t.string "expiration_type"
+    t.datetime "last_report_filed_date"
+    t.string "telno"
+    t.integer "otc_suspension_flag"
+    t.string "consent_name_flag"
+    t.bigint "corp_type_id", null: false
+    t.bigint "entity_address_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["corp_type_id"], name: "index_ok_sos_entities_on_corp_type_id"
+    t.index ["entity_address_id"], name: "index_ok_sos_entities_on_entity_address_id"
+    t.index ["filing_number"], name: "index_ok_sos_entities_on_filing_number", unique: true
+  end
+
+  create_table "ok_sos_entity_addresses", force: :cascade do |t|
+    t.bigint "address_id", null: false
+    t.string "address1"
+    t.string "address2"
+    t.string "city"
+    t.string "state"
+    t.string "zip_string"
+    t.integer "zip_extension"
+    t.string "country"
+    t.bigint "zip_code_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["address_id"], name: "index_ok_sos_entity_addresses_on_address_id", unique: true
+    t.index ["zip_code_id"], name: "index_ok_sos_entity_addresses_on_zip_code_id"
+  end
+
+  create_table "ok_sos_filing_types", force: :cascade do |t|
+    t.integer "filing_type_id", null: false
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["filing_type_id"], name: "index_ok_sos_filing_types_on_filing_type_id", unique: true
+  end
+
+  create_table "ok_sos_name_statuses", force: :cascade do |t|
+    t.integer "name_status_id", null: false
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name_status_id"], name: "index_ok_sos_name_statuses_on_name_status_id", unique: true
+  end
+
+  create_table "ok_sos_name_types", force: :cascade do |t|
+    t.integer "name_type_id", null: false
+    t.string "name_description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name_type_id"], name: "index_ok_sos_name_types_on_name_type_id", unique: true
+  end
+
+  create_table "ok_sos_names", force: :cascade do |t|
+    t.bigint "filing_number"
+    t.bigint "name_id", null: false
+    t.string "name"
+    t.bigint "external_name_status_id"
+    t.bigint "external_name_type_id"
+    t.datetime "creation_date"
+    t.datetime "inactive_date"
+    t.datetime "expire_date"
+    t.string "all_counties_flag"
+    t.bigint "consent_filing_number"
+    t.bigint "search_id"
+    t.string "transfer_to"
+    t.string "received_from"
+    t.bigint "name_type_id"
+    t.bigint "name_status_id"
+    t.bigint "entity_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["entity_id"], name: "index_ok_sos_names_on_entity_id"
+    t.index ["filing_number", "name_id"], name: "index_ok_sos_names_on_filing_number_and_name_id", unique: true
+    t.index ["name_status_id"], name: "index_ok_sos_names_on_name_status_id"
+    t.index ["name_type_id"], name: "index_ok_sos_names_on_name_type_id"
+  end
+
+  create_table "ok_sos_officers", force: :cascade do |t|
+    t.bigint "filing_number"
+    t.integer "officer_id", null: false
+    t.string "officer_title"
+    t.string "business_name"
+    t.string "last_name"
+    t.string "first_name"
+    t.string "middle_name"
+    t.bigint "external_suffix_id"
+    t.bigint "external_address_id"
+    t.datetime "creation_date"
+    t.datetime "inactive_date"
+    t.datetime "last_modified_date"
+    t.string "normalized_name"
+    t.bigint "entity_address_id"
+    t.bigint "entity_id"
+    t.bigint "suffix_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["entity_address_id"], name: "index_ok_sos_officers_on_entity_address_id"
+    t.index ["entity_id"], name: "index_ok_sos_officers_on_entity_id"
+    t.index ["filing_number", "officer_id"], name: "index_ok_sos_officers_on_filing_number_and_officer_id", unique: true
+    t.index ["suffix_id"], name: "index_ok_sos_officers_on_suffix_id"
+  end
+
+  create_table "ok_sos_stock_data", force: :cascade do |t|
+    t.integer "stock_id", null: false
+    t.bigint "filing_number"
+    t.integer "external_stock_type_id", null: false
+    t.integer "stock_series"
+    t.float "share_volume"
+    t.float "par_value"
+    t.bigint "entity_id"
+    t.bigint "stock_type_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["entity_id"], name: "index_ok_sos_stock_data_on_entity_id"
+    t.index ["filing_number", "stock_id"], name: "index_ok_sos_stock_data_on_filing_number_and_stock_id", unique: true
+    t.index ["stock_type_id"], name: "index_ok_sos_stock_data_on_stock_type_id"
+  end
+
+  create_table "ok_sos_stock_infos", force: :cascade do |t|
+    t.bigint "filing_number", null: false
+    t.integer "qualify_flag"
+    t.integer "unlimited_flag"
+    t.float "actual_amount_invested"
+    t.float "pd_on_credit"
+    t.float "tot_auth_capital"
+    t.bigint "entity_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["entity_id"], name: "index_ok_sos_stock_infos_on_entity_id"
+    t.index ["filing_number"], name: "index_ok_sos_stock_infos_on_filing_number", unique: true
+  end
+
+  create_table "ok_sos_stock_types", force: :cascade do |t|
+    t.integer "stock_type_id", null: false
+    t.string "stock_type_description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["stock_type_id"], name: "index_ok_sos_stock_types_on_stock_type_id", unique: true
+  end
+
+  create_table "ok_sos_suffixes", force: :cascade do |t|
+    t.integer "suffix_id", null: false
+    t.string "suffix"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["suffix_id"], name: "index_ok_sos_suffixes_on_suffix_id", unique: true
+  end
+
   create_table "okc_blotter_bookings", force: :cascade do |t|
     t.bigint "pdf_id", null: false
     t.string "first_name"
@@ -965,6 +1237,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_10_130156) do
   add_foreign_key "ok_real_estate_places", "ok_real_estate_agents", column: "agent_id"
   add_foreign_key "ok_real_estate_registration_histories", "ok_real_estate_agents", column: "agent_id"
   add_foreign_key "ok_real_estate_registration_records", "ok_real_estate_agents", column: "agent_id"
+  add_foreign_key "ok_sos_agents", "ok_sos_entities", column: "entity_id"
+  add_foreign_key "ok_sos_agents", "ok_sos_entity_addresses", column: "entity_address_id"
+  add_foreign_key "ok_sos_agents", "ok_sos_suffixes", column: "suffix_id"
+  add_foreign_key "ok_sos_associated_entities", "ok_sos_capacities", column: "capacity_id"
+  add_foreign_key "ok_sos_associated_entities", "ok_sos_corp_types", column: "corp_type_id"
+  add_foreign_key "ok_sos_associated_entities", "ok_sos_entities", column: "entity_id"
+  add_foreign_key "ok_sos_corp_filings", "ok_sos_entities", column: "entity_id"
+  add_foreign_key "ok_sos_corp_filings", "ok_sos_filing_types", column: "filing_type_id"
   add_foreign_key "okc_blotter_bookings", "okc_blotter_pdfs", column: "pdf_id"
   add_foreign_key "okc_blotter_bookings", "rosters"
   add_foreign_key "okc_blotter_offenses", "okc_blotter_bookings", column: "booking_id"

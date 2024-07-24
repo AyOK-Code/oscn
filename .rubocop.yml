@@ -15,6 +15,9 @@ AllCops:
     - 'spec/models/offense_code_spec.rb'
     - 'spec/models/party_stat_spec.rb'
     - 'spec/models/report_searchable_case_spec.rb'
+    - 'app/services/importers/ok_sos/split_files.rb'
+    - 'app/services/importers/ok_sos/entities.rb'
+    - 'app/services/importers/ok_sos/base_importer.rb'
     - 'vendor/**/*'
 Metrics/BlockLength:
   Max: 50
@@ -40,6 +43,10 @@ Style/WordArray:
   Enabled: false
 Metrics/MethodLength:
   Max: 25
+Style/HashTransformKeys:
+  Enabled: false
+Style/MapToHash:
+  Enabled: false
 Style/ClassAndModuleChildren:
   Exclude:
     - 'app/models/**/*'
