@@ -43,6 +43,10 @@ Style/WordArray:
   Enabled: false
 Metrics/MethodLength:
   Max: 25
+Style/HashTransformKeys:
+  Enabled: false
+Style/MapToHash:
+  Enabled: false
 Style/ClassAndModuleChildren:
   Exclude:
     - 'app/models/**/*'
