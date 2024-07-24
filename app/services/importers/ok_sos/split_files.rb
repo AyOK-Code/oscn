@@ -70,9 +70,9 @@ module Importers
         merged_row = '' # multiple rows may need to get merged if there is a \r or \n in a string column
         line_count = `wc -l "#{@combined_file.path}"`.strip.split[0].to_i
         puts "Start time: #{Time.now}. Splitting csv. Combined csv line count is: #{line_count}"
-        bar = ProgressBar.create(total: line_count, length: 160, format: '%a |%b>>%i| %p%% %t')
+        bar = ProgressBar.new(line_count)
         File.new(@combined_file.path).each do |row_string|
-          bar.increment
+          bar.increment!
           row = row_string.strip.split('~')
           is_new_csv = !columns || columns[0] != row[0]
           if is_new_csv && merged_row.blank?
@@ -80,7 +80,7 @@ module Importers
             columns = row.clone
             row = row.map(&:downcase)
             file_name = PREFIX_FILE_MAP[columns[0]]
-            bar.log "Writing new file #{file_name}. First row: #{row_string}"
+            Rails.logger.info "Writing new file #{file_name}. First row: #{row_string}"
             @csvs[file_name] = Tempfile.new("#{file_name}.csv")
           elsif columns.length > row.length
             row_string = row_string.delete("\n").delete("\r")

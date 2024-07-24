@@ -23,8 +23,7 @@ module Importers
         error_rows = []
         row_count = File.read(file_path).strip.scan("\n").length
         if row_count > BATCH_SIZE
-          bar = ProgressBar.create(total: row_count / BATCH_SIZE, length: 160,
-                                   format: '%a |%b>>%i| %p%% %t')
+          bar = ProgressBar.new(row_count / BATCH_SIZE)
         end
         CSV
           .foreach(file_path, col_sep: ',', quote_char: '"', headers: true, liberal_parsing: true) do |row|
@@ -35,7 +34,7 @@ module Importers
           end
           if ((rows + error_rows).count % BATCH_SIZE).zero? || rows.count == row_count
             rows = check_and_fix_duplicates(rows)
-            bar&.increment
+            bar&.increment!
             import_class.upsert_all(rows, unique_by: unique_by)
             rows = []
             error_rows = []
