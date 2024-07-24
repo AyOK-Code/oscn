@@ -2,16 +2,15 @@ require 'json'
 module Importers
   module Doc
     class Sentence
-      attr_accessor :file, :fields, :field_pattern, :bar, :doc_mapping, :sentence_mapping
+      attr_accessor :file, :fields, :field_pattern, :bar, :doc_mapping
 
       def initialize(dir)
         @sentences = []
-        @file = Bucket.new.get_object("doc/#{dir}/vendor_sentence_extract_text.dat")
+        @file = Bucket.new.get_object("doc/#{dir}/Vendor_Sentence_Extract_Text.dat")
         @fields = [10, 13, 30, 60, 8, 32, 20, 20]
         @field_pattern = "A#{fields.join('A')}"
         @bar = ProgressBar.new(file.body.string.split("\r\n").size)
         @doc_mapping = ::Doc::Profile.pluck(:doc_number, :id).to_h
-        @sentence_mapping = ::Doc::OffenseCode.pluck(:statute_code, :id).to_h
       end
 
       def perform
@@ -20,12 +19,16 @@ module Importers
           data = line.unpack(field_pattern).map(&:squish)
 
           @sentences << find_and_save_sentence(data)
-        end
-        @sentences.compact!
 
-        @sentences.each_slice(10_000).each do |slice|
+          next unless @sentences.size >= 10_000
+
+          slice = @sentences.compact
           ::Doc::Sentence.upsert_all(slice, unique_by: [:doc_profile_id, :sentence_id])
+          @sentences = []
         end
+        
+        slice = @sentences.compact
+        ::Doc::Sentence.upsert_all(slice, unique_by: [:doc_profile_id, :sentence_id]) if slice.present?
       end
 
       private
