@@ -15,7 +15,7 @@ module Importers
 
         file.body.string.split("\r\n").each do |line|
           bar.increment!
-          data = line.unpack(field_pattern).map(&:squish)          
+          data = line.unpack(field_pattern).map(&:squish)
 
           profiles << save_profile(data)
 
