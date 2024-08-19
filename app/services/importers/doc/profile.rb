@@ -4,7 +4,6 @@ module Importers
       attr_accessor :file, :fields, :field_pattern, :bar
 
       def initialize(dir)
-        @profiles = []
         @file = Bucket.new.get_object("doc/#{dir}/Vendor_Profile_Extract_Text.dat")
         @fields = field_spacing(dir)
         @field_pattern = "A#{fields.join('A')}"
@@ -12,21 +11,21 @@ module Importers
       end
 
       def perform
+        profiles = []
+
         file.body.string.split("\r\n").each do |line|
           bar.increment!
           data = line.unpack(field_pattern).map(&:squish)
 
-          @profiles << save_profile(data)
+          profiles << save_profile(data)
 
-          next unless @profiles.size >= 10_000
-
-          slice = @profiles.compact
-          ::Doc::Profile.upsert_all(slice, unique_by: :doc_number)
-          @profiles = []
+          if profiles.size >= 10_000
+            ::Doc::Profile.upsert_all(profiles, unique_by: :doc_number)
+            profiles = []
+          end
         end
 
-        slice = @profiles.compact!
-        ::Doc::Profile.upsert_all(slice, unique_by: :doc_number) if slice.present?
+        ::Doc::Profile.upsert_all(profiles, unique_by: :doc_number) if profiles.present?
       end
 
       private
