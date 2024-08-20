@@ -12,5 +12,16 @@ RSpec.describe Importers::PartyData do
       expect(party.aliases.size).to eq 2
       expect(party.aliases.pluck(:name)).to include 'BARNES, GABRIELLE'
     end
+
+    it 'parses for alt counties' do
+      path = 'spec/fixtures/party_example_alt.html'
+      html = File.read(path)
+      party_html = create(:party_html, html: html)
+      party = party_html.party
+
+      described_class.perform(party.oscn_id)
+      expect(party.aliases.size).to eq 2
+      expect(party.aliases.pluck(:name)).to include 'BARNES, GABRIELLE'
+    end
   end
 end
