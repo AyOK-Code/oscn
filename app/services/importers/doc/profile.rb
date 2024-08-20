@@ -44,7 +44,6 @@ module Importers
           weight: data[13],
           eye: data[14],
           status: parse_status(data[15])
-
         }
       end
 

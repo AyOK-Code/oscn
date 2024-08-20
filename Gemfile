@@ -40,6 +40,7 @@ gem 'net-smtp', require: false
 gem 'net-imap', require: false
 gem 'net-pop', require: false
 gem 'raygun4ruby'
+gem 'selenium-webdriver'
 
 group :development, :test do
   gem 'bullet'
