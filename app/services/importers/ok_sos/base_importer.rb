@@ -9,7 +9,7 @@ module Importers
 
       def initialize(file_path)
         @file_path = file_path
-        @model_cache = ActiveSupport::HashWithIndifferentAccess.new({})
+        @@model_cache = ActiveSupport::HashWithIndifferentAccess.new({})
         super()
       end
 
@@ -85,11 +85,11 @@ module Importers
       end
 
       def model_cache(klass, key)
-        cache_key = klass.to_s
-        return @model_cache[cache_key] if @model_cache[cache_key]
+        klass_key = klass.to_s
+        return @@model_cache[klass_key] if @@model_cache[klass_key]
 
-        @model_cache[cache_key] = klass.all.to_h { |x| [x[key].to_s, x] }
-        @model_cache[cache_key]
+        @@model_cache[klass_key] = klass.pluck(key, :id).to_h { |x| [x[0].to_s, x[1]] }
+        @@model_cache[klass_key]
       end
 
       def get_cached(klass, key, value, create: false)
@@ -100,8 +100,8 @@ module Importers
         raise ActiveRecord::RecordNotFound unless create
 
         new_model = klass.create!(key => value)
-        @model_cache[klass.to_s][value.to_s] = new_model
-        new_model
+        @@model_cache[klass.to_s][value.to_s] = new_model.id
+        new_model.id
       end
 
       def ignore_duplicates
