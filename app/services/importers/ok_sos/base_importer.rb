@@ -96,7 +96,7 @@ module Importers
       def lookup_cached_id(klass, key, value, create: false)
         return nil unless value.present? && value != '0'
 
-        return model_cache(klass, key)[value.to_s] if model_cache(klass, key)[value.to_s]
+        return id_cache(klass, key)[value.to_s] if id_cache(klass, key)[value.to_s]
 
         raise ActiveRecord::RecordNotFound unless create
 
