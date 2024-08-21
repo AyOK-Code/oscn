@@ -18,7 +18,10 @@ module Importers
           received_from: data['received_from'],
           name_type_id: lookup_cached_id(::OkSos::NameType, :name_type_id, data['name_type_id']),
           name_status_id: lookup_cached_id(::OkSos::NameStatus, :name_status_id, data['name_status_id']),
-          entity_id: data['filing_number'] ? lookup_cached_id(::OkSos::Entity, :filing_number, data['filing_number']) : nil
+          entity_id: if data['filing_number']
+                       lookup_cached_id(::OkSos::Entity, :filing_number,
+                                        data['filing_number'])
+                     end
         }
       end
 
