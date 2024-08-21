@@ -26,7 +26,7 @@ module Importers
           otc_suspension_flag: data['otc_suspension_flag'],
           consent_name_flag: data['consent_name_flag'],
           corp_type_id: get_cached(::OkSos::CorpType, :corp_type_id, data['corp_type_id']),
-          entity_address_id: data['address_id'] ? ::OkSos::EntityAddress.find_by(address_id: data['address_id'])&.id : nil
+          entity_address_id: data['address_id'] ? get_cached(::OkSos::EntityAddress, :address_id, data['address_id']) : nil
         }
       end
 

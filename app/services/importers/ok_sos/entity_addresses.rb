@@ -11,7 +11,7 @@ module Importers
           zip_string: data['zip_code'],
           zip_extension: data['zip_extension'],
           country: data['county'],
-          zip_code_id: get_cached(::ZipCode, :name, data['zip_code'], create: true)
+          zip_code_id: get_cached(::ZipCode, :name, data['zip_code'])
         }
       end
 

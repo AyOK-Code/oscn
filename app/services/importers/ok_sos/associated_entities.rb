@@ -16,7 +16,7 @@ module Importers
           jurisdiction_state: data['jurisdiction_state'],
           jurisdiction_country: data['jurisdiction_country'],
           capacity_id: get_cached(::OkSos::Capacity, :capacity_id, data['capacity_id']),
-          entity_id: ::OkSos::Entity.find_by(filing_number: data['filing_number'])&.id,
+          entity_id: get_cached(::OkSos::Entity, :filing_number, data['filing_number']),
           corp_type_id: get_cached(::OkSos::CorpType, :corp_type_id, data['associated_entity_corp_type_id'])
         }
       end
