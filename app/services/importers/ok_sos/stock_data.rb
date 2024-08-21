@@ -9,8 +9,8 @@ module Importers
           stock_series: data['stock_series'],
           share_volume: data['share_volume'],
           par_value: data['par_value'],
-          entity_id: get_cached(::OkSos::Entity, :filing_number, data['filing_number']),
-          stock_type_id: get_cached(::OkSos::StockType, :stock_type_id, data['stock_type_id'])
+          entity_id: lookup_cached_id(::OkSos::Entity, :filing_number, data['filing_number']),
+          stock_type_id: lookup_cached_id(::OkSos::StockType, :stock_type_id, data['stock_type_id'])
         }
       end
 

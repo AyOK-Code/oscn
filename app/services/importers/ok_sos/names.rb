@@ -16,9 +16,9 @@ module Importers
           search_id: data['search_id'],
           transfer_to: data['transfer_to'],
           received_from: data['received_from'],
-          name_type_id: get_cached(::OkSos::NameType, :name_type_id, data['name_type_id']),
-          name_status_id: get_cached(::OkSos::NameStatus, :name_status_id, data['name_status_id']),
-          entity_id: data['filing_number'] ? get_cached(::OkSos::Entity, :filing_number, data['filing_number']) : nil
+          name_type_id: lookup_cached_id(::OkSos::NameType, :name_type_id, data['name_type_id']),
+          name_status_id: lookup_cached_id(::OkSos::NameStatus, :name_status_id, data['name_status_id']),
+          entity_id: data['filing_number'] ? lookup_cached_id(::OkSos::Entity, :filing_number, data['filing_number']) : nil
         }
       end
 

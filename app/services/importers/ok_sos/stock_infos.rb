@@ -9,7 +9,7 @@ module Importers
           actual_amount_invested: data['actual_amt_invested'],
           pd_on_credit: data['pd_on_credit'],
           tot_auth_capital: data['tot_auth_capital'],
-          entity_id: get_cached(::OkSos::Entity, :filing_number, data['filing_number'])
+          entity_id: lookup_cached_id(::OkSos::Entity, :filing_number, data['filing_number'])
         }
       end
 

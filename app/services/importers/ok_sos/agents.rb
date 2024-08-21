@@ -14,9 +14,9 @@ module Importers
           inactive_date: parse_date(data['inactive_date']),
           normalized_name: data['normalized_name'],
           sos_ra_flag: data['sos_ra_flag'],
-          entity_id: get_cached(::OkSos::Entity, :filing_number, data['filing_number']),
-          entity_address_id: get_cached(::OkSos::EntityAddress, :address_id, data['address_id']),
-          suffix_id: get_cached(::OkSos::Suffix, :suffix_id, data['agent_suffix_id'])
+          entity_id: lookup_cached_id(::OkSos::Entity, :filing_number, data['filing_number']),
+          entity_address_id: lookup_cached_id(::OkSos::EntityAddress, :address_id, data['address_id']),
+          suffix_id: lookup_cached_id(::OkSos::Suffix, :suffix_id, data['agent_suffix_id'])
         }
       end
 
