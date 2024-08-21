@@ -32,7 +32,8 @@ module Importers
           rescue StandardError => e
             error_rows << { row: row, e: e }
           end
-          if ((rows + error_rows).count % BATCH_SIZE).zero? || rows.count == row_count
+          total_rows = (rows + error_rows).count
+          if (total_rows % BATCH_SIZE).zero? || total_rows == row_count
             rows = check_and_fix_duplicates(rows)
             bar&.increment!
             import_class.upsert_all(rows, unique_by: unique_by)
