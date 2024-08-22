@@ -1,6 +1,6 @@
 class CreateOkAssessorTables < ActiveRecord::Migration[7.0]
   def change
-    create_table "ok_assessor_accounts", id: false, force: :cascade do |t|
+    create_table "ok_assessor_accounts" do |t|
       t.text "account_num"
       t.decimal "parcel_num"
       t.text "account_type"
@@ -51,11 +51,9 @@ class CreateOkAssessorTables < ActiveRecord::Migration[7.0]
       t.integer "adjustment_effective_year"
     end
 
-    create_table "ok_assessor_improvements", id: false, force: :cascade do |t|
-      t.references :account, null: false, foreign_key: true
-      t.text "account_num"
+    create_table "ok_assessor_improvements" do |t|
+      t.references :account, null: false, foreign_key: { to_table: :ok_assessor_accounts }
       t.integer "building_num"
-      t.decimal "parcel_num"
       t.text "property_type"
       t.text "neighborhood_code"
       t.text "owner_occupied"
@@ -107,39 +105,27 @@ class CreateOkAssessorTables < ActiveRecord::Migration[7.0]
       t.text "new_growth_value_for_current_year"
       t.integer "building_permit_value"
       t.text "status"
-      t.integer "account_num_no_prefix"
-      t.text "account_num_prefix"
     end
 
-    create_table "ok_assessor_improvement_details", id: false, force: :cascade do |t|
-      t.references :account, null: false, foreign_key: true
-      t.text "account_num"
+    create_table "ok_assessor_improvement_details" do |t|
+      t.references :account, null: false, foreign_key: { to_table: :ok_assessor_accounts }
       t.integer "building_num"
-      t.decimal "parcel_num"
       t.text "detail_type"
       t.text "detail_description"
       t.decimal "number_of_units"
       t.text "status"
-      t.integer "account_num_no_prefix"
-      t.text "account_num_prefix"
     end
 
-    create_table "ok_assessor_land_attributes", id: false, force: :cascade do |t|
-      t.references :account, null: false, foreign_key: true
-      t.text "account_num"
-      t.decimal "parcel_num"
+    create_table "ok_assessor_land_attributes" do |t|
+      t.references :account, null: false, foreign_key: { to_table: :ok_assessor_accounts }
       t.text "attribute_type"
       t.text "attribute_description"
       t.decimal "attribute_adjustment"
       t.text "status"
-      t.integer "account_num_no_prefix"
-      t.text "account_num_prefix"
     end
 
-    create_table "ok_assessor_owner", id: false, force: :cascade do |t|
-      t.references :account, null: false, foreign_key: true
-      t.text "account_num"
-      t.decimal "parcel_num"
+    create_table "ok_assessor_owners" do |t|
+      t.references :account, null: false, foreign_key: { to_table: :ok_assessor_accounts }
       t.text "owner1"
       t.text "owner2"
       t.text "owner3"
@@ -153,43 +139,33 @@ class CreateOkAssessorTables < ActiveRecord::Migration[7.0]
       t.text "status"
       t.date "owner_change_date"
       t.date "address_change_date"
-      t.integer "account_num_no_prefix"
-      t.text "account_num_prefix"
     end
 
-    create_table "ok_assessor_sales", id: false, force: :cascade do |t|
-      t.references :account, null: false, foreign_key: true
-      t.text "account_num"
-      t.decimal "reception_num"
-      t.decimal "parcel_num"
+    create_table "ok_assessor_sales" do |t|
+      t.references :account, null: false, foreign_key: { to_table: :ok_assessor_accounts }
       t.text "grantor"
       t.text "grantee"
       t.integer "sale_price"
       t.date "sale_date"
       t.text "deed_type"
-      t.text "valid"
+      t.text "valid_sale"
       t.text "confirm"
-      t.integer "account_num_no_prefix"
-      t.text "account_num_prefix"
       t.integer "book"
       t.integer "page"
       t.decimal "revenue_stamps"
       t.date "change_date"
     end
 
-    create_table "ok_assessor_section_township_ranges", id: false, force: :cascade do |t|
-      t.references :account, null: false, foreign_key: true
-      t.text "account_num"
+    create_table "ok_assessor_section_township_ranges" do |t|
+      t.references :account, null: false, foreign_key: { to_table: :ok_assessor_accounts }
       t.text "quarter"
       t.integer "section"
       t.text "township"
       t.text "range"
     end
 
-    create_table "ok_assessor_value_details", id: false, force: :cascade do |t|
-      t.references :account, null: false, foreign_key: true
-      t.text "account_num"
-      t.decimal "parcel_num"
+    create_table "ok_assessor_value_details" do |t|
+      t.references :account, null: false, foreign_key: { to_table: :ok_assessor_accounts }
       t.text "value_type"
       t.text "abstract_code"
       t.text "abstract_code_description"
@@ -200,8 +176,6 @@ class CreateOkAssessorTables < ActiveRecord::Migration[7.0]
       t.integer "abstract_assessed_value"
       t.integer "abstract_account_value"
       t.text "status"
-      t.integer "account_num_no_prefix"
-      t.text "account_num_prefix"
     end
   end
 end
