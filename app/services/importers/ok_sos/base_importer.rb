@@ -34,9 +34,14 @@ module Importers
           end
           total_rows = (rows + error_rows).count
           if (total_rows % BATCH_SIZE).zero? || total_rows == row_count
+            print_errors(error_rows) if error_rows.present?
             rows = check_and_fix_duplicates(rows)
             bar&.increment!
-            import_class.upsert_all(rows, unique_by: unique_by)
+            if rows.blank?
+              puts "empty list of rows "
+            else
+              import_class.upsert_all(rows, unique_by: unique_by)
+            end
             rows = []
             error_rows = []
           end
