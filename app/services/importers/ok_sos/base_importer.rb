@@ -103,7 +103,7 @@ module Importers
 
         return id_cache(klass, key)[value.to_s] if id_cache(klass, key)[value.to_s]
 
-        raise ActiveRecord::RecordNotFound unless create
+        return nil unless create
 
         new_model = klass.create!(key => value)
         @@id_cache[klass.to_s][value.to_s] = new_model.id
