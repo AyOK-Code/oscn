@@ -576,7 +576,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_21_164034) do
     t.integer "percent_complete"
     t.text "condition"
     t.text "quality"
-    t.text "heat_vent_air_id"
+    t.integer "heat_vent_air_id"
     t.text "heat_vent_air_description"
     t.text "exterior"
     t.text "interior"

@@ -72,7 +72,7 @@ class CreateOkAssessorTables < ActiveRecord::Migration[7.0]
       t.integer "percent_complete"
       t.text "condition"
       t.text "quality"
-      t.text "heat_vent_air_id"
+      t.integer "heat_vent_air_id"
       t.text "heat_vent_air_description"
       t.text "exterior"
       t.text "interior"
