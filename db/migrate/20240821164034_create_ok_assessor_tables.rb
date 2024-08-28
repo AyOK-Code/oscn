@@ -2,7 +2,7 @@ class CreateOkAssessorTables < ActiveRecord::Migration[7.0]
   def change
     create_table "ok_assessor_accounts" do |t|
       t.text "account_num"
-      t.decimal "parcel_num"
+      t.bigint "parcel_num"
       t.text "account_type"
       t.integer "house_num"
       t.text "direction"
@@ -43,9 +43,9 @@ class CreateOkAssessorTables < ActiveRecord::Migration[7.0]
       t.text "status"
       t.integer "account_num_no_prefix"
       t.text "account_num_prefix"
-      t.text "parent_parcel_num"
-      t.integer "subdivision_lot_number"
-      t.integer "subdivision_block_number"
+      t.bigint "parent_parcel_num"
+      t.text "subdivision_lot_number"
+      t.text "subdivision_block_number"
       t.date "account_change_date"
       t.integer "adjustment_code"
       t.integer "adjustment_effective_year"

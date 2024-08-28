@@ -2,7 +2,7 @@ require 'csv'
 
 module Importers
   module OkAssessor
-    class Accounts
+    class Accounts < BaseImporter
       def attributes(row)
         {
           account_num: row['ACCOUNT_NUM'],
@@ -39,18 +39,18 @@ module Importers
           total_taxable_value: row['TOTAL_TAXABLE_VALUE'],
           total_assessed_value: row['TOTAL_ASSESSED_VALUE'],
           adjusted_assessed_value: row['ADJUSTED_ASSESSED_VALUE'],
-          last_doc_date: row['LAST_DOC_DATE'],
-          last_sale_date: row['LAST_SALE_DATE'],
-          legal_change_date: row['LEGAL_CHANGE_DATE'],
-          account_created_date: row['ACCOUNT_CREATED_DATE'],
-          account_deleted_date: row['ACCOUNT_DELETED_DATE'],
+          last_doc_date: parse_date(row['LAST_DOC_DATE']),
+          last_sale_date: parse_date(row['LAST_SALE_DATE']),
+          legal_change_date: parse_date(row['LEGAL_CHANGE_DATE']),
+          account_created_date: parse_date(row['ACCOUNT_CREATED_DATE']),
+          account_deleted_date: parse_date(row['ACCOUNT_DELETED_DATE']),
           status: row['STATUS'],
           account_num_no_prefix: row['ACCOUNT_NUM_NO_PREFIX'],
           account_num_prefix: row['ACCOUNT_NUM_PREFIX'],
           parent_parcel_num: row['PARENT_PARCEL_NUM'],
           subdivision_lot_number: row['SUBDIVISION_LOT_NUMBER'],
           subdivision_block_number: row['SUBDIVISION_BLOCK_NUMBER'],
-          account_change_date: row['ACCOUNT_CHANGE_DATE'],
+          account_change_date: parse_date(row['ACCOUNT_CHANGE_DATE']),
           adjustment_code: row['ADJUSTMENT_CODE'],
           adjustment_effective_year: row['ADJUSTMENT_EFFECTIVE_YEAR']
         }

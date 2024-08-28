@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.shared_examples 'ok_assessor_importer' do
+RSpec.shared_examples 'ok_sos_importer' do
   describe '#perform' do
     it 'does the import' do
       described_class.perform(sample_file)
