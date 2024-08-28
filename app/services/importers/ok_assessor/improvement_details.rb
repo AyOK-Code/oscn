@@ -2,15 +2,15 @@ require 'csv'
 
 module Importers
   module OkAssessor
-    class ImprovementDetails
+    class ImprovementDetails < BaseImporter
       attr_reader :accounts
 
       def attributes(row)
         {
-          account: accounts[row['ACCOUNT_NUM']],
+          account_id: accounts[row['ACCOUNT_NUM']],
           building_num: row['BUILDING_NUM'],
           detail_type: row['DETAIL_TYPE'],
-          detail_description: row['DETAIL_TYPE'],
+          detail_description: row['DETAIL_DESCRIPTION'],
           number_of_units: row['NUMBER_OF_UNITS'],
           status: row['STATUS']
         }

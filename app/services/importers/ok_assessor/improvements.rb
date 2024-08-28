@@ -2,12 +2,12 @@ require 'csv'
 
 module Importers
   module OkAssessor
-    class Improvements
+    class Improvements < BaseImporter
       attr_reader :accounts
 
       def attributes(row)
         {
-          account: row['ACCOUNT_NUM'],
+          account_id: row['ACCOUNT_NUM'],
           #..
         }
       end
