@@ -3,7 +3,6 @@ require 'services/importers/ok_assessor/shared_specs'
 
 RSpec.describe Importers::OkAssessor::Accounts do
   it_behaves_like 'ok_assessor_importer' do
-    let(:sample_file) { File.read('spec/fixtures/importers/ok_assessor/View_OKPublicRecordAccount.csv') }
     let(:record) { OkAssessor::Account.find_by(account_num: 'R209117010') }
     let(:expected_attributes) do
       {

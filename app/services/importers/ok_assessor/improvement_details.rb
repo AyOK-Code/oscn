@@ -25,7 +25,7 @@ module Importers
       end
 
       def file_name
-        'View_OKPublicRecordImprovement.csv'
+        'View_OKPublicRecordImprovementDetail.csv'
       end
     end
   end
