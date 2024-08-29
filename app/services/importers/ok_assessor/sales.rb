@@ -8,22 +8,22 @@ module Importers
       def attributes(row)
         {
           account_id: accounts[row['ACCOUNT_NUM']],
-          grantor:row['GRANTOR'],
-          grantee:row['GRANTEE'],
-          sale_price:row['SALE_PRICE'],
-          sale_date:row['SALE_DATE'],
-          deed_type:row['DEED_TYPE'],
-          valid_sale:row['VALID'],
-          confirm:row['CONFIRM'],
-          book:row['ACCOUNT_NUM_NO_PREFIX'],
-          page:row['ACCOUNT_NUM_PREFIX'],
-          revenue_stamps:row['BOOK'],
-          change_date:row['PAGE'],
+          grantor: row['GRANTOR'],
+          grantee: row['GRANTEE'],
+          sale_price: row['SALE_PRICE'],
+          sale_date: parse_date(row['SALE_DATE']),
+          deed_type: row['DEED_TYPE'],
+          valid_sale: row['VALID'],
+          confirm: row['CONFIRM'],
+          book: row['BOOK'],
+          page: row['PAGE'],
+          revenue_stamps: row['REVENUE_STAMPS'],
+          change_date: parse_date(row['CHANGE_DATE']),
         }
       end
 
       def prefetch_associations
-        @accounts = ::OkAssessor::Account.pluck(:account_num,:id).to_h
+        @accounts = ::OkAssessor::Account.pluck(:account_num, :id).to_h
       end
 
       def model
@@ -31,7 +31,7 @@ module Importers
       end
 
       def file_name
-        'View_OKPublicRecordSale.csv'
+        'View_OKPublicRecordSales.csv'
       end
     end
   end
