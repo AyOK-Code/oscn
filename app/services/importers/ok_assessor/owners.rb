@@ -19,8 +19,8 @@ module Importers
           mailing_zipcode:row['MAILING_ZIPCODE'],
           primary_owner:row['PRIMARY_OWNER'],
           status:row['STATUS'],
-          owner_change_date:row['OWNER_CHANGE_DATE'],
-          address_change_date:row['ADDRESS_CHANGE_DATE'],
+          owner_change_date:parse_date(row['OWNER_CHANGE_DATE']),
+          address_change_date:parse_date(row['ADDRESS_CHANGE_DATE']),
         }
       end
 
