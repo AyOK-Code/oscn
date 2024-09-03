@@ -5,6 +5,7 @@ module Importers
     class Improvements < BaseImporter
       attr_reader :accounts
 
+      # rubocop:disable Metrics/MethodLength
       def attributes(row)
         {
           account_id: accounts[row['ACCOUNT_NUM']],
@@ -61,6 +62,11 @@ module Importers
           building_permit_value: row['BUILDING_PERMIT_VALUE'],
           status: row['STATUS']
         }
+      end
+      # rubocop:enable Metrics/MethodLength
+
+      def unique_by
+        [:account_id, :building_num]
       end
 
       def prefetch_associations

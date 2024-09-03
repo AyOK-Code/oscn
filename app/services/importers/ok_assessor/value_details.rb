@@ -17,8 +17,12 @@ module Importers
           tax_district: row['TAX_DISTRICT'],
           abstract_assessed_value: row['ABSTRACT_ASSESSED_VALUE'],
           abstract_account_value: row['ABSTRACT_ACCOUNT_VALUE'],
-          status: row['STATUS'],
+          status: row['STATUS']
         }
+      end
+
+      def unique_by
+        [:account_id, :value_type]
       end
 
       def prefetch_associations

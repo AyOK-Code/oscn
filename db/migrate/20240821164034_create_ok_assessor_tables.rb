@@ -49,6 +49,8 @@ class CreateOkAssessorTables < ActiveRecord::Migration[7.0]
       t.date "account_change_date"
       t.integer "adjustment_code"
       t.integer "adjustment_effective_year"
+
+      t.index [:account_num], unique: true
     end
 
     create_table "ok_assessor_improvements" do |t|
@@ -105,6 +107,8 @@ class CreateOkAssessorTables < ActiveRecord::Migration[7.0]
       t.text "new_growth_value_for_current_year"
       t.integer "building_permit_value"
       t.text "status"
+
+      t.index [:account_id, :building_num], unique: true
     end
 
     create_table "ok_assessor_improvement_details" do |t|
@@ -114,6 +118,8 @@ class CreateOkAssessorTables < ActiveRecord::Migration[7.0]
       t.text "detail_description"
       t.decimal "number_of_units"
       t.text "status"
+
+      t.index [:account_id, :building_num], unique: true, name: :index_ok_ass_imp_details_on_account_id_and_building_num
     end
 
     create_table "ok_assessor_land_attributes" do |t|
@@ -122,10 +128,12 @@ class CreateOkAssessorTables < ActiveRecord::Migration[7.0]
       t.text "attribute_description"
       t.decimal "attribute_adjustment"
       t.text "status"
+
+      t.index [:account_id, :attribute_description, :attribute_type], unique: true, name: :index_ok_asse_land_attr_on_acc_id_and_attr_desc_and_attr_type
     end
 
     create_table "ok_assessor_owners" do |t|
-      t.references :account, null: false, foreign_key: { to_table: :ok_assessor_accounts }
+      t.references :account, null: false, index: {unique: true}, foreign_key: { to_table: :ok_assessor_accounts }
       t.text "owner1"
       t.text "owner2"
       t.text "owner3"
@@ -143,6 +151,7 @@ class CreateOkAssessorTables < ActiveRecord::Migration[7.0]
 
     create_table "ok_assessor_sales" do |t|
       t.references :account, null: false, foreign_key: { to_table: :ok_assessor_accounts }
+      t.numeric "reception_number"
       t.text "grantor"
       t.text "grantee"
       t.integer "sale_price"
@@ -154,10 +163,12 @@ class CreateOkAssessorTables < ActiveRecord::Migration[7.0]
       t.integer "page"
       t.decimal "revenue_stamps"
       t.date "change_date"
+
+      t.index [:account_id, :reception_number], unique: true
     end
 
     create_table "ok_assessor_section_township_ranges" do |t|
-      t.references :account, null: false, foreign_key: { to_table: :ok_assessor_accounts }
+      t.references :account, null: false, index: {unique: true}, foreign_key: { to_table: :ok_assessor_accounts }
       t.text "quarter"
       t.integer "section"
       t.text "township"
@@ -176,6 +187,8 @@ class CreateOkAssessorTables < ActiveRecord::Migration[7.0]
       t.integer "abstract_assessed_value"
       t.integer "abstract_account_value"
       t.text "status"
+
+      t.index [:account_id, :value_type], unique: true
     end
   end
 end

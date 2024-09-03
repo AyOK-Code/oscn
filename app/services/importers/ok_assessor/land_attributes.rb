@@ -15,6 +15,10 @@ module Importers
         }
       end
 
+      def unique_by
+        [:account_id, :attribute_description, :attribute_type]
+      end
+
       def prefetch_associations
         @accounts = ::OkAssessor::Account.pluck(:account_num,:id).to_h
       end

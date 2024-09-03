@@ -24,6 +24,10 @@ module Importers
         ::OkAssessor::ImprovementDetail
       end
 
+      def unique_by
+        [:account_id, :building_num]
+      end
+
       def file_name
         'View_OKPublicRecordImprovementDetail.csv'
       end
