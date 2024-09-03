@@ -10,6 +10,7 @@ RSpec.describe Importers::OkAssessor::Sales do
     let(:expected_attributes) do
       {
         account_id: account.id,
+        reception_number: 20_181_030_011_499_290,
         grantor: 'FALL CREEK DEVELOPMENT LLC',
         grantee: 'SHOOK KYLE J',
         sale_price: 150_000,

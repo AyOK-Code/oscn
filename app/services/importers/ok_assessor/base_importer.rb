@@ -3,13 +3,25 @@ require 'csv'
 module Importers
   module OkAssessor
     class BaseImporter
-      def initialize
+      attr_accessor :dir
+
+      def initialize(dir)
+        @dir = dir
         prefetch_associations
       end
 
       def perform
-        CSV.parse(file, col_sep: '|', quote_char: '"', headers: true, liberal_parsing: true) do |row|
-          model.upsert(clean_attributes(row))
+        rows = []
+        csv = CSV.parse(file, col_sep: '|', quote_char: '"', headers: true, liberal_parsing: true)
+        row_count = csv.count
+        bar = ProgressBar.new(row_count)
+        csv.each_with_index do |row, i|
+          bar.increment!
+          rows << clean_attributes(row)
+          if (i.present? && (i % 10000).zero?) || i+1 == row_count
+            model.upsert_all(rows, unique_by: unique_by)
+            rows = []
+          end
         end
       end
 

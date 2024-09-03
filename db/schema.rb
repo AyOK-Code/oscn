@@ -544,6 +544,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_21_164034) do
     t.date "account_change_date"
     t.integer "adjustment_code"
     t.integer "adjustment_effective_year"
+    t.index ["account_num"], name: "index_ok_assessor_accounts_on_account_num", unique: true
   end
 
   create_table "ok_assessor_improvement_details", force: :cascade do |t|
@@ -553,6 +554,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_21_164034) do
     t.text "detail_description"
     t.decimal "number_of_units"
     t.text "status"
+    t.index ["account_id", "building_num"], name: "index_ok_ass_imp_details_on_account_id_and_building_num", unique: true
     t.index ["account_id"], name: "index_ok_assessor_improvement_details_on_account_id"
   end
 
@@ -610,6 +612,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_21_164034) do
     t.text "new_growth_value_for_current_year"
     t.integer "building_permit_value"
     t.text "status"
+    t.index ["account_id", "building_num"], name: "index_ok_assessor_improvements_on_account_id_and_building_num", unique: true
     t.index ["account_id"], name: "index_ok_assessor_improvements_on_account_id"
   end
 
@@ -619,6 +622,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_21_164034) do
     t.text "attribute_description"
     t.decimal "attribute_adjustment"
     t.text "status"
+    t.index ["account_id", "attribute_description", "attribute_type"], name: "index_ok_asse_land_attr_on_acc_id_and_attr_desc_and_attr_type", unique: true
     t.index ["account_id"], name: "index_ok_assessor_land_attributes_on_account_id"
   end
 
@@ -637,11 +641,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_21_164034) do
     t.text "status"
     t.date "owner_change_date"
     t.date "address_change_date"
-    t.index ["account_id"], name: "index_ok_assessor_owners_on_account_id"
+    t.index ["account_id"], name: "index_ok_assessor_owners_on_account_id", unique: true
   end
 
   create_table "ok_assessor_sales", force: :cascade do |t|
     t.bigint "account_id", null: false
+    t.decimal "reception_number"
     t.text "grantor"
     t.text "grantee"
     t.integer "sale_price"
@@ -653,6 +658,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_21_164034) do
     t.integer "page"
     t.decimal "revenue_stamps"
     t.date "change_date"
+    t.index ["account_id", "reception_number"], name: "index_ok_assessor_sales_on_account_id_and_reception_number", unique: true
     t.index ["account_id"], name: "index_ok_assessor_sales_on_account_id"
   end
 
@@ -662,7 +668,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_21_164034) do
     t.integer "section"
     t.text "township"
     t.text "range"
-    t.index ["account_id"], name: "index_ok_assessor_section_township_ranges_on_account_id"
+    t.index ["account_id"], name: "index_ok_assessor_section_township_ranges_on_account_id", unique: true
   end
 
   create_table "ok_assessor_value_details", force: :cascade do |t|
@@ -677,6 +683,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_21_164034) do
     t.integer "abstract_assessed_value"
     t.integer "abstract_account_value"
     t.text "status"
+    t.index ["account_id", "value_type"], name: "index_ok_assessor_value_details_on_account_id_and_value_type", unique: true
     t.index ["account_id"], name: "index_ok_assessor_value_details_on_account_id"
   end
 
@@ -711,7 +718,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_21_164034) do
     t.string "street_direction"
     t.string "street_name"
     t.string "street_type"
-    t.string "building_number"
+    t.string "building_num"
     t.string "city"
     t.string "zip_code"
     t.datetime "date_of_birth"
@@ -1368,7 +1375,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_21_164034) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_zip_codes_on_name", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

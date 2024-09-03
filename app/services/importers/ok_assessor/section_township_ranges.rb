@@ -19,6 +19,10 @@ module Importers
         @accounts = ::OkAssessor::Account.pluck(:account_num, :id).to_h
       end
 
+      def unique_by
+        [:account_id]
+      end
+
       def model
         ::OkAssessor::SectionTownshipRange
       end

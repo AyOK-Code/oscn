@@ -8,6 +8,7 @@ module Importers
       def attributes(row)
         {
           account_id: accounts[row['ACCOUNT_NUM']],
+          reception_number: row['RECEPTION_NUM'],
           grantor: row['GRANTOR'],
           grantee: row['GRANTEE'],
           sale_price: row['SALE_PRICE'],
@@ -20,6 +21,10 @@ module Importers
           revenue_stamps: row['REVENUE_STAMPS'],
           change_date: parse_date(row['CHANGE_DATE']),
         }
+      end
+
+      def unique_by
+        [:account_id, :reception_number]
       end
 
       def prefetch_associations

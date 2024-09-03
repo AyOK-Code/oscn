@@ -56,6 +56,10 @@ module Importers
         }
       end
 
+      def unique_by
+        [:account_num]
+      end
+
       def model
         ::OkAssessor::Account
       end
