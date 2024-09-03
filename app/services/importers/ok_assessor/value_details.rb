@@ -30,7 +30,7 @@ module Importers
       end
 
       def file_name
-        'View_OKPublicValueDetail.csv'
+        'View_OKPublicRecordValueDetail.csv'
       end
     end
   end
