@@ -9,7 +9,7 @@ module Importers
 
       def initialize(file_path)
         @file_path = file_path
-        @model_cache = ActiveSupport::HashWithIndifferentAccess.new({})
+        @@id_cache = ActiveSupport::HashWithIndifferentAccess.new({})
         super()
       end
 
@@ -32,10 +32,16 @@ module Importers
           rescue StandardError => e
             error_rows << { row: row, e: e }
           end
-          if ((rows + error_rows).count % BATCH_SIZE).zero? || rows.count == row_count
+          total_rows = (rows + error_rows).count
+          if (total_rows % BATCH_SIZE).zero? || total_rows == row_count
+            print_errors(error_rows) if error_rows.present?
             rows = check_and_fix_duplicates(rows)
             bar&.increment!
-            import_class.upsert_all(rows, unique_by: unique_by)
+            if rows.blank?
+              puts "empty list of rows "
+            else
+              import_class.upsert_all(rows, unique_by: unique_by)
+            end
             rows = []
             error_rows = []
           end
@@ -84,24 +90,24 @@ module Importers
         end
       end
 
-      def model_cache(klass, key)
-        cache_key = klass.to_s
-        return @model_cache[cache_key] if @model_cache[cache_key]
+      def id_cache(klass, key)
+        klass_key = klass.to_s
+        return @@id_cache[klass_key] if @@id_cache[klass_key]
 
-        @model_cache[cache_key] = klass.all.to_h { |x| [x[key].to_s, x] }
-        @model_cache[cache_key]
+        @@id_cache[klass_key] = klass.pluck(key, :id).to_h { |x| [x[0].to_s, x[1]] }
+        @@id_cache[klass_key]
       end
 
-      def get_cached(klass, key, value, create: false)
+      def lookup_cached_id(klass, key, value, create: false)
         return nil unless value.present? && value != '0'
 
-        return model_cache(klass, key)[value.to_s] if model_cache(klass, key)[value.to_s]
+        return id_cache(klass, key)[value.to_s] if id_cache(klass, key)[value.to_s]
 
-        raise ActiveRecord::RecordNotFound unless create
+        return nil unless create
 
         new_model = klass.create!(key => value)
-        @model_cache[klass.to_s][value.to_s] = new_model
-        new_model
+        @@id_cache[klass.to_s][value.to_s] = new_model.id
+        new_model.id
       end
 
       def ignore_duplicates

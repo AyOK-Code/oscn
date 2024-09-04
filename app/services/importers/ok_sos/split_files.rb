@@ -38,6 +38,8 @@ module Importers
       end
 
       def import_files
+        ::Importers::OkSos::ZipCodes.perform(@csvs["entity_addresses"].path)
+
         [
           :audit_logs,
           :capacities,
@@ -69,7 +71,7 @@ module Importers
         file_name = ''
         merged_row = '' # multiple rows may need to get merged if there is a \r or \n in a string column
         line_count = `wc -l "#{@combined_file.path}"`.strip.split[0].to_i
-        puts "Start time: #{Time.now}. Splitting csv. Combined csv line count is: #{line_count}"
+        puts "Splitting csv into separate files. Combined csv line count is: #{line_count}. Start time: #{Time.now}."
         bar = ProgressBar.new(line_count)
         File.new(@combined_file.path).each do |row_string|
           bar.increment!
@@ -107,7 +109,7 @@ module Importers
       end
 
       def download_combined_csv
-        puts 'Downloading combined csv zip file from aws.'
+        puts 'Downloading combined csv zip file from aws. This may take a minute or so.'
         response = Bucket.new.get_object("ok_sos/#{combined_zip_name}")
         Zip::InputStream.open(response.body) do |io|
           io.get_next_entry
