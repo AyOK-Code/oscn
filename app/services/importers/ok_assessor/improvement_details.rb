@@ -3,12 +3,11 @@ require 'csv'
 module Importers
   module OkAssessor
     class ImprovementDetails < BaseImporter
-      attr_reader :accounts
+      attr_reader :improvements
 
       def attributes(row)
         {
-          account_id: accounts[row['ACCOUNT_NUM']],
-          building_num: row['BUILDING_NUM'],
+          improvement_id: improvements[[row['ACCOUNT_NUM'], row['BUILDING_NUM'].to_i]],
           detail_type: row['DETAIL_TYPE'],
           detail_description: row['DETAIL_DESCRIPTION'],
           number_of_units: row['NUMBER_OF_UNITS'],
@@ -17,7 +16,19 @@ module Importers
       end
 
       def prefetch_associations
-        @accounts = ::OkAssessor::Account.pluck(:account_num, :id).to_h
+        @improvements = improvements_ids_by_account_num_and_building_num
+      end
+
+      def improvements_ids_by_account_num_and_building_num
+        ::OkAssessor::Improvement
+          .joins(:account)
+          .pluck('ok_assessor_accounts.account_num', :building_num, :id)
+          .to_h do |x|
+          [
+            [x[0], x[1]],
+            x[2]
+          ]
+        end
       end
 
       def model
@@ -25,7 +36,7 @@ module Importers
       end
 
       def unique_by
-        [:account_id, :building_num]
+        [:improvement_id, :detail_type, :detail_description, :number_of_units]
       end
 
       def file_name

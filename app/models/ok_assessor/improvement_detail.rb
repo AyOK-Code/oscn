@@ -1,3 +1,3 @@
 class OkAssessor::ImprovementDetail < ApplicationRecord
-  belongs_to :account, class_name: 'OkAssessor::Account'
+  belongs_to :improvement, class_name: 'OkAssessor::Improvement'
 end
