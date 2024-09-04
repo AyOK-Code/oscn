@@ -19,7 +19,7 @@ module Importers
           book: row['BOOK'],
           page: row['PAGE'],
           revenue_stamps: row['REVENUE_STAMPS'],
-          change_date: parse_date(row['CHANGE_DATE']),
+          change_date: parse_date(row['CHANGE_DATE'])
         }
       end
 
