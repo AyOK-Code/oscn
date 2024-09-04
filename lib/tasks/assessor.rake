@@ -7,6 +7,8 @@ namespace :assessor do
 
     folder = args[:folder]
 
+    puts folder
+
     Importers::OkAssessor::Accounts.perform(folder)
     Importers::OkAssessor::Improvements.perform(folder)
     Importers::OkAssessor::ImprovementDetails.perform(folder)
