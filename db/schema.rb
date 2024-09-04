@@ -549,7 +549,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_21_164034) do
 
   create_table "ok_assessor_improvement_details", force: :cascade do |t|
     t.bigint "improvement_id", null: false
-    t.integer "building_num"
     t.text "detail_type"
     t.text "detail_description"
     t.decimal "number_of_units"
@@ -718,7 +717,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_21_164034) do
     t.string "street_direction"
     t.string "street_name"
     t.string "street_type"
-    t.string "building_num"
+    t.string "building_number"
     t.string "city"
     t.string "zip_code"
     t.datetime "date_of_birth"
@@ -1375,6 +1374,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_21_164034) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_zip_codes_on_name", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
