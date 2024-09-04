@@ -4,6 +4,7 @@ namespace :assessor do
   desc 'Import assessor data from s3 folder'
   task :import, [:folder] => [:environment] do |_t, args|
     raise StandardError, 'Missing required param: folder' if args[:folder].nil?
+
     folder = args[:folder]
 
     Importers::OkAssessor::Accounts.perform(folder)

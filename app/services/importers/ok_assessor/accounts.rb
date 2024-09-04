@@ -3,6 +3,8 @@ require 'csv'
 module Importers
   module OkAssessor
     class Accounts < BaseImporter
+
+      # rubocop:disable Metrics/MethodLength
       def attributes(row)
         {
           account_num: row['ACCOUNT_NUM'],
@@ -55,6 +57,7 @@ module Importers
           adjustment_effective_year: row['ADJUSTMENT_EFFECTIVE_YEAR']
         }
       end
+      # rubocop:enable Metrics/MethodLength
 
       def unique_by
         [:account_num]
