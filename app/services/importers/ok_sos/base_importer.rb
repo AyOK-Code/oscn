@@ -25,15 +25,16 @@ module Importers
         if row_count > BATCH_SIZE
           bar = ProgressBar.new(row_count / BATCH_SIZE)
         end
+        options = {col_sep: ',', quote_char: '"', headers: true, liberal_parsing: true}
         CSV
-          .foreach(file_path, col_sep: ',', quote_char: '"', headers: true, liberal_parsing: true) do |row|
+          .foreach(file_path, **options).with_index do |row, i|
           begin
             rows << attributes(row)
           rescue StandardError => e
             error_rows << { row: row, e: e }
           end
           total_rows = (rows + error_rows).count
-          if (total_rows % BATCH_SIZE).zero? || total_rows == row_count
+          if (total_rows % BATCH_SIZE).zero? || i+1 == row_count
             print_errors(error_rows) if error_rows.present?
             rows = check_and_fix_duplicates(rows)
             bar&.increment!
