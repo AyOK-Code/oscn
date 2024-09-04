@@ -3,7 +3,6 @@ require 'csv'
 module Importers
   module OkAssessor
     class Accounts < BaseImporter
-
       # rubocop:disable Metrics/MethodLength
       def attributes(row)
         {
