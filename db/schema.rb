@@ -548,14 +548,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_21_164034) do
   end
 
   create_table "ok_assessor_improvement_details", force: :cascade do |t|
-    t.bigint "account_id", null: false
+    t.bigint "improvement_id", null: false
     t.integer "building_num"
     t.text "detail_type"
     t.text "detail_description"
     t.decimal "number_of_units"
     t.text "status"
-    t.index ["account_id", "building_num"], name: "index_ok_ass_imp_details_on_account_id_and_building_num", unique: true
-    t.index ["account_id"], name: "index_ok_assessor_improvement_details_on_account_id"
+    t.index ["improvement_id", "detail_type", "detail_description", "number_of_units"], name: "index_ok_ass_imp_details_on_imp_id_etc", unique: true
+    t.index ["improvement_id"], name: "index_ok_assessor_improvement_details_on_improvement_id"
   end
 
   create_table "ok_assessor_improvements", force: :cascade do |t|
@@ -1423,7 +1423,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_21_164034) do
   add_foreign_key "issues", "court_cases"
   add_foreign_key "judges", "counties"
   add_foreign_key "ok2_explore_deaths", "counties"
-  add_foreign_key "ok_assessor_improvement_details", "ok_assessor_accounts", column: "account_id"
+  add_foreign_key "ok_assessor_improvement_details", "ok_assessor_improvements", column: "improvement_id"
   add_foreign_key "ok_assessor_improvements", "ok_assessor_accounts", column: "account_id"
   add_foreign_key "ok_assessor_land_attributes", "ok_assessor_accounts", column: "account_id"
   add_foreign_key "ok_assessor_owners", "ok_assessor_accounts", column: "account_id"

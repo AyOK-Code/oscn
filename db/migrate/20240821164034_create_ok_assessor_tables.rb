@@ -112,14 +112,13 @@ class CreateOkAssessorTables < ActiveRecord::Migration[7.0]
     end
 
     create_table "ok_assessor_improvement_details" do |t|
-      t.references :account, null: false, foreign_key: { to_table: :ok_assessor_accounts }
-      t.integer "building_num"
+      t.references :improvement, null: false, foreign_key: { to_table: :ok_assessor_improvements }
       t.text "detail_type"
       t.text "detail_description"
       t.decimal "number_of_units"
       t.text "status"
 
-      t.index [:account_id, :building_num], unique: true, name: :index_ok_ass_imp_details_on_account_id_and_building_num
+      t.index [:improvement_id, :detail_type, :detail_description, :number_of_units], unique: true, name: :index_ok_ass_imp_details_on_imp_id_etc
     end
 
     create_table "ok_assessor_land_attributes" do |t|
