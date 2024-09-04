@@ -18,7 +18,7 @@ module Importers
         csv.each_with_index do |row, i|
           bar.increment!
           rows << clean_attributes(row)
-          if (i.present? && (i % 10000).zero?) || i+1 == row_count
+          if (i.present? && (i % 10_000).zero?) || i + 1 == row_count
             model.upsert_all(rows, unique_by: unique_by)
             rows = []
           end
@@ -38,11 +38,9 @@ module Importers
       end
 
       def parse_date(date)
-        begin
-          Date.strptime(date, '%m/%d/%Y')
-        rescue StandardError => _e
-          nil
-        end
+        Date.strptime(date, '%m/%d/%Y')
+      rescue StandardError => _e
+        nil
       end
 
       def clean(field)

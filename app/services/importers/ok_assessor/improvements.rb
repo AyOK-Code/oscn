@@ -70,7 +70,7 @@ module Importers
       end
 
       def prefetch_associations
-        @accounts = ::OkAssessor::Account.pluck(:account_num,:id).to_h
+        @accounts = ::OkAssessor::Account.pluck(:account_num, :id).to_h
       end
 
       def model

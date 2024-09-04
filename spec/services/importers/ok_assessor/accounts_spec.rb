@@ -33,7 +33,7 @@ RSpec.describe Importers::OkAssessor::Accounts do
         land_depth: 163.to_d,
         vacant_land: -1,
         platted_land: nil,
-        tax_district: "107",
+        tax_district: '107',
         total_mill_levy: 102.0400,
         notice_of_valuation_value: 8053,
         total_market_value: 95_000,

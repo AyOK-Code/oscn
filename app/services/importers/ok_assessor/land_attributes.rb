@@ -8,10 +8,10 @@ module Importers
       def attributes(row)
         {
           account_id: accounts[row['ACCOUNT_NUM']],
-          attribute_type:row['ATTRIBUTE_TYPE'],
-          attribute_description:row['ATTRIBUTE_DESCRIPTION'],
-          attribute_adjustment:row['ATTRIBUTE_ADJUSTMENT'],
-          status:row['STATUS'],
+          attribute_type: row['ATTRIBUTE_TYPE'],
+          attribute_description: row['ATTRIBUTE_DESCRIPTION'],
+          attribute_adjustment: row['ATTRIBUTE_ADJUSTMENT'],
+          status: row['STATUS']
         }
       end
 
@@ -20,7 +20,7 @@ module Importers
       end
 
       def prefetch_associations
-        @accounts = ::OkAssessor::Account.pluck(:account_num,:id).to_h
+        @accounts = ::OkAssessor::Account.pluck(:account_num, :id).to_h
       end
 
       def model
