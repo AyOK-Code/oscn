@@ -8,6 +8,7 @@ module Importers
       def initialize(dir)
         @dir = dir
         prefetch_associations
+        super()
       end
 
       def perform
@@ -22,11 +23,11 @@ module Importers
         csv.each_with_index do |row, i|
           bar.increment!
           rows << clean_attributes(row)
-          if (i.present? && (i % 10_000).zero?) || i + 1 == row_count
-            rows = check_and_fix_duplicates(rows)
-            model.upsert_all(rows, unique_by: unique_by)
-            rows = []
-          end
+          next unless (i.present? && (i % 10_000).zero?) || i + 1 == row_count
+
+          rows = check_and_fix_duplicates(rows)
+          model.upsert_all(rows, unique_by: unique_by)
+          rows = []
         end
       end
 
