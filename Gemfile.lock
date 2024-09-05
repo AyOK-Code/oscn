@@ -16,8 +16,8 @@ GIT
 
 GIT
   remote: https://github.com/AyOK-Code/oscn_scraper
-  revision: 6386bafd64b0d0ba792abab61243a3af3b8ad7d9
-  ref: 6386baf
+  revision: f2904ac16e675201e5a9fddec55cc9025f5c645b
+  ref: f2904ac
   specs:
     oscn_scraper (0.1.1)
       activesupport (>= 5.0.0)
@@ -434,7 +434,7 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    yard (0.9.36)
+    yard (0.9.37)
     zeitwerk (2.6.8)
 
 PLATFORMS
