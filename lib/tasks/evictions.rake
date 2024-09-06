@@ -52,7 +52,7 @@ namespace :evictions do
       bar.increment!
 
       CourtCaseWorker
-        .set(queue: :high)
+        .set(queue: :critical)
         .perform_async(c.county_id, c.case_number, true)
       court_case = CourtCase.find(c.id)
       court_case.update(enqueued: true)
