@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_06_151823) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_11_180603) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
+  enable_extension "pg_trgm"
   enable_extension "plpgsql"
 
   create_table "active_storage_attachments", force: :cascade do |t|
@@ -2092,62 +2093,24 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_06_151823) do
      FROM added_defendant_counts;
   SQL
   create_view "report_juvenile_firearms", sql_definition: <<-SQL
-      WITH view_data AS (
-           SELECT court_cases.id AS court_case_id,
-              court_cases.filed_on AS case_filed_on,
-              court_cases.closed_on AS case_closed_on,
-              ( SELECT eviction_letters.eviction_file_id
-                     FROM ((eviction_letters
-                       JOIN docket_event_links ON ((docket_event_links.id = eviction_letters.docket_event_link_id)))
-                       JOIN docket_events ON ((docket_event_links.docket_event_id = docket_events.id)))
-                    WHERE (docket_events.court_case_id = court_cases.id)
-                   LIMIT 1) AS eviction_file_id,
-              court_cases.case_number,
-              counts.disposition_on AS judgement_date,
-              (counts.disposition_on - court_cases.filed_on) AS days_to_judgement,
-              ( SELECT parties.full_name
-                     FROM parties
-                    WHERE (parties.id = counts.party_id)) AS defendant_name,
-              verdicts.name AS verdict,
-              ( SELECT DISTINCT parties.full_name
-                     FROM ((parties
-                       JOIN case_parties ON ((case_parties.party_id = parties.id)))
-                       JOIN party_types ON ((parties.party_type_id = party_types.id)))
-                    WHERE ((case_parties.court_case_id = court_cases.id) AND ((party_types.name)::text = 'plaintiff'::text))
-                   LIMIT 1) AS plaintiff_name,
-              ('https://www.oscn.net/dockets/GetCaseInformation.aspx?db=oklahoma&number='::text || (court_cases.case_number)::text) AS case_link
-             FROM ((((court_cases
-               JOIN counties ON ((court_cases.county_id = counties.id)))
-               JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
-               LEFT JOIN counts ON ((counts.court_case_id = court_cases.id)))
-               LEFT JOIN verdicts ON ((verdicts.id = counts.verdict_id)))
-            WHERE (((counties.name)::text = 'Oklahoma'::text) AND (court_cases.is_error IS FALSE) AND ((((counts.as_filed)::text ~~* '%FIREARM%'::text) AND ((counts.as_filed)::text ~~* '%Juvenile%'::text)) OR (((counts.as_filed)::text ~~* '%Minor%'::text) AND ((counts.as_filed)::text ~~* '%Firearm%'::text))))
-          )
-   SELECT court_case_id,
-      case_filed_on,
-      case_closed_on,
-      case_number,
-      judgement_date,
-      days_to_judgement,
-      defendant_name,
-      verdict,
-      plaintiff_name,
-      case_link,
-          CASE
-              WHEN ((verdict)::text ~ 'juvenile'::text) THEN 'Juvenile'::text
-              WHEN ((verdict)::text ~ 'default judgement'::text) THEN 'Default Judgement'::text
-              WHEN ((verdict)::text ~ 'judgement'::text) THEN 'Judgement'::text
-              WHEN (((verdict)::text = ANY (ARRAY['final order'::text, 'final judgment'::text])) OR ((verdict)::text ~ 'rights of majority'::text)) THEN 'Judgement'::text
-              WHEN ((verdict)::text ~ 'deferred'::text) THEN 'Deferred'::text
-              WHEN (((verdict)::text ~ 'consolidated'::text) OR ((verdict)::text ~ 'transferred'::text)) THEN 'Transferred'::text
-              WHEN ((verdict)::text ~ 'bankruptcy'::text) THEN 'Bankruptcy Filed'::text
-              WHEN (((verdict)::text ~ 'dismissed'::text) AND ((verdict)::text ~ 'satisfied'::text)) THEN 'Dismissed - Satisfied'::text
-              WHEN (((verdict)::text ~ 'settled'::text) OR ((verdict)::text ~ 'settlement'::text)) THEN 'Dismissed - Settlement'::text
-              WHEN (((verdict)::text ~ 'dismissed'::text) OR ((verdict)::text ~ 'vacated'::text)) THEN 'Dismissed'::text
-              WHEN ((verdict)::text = 'discharge filed'::text) THEN 'Dismissed'::text
-              WHEN (case_closed_on IS NULL) THEN 'Active Case'::text
-              ELSE 'Other'::text
-          END AS simple_judgement
-     FROM view_data;
+      SELECT court_cases.id AS court_case_id,
+      court_cases.case_number,
+      court_cases.filed_on,
+      court_cases.closed_on,
+      ('https://www.oscn.net/dockets/GetCaseInformation.aspx?db=oklahoma&number='::text || (court_cases.case_number)::text) AS case_link,
+      parties.id AS party_id,
+      parties.full_name,
+      counts.offense_on,
+      counts.as_filed,
+      counts.disposition,
+      counts.disposition_on,
+      (counts.disposition_on - court_cases.filed_on) AS days_to_judgement,
+      COALESCE(verdicts.name, 'none'::character varying) AS verdict
+     FROM ((((counts
+       JOIN court_cases ON ((counts.court_case_id = court_cases.id)))
+       JOIN counties ON ((court_cases.county_id = counties.id)))
+       JOIN parties ON ((parties.id = counts.party_id)))
+       LEFT JOIN verdicts ON ((counts.verdict_id = verdicts.id)))
+    WHERE (((counties.name)::text = 'Oklahoma'::text) AND (((counts.as_filed)::text ~~* '%AFJA%'::text) OR ((counts.as_filed)::text % 'JUVENILE ADJUDICATION'::text) OR ((counts.charge)::text ~~* '%AFJA%'::text) OR ((counts.charge)::text % 'JUVENILE ADJUDICATION'::text)));
   SQL
 end
