@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_11_180603) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_11_190800) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "pg_trgm"
@@ -2092,7 +2092,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_11_180603) do
            LIMIT 1) AS scraped_at
      FROM added_defendant_counts;
   SQL
-  create_view "report_juvenile_firearms", sql_definition: <<-SQL
+  create_view "report_juvenile_firearms", materialized: true, sql_definition: <<-SQL
       SELECT court_cases.id AS court_case_id,
       court_cases.case_number,
       court_cases.filed_on,
@@ -2102,6 +2102,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_11_180603) do
       parties.full_name,
       counts.offense_on,
       counts.as_filed,
+      counts.charge AS as_disposed,
       counts.disposition,
       counts.disposition_on,
       (counts.disposition_on - court_cases.filed_on) AS days_to_judgement,
@@ -2111,6 +2112,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_11_180603) do
        JOIN counties ON ((court_cases.county_id = counties.id)))
        JOIN parties ON ((parties.id = counts.party_id)))
        LEFT JOIN verdicts ON ((counts.verdict_id = verdicts.id)))
-    WHERE (((counties.name)::text = 'Oklahoma'::text) AND (((counts.as_filed)::text ~~* '%AFJA%'::text) OR ((counts.as_filed)::text % 'JUVENILE ADJUDICATION'::text) OR ((counts.charge)::text ~~* '%AFJA%'::text) OR ((counts.charge)::text % 'JUVENILE ADJUDICATION'::text)));
+    WHERE (((counties.name)::text = 'Oklahoma'::text) AND (((counts.as_filed)::text ~~* '%AFJA%'::text) OR ((counts.as_filed)::text % 'JUVENILE ADJUDICATION'::text) OR ((counts.charge)::text ~~* '%AFJA%'::text) OR ((counts.charge)::text % 'JUVENILE ADJUDICATION'::text) OR ((counts.as_filed)::text % 'YOUTHFUL OFFENDER ADJUDICATION'::text) OR ((counts.charge)::text % 'YOUTHFUL OFFENDER ADJUDICATION'::text) OR ((counts.as_filed)::text % 'YOUTHFUL ADJUDICATION'::text) OR ((counts.charge)::text % 'YOUTHFUL ADJUDICATION'::text)));
   SQL
 end
