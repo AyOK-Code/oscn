@@ -1,0 +1,412 @@
+[
+  {
+    "event_number": 0,
+    "date": "2024-08-06",
+    "code": "TEXT",
+    "description": "CRIMINAL MISDEMEANOR INITIAL FILING. Document Available at Court Clerk's Office",
+    "count": "",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "",
+    "links": []
+  },
+  {
+    "event_number": 1,
+    "date": "2024-08-06",
+    "code": "INFORMATION",
+    "description": "DEFENDANT RHETT STEVEN RECORD WAS CHARGED WITH COUNT #1, DUI ALCOHOL (MUNICIPAL ARREST) IN VIOLATION OF 47 O.S. 11-902(A)(2)",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "",
+    "links": []
+  },
+  {
+    "event_number": 2,
+    "date": "2024-08-06",
+    "code": "TEXT",
+    "description": "OCIS HAS AUTOMATICALLY ASSIGNED JUDGE OAKES, MARTHA TO THIS CASE.",
+    "count": "",
+    "party": "",
+    "amount": "",
+    "links": []
+  },
+  {
+    "event_number": 3,
+    "date": "2024-08-07",
+    "code": "WAI$",
+    "description": "WARRANT OF ARREST ISSUED, JUDGE: KEVIN MCCRAY - BOND AMOUNT: $500.00 COMMENT:",
+    "count": "",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 50.00",
+    "links": []
+  },
+  {
+    "event_number": 4,
+    "date": "2024-08-07",
+    "code": "OCISR",
+    "description": "OKLAHOMA COURT INFORMATION SYSTEM REVOLVING FUND",
+    "count": "",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 25.00",
+    "links": []
+  },
+  {
+    "event_number": 5,
+    "date": "2024-08-09",
+    "code": "EAA",
+    "description": "ENTRY OF APPEARANCE - JOHN F. MARTINO Document Available at Court Clerk's Office",
+    "count": "",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "",
+    "links": []
+  },
+  {
+    "event_number": 6,
+    "date": "2024-08-09",
+    "code": "BO",
+    "description": "PROFESSIONAL BOND FOR RECORD, RHETT STEVEN POSTED BY GRAHAM, LISA (MULTICOUNTY AGENT:ASKINS, JB ) (POWER NUMBER:100-13075 ), IN THE AMOUNT OF $5,000.00, POSTED 06/09/2024 Document Available at Court Clerk's Office",
+    "count": "",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 10.00",
+    "links": []
+  },
+  {
+    "event_number": 7,
+    "date": "2024-08-09",
+    "code": "BOJ",
+    "description": "BOND INITIAL FILING JAIL FUND FEE",
+    "count": "",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 25.00",
+    "links": []
+  },
+  {
+    "event_number": 8,
+    "date": "2024-08-09",
+    "code": "CCADMIN25",
+    "description": "COURT CLERK ADMINISTRATIVE FEE ON $25 COLLECTIONS",
+    "count": "",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 2.50",
+    "links": []
+  },
+  {
+    "event_number": 9,
+    "date": "2024-08-09",
+    "code": "DCADMIN25",
+    "description": "DISTRICT COURT ADMINISTRATIVE FEE ON $25 COLLECTIONS",
+    "count": "",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 3.75",
+    "links": []
+  },
+  {
+    "event_number": 10,
+    "date": "2024-08-09",
+    "code": "CTARR",
+    "description": "JUDGE MCCRAY: COMES FOR ARRAIGNMENT. THE DEFENDANT APPEARS IN PERSON. THE STATE APPEARS. A PLEA OF \"NOT GUILTY\" IS ENTERED. DISPOSITION IS SET FOR 9-5-24 @8AM BEFORE JUDGE OAKES. BAIL IS SET AT $500 Document Available at Court Clerk's Office",
+    "count": "",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "",
+    "links": []
+  },
+  {
+    "event_number": 11,
+    "date": "2024-08-12",
+    "code": "ORSR",
+    "description": "ORDER OF RELEASE W/SHERIFF'S RETURN Document Available at Court Clerk's Office",
+    "count": "",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "",
+    "links": []
+  },
+  {
+    "event_number": 12,
+    "date": "2024-08-13",
+    "code": "RETWA",
+    "description": "WARRANT RETURNED 8/13/2024, WARRANT ISSUED ON 8/7/2024 COMMENT: /WARRANT CLEARED 8-9-24 Document Available at Court Clerk's Office",
+    "count": "",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "",
+    "links": []
+  },
+  {
+    "event_number": 13,
+    "date": "2024-09-05",
+    "code": "DEFERRED",
+    "description": "JUDGE OAKES: DEFT APPEARS WITH COUNSEL JOHN F. MARTINO. THE STATE IS PRESENT BY R. NAPUTI LLI. THE DEFT ENTERS A PLEA OF GUILTY AND SENTENCING IS DEFERRED ON CT 1 UNTIL 9-4-2025 @ 9AM; 1 YR. DEFT IS TO BE SUPERVISED BY OPS. ADSAC \u0026 VIP (DONE), 20 HRS. COMM. SERVICE (DONE), 9 MOS. IGINITION INTERLOCK. THE DEFT IS TO PAY $400 JUDICIAL ASSESSMENT, $200 VCA AND COURT COSTS. ALL COSTS DUE INSTANTER. COURT REPORTER WAIVED. ANY BOND NOT IN FORFEITURE IS TO BE EXONERATED.",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "",
+    "links": []
+  },
+  {
+    "event_number": 14,
+    "date": "2024-09-05",
+    "code": "CCDUI",
+    "description": "COURT COSTS ON DUI (MUNICIPAL ARREST)",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 166.50",
+    "links": []
+  },
+  {
+    "event_number": 15,
+    "date": "2024-09-05",
+    "code": "DPSFEE",
+    "description": "DPS PATROL VEHICLE FUND FEE ASSESSMENT",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 155.00",
+    "links": []
+  },
+  {
+    "event_number": 16,
+    "date": "2024-09-05",
+    "code": "TCARF",
+    "description": "TRAUMA CARE ASSISTANCE REVOLVING FUND",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 100.00",
+    "links": []
+  },
+  {
+    "event_number": 17,
+    "date": "2024-09-05",
+    "code": "DACPAD",
+    "description": "DA COUNCIL PROSECUTION ASSESSMENT FOR MUNICIPAL DUI",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 83.25",
+    "links": []
+  },
+  {
+    "event_number": 18,
+    "date": "2024-09-05",
+    "code": "MUNI",
+    "description": "COSTS TO ARRESTING AGENCY (MUNICIPALITY) ON DUI",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 83.25",
+    "links": []
+  },
+  {
+    "event_number": 19,
+    "date": "2024-09-05",
+    "code": "DACPAM",
+    "description": "DA COUNCIL PROSECUTION ASSESSMENT FOR MISDEMEANOR",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 30.00",
+    "links": []
+  },
+  {
+    "event_number": 20,
+    "date": "2024-09-05",
+    "code": "OCISR",
+    "description": "OKLAHOMA COURT INFORMATION SYSTEM REVOLVING FUND",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 25.00",
+    "links": []
+  },
+  {
+    "event_number": 21,
+    "date": "2024-09-05",
+    "code": "IDEA",
+    "description": "DPS IMPAIRED DRIVER DATABASE FEE",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 15.00",
+    "links": []
+  },
+  {
+    "event_number": 22,
+    "date": "2024-09-05",
+    "code": "SSFCHS",
+    "description": "SHERIFF’S SERVICE FEE FOR COURT HOUSE SECURITY",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 10.00",
+    "links": []
+  },
+  {
+    "event_number": 23,
+    "date": "2024-09-05",
+    "code": "CLEET",
+    "description": "CLEET PENALTY ASSESSMENT",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 10.00",
+    "links": []
+  },
+  {
+    "event_number": 24,
+    "date": "2024-09-05",
+    "code": "FOREN",
+    "description": "FORENSIC SCIENCE IMPROVEMENT ASSESSMENT",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 10.00",
+    "links": []
+  },
+  {
+    "event_number": 25,
+    "date": "2024-09-05",
+    "code": "AFIS",
+    "description": "AFIS FEE",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 10.00",
+    "links": []
+  },
+  {
+    "event_number": 26,
+    "date": "2024-09-05",
+    "code": "MELRF",
+    "description": "MEDICAL EXPENSE LIABILITY REVOLVING FUND",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 10.00",
+    "links": []
+  },
+  {
+    "event_number": 27,
+    "date": "2024-09-05",
+    "code": "PFE7",
+    "description": "LAW LIBRARY FEE",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 6.00",
+    "links": []
+  },
+  {
+    "event_number": 28,
+    "date": "2024-09-05",
+    "code": "SSF",
+    "description": "SHERIFF'S SERVICE FEE ON ARRESTS",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 5.00",
+    "links": []
+  },
+  {
+    "event_number": 29,
+    "date": "2024-09-05",
+    "code": "CHAB",
+    "description": "C.H.A.B. STATUTORY FEE",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 3.00",
+    "links": []
+  },
+  {
+    "event_number": 30,
+    "date": "2024-09-05",
+    "code": "AGVSU",
+    "description": "ATTORNEY GENERAL VICTIM SERVICES UNIT",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 3.00",
+    "links": []
+  },
+  {
+    "event_number": 31,
+    "date": "2024-09-05",
+    "code": "CTFD",
+    "description": "JUDICIAL ASSESSMENT",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 400.00",
+    "links": []
+  },
+  {
+    "event_number": 32,
+    "date": "2024-09-05",
+    "code": "VCA",
+    "description": "VICTIMS COMPENSATION ASSESSMENT (AC12)",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 200.00",
+    "links": []
+  },
+  {
+    "event_number": 33,
+    "date": "2024-09-05",
+    "code": "CCADMIN",
+    "description": "COURT CLERK ADMINISTRATIVE FEE ON COLLECTIONS",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 35.60",
+    "links": []
+  },
+  {
+    "event_number": 34,
+    "date": "2024-09-05",
+    "code": "DCADMIN",
+    "description": "DISTRICT COURT ADMINISTRATIVE FEE",
+    "count": "1",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "$ 53.40",
+    "links": []
+  },
+  {
+    "event_number": 35,
+    "date": "2024-09-05",
+    "code": "BDXON",
+    "description": "THE STATUS OF THE BOND ENTRY DETAILED IN DOCKET SERIAL #121956839 ABOVE HAS CHANGED TO READ AS FOLLOWS: PROFESSIONAL BOND FOR RECORD, RHETT STEVEN POSTED BY GRAHAM, LISA (MULTICOUNTY AGENT:ASKINS, JB ) (POWER NUMBER:100-13075 ), IN THE AMOUNT OF $5,000.00, POSTED 06/09/2024, EXONERATED 09/05/2024",
+    "count": "",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "",
+    "links": []
+  },
+  {
+    "event_number": 36,
+    "date": "2024-09-05",
+    "code": "J\u0026SSF",
+    "description": "JUDGMENT AND SENTENCE AND SUMMARY OF FACTS ON MISDEMEANOR PLEA OF GUILTY/NO CONTEST / JUDGE OAKES Document Available at Court Clerk's Office",
+    "count": "",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "",
+    "links": []
+  },
+  {
+    "event_number": 37,
+    "date": "2024-09-05",
+    "code": "SPO",
+    "description": "SUPPLEMENTAL COURT ORDER: COMMUNITY SERVICE - RESTITUTION - COURT COST / JUDGE OAKES Document Available at Court Clerk's Office",
+    "count": "",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "",
+    "links": []
+  },
+  {
+    "event_number": 38,
+    "date": "2024-09-05",
+    "code": "R\u0026C",
+    "description": "RULES \u0026 CONDITIONS OF SUPERVISED PROBATION THROUGH OKLAHOMA PROBATION SERVICES, LLC (OPS) / JUDGE OAKES Document Available at Court Clerk's Office",
+    "count": "",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "",
+    "links": []
+  },
+  {
+    "event_number": 39,
+    "date": "2024-09-05",
+    "code": "NO",
+    "description": "DISTRICT ATTORNEY PROSECUTION REIMBURSEMENT NOTICE / JUDGE OAKES Document Available at Court Clerk's Office",
+    "count": "",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "",
+    "links": []
+  },
+  {
+    "event_number": 40,
+    "date": "2024-09-05",
+    "code": "NO",
+    "description": "COST HEARING NOTICE AT SENTENCING/PLEA / JUDGE OAKES Document Available at Court Clerk's Office",
+    "count": "",
+    "party": "RECORD, RHETT STEVEN",
+    "amount": "",
+    "links": []
+  }
+]
