@@ -453,6 +453,7 @@ DEPENDENCIES
   factory_bot_rails
   faker
   fuzzy_match
+  hashdiff
   httparty
   image_processing (~> 1.12)
   jbuilder (~> 2.7)

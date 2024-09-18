@@ -8,30 +8,54 @@ module CaseHtmlValidator
     def initialize(from_fixture: false)
       @errors = []
       @from_fixture = from_fixture
+      @parsed_data = false
+    end
+
+    def retrieve_html
+      begin
+        OscnScraper::Requestor::Case
+          .new({ county: CASE_COUNTY, number: CASE_NUMBER })
+          .fetch_case_by_number
+      rescue StandardError => e
+        @errors << {
+          section: "all",
+          message: "Unable to fetch #{CASE_NUMBER} from oscn.net. Errror: #{e}",
+        }
+        raise StandardError
+      end
+    end
+
+    def parse_html(case_html)
+      begin
+        parsed_html = Nokogiri::HTML(case_html)
+        OscnScraper::Parsers::BaseParser.new(parsed_html).build_object
+      rescue
+        @errors << {
+          section: "all",
+          message: "Unable to parse html for #{CASE_NUMBER}. Error: #{e}",
+        }
+        raise StandardError
+      end
     end
 
     def parsed_data
       return @parsed_data if @parsed_data
-
       if from_fixture
         path = 'app/services/case_html_validator/expected_json/current_case_fixture.html'
         case_html = File.read(path)
       else
-        case_html = OscnScraper::Requestor::Case
-                      .new({ county: CASE_COUNTY, number: CASE_NUMBER })
-                      .fetch_case_by_number
+        case_html = retrieve_html
       end
-
-      parsed_html = Nokogiri::HTML(case_html)
-      @parsed_data = OscnScraper::Parsers::BaseParser.new(parsed_html).build_object
+      @parsed_data = parse_html(case_html)
+      @parsed_data
     end
 
     def perform
-      validate
+      validate rescue StandardError
       if @errors.length.zero?
         puts 'Case HTML parsed successfully'
       else
-        puts @errors
+        handle_error
       end
     end
 
@@ -46,18 +70,19 @@ module CaseHtmlValidator
     end
 
     def validate_section(section)
-      file_path = "app/services/case_html_validator/expected_json/#{section.to_s}.json"
+      file_path = "app/services/case_html_validator/expected/#{section.to_s}.json"
       begin
-        expected = JSON.parse(File.read(file_path)).map(&:with_indifferent_access).to_json
+        expected = JSON.parse(File.read(file_path))
       rescue NoMethodError
         expected = File.read(file_path)
       end
-      actual = parsed_data[section].to_json
-      unless actual == expected
+      actual = JSON.parse(parsed_data[section].to_json)
+      differences = Hashdiff.diff(expected, actual, indifferent: true)
+      if differences.present?
         @errors << {
+          section: section,
           message: "Parsed data for #{:section} did not match",
-          actual_json: actual,
-          expected_json: expected
+          differences: differences
         }
       end
     end
@@ -67,6 +92,8 @@ module CaseHtmlValidator
       email_error
     end
 
-    def email_error; end
+    def email_error
+      CaseHtmlErrorMailer.error_email(@errors).deliver_now
+    end
   end
 end
