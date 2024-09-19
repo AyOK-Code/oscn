@@ -1,17 +1,22 @@
+<h1>New errors with parsing expected HTML</h1>
+<% if @errors.any?{|x| x[:differences]}%>
+<h2>Differences Key</h2>
 <p>
-  <strong>Key:</strong><br/>
   "-" = missing from expected<br/>
   "+" = new from expected<br/>
   "~" = different from expected<br/>
 </p>
-<p>
-  <strong>Errors:</strong><br/>
-  <% @errors.each do |error| %>
-    <strong><%= error.section %></strong>
-    <%= error.message %><br/>
-    <% if error.differences %>
+<% end %>
+<h2>Errors</h2>
+<% @errors.each do |error| %>
+  <h3>Section: <%= error[:section] %></h3>
+  <p>
+    <%= error[:message] %><br/>
+    <% if error[:differences] %>
       Differences:<br/>
-      <% error.differences %>
+      <% error[:differences].each do |difference| %>
+        <%= difference %><br/>
+      <% end %>
     <% end %>
-  <% end %>
-</p>
+  </p>
+<% end %>

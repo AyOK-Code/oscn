@@ -1,13 +1,12 @@
 [
   {
     "date": "2024-09-05T13:00:00.000+00:00",
-    "event_type": "DISPOSITION (MISDEMEANOR)",
+    "event_type": "DISPOSITION (MIEMEANOR)",
     "event_code": "DIM",
     "party_name": "RECORD,  RHETT  STEVEN",
     "docket": "Martha Oakes"
   },
   {
-    "date": "2024-10-05T05:00:00.000+00:00",
     "event_type": "COST ADMINISTRATION REVIEW",
     "event_code": "CAR",
     "party_name": "RECORD,  RHETT  STEVEN",

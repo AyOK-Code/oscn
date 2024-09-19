@@ -1,4 +1,8 @@
 module CaseHtmlValidator
+
+  class CaseHtmlValidationError < StandardError
+  end
+
   class Validate < ApplicationService
     attr_accessor :errors, :from_fixture
 
@@ -21,7 +25,7 @@ module CaseHtmlValidator
           section: "all",
           message: "Unable to fetch #{CASE_NUMBER} from oscn.net. Errror: #{e}",
         }
-        raise StandardError
+        raise CaseHtmlValidationError
       end
     end
 
@@ -29,19 +33,19 @@ module CaseHtmlValidator
       begin
         parsed_html = Nokogiri::HTML(case_html)
         OscnScraper::Parsers::BaseParser.new(parsed_html).build_object
-      rescue
+      rescue StandardError => e
         @errors << {
           section: "all",
           message: "Unable to parse html for #{CASE_NUMBER}. Error: #{e}",
         }
-        raise StandardError
+        raise CaseHtmlValidationError
       end
     end
 
     def parsed_data
       return @parsed_data if @parsed_data
       if from_fixture
-        path = 'app/services/case_html_validator/expected_json/current_case_fixture.html'
+        path = 'app/services/case_html_validator/expected/current_case_fixture.html'
         case_html = File.read(path)
       else
         case_html = retrieve_html
@@ -51,7 +55,11 @@ module CaseHtmlValidator
     end
 
     def perform
-      validate rescue StandardError
+      begin
+        validate
+      rescue CaseHtmlValidationError => e
+        test = e
+      end
       if @errors.length.zero?
         puts 'Case HTML parsed successfully'
       else
