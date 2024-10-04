@@ -24,6 +24,6 @@ namespace :scrape do
 
   desc 'Validate historic case HTML still parses correctly (to detect DOM changes)'
   task validate_html: :environment do
-    CaseHtmlValidator::Validate.perform
+    CaseHtmlValidator::ValidateAll.perform
   end
 end

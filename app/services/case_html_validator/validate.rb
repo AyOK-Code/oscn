@@ -3,12 +3,11 @@ module CaseHtmlValidator
   end
 
   class Validate < ApplicationService
-    attr_accessor :errors, :from_fixture
+    attr_accessor :county, :case_number, :errors, :from_fixture
 
-    CASE_COUNTY = 'Oklahoma'
-    CASE_NUMBER = 'CM-2024-2809'
-
-    def initialize(from_fixture: false)
+    def initialize(county, case_number, from_fixture: false)
+      @county = county
+      @case_number = case_number
       @errors = []
       @from_fixture = from_fixture
       @parsed_data = false
@@ -17,12 +16,12 @@ module CaseHtmlValidator
 
     def retrieve_html
       OscnScraper::Requestor::Case
-        .new({ county: CASE_COUNTY, number: CASE_NUMBER })
+        .new({ county: county, number: case_number })
         .fetch_case_by_number
     rescue StandardError => e
       @errors << {
         section: 'all',
-        message: "Unable to fetch #{CASE_NUMBER} from oscn.net. Errror: #{e}"
+        message: "Unable to fetch #{case_number} from oscn.net. Errror: #{e}"
       }
       raise CaseHtmlValidationError
     end
@@ -33,7 +32,7 @@ module CaseHtmlValidator
     rescue StandardError => e
       @errors << {
         section: 'all',
-        message: "Unable to parse html for #{CASE_NUMBER}. Error: #{e}"
+        message: "Unable to parse html for #{case_number}. Error: #{e}"
       }
       raise CaseHtmlValidationError
     end
@@ -58,7 +57,7 @@ module CaseHtmlValidator
         return handle_error
       end
       if @errors.length.zero?
-        puts 'Case HTML parsed successfully'
+        puts "HTML for #{@case_number} in #{@county} county parsed successfully"
       else
         handle_error
       end
@@ -75,7 +74,7 @@ module CaseHtmlValidator
     end
 
     def validate_section(section)
-      file_path = "app/services/case_html_validator/expected/#{section}.json"
+      file_path = "app/services/case_html_validator/expected/#{county}/#{case_number}/#{section}.json"
       begin
         expected = JSON.parse(File.read(file_path))
       rescue NoMethodError
@@ -98,7 +97,7 @@ module CaseHtmlValidator
     end
 
     def email_error
-      CaseHtmlErrorMailer.error_email(@errors).deliver_now
+      CaseHtmlErrorMailer.error_email(@county, @case_number, @errors).deliver_now
     end
   end
 end

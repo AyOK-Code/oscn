@@ -1,5 +1,7 @@
 class CaseHtmlErrorMailer < ApplicationMailer
-  def error_email(errors)
+  def error_email(county, case_number, errors)
+    @county = county
+    @case_number = case_number
     @errors = errors
 
     mail(
