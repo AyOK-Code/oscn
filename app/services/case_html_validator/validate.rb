@@ -3,7 +3,7 @@ module CaseHtmlValidator
   end
 
   class Validate < ApplicationService
-    attr_accessor :county, :case_number, :errors, :from_fixture
+    attr_accessor :county, :case_number, :errors, :from_fixture, :case_path
 
     def initialize(county, case_number, from_fixture: false)
       @county = county
@@ -11,6 +11,7 @@ module CaseHtmlValidator
       @errors = []
       @from_fixture = from_fixture
       @parsed_data = false
+      @case_path = "app/services/case_html_validator/expected/#{county}/#{case_number}"
       super()
     end
 
@@ -41,7 +42,7 @@ module CaseHtmlValidator
       return @parsed_data if @parsed_data
 
       if from_fixture
-        path = 'app/services/case_html_validator/expected/current_case_fixture.html'
+        path = "#{@case_path}/current_case_fixture.html"
         case_html = File.read(path)
       else
         case_html = retrieve_html
@@ -74,9 +75,8 @@ module CaseHtmlValidator
     end
 
     def validate_section(section)
-      file_path = "app/services/case_html_validator/expected/#{county}/#{case_number}/#{section}.json"
       begin
-        expected = JSON.parse(File.read(file_path))
+        expected = JSON.parse(File.read("#{@case_path}/#{section}.json"))
       rescue NoMethodError
         expected = File.read(file_path)
       end
