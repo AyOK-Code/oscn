@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_11_190800) do
+ActiveRecord::Schema[7.0].define(version: 2024_10_09_131403) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "pg_trgm"
@@ -2114,4 +2114,39 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_11_190800) do
        LEFT JOIN verdicts ON ((counts.verdict_id = verdicts.id)))
     WHERE (((counties.name)::text = 'Oklahoma'::text) AND (((counts.as_filed)::text ~~* '%AFJA%'::text) OR ((counts.as_filed)::text % 'JUVENILE ADJUDICATION'::text) OR ((counts.charge)::text ~~* '%AFJA%'::text) OR ((counts.charge)::text % 'JUVENILE ADJUDICATION'::text) OR ((counts.as_filed)::text % 'YOUTHFUL OFFENDER ADJUDICATION'::text) OR ((counts.charge)::text % 'YOUTHFUL OFFENDER ADJUDICATION'::text) OR ((counts.as_filed)::text % 'YOUTHFUL ADJUDICATION'::text) OR ((counts.charge)::text % 'YOUTHFUL ADJUDICATION'::text)));
   SQL
+  create_view "report_criminal_cases", materialized: true, sql_definition: <<-SQL
+      SELECT counts.id AS count_id,
+      counts.offense_on AS count_offense_on,
+      counts.as_filed AS count_as_filed,
+      filed_code.code AS count_code_as_filed,
+      counts.filed_statute_violation AS statute,
+      counts.disposition AS count_as_disposed,
+      disposed_code.code AS count_code_as_disposed,
+      counts.disposition_on AS count_disposition_on,
+      pleas.name AS plea,
+      verdicts.name AS verdict,
+      court_cases.id AS court_case_id,
+      court_cases.county_id,
+      court_cases.case_type_id,
+      court_cases.case_number AS court_case_case_number,
+      court_cases.filed_on AS court_case_filed_on,
+      court_cases.closed_on AS court_case_closed_on
+     FROM ((((((counts
+       JOIN court_cases ON ((counts.court_case_id = court_cases.id)))
+       JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
+       LEFT JOIN pleas ON ((counts.plea_id = pleas.id)))
+       LEFT JOIN verdicts ON ((counts.verdict_id = verdicts.id)))
+       LEFT JOIN count_codes filed_code ON ((counts.filed_statute_code_id = filed_code.id)))
+       LEFT JOIN count_codes disposed_code ON ((counts.disposed_statute_code_id = disposed_code.id)))
+    WHERE ((case_types.abbreviation)::text = ANY ((ARRAY['CF'::character varying, 'CM'::character varying, 'MI'::character varying, 'CPC'::character varying])::text[]));
+  SQL
+  add_index "report_criminal_cases", ["count_code_as_disposed"], name: "index_report_criminal_cases_on_count_code_as_disposed"
+  add_index "report_criminal_cases", ["count_code_as_filed"], name: "index_report_criminal_cases_on_count_code_as_filed"
+  add_index "report_criminal_cases", ["count_disposition_on"], name: "index_report_criminal_cases_on_count_disposition_on"
+  add_index "report_criminal_cases", ["count_offense_on"], name: "index_report_criminal_cases_on_count_offense_on"
+  add_index "report_criminal_cases", ["county_id"], name: "index_report_criminal_cases_on_county_id"
+  add_index "report_criminal_cases", ["court_case_closed_on"], name: "index_report_criminal_cases_on_court_case_closed_on"
+  add_index "report_criminal_cases", ["court_case_filed_on"], name: "index_report_criminal_cases_on_court_case_filed_on"
+  add_index "report_criminal_cases", ["court_case_id"], name: "index_report_criminal_cases_on_court_case_id"
+
 end
