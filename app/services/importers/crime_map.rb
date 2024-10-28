@@ -40,11 +40,11 @@ module Importers
       return if table_rows.empty?
 
       cols = columns(header_row)
-      page_dict = []
+      page_dicts = []
       table_rows.each do |row|
-        page_dict << row_to_dict(cols, row)
+        page_dicts << row_to_dict(cols, row)
       end
-      page_dict
+      page_dicts
     end
 
     def excluded_row?(row)
