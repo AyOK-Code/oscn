@@ -17,7 +17,7 @@ module Importers
 
       def do_import
         rows = []
-        csv = CSV.parse(file, col_sep: '|', quote_char: '"', headers: true, liberal_parsing: true)
+        csv = CSV.parse(file, col_sep: ',', quote_char: '"', headers: true, liberal_parsing: true)
         row_count = csv.count
         bar = ProgressBar.new(row_count)
         csv.each_with_index do |row, i|
