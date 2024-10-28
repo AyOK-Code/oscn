@@ -33,16 +33,16 @@ module Importers
 
       lines = page.text.split("\n\n")
       header_row = lines[header_index]
-      table_rows = lines[header_index...]
+      table_rows = lines[(header_index+1)...]
                      .reject { |row| excluded_row?(row) }
                      .compact_blank
 
       return if table_rows.empty?
 
       cols = columns(header_row)
-      page_dict = {}
+      page_dict = []
       table_rows.each do |row|
-        page_dict = row_to_dict(cols, row)
+        page_dict << row_to_dict(cols, row)
       end
       page_dict
     end
@@ -68,11 +68,12 @@ module Importers
       cols
     end
 
-    def row_to_dict(col, row)
+    def row_to_dict(cols, row)
       row_dict = {}
       cols.each do |column, indexes|
-        row_dict[column] = row[indexes[:start]...indexes[:end]]
+        row_dict[column] = (row[indexes[:start]...indexes[:end]]).strip!
       end
+      row_dict
     end
 
     def pins
