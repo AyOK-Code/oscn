@@ -5,7 +5,7 @@ module Importers
     class SectionTownshipRanges < BaseImporter
       attr_reader :accounts
 
-      def attributes(row)
+      def attributes
         {
           account_id: accounts[row['ACCOUNT_NUM']],
           quarter: row['QUARTER'],

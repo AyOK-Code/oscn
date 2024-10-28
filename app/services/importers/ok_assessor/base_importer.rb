@@ -3,7 +3,7 @@ require 'csv'
 module Importers
   module OkAssessor
     class BaseImporter < ApplicationService
-      attr_accessor :dir
+      attr_accessor :dir, :attributes, :row
 
       def initialize(dir)
         @dir = dir
@@ -21,8 +21,16 @@ module Importers
         row_count = csv.count
         bar = ProgressBar.new(row_count)
         csv.each_with_index do |row, i|
+          @row = row
           bar.increment!
-          rows << clean_attributes(row)
+          begin
+            validate_attributes!
+          rescue AttributeError => e
+            puts "Attributes invalid for row: #{attributes}."
+            puts "Error: #{e}."
+            next
+          end
+          rows << clean_attributes
           next unless (i.present? && (i % 10_000).zero?) || i + 1 == row_count
 
           rows = check_and_fix_duplicates(rows)
@@ -31,11 +39,13 @@ module Importers
         end
       end
 
-      def clean_attributes(row)
-        attributes(row).transform_values do |v|
+      def clean_attributes
+        attributes.transform_values do |v|
           clean(v)
         end
       end
+
+      def validate_attributes!; end
 
       def prefetch_associations; end
 

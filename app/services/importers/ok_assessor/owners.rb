@@ -5,7 +5,7 @@ module Importers
     class Owners < BaseImporter
       attr_reader :accounts
 
-      def attributes(row)
+      def attributes
         {
           account_id: accounts[row['ACCOUNT_NUM']],
           owner1: row['OWNER1'],

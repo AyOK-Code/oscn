@@ -5,7 +5,7 @@ module Importers
     class ValueDetails < BaseImporter
       attr_reader :accounts
 
-      def attributes(row)
+      def attributes
         {
           account_id: accounts[row['ACCOUNT_NUM']],
           value_type: row['VALUE_TYPE'],

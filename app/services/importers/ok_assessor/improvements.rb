@@ -6,7 +6,7 @@ module Importers
       attr_reader :accounts
 
       # rubocop:disable Metrics/MethodLength
-      def attributes(row)
+      def attributes
         {
           account_id: accounts[row['ACCOUNT_NUM']],
           building_num: row['BUILDING_NUM'],

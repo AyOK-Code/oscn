@@ -5,7 +5,7 @@ module Importers
     class ImprovementDetails < BaseImporter
       attr_reader :improvements
 
-      def attributes(row)
+      def attributes
         {
           improvement_id: improvements[[row['ACCOUNT_NUM'], row['BUILDING_NUM'].to_i]],
           detail_type: row['DETAIL_TYPE'],

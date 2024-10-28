@@ -5,8 +5,8 @@ module Importers
     class Sales < BaseImporter
       attr_reader :accounts
 
-      def attributes(row)
-        {
+      def attributes
+        @attributes ||= {
           account_id: accounts[row['ACCOUNT_NUM']],
           reception_number: row['RECEPTION_NUM'],
           grantor: row['GRANTOR'],
@@ -21,6 +21,10 @@ module Importers
           revenue_stamps: row['REVENUE_STAMPS'],
           change_date: parse_date(row['CHANGE_DATE'])
         }
+      end
+
+      def validate_attributes!
+        raise AttributeError("No account found for number: #{row['ACCOUNT_NUM']}") if attributes[:account_id].nil?
       end
 
       def unique_by

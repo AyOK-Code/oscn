@@ -4,7 +4,7 @@ module Importers
   module OkAssessor
     class Accounts < BaseImporter
       # rubocop:disable Metrics/MethodLength
-      def attributes(row)
+      def attributes
         {
           account_num: row['ACCOUNT_NUM'],
           parcel_num: row['PARCEL_NUM'],

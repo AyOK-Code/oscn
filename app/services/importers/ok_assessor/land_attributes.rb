@@ -5,7 +5,7 @@ module Importers
     class LandAttributes < BaseImporter
       attr_reader :accounts
 
-      def attributes(row)
+      def attributes
         {
           account_id: accounts[row['ACCOUNT_NUM']],
           attribute_type: row['ATTRIBUTE_TYPE'],
