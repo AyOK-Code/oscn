@@ -6,7 +6,7 @@ module Importers
       attr_reader :accounts
 
       def attributes
-        @attributes ||= {
+        {
           account_id: accounts[row['ACCOUNT_NUM']],
           reception_number: row['RECEPTION_NUM'],
           grantor: row['GRANTOR'],
@@ -24,7 +24,7 @@ module Importers
       end
 
       def validate_attributes!
-        raise AttributeError("No account found for number: #{row['ACCOUNT_NUM']}") if attributes[:account_id].nil?
+        raise AttributeError, "No account found for number: #{row['ACCOUNT_NUM']}" if attributes[:account_id].nil?
       end
 
       def unique_by

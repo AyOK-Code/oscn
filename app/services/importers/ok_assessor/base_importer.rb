@@ -1,5 +1,8 @@
 require 'csv'
 
+class AttributeError < StandardError
+end
+
 module Importers
   module OkAssessor
     class BaseImporter < ApplicationService
