@@ -1,5 +1,3 @@
-require 'uri'
-
 namespace :assessor do
   desc 'Import assessor data from s3 folder'
   task :import, [:folder] => [:environment] do |_t, args|
