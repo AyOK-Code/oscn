@@ -23,9 +23,11 @@ module Importers
       io = URI.open(url)
       reader = PDF::Reader.new(io)
       puts reader.info
+      all_pages = []
       reader.pages.each do |page|
-        page_to_dict(page)
+        all_pages << page_to_dict(page)
       end
+      all_pages
     end
 
     def page_to_dict(page)
@@ -33,7 +35,7 @@ module Importers
 
       lines = page.text.split("\n\n")
       header_row = lines[header_index]
-      table_rows = lines[(header_index+1)...]
+      table_rows = lines[(header_index + 1)...]
                      .reject { |row| excluded_row?(row) }
                      .compact_blank
 
@@ -57,21 +59,29 @@ module Importers
 
     def columns(header_row)
       cols = {}
-      column_names = ['Address', 'Date', 'Time', 'Offense', 'Description', 'Division', 'Case Number']
+      # Time is not included in column names so that it will be included with Date due to parsing difficulties
+      column_names = ['Address', 'Date', 'Offense', 'Description', 'Division', 'Case Number']
       column_names.each_with_index do |column, i|
         next_column = column_names[i + 1]
         cols[column] = {
           start: header_row.split(column)[0].length,
-          end: header_row.split(next_column)[0].length
+          end: next_column ? header_row.split(next_column)[0].length : header_row.length+1
         }
       end
       cols
+      # { 'Address': { start: 0, end: 28 },
+      #   'Date': { start: 28, end: 39 },
+      #   'Time': { start: 39, end: 49 },
+      #   'Offense': { start: 49, end: 104 },
+      #   'Description': { start: 104, end: 125 },
+      #   'Division': { start: 125, end: 140 },
+      #   'Case Number': { start: 140, end: 152 } }
     end
 
     def row_to_dict(cols, row)
       row_dict = {}
       cols.each do |column, indexes|
-        row_dict[column] = (row[indexes[:start]...indexes[:end]]).strip!
+        row_dict[column] = (row[indexes[:start]...indexes[:end]]).strip
       end
       row_dict
     end
