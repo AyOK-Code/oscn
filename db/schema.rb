@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_10_09_131403) do
+ActiveRecord::Schema[7.0].define(version: 2024_10_30_171654) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "pg_trgm"
@@ -2148,5 +2148,105 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_09_131403) do
   add_index "report_criminal_cases", ["court_case_closed_on"], name: "index_report_criminal_cases_on_court_case_closed_on"
   add_index "report_criminal_cases", ["court_case_filed_on"], name: "index_report_criminal_cases_on_court_case_filed_on"
   add_index "report_criminal_cases", ["court_case_id"], name: "index_report_criminal_cases_on_court_case_id"
+
+  create_view "report_ocis_counties_evictions", materialized: true, sql_definition: <<-SQL
+      SELECT count_codes.code,
+      court_cases.id AS court_case_id,
+      court_cases.county_id,
+      court_cases.filed_on AS case_filed_on,
+      court_cases.closed_on AS case_closed_on,
+      court_cases.case_number,
+      issues.name AS issue_name,
+      ( SELECT
+                  CASE
+                      WHEN (count(
+                      CASE
+                          WHEN (issue_parties.disposition_on IS NULL) THEN 1
+                          ELSE NULL::integer
+                      END) > 0) THEN NULL::date
+                      ELSE max(issue_parties.disposition_on)
+                  END AS max
+             FROM issue_parties
+            WHERE (issue_parties.issue_id = issues.id)
+            GROUP BY court_cases.id) AS max_judgement_date,
+      ( SELECT
+                  CASE
+                      WHEN (count(
+                      CASE
+                          WHEN (issue_parties.disposition_on IS NULL) THEN 1
+                          ELSE NULL::integer
+                      END) > 0) THEN NULL::integer
+                      ELSE (max(issue_parties.disposition_on) - court_cases.filed_on)
+                  END AS difference
+             FROM issue_parties
+            WHERE (issue_parties.issue_id = issues.id)
+            GROUP BY court_cases.id) AS days_to_judgement,
+      ( SELECT string_agg((parties.full_name)::text, '; '::text) AS string_agg
+             FROM ((parties
+               JOIN case_parties ON ((case_parties.party_id = parties.id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+            WHERE ((case_parties.court_case_id = court_cases.id) AND ((party_types.name)::text = 'defendant'::text))) AS defendant_name,
+      ( SELECT count(DISTINCT verdicts.id) AS count
+             FROM ((issue_parties
+               JOIN verdicts ON ((verdicts.id = issue_parties.verdict_id)))
+               JOIN parties ON ((issue_parties.party_id = parties.id)))
+            WHERE (issue_parties.issue_id = issues.id)) AS distinct_verdicts_count,
+      ( SELECT string_agg(DISTINCT (verdicts.name)::text, ', '::text) AS string_agg
+             FROM ((issue_parties
+               JOIN verdicts ON ((verdicts.id = issue_parties.verdict_id)))
+               JOIN parties ON ((issue_parties.party_id = parties.id)))
+            WHERE (issue_parties.issue_id = issues.id)) AS verdict,
+      ( SELECT string_agg(DISTINCT (issue_parties.verdict_details)::text, ', '::text) AS string_agg
+             FROM ((issue_parties
+               JOIN verdicts ON ((verdicts.id = issue_parties.verdict_id)))
+               JOIN parties ON ((issue_parties.party_id = parties.id)))
+            WHERE (issue_parties.issue_id = issues.id)) AS verdict_details,
+      ( SELECT count(DISTINCT parties.id) AS count
+             FROM ((parties
+               JOIN case_parties ON ((case_parties.party_id = parties.id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+            WHERE ((case_parties.court_case_id = court_cases.id) AND ((party_types.name)::text = 'defendant'::text))) AS defendant_count,
+      ( SELECT count(DISTINCT parties.id) AS count
+             FROM (((counsels
+               JOIN counsel_parties ON (((counsels.id = counsel_parties.counsel_id) AND (counsel_parties.court_case_id = court_cases.id))))
+               JOIN parties ON ((counsel_parties.party_id = parties.id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+            WHERE ((party_types.name)::text = 'defendant'::text)) AS defendant_represented_parties_count,
+      ( SELECT string_agg(DISTINCT (parties.full_name)::text, '; '::text) AS string_agg
+             FROM (((counsels
+               JOIN counsel_parties ON (((counsels.id = counsel_parties.counsel_id) AND (counsel_parties.court_case_id = court_cases.id))))
+               JOIN parties ON ((counsel_parties.party_id = parties.id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+            WHERE ((party_types.name)::text = 'defendant'::text)) AS defendant_represented_party,
+      ( SELECT count(DISTINCT parties.id) AS count
+             FROM (((counsels
+               JOIN counsel_parties ON (((counsels.id = counsel_parties.counsel_id) AND (counsel_parties.court_case_id = court_cases.id))))
+               JOIN parties ON ((counsel_parties.party_id = parties.id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+            WHERE ((party_types.name)::text = 'plaintiff'::text)) AS plaintiff_represented_parties_count,
+      ( SELECT string_agg(DISTINCT (parties.full_name)::text, '; '::text) AS string_agg
+             FROM (((counsels
+               JOIN counsel_parties ON (((counsels.id = counsel_parties.counsel_id) AND (counsel_parties.court_case_id = court_cases.id))))
+               JOIN parties ON ((counsel_parties.party_id = parties.id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+            WHERE ((party_types.name)::text = 'plaintiff'::text)) AS plaintiff_represented_party,
+      ( SELECT DISTINCT parties.full_name
+             FROM ((parties
+               JOIN case_parties ON ((case_parties.party_id = parties.id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+            WHERE ((case_parties.court_case_id = court_cases.id) AND ((party_types.name)::text = 'plaintiff'::text))
+           LIMIT 1) AS plaintiff_name,
+      ((('https://www.oscn.net/dockets/GetCaseInformation.aspx?db='::text || (counties.name)::text) || '&number='::text) || (court_cases.case_number)::text) AS case_link
+     FROM ((((court_cases
+       JOIN counties ON ((court_cases.county_id = counties.id)))
+       JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
+       JOIN issues ON ((court_cases.id = issues.court_case_id)))
+       JOIN count_codes ON ((issues.count_code_id = count_codes.id)))
+    WHERE (((case_types.abbreviation)::text = 'SC'::text) AND ((issues.name)::text ~~* '%FORCIBLE%'::text));
+  SQL
+  add_index "report_ocis_counties_evictions", ["case_closed_on"], name: "index_report_ocis_counties_evictions_on_case_closed_on"
+  add_index "report_ocis_counties_evictions", ["case_filed_on"], name: "index_report_ocis_counties_evictions_on_case_filed_on"
+  add_index "report_ocis_counties_evictions", ["county_id"], name: "index_report_ocis_counties_evictions_on_county_id"
+  add_index "report_ocis_counties_evictions", ["court_case_id"], name: "index_report_ocis_counties_evictions_on_court_case_id"
 
 end
