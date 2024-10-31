@@ -2,9 +2,11 @@ require 'httparty'
 require 'json'
 
 module Importers
+  # rubocop:disable Metrics/ClassLength
   class CrimeMap < ApplicationService
     def initialize
       init_zoom_okc_metro_params
+      super()
     end
 
     def init_zoom_okc_metro_params
@@ -21,7 +23,7 @@ module Importers
       save_crimes
     end
 
-    def get_crimes
+    def crimes
       url = 'https://communitycrimemap.com/api/v1/search/load-data'
       res = HTTParty.post(url, headers: pins_headers, body: pins_body)
       JSON.parse(res.body)['data']['data']['pins']
@@ -33,7 +35,7 @@ module Importers
     end
 
     def save_crimes
-      crime_data = get_crimes.map do |crime|
+      crime_data = crimes.map do |crime|
         {
           agency: crime['Agency'],
           address: crime['AddressOfCrime'],
@@ -47,9 +49,11 @@ module Importers
 
       ::LexusNexus::Crime.upsert_all(
         ::LexusNexus::Crime.unique(crime_data),
-        unique_by: LexusNexus::Crime::UNIQUE_BY)
+        unique_by: LexusNexus::Crime::UNIQUE_BY
+      )
     end
 
+    # rubocop:disable Metrics/MethodLength
     def pins_body
       {
         'buffer' => {
@@ -84,7 +88,9 @@ module Importers
         }
       }.to_json
     end
+    # rubocop:enable Metrics/MethodLength
 
+    # rubocop:disable Metrics/LineLength
     def pins_headers
       {
         accept: 'application/json, text/plain, */*',
@@ -108,7 +114,9 @@ module Importers
         'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
       }
     end
+    # rubocop:enable Metrics/LineLength
 
+    # rubocop:disable Metrics/LineLength
     def token
       return @token if @token
 
@@ -132,7 +140,9 @@ module Importers
       @token = JSON.parse(res.body)['data']['jwt']
       @token
     end
+    # rubocop:enable Metrics/LineLength
 
+    # rubocop:disable Metrics/MethodLength
     def selection
       [
         nil,
@@ -358,5 +368,7 @@ module Importers
         }
       ]
     end
+    # rubocop:enable Metrics/MethodLength
   end
+  # rubocop:enable Metrics/ClassLength
 end

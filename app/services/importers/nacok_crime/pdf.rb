@@ -4,8 +4,10 @@ module Importers
   module NacokCrime
     class Pdf < ApplicationService
       attr_reader :link
+
       def initialize(link)
         @link = link
+        super()
       end
 
       def perform
@@ -13,7 +15,7 @@ module Importers
       end
 
       def parse_pages
-        io = URI.open(link)
+        io = URI.parse(link).open.read
         reader = PDF::Reader.new(io)
         puts reader.info
         all_pages = []
@@ -32,16 +34,15 @@ module Importers
         end
         ::LexusNexus::Crime.upsert_all(
           ::LexusNexus::Crime.unique(crime_data),
-          unique_by: LexusNexus::Crime::UNIQUE_BY)
+          unique_by: LexusNexus::Crime::UNIQUE_BY
+        )
       end
 
       def parse_datetime(datetime)
-        begin
-          DateTime.strptime(datetime, '%Y-%m-%d %H%M')
-        rescue
-          puts "invalid date #{datetime}"
-          nil
-        end
+        DateTime.strptime(datetime, '%Y-%m-%d %H%M')
+      rescue StandardError
+        puts "invalid date #{datetime}"
+        nil
       end
 
       def page_to_dict(page)
@@ -50,8 +51,8 @@ module Importers
         lines = page.text.split("\n\n")
         header_row = lines[header_index]
         table_rows = lines[(header_index + 1)...]
-                       .reject { |row| excluded_row?(row) }
-                       .compact_blank
+                     .reject { |row| excluded_row?(row) }
+                     .compact_blank
 
         return if table_rows.empty?
 

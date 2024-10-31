@@ -14,7 +14,7 @@ module Importers
         bar = ProgressBar.new(pdf_links.count)
         pdf_links.each do |pdf_link|
           bar.increment!
-          Pdf.perform(pdf_link["href"])
+          Pdf.perform(pdf_link['href'])
         end
       end
     end

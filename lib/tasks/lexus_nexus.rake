@@ -9,4 +9,3 @@ namespace :lexus_nexus do
     Importers::NacokCrime::Page.perform
   end
 end
-
