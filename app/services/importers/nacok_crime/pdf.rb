@@ -1,6 +1,6 @@
 require 'open-uri'
 
-module Scrapers
+module Importers
   module NacokCrime
     class Pdf < ApplicationService
       attr_reader :link
@@ -20,7 +20,28 @@ module Scrapers
         reader.pages.each do |page|
           all_pages << page_to_dict(page)
         end
-        all_pages.flatten.compact
+        crime_data = all_pages.flatten.compact.map do |crime|
+          {
+            agency: 'Oklahoma City Police Department',
+            address: crime['Address'],
+            incident_at: parse_datetime(crime['Date']),
+            crime: crime['Offense'],
+            crime_class: crime['Description'],
+            incident_number: crime['Case Number']
+          }
+        end
+        ::LexusNexus::Crime.upsert_all(
+          ::LexusNexus::Crime.unique(crime_data),
+          unique_by: LexusNexus::Crime::UNIQUE_BY)
+      end
+
+      def parse_datetime(datetime)
+        begin
+          DateTime.strptime(datetime, '%Y-%m-%d %H%M')
+        rescue
+          puts "invalid date #{datetime}"
+          nil
+        end
       end
 
       def page_to_dict(page)

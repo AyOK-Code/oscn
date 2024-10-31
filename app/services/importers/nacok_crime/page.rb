@@ -1,4 +1,4 @@
-module Scrapers
+module Importers
   module NacokCrime
     class Page < ApplicationService
       def perform

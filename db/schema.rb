@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_10_09_131403) do
+ActiveRecord::Schema[7.0].define(version: 2024_10_30_183738) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "pg_trgm"
@@ -454,6 +454,19 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_09_131403) do
     t.string "first_name"
     t.string "last_name"
     t.index ["county_id"], name: "index_judges_on_county_id"
+  end
+
+  create_table "lexus_nexus_crimes", force: :cascade do |t|
+    t.string "address"
+    t.string "agency"
+    t.string "crime_class"
+    t.string "crime"
+    t.datetime "incident_at"
+    t.string "incident_number"
+    t.string "location_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agency", "incident_number", "incident_at"], name: "index_ln_crimes_on_agency_and_inc_number_and_inc_at", unique: true
   end
 
   create_table "ocso_warrants", force: :cascade do |t|
