@@ -16,6 +16,8 @@ namespace :update do
   desc 'Refresh the materialized views for the database'
   task refresh_views: [:environment] do
     ReportJuvenileFirearms.refresh
+    ReportCriminalCase.refresh
+    ReportOcisCountiesEviction.refresh
     ReportWarrants.refresh
     ReportFinesAndFees.refresh
     ReportArrestingAgency.refresh
