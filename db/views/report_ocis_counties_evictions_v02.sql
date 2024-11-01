@@ -167,5 +167,9 @@ FROM
   JOIN count_codes ON issues.count_code_id = count_codes.id
 WHERE
   case_types.abbreviation = 'SC'
-  AND issues.name ILIKE '%FORCIBLE%'
+  AND (
+    count_codes.code :: text = ANY (
+      ARRAY ['SCFED1'::text, 'SCFED2'::text, 'FED1'::text, 'FED2'::text, 'ENTRY'::text]
+    )
+  )
   AND court_cases.is_error = FALSE
