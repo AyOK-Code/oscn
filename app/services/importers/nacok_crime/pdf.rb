@@ -11,6 +11,7 @@ module Importers
       end
 
       def perform
+        puts "scraping #{link}"
         parse_pages
       end
 
@@ -39,15 +40,15 @@ module Importers
       end
 
       def datetime_regex
-        /\d{4}\-\d{2}\-\d{2}\ \d{4}/
+        /\d{4}-\d{2}-\d{2}\ \d{4}/
       end
 
       def remove_date(address_with_date)
-        address_with_date.gsub(datetime_regex, '').strip
+        address_with_date&.gsub(datetime_regex, '')&.strip
       end
 
       def remove_address(address_with_date)
-        address_with_date.scan(datetime_regex).last
+        address_with_date&.scan(datetime_regex)&.last
       end
 
       def parse_datetime(datetime)
@@ -101,13 +102,11 @@ module Importers
       def row_to_dict(cols, row)
         row_dict = {}
         cols.each do |column, indexes|
-          begin
-            row_dict[column] = (row[indexes[:start]...indexes[:end]]).strip
-          rescue
-            puts "failed to parse #{column} at #{indexes[:start]} to #{indexes[:end]} for:"
-            puts row
-            row_dict[column] = nil
-          end
+          row_dict[column] = (row[indexes[:start]...indexes[:end]]).strip
+        rescue StandardError
+          puts "failed to parse #{column} at #{indexes[:start]} to #{indexes[:end]} for:"
+          puts row
+          row_dict[column] = nil
         end
         row_dict
       end

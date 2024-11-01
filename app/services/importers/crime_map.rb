@@ -20,7 +20,7 @@ module Importers
     end
 
     def perform
-      date_range = (Date.parse(ENV.fetch('LEXUS_NEXUS_START', '2020-01-01'))..Time.zone.now).step(3)
+      date_range = (Date.parse(ENV.fetch('LEXUS_NEXUS_START', '2020-01-01'))..(Time.zone.now - 1.week)).step(3)
       bar = ProgressBar.new(date_range.count)
       date_range.each do |date|
         bar.increment!
@@ -69,8 +69,8 @@ module Importers
           'value' => []
         },
         'date' => {
-          'start' => @start_date.strftime("%m/%d/%Y"),
-          'end' => @end_date.strftime("%m/%d/%Y")
+          'start' => @start_date.strftime('%m/%d/%Y'),
+          'end' => @end_date.strftime('%m/%d/%Y')
         },
         'agencies' => [],
         'layers' => {
