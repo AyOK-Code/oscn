@@ -20,9 +20,9 @@ module Importers
     end
 
     def perform
-      date_range = (Date.parse(ENV.fetch('LEXUS_NEXUS_START', '2020-01-01'))..Time.zone.now)
+      date_range = (Date.parse(ENV.fetch('LEXUS_NEXUS_START', '2020-01-01'))..Time.zone.now).step(3)
       bar = ProgressBar.new(date_range.count)
-      date_range.step(3).each do |date|
+      date_range.each do |date|
         bar.increment!
         @start_date = date
         @end_date = date + 3.days
