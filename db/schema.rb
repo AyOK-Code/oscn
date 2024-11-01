@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_10_30_171654) do
+ActiveRecord::Schema[7.0].define(version: 2024_11_01_150747) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "pg_trgm"
@@ -2242,7 +2242,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_30_171654) do
        JOIN case_types ON ((court_cases.case_type_id = case_types.id)))
        JOIN issues ON ((court_cases.id = issues.court_case_id)))
        JOIN count_codes ON ((issues.count_code_id = count_codes.id)))
-    WHERE (((case_types.abbreviation)::text = 'SC'::text) AND ((issues.name)::text ~~* '%FORCIBLE%'::text));
+    WHERE (((case_types.abbreviation)::text = 'SC'::text) AND ((issues.name)::text ~~* '%FORCIBLE%'::text) AND (court_cases.is_error = false));
   SQL
   add_index "report_ocis_counties_evictions", ["case_closed_on"], name: "index_report_ocis_counties_evictions_on_case_closed_on"
   add_index "report_ocis_counties_evictions", ["case_filed_on"], name: "index_report_ocis_counties_evictions_on_case_filed_on"
