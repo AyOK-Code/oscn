@@ -15,7 +15,7 @@ module Importers
       end
 
       def parse_pages
-        io = URI.parse(link).open.read
+        io = URI.parse(link).open
         reader = PDF::Reader.new(io)
         puts reader.info
         all_pages = []
@@ -25,8 +25,8 @@ module Importers
         crime_data = all_pages.flatten.compact.map do |crime|
           {
             agency: 'Oklahoma City Police Department',
-            address: crime['Address'],
-            incident_at: parse_datetime(crime['Date']),
+            address: remove_date(crime['Address']),
+            incident_at: parse_datetime(remove_address(crime['Address'])),
             crime: crime['Offense'],
             crime_class: crime['Description'],
             incident_number: crime['Case Number']
@@ -36,6 +36,18 @@ module Importers
           ::LexusNexus::Crime.unique(crime_data),
           unique_by: LexusNexus::Crime::UNIQUE_BY
         )
+      end
+
+      def datetime_regex
+        /\d{4}\-\d{2}\-\d{2}\ \d{4}/
+      end
+
+      def remove_date(address_with_date)
+        address_with_date.gsub(datetime_regex, '').strip
+      end
+
+      def remove_address(address_with_date)
+        address_with_date.scan(datetime_regex).last
       end
 
       def parse_datetime(datetime)
@@ -74,8 +86,8 @@ module Importers
 
       def columns(header_row)
         cols = {}
-        # Time is not included in column names so that it will be included with Date due to parsing difficulties
-        column_names = ['Address', 'Date', 'Offense', 'Description', 'Division', 'Case Number']
+        # Address also includes Date and Time which are extracted using regex
+        column_names = ['Address', 'Offense', 'Description', 'Division', 'Case Number']
         column_names.each_with_index do |column, i|
           next_column = column_names[i + 1]
           cols[column] = {
@@ -84,19 +96,18 @@ module Importers
           }
         end
         cols
-        # { 'Address': { start: 0, end: 28 },
-        #   'Date': { start: 28, end: 39 },
-        #   'Time': { start: 39, end: 49 },
-        #   'Offense': { start: 49, end: 104 },
-        #   'Description': { start: 104, end: 125 },
-        #   'Division': { start: 125, end: 140 },
-        #   'Case Number': { start: 140, end: 152 } }
       end
 
       def row_to_dict(cols, row)
         row_dict = {}
         cols.each do |column, indexes|
-          row_dict[column] = (row[indexes[:start]...indexes[:end]]).strip
+          begin
+            row_dict[column] = (row[indexes[:start]...indexes[:end]]).strip
+          rescue
+            puts "failed to parse #{column} at #{indexes[:start]} to #{indexes[:end]} for:"
+            puts row
+            row_dict[column] = nil
+          end
         end
         row_dict
       end
