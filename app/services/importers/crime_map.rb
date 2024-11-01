@@ -20,7 +20,12 @@ module Importers
     end
 
     def perform
-      save_crimes
+      date_range = (Date.parse(ENV.fetch('LEXUS_NEXUS_START', '2020-01-01'))..Time.zone.now)
+      date_range.step(3).each do |date|
+        @start_date = date
+        @end_date = date + 1.week
+        save_crimes
+      end
     end
 
     def crimes
@@ -46,11 +51,11 @@ module Importers
           incident_number: crime['IRNumber']
         }
       end
-
       ::LexusNexus::Crime.upsert_all(
         ::LexusNexus::Crime.unique(crime_data),
         unique_by: LexusNexus::Crime::UNIQUE_BY
       )
+      puts "#{crime_data.length} crimes returned for #{@start_date} - #{@end_date}"
     end
 
     # rubocop:disable Metrics/MethodLength
@@ -62,8 +67,8 @@ module Importers
           'value' => []
         },
         'date' => {
-          'start' => '09/23/2024',
-          'end' => '10/23/2024'
+          'start' => @start_date.strftime("%m/%d/%Y"),
+          'end' => @end_date.strftime("%m/%d/%Y")
         },
         'agencies' => [],
         'layers' => {
