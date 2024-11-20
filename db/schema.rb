@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_11_13_174628) do
+ActiveRecord::Schema[7.0].define(version: 2024_11_20_214846) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "pg_trgm"
@@ -1950,179 +1950,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_13_174628) do
              FROM counts counts_1
             WHERE ((counts_1.as_filed)::text ~~* '%domes%'::text))));
   SQL
-  create_view "report_ocso_oscn_joins", sql_definition: <<-SQL
-      WITH clean_ocso AS (
-           SELECT ocso_warrants.id AS ocso_id,
-              ocso_warrants.first_name AS ocso_first_name,
-              ocso_warrants.last_name AS ocso_last_name,
-              ocso_warrants.middle_name AS ocso_middle_name,
-              ocso_warrants.birth_date AS ocso_birth_date,
-              ocso_warrants.bond_amount AS ocso_bond_amount,
-              ocso_warrants.issued AS ocso_issued,
-              ocso_warrants.counts AS ocso_counts,
-              ocso_warrants.resolved_at AS ocso_resolved_at,
-              ocso_warrants.case_number AS ocso_case_number,
-                  CASE
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN "substring"((ocso_warrants.case_number)::text, 1, 2)
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2,}-[0-9]{1,}'::text) THEN "substring"((ocso_warrants.case_number)::text, '[A-Za-z]{1,}'::text)
-                      ELSE NULL::text
-                  END AS case_type,
-                  CASE
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN (
-                      CASE
-                          WHEN ((("substring"((ocso_warrants.case_number)::text, 3, 2))::integer)::numeric <= (EXTRACT(year FROM CURRENT_DATE) % (100)::numeric)) THEN ('20'::text || "substring"((ocso_warrants.case_number)::text, 3, 2))
-                          ELSE ('19'::text || "substring"((ocso_warrants.case_number)::text, 3, 2))
-                      END)::integer
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2}-[0-9]{1,}'::text) THEN (
-                      CASE
-                          WHEN (((split_part((ocso_warrants.case_number)::text, '-'::text, 2))::integer)::numeric <= (EXTRACT(year FROM CURRENT_DATE) % (100)::numeric)) THEN ('20'::text || split_part((ocso_warrants.case_number)::text, '-'::text, 2))
-                          ELSE ('19'::text || split_part((ocso_warrants.case_number)::text, '-'::text, 2))
-                      END)::integer
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{4}-[0-9]{1,}'::text) THEN (split_part((ocso_warrants.case_number)::text, '-'::text, 2))::integer
-                      ELSE NULL::integer
-                  END AS full_year,
-                  CASE
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN regexp_replace("substring"((ocso_warrants.case_number)::text, 5), '^0+'::text, ''::text)
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2,}-[0-9]{1,}'::text) THEN split_part((ocso_warrants.case_number)::text, '-'::text, 3)
-                      ELSE NULL::text
-                  END AS last_case_number,
-                  CASE
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN (((("substring"((ocso_warrants.case_number)::text, 1, 2) || '-'::text) ||
-                      CASE
-                          WHEN ((("substring"((ocso_warrants.case_number)::text, 3, 2))::integer)::numeric <= (EXTRACT(year FROM CURRENT_DATE) % (100)::numeric)) THEN ('20'::text || "substring"((ocso_warrants.case_number)::text, 3, 2))
-                          ELSE ('19'::text || "substring"((ocso_warrants.case_number)::text, 3, 2))
-                      END) || '-'::text) || regexp_replace("substring"((ocso_warrants.case_number)::text, 5), '^0+'::text, ''::text))
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2}-[0-9]{1,}'::text) THEN (((("substring"((ocso_warrants.case_number)::text, 1, 2) || '-'::text) ||
-                      CASE
-                          WHEN (((split_part((ocso_warrants.case_number)::text, '-'::text, 2))::integer)::numeric <= (EXTRACT(year FROM CURRENT_DATE) % (100)::numeric)) THEN ('20'::text || split_part((ocso_warrants.case_number)::text, '-'::text, 2))
-                          ELSE ('19'::text || split_part((ocso_warrants.case_number)::text, '-'::text, 2))
-                      END) || '-'::text) || split_part((ocso_warrants.case_number)::text, '-'::text, 3))
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{4}-[0-9]{1,}'::text) THEN (ocso_warrants.case_number)::text
-                      ELSE NULL::text
-                  END AS clean_case_number,
-                  CASE
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN ((((('https://www.oscn.net/dockets/GetCaseInformation.aspx?db=oklahoma&number='::text || "substring"((ocso_warrants.case_number)::text, 1, 2)) || '-'::text) || "substring"((ocso_warrants.case_number)::text, 3, 2)) || '-'::text) || regexp_replace("substring"((ocso_warrants.case_number)::text, 5), '^0+'::text, ''::text))
-                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2,}-[0-9]{1,}'::text) THEN ('https://www.oscn.net/dockets/GetCaseInformation.aspx?db=oklahoma&number='::text || (ocso_warrants.case_number)::text)
-                      ELSE NULL::text
-                  END AS link
-             FROM ocso_warrants
-          ), added_defendant_counts AS (
-           SELECT clean_ocso.ocso_id,
-              clean_ocso.ocso_first_name,
-              clean_ocso.ocso_last_name,
-              clean_ocso.ocso_middle_name,
-              clean_ocso.ocso_birth_date,
-              clean_ocso.ocso_bond_amount,
-              clean_ocso.ocso_issued,
-              clean_ocso.ocso_counts,
-              clean_ocso.ocso_resolved_at,
-              clean_ocso.ocso_case_number,
-              clean_ocso.case_type,
-              clean_ocso.full_year,
-              clean_ocso.last_case_number,
-              clean_ocso.clean_case_number,
-              clean_ocso.link,
-              ( SELECT count(DISTINCT parties.id) AS count
-                     FROM ((((case_parties
-                       JOIN parties ON ((case_parties.party_id = parties.id)))
-                       JOIN court_cases ON ((court_cases.id = case_parties.court_case_id)))
-                       JOIN counties ON ((court_cases.county_id = counties.id)))
-                       JOIN party_types ON ((parties.party_type_id = party_types.id)))
-                    WHERE (((party_types.name)::text = 'defendant'::text) AND ((court_cases.case_number)::text = clean_ocso.clean_case_number) AND ((counties.name)::text = 'Oklahoma'::text))) AS defendant_count
-             FROM clean_ocso
-            WHERE (clean_ocso.ocso_resolved_at IS NULL)
-          )
-   SELECT ocso_id,
-      ocso_first_name,
-      ocso_last_name,
-      ocso_middle_name,
-      ocso_birth_date,
-      ocso_bond_amount,
-      ocso_issued,
-      ocso_counts,
-      ocso_resolved_at,
-      ocso_case_number,
-      case_type,
-      full_year,
-      last_case_number,
-      clean_case_number,
-      link,
-      defendant_count,
-          CASE
-              WHEN (defendant_count = 0) THEN NULL::bigint
-              WHEN (defendant_count = 1) THEN ( SELECT count(*) AS count
-                 FROM (((docket_events
-                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
-                   JOIN counties ON ((court_cases.county_id = counties.id)))
-                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
-                         FROM ((case_parties
-                           JOIN parties ON ((case_parties.party_id = parties.id)))
-                           JOIN party_types ON ((parties.party_type_id = party_types.id)))
-                        WHERE (((party_types.name)::text = 'defendant'::text) AND (case_parties.court_case_id = court_cases.id))) = 1)))
-              WHEN (defendant_count > 1) THEN ( SELECT count(*) AS count
-                 FROM ((((docket_events
-                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
-                   JOIN counties ON ((court_cases.county_id = counties.id)))
-                   JOIN parties ON ((docket_events.party_id = parties.id)))
-                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2))))
-              ELSE NULL::bigint
-          END AS warrant_count,
-          CASE
-              WHEN (defendant_count = 0) THEN NULL::bigint
-              WHEN (defendant_count = 1) THEN ( SELECT count(*) AS count
-                 FROM (((docket_events
-                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
-                   JOIN counties ON ((court_cases.county_id = counties.id)))
-                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['RETBW'::character varying, 'RETWA'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
-                         FROM ((case_parties
-                           JOIN parties ON ((case_parties.party_id = parties.id)))
-                           JOIN party_types ON ((parties.party_type_id = party_types.id)))
-                        WHERE (((party_types.name)::text = 'defendant'::text) AND (case_parties.court_case_id = court_cases.id))) = 1)))
-              WHEN (defendant_count > 1) THEN ( SELECT count(*) AS count
-                 FROM ((((docket_events
-                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
-                   JOIN counties ON ((court_cases.county_id = counties.id)))
-                   JOIN parties ON ((docket_events.party_id = parties.id)))
-                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['RETBW'::character varying, 'RETWA'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2))))
-              ELSE NULL::bigint
-          END AS return_warrant_count,
-          CASE
-              WHEN (defendant_count = 0) THEN NULL::character varying
-              WHEN (defendant_count = 1) THEN ( SELECT docket_event_types.code
-                 FROM (((docket_events
-                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
-                   JOIN counties ON ((court_cases.county_id = counties.id)))
-                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
-                         FROM ((case_parties
-                           JOIN parties ON ((case_parties.party_id = parties.id)))
-                           JOIN party_types ON ((parties.party_type_id = party_types.id)))
-                        WHERE (((party_types.name)::text = 'defendant'::text) AND (case_parties.court_case_id = court_cases.id))) = 1))
-                ORDER BY docket_events.event_on DESC
-               LIMIT 1)
-              WHEN (defendant_count > 1) THEN ( SELECT docket_event_types.code
-                 FROM ((((docket_events
-                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
-                   JOIN counties ON ((court_cases.county_id = counties.id)))
-                   JOIN parties ON ((docket_events.party_id = parties.id)))
-                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
-                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2)))
-                ORDER BY docket_events.event_on DESC
-               LIMIT 1)
-              ELSE NULL::character varying
-          END AS most_recent_warrant_type,
-      ( SELECT case_htmls.scraped_at
-             FROM ((court_cases
-               JOIN counties ON ((court_cases.county_id = counties.id)))
-               JOIN case_htmls ON ((case_htmls.court_case_id = court_cases.id)))
-            WHERE (((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((counties.name)::text = 'Oklahoma'::text))
-           LIMIT 1) AS scraped_at
-     FROM added_defendant_counts;
-  SQL
   create_view "report_juvenile_firearms", materialized: true, sql_definition: <<-SQL
       SELECT court_cases.id AS court_case_id,
       court_cases.case_number,
@@ -2446,5 +2273,186 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_13_174628) do
        JOIN parties ON ((parties.id = counts.party_id)))
        JOIN pleas ON ((pleas.id = counts.plea_id)))
        JOIN verdicts ON ((verdicts.id = counts.verdict_id)));
+  SQL
+  create_view "report_ocso_oscn_joins", sql_definition: <<-SQL
+      WITH clean_ocso AS (
+           SELECT ocso_warrants.id AS ocso_id,
+              ocso_warrants.first_name AS ocso_first_name,
+              ocso_warrants.last_name AS ocso_last_name,
+              ocso_warrants.middle_name AS ocso_middle_name,
+              ocso_warrants.birth_date AS ocso_birth_date,
+              ocso_warrants.bond_amount AS ocso_bond_amount,
+              ocso_warrants.issued AS ocso_issued,
+              ocso_warrants.counts AS ocso_counts,
+              ocso_warrants.resolved_at AS ocso_resolved_at,
+              ocso_warrants.case_number AS ocso_case_number,
+                  CASE
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN "substring"((ocso_warrants.case_number)::text, 1, 2)
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2,}-[0-9]{1,}'::text) THEN "substring"((ocso_warrants.case_number)::text, '[A-Za-z]{1,}'::text)
+                      ELSE NULL::text
+                  END AS case_type,
+                  CASE
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN (
+                      CASE
+                          WHEN ((("substring"((ocso_warrants.case_number)::text, 3, 2))::integer)::numeric <= (EXTRACT(year FROM CURRENT_DATE) % (100)::numeric)) THEN ('20'::text || "substring"((ocso_warrants.case_number)::text, 3, 2))
+                          ELSE ('19'::text || "substring"((ocso_warrants.case_number)::text, 3, 2))
+                      END)::integer
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2}-[0-9]{1,}'::text) THEN (
+                      CASE
+                          WHEN (((split_part((ocso_warrants.case_number)::text, '-'::text, 2))::integer)::numeric <= (EXTRACT(year FROM CURRENT_DATE) % (100)::numeric)) THEN ('20'::text || split_part((ocso_warrants.case_number)::text, '-'::text, 2))
+                          ELSE ('19'::text || split_part((ocso_warrants.case_number)::text, '-'::text, 2))
+                      END)::integer
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{4}-[0-9]{1,}'::text) THEN (split_part((ocso_warrants.case_number)::text, '-'::text, 2))::integer
+                      ELSE NULL::integer
+                  END AS full_year,
+                  CASE
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN regexp_replace("substring"((ocso_warrants.case_number)::text, 5), '^0+'::text, ''::text)
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2,}-[0-9]{1,}'::text) THEN split_part((ocso_warrants.case_number)::text, '-'::text, 3)
+                      ELSE NULL::text
+                  END AS last_case_number,
+                  CASE
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN (((("substring"((ocso_warrants.case_number)::text, 1, 2) || '-'::text) ||
+                      CASE
+                          WHEN ((("substring"((ocso_warrants.case_number)::text, 3, 2))::integer)::numeric <= (EXTRACT(year FROM CURRENT_DATE) % (100)::numeric)) THEN ('20'::text || "substring"((ocso_warrants.case_number)::text, 3, 2))
+                          ELSE ('19'::text || "substring"((ocso_warrants.case_number)::text, 3, 2))
+                      END) || '-'::text) || regexp_replace("substring"((ocso_warrants.case_number)::text, 5), '^0+'::text, ''::text))
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2}-[0-9]{1,}'::text) THEN (((("substring"((ocso_warrants.case_number)::text, 1, 2) || '-'::text) ||
+                      CASE
+                          WHEN (((split_part((ocso_warrants.case_number)::text, '-'::text, 2))::integer)::numeric <= (EXTRACT(year FROM CURRENT_DATE) % (100)::numeric)) THEN ('20'::text || split_part((ocso_warrants.case_number)::text, '-'::text, 2))
+                          ELSE ('19'::text || split_part((ocso_warrants.case_number)::text, '-'::text, 2))
+                      END) || '-'::text) || split_part((ocso_warrants.case_number)::text, '-'::text, 3))
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{4}-[0-9]{1,}'::text) THEN (ocso_warrants.case_number)::text
+                      ELSE NULL::text
+                  END AS clean_case_number,
+                  CASE
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}[0-9]{5,}'::text) THEN ((((('https://www.oscn.net/dockets/GetCaseInformation.aspx?db=oklahoma&number='::text || "substring"((ocso_warrants.case_number)::text, 1, 2)) || '-'::text) || "substring"((ocso_warrants.case_number)::text, 3, 2)) || '-'::text) || regexp_replace("substring"((ocso_warrants.case_number)::text, 5), '^0+'::text, ''::text))
+                      WHEN ((ocso_warrants.case_number)::text ~ '^[A-Za-z]{2}-[0-9]{2,}-[0-9]{1,}'::text) THEN ('https://www.oscn.net/dockets/GetCaseInformation.aspx?db=oklahoma&number='::text || (ocso_warrants.case_number)::text)
+                      ELSE NULL::text
+                  END AS link
+             FROM ocso_warrants
+          ), added_defendant_counts AS (
+           SELECT clean_ocso.ocso_id,
+              clean_ocso.ocso_first_name,
+              clean_ocso.ocso_last_name,
+              clean_ocso.ocso_middle_name,
+              clean_ocso.ocso_birth_date,
+              clean_ocso.ocso_bond_amount,
+              clean_ocso.ocso_issued,
+              clean_ocso.ocso_counts,
+              clean_ocso.ocso_resolved_at,
+              clean_ocso.ocso_case_number,
+              clean_ocso.case_type,
+              clean_ocso.full_year,
+              clean_ocso.last_case_number,
+              clean_ocso.clean_case_number,
+              clean_ocso.link,
+              ( SELECT count(DISTINCT parties.id) AS count
+                     FROM ((((case_parties
+                       JOIN parties ON ((case_parties.party_id = parties.id)))
+                       JOIN court_cases ON ((court_cases.id = case_parties.court_case_id)))
+                       JOIN counties ON ((court_cases.county_id = counties.id)))
+                       JOIN party_types ON ((parties.party_type_id = party_types.id)))
+                    WHERE (((party_types.name)::text = 'defendant'::text) AND ((court_cases.case_number)::text = clean_ocso.clean_case_number) AND ((counties.name)::text = 'Oklahoma'::text))) AS defendant_count
+             FROM clean_ocso
+            WHERE (clean_ocso.ocso_resolved_at IS NULL)
+          )
+   SELECT ocso_id,
+      ocso_first_name,
+      ocso_last_name,
+      ocso_middle_name,
+      ocso_birth_date,
+      ocso_bond_amount,
+      ocso_issued,
+      ocso_counts,
+      ocso_resolved_at,
+      ocso_case_number,
+      case_type,
+      full_year,
+      last_case_number,
+      clean_case_number,
+      link,
+      defendant_count,
+          CASE
+              WHEN (defendant_count = 0) THEN NULL::bigint
+              WHEN (defendant_count = 1) THEN ( SELECT count(*) AS count
+                 FROM (((docket_events
+                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
+                   JOIN counties ON ((court_cases.county_id = counties.id)))
+                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
+                         FROM ((case_parties
+                           JOIN parties ON ((case_parties.party_id = parties.id)))
+                           JOIN party_types ON ((parties.party_type_id = party_types.id)))
+                        WHERE (((party_types.name)::text = 'defendant'::text) AND (case_parties.court_case_id = court_cases.id))) = 1)))
+              WHEN (defendant_count > 1) THEN ( SELECT count(*) AS count
+                 FROM ((((docket_events
+                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
+                   JOIN counties ON ((court_cases.county_id = counties.id)))
+                   JOIN parties ON ((docket_events.party_id = parties.id)))
+                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2))))
+              ELSE NULL::bigint
+          END AS warrant_count,
+          CASE
+              WHEN (defendant_count = 0) THEN NULL::bigint
+              WHEN (defendant_count = 1) THEN ( SELECT count(*) AS count
+                 FROM (((docket_events
+                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
+                   JOIN counties ON ((court_cases.county_id = counties.id)))
+                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['RETBW'::character varying, 'RETWA'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
+                         FROM ((case_parties
+                           JOIN parties ON ((case_parties.party_id = parties.id)))
+                           JOIN party_types ON ((parties.party_type_id = party_types.id)))
+                        WHERE (((party_types.name)::text = 'defendant'::text) AND (case_parties.court_case_id = court_cases.id))) = 1)))
+              WHEN (defendant_count > 1) THEN ( SELECT count(*) AS count
+                 FROM ((((docket_events
+                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
+                   JOIN counties ON ((court_cases.county_id = counties.id)))
+                   JOIN parties ON ((docket_events.party_id = parties.id)))
+                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['RETBW'::character varying, 'RETWA'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2))))
+              ELSE NULL::bigint
+          END AS return_warrant_count,
+          CASE
+              WHEN (defendant_count = 0) THEN NULL::character varying
+              WHEN (defendant_count = 1) THEN ( SELECT docket_event_types.code
+                 FROM (((docket_events
+                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
+                   JOIN counties ON ((court_cases.county_id = counties.id)))
+                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (( SELECT count(DISTINCT parties.id) AS count
+                         FROM ((case_parties
+                           JOIN parties ON ((case_parties.party_id = parties.id)))
+                           JOIN party_types ON ((parties.party_type_id = party_types.id)))
+                        WHERE (((party_types.name)::text = 'defendant'::text) AND (case_parties.court_case_id = court_cases.id))) = 1))
+                ORDER BY docket_events.event_on DESC
+               LIMIT 1)
+              WHEN (defendant_count > 1) THEN ( SELECT docket_event_types.code
+                 FROM ((((docket_events
+                   JOIN court_cases ON ((docket_events.court_case_id = court_cases.id)))
+                   JOIN counties ON ((court_cases.county_id = counties.id)))
+                   JOIN parties ON ((docket_events.party_id = parties.id)))
+                   JOIN docket_event_types ON ((docket_events.docket_event_type_id = docket_event_types.id)))
+                WHERE (((docket_event_types.code)::text = ANY ((ARRAY['BWIFP'::character varying, 'WAIMW'::character varying, 'BWIFAP'::character varying, 'BWIFC'::character varying, 'BWIR8'::character varying, 'BWIAR'::character varying, 'BWICA'::character varying, 'BWIFA'::character varying, 'BWIFAA'::character varying, 'BWIS$'::character varying, 'BWIFAR'::character varying, 'BWIAA'::character varying, 'BWIMW'::character varying, 'WAI$'::character varying, 'WAI'::character varying, 'BWIS'::character varying])::text[])) AND ((counties.name)::text = 'Oklahoma'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2)))
+                ORDER BY docket_events.event_on DESC
+               LIMIT 1)
+              ELSE NULL::character varying
+          END AS most_recent_warrant_type,
+      ( SELECT string_agg(DISTINCT (party_addresses.zip)::text, ','::text) AS string_agg
+             FROM (((((court_cases
+               JOIN case_parties ON ((court_cases.id = case_parties.court_case_id)))
+               JOIN counties ON ((court_cases.county_id = counties.id)))
+               JOIN parties ON ((parties.id = case_parties.party_id)))
+               JOIN party_types ON ((parties.party_type_id = party_types.id)))
+               JOIN party_addresses ON ((parties.id = party_addresses.party_id)))
+            WHERE (((party_addresses.status)::text = 'Current'::text) AND ((counties.name)::text = 'Oklahoma'::text) AND ((party_types.name)::text = 'defendant'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (party_addresses.zip <> 0))) AS defendant_zip_codes,
+      ( SELECT case_htmls.scraped_at
+             FROM ((court_cases
+               JOIN counties ON ((court_cases.county_id = counties.id)))
+               JOIN case_htmls ON ((case_htmls.court_case_id = court_cases.id)))
+            WHERE (((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND ((counties.name)::text = 'Oklahoma'::text))
+           LIMIT 1) AS scraped_at
+     FROM added_defendant_counts;
   SQL
 end
