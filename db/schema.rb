@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_11_20_214846) do
+ActiveRecord::Schema[7.0].define(version: 2024_11_23_142302) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "pg_trgm"
@@ -2439,14 +2439,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_20_214846) do
                LIMIT 1)
               ELSE NULL::character varying
           END AS most_recent_warrant_type,
-      ( SELECT string_agg(DISTINCT (party_addresses.zip)::text, ','::text) AS string_agg
+      ( SELECT DISTINCT party_addresses.zip
              FROM (((((court_cases
                JOIN case_parties ON ((court_cases.id = case_parties.court_case_id)))
                JOIN counties ON ((court_cases.county_id = counties.id)))
                JOIN parties ON ((parties.id = case_parties.party_id)))
                JOIN party_types ON ((parties.party_type_id = party_types.id)))
                JOIN party_addresses ON ((parties.id = party_addresses.party_id)))
-            WHERE (((party_addresses.status)::text = 'Current'::text) AND ((counties.name)::text = 'Oklahoma'::text) AND ((party_types.name)::text = 'defendant'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (party_addresses.zip <> 0))) AS defendant_zip_codes,
+            WHERE (((party_addresses.status)::text = 'Current'::text) AND ((counties.name)::text = 'Oklahoma'::text) AND ((party_types.name)::text = 'defendant'::text) AND ((court_cases.case_number)::text = added_defendant_counts.clean_case_number) AND (party_addresses.zip <> 0) AND ((levenshtein(lower((parties.first_name)::text), lower((added_defendant_counts.ocso_first_name)::text)) <= 2) OR (levenshtein(lower((parties.last_name)::text), lower((added_defendant_counts.ocso_last_name)::text)) <= 2)))
+           LIMIT 1) AS defendant_zip_codes,
       ( SELECT case_htmls.scraped_at
              FROM ((court_cases
                JOIN counties ON ((court_cases.county_id = counties.id)))
