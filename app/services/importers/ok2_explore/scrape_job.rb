@@ -3,7 +3,7 @@ module Importers
     class ScrapeJob < ApplicationService
       attr_reader :scrape_job, :bar
 
-      def initialize(scrape_job, bar = false)
+      def initialize(scrape_job, bar: false)
         @scrape_job = scrape_job
         @bar = bar
       end
@@ -13,15 +13,20 @@ module Importers
         begin
           death_records = ::Ok2explore::Scraper.new(**scraper_args).perform
         rescue ::Selenium::WebDriver::Error::TimeoutError
-          log 'Timeout occurred, continuing'
+          log 'Timeout occurred, skipping for now.'
           return nil
         rescue ::Ok2explore::Errors::TooManyResults
           create_smaller_jobs(scrape_job)
           return nil
         end
 
-        import_death_records(death_records)
-
+        begin
+          import_death_records(death_records)
+        rescue StandardError => e
+          log 'Failure on death record import'
+          log "message was: #{e}"
+          return nil
+        end
         scrape_job.update(is_success: true)
       end
 
@@ -50,13 +55,9 @@ module Importers
 
       def import_death_records(death_records)
         log "Found #{death_records.count} for scrape job"
-        failed_scrape_jobs = []
         death_records.each do |data|
           ::Importers::Ok2Explore::Death.perform(data)
-        rescue StandardError
-          failed_scrape_jobs << data
         end
-        log "#{failed_scrape_jobs.count} failed scrape_jobs" unless failed_scrape_jobs.count.zero?
       end
 
       def log(message)

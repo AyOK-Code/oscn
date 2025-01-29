@@ -21,7 +21,7 @@ module Importers
         @bar = ProgressBar.new(needs_scraping.count)
         needs_scraping.each do |record|
           bar.increment!
-          ScrapeJob.perform(record, bar)
+          ScrapeJob.perform(record, bar: bar)
         end
 
         bar.puts 'Run complete. Restarting to try for failed or newly generated records.'
