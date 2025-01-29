@@ -32,7 +32,7 @@ module Importers
 
       def create_smaller_jobs(scrape_job)
         log 'Too many results. Fanning out to smaller jobs'
-        scrape_job.update(is_too_many_scrape_jobs: true)
+        scrape_job.update(is_too_many_records: true)
 
         ('a'..'z').to_a.each do |added_letter|
           ::Ok2Explore::ScrapeJob.create(
