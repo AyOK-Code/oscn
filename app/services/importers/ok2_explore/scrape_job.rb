@@ -20,7 +20,6 @@ module Importers
           return nil
         end
 
-        log "Found #{death_records.count} scrape_jobs."
         import_death_records(death_records)
 
         scrape_job.update(is_success: true)
@@ -50,6 +49,7 @@ module Importers
       end
 
       def import_death_records(death_records)
+        log "Found #{death_records.count} for scrape job"
         failed_scrape_jobs = []
         death_records.each do |data|
           ::Importers::Ok2Explore::Death.perform(data)
