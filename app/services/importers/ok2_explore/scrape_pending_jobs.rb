@@ -6,11 +6,12 @@ module Importers
       def initialize(record_limit)
         @record_limit = record_limit
         @retry_attempts = 0
+        super()
       end
 
       def perform
         needs_scraping = ::Ok2Explore::ScrapeJob.where(is_success: false,
-                                                     is_too_many_records: false).sample(record_limit.to_i)
+                                                       is_too_many_records: false).sample(record_limit.to_i)
 
         if needs_scraping.count.zero?
           puts 'No records to scrape'

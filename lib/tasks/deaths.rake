@@ -1,7 +1,5 @@
 require 'uri'
 
-# rubocop:disable Metrics/BlockLength
-
 namespace :scrape do
   desc 'Scrape cases into database for a given county and'
   task :deaths, [:start_year, :end_year] => [:environment] do |_t, args|
@@ -37,5 +35,3 @@ namespace :scrape do
     end
   end
 end
-
-# rubocop:enable Metrics/BlockLength

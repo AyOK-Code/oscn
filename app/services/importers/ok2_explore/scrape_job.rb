@@ -6,6 +6,7 @@ module Importers
       def initialize(scrape_job, bar: false)
         @scrape_job = scrape_job
         @bar = bar
+        super()
       end
 
       def perform
