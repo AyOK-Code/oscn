@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Ok2Explore::Death, type: :model do
   describe 'associations' do
-    it { should belong_to(:county) }
+    it { should belong_to(:county).optional }
   end
 
   describe 'validations' do
