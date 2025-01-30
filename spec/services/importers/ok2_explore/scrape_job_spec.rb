@@ -17,9 +17,11 @@ RSpec.describe Importers::Ok2Explore::ScrapeJob do
     end
 
     context 'when too many records retrieved' do
-      it 'fans out records and sets as too many records' do
+      before do
         allow_any_instance_of(::Ok2explore::Scraper)
           .to receive(:perform).and_raise(::Ok2explore::Errors::TooManyResults)
+      end
+      it 'fans out records and sets as too many records' do
         described_class.perform(scrape_job)
         scrape_job.is_too_many_records = true
         expect(Ok2Explore::ScrapeJob.find_by(last_name: 'ua')).not_to be_nil
