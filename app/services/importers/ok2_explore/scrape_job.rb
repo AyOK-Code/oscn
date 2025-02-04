@@ -13,12 +13,12 @@ module Importers
         log "Scraping: #{scrape_job.id}"
         begin
           death_records = ::Ok2explore::Scraper.new(**scraper_args).perform
-        rescue ::Selenium::WebDriver::Error::TimeoutError
-          log 'Timeout occurred, skipping for now.'
-          return nil
         rescue ::Ok2explore::Errors::TooManyResults
           create_smaller_jobs(scrape_job)
           return nil
+        rescue StandardError
+          log 'An error occurred, skipping for now.'
+          return false
         end
 
         begin
