@@ -5,16 +5,16 @@ RSpec.describe Importers::Ok2Explore::ScrapeJob do
     before do
       Rails.application.load_seed
       scraped_records = [{
-                           'lastName' => 'UNDER',
-                           'firstName' => 'DAVID',
-                           'middleName' => 'J',
-                           'deathDate' => '2019-12-25T00:00:00',
-                           'deathDay' => 25,
-                           'deathMonth' => 12,
-                           'deathYear' => 2019,
-                           'deathCounty' => 'Comanche',
-                           'gender' => 'M'
-                         }]
+        'lastName' => 'UNDER',
+        'firstName' => 'DAVID',
+        'middleName' => 'J',
+        'deathDate' => '2019-12-25T00:00:00',
+        'deathDay' => 25,
+        'deathMonth' => 12,
+        'deathYear' => 2019,
+        'deathCounty' => 'Comanche',
+        'gender' => 'M'
+      }]
       allow_any_instance_of(::Ok2explore::Scraper).to receive(:perform).and_return(scraped_records)
     end
     let!(:scrape_job) { create(:ok2_explore_scrape_job, year: 2019, month: 12, first_name: 'd', last_name: 'u') }
