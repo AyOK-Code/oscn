@@ -16,8 +16,8 @@ module Importers
         rescue ::Ok2explore::Errors::TooManyResults
           create_smaller_jobs(scrape_job)
           return nil
-        rescue StandardError
-          log 'An error occurred, skipping for now.'
+        rescue StandardError => e
+          log "An error occurred #{e}, skipping for now."
           return false
         end
 
