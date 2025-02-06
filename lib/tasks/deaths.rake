@@ -1,7 +1,5 @@
 require 'uri'
 
-# rubocop:disable Metrics/BlockLength
-
 namespace :scrape do
   desc 'Scrape cases into database for a given county and'
   task :deaths, [:start_year, :end_year] => [:environment] do |_t, args|
@@ -17,51 +15,23 @@ namespace :scrape do
   end
 
   desc 'Scrape death records'
-  task :death_records, [:record_count] => [:environment] do |_t, args|
-    needs_scraping = Ok2Explore::ScrapeJob.where(is_success: false,
-                                                 is_too_many_records: false).sample(args.record_count.to_i)
-    needs_scraping.each do |record|
-      puts "Scraping: #{record.id}"
-      args = {
-        year: record.year.to_s,
-        month: record.month.to_s,
-        first_name: "#{record.first_name}*",
-        last_name: "#{record.last_name}*"
-      }
-      begin
-        records = Ok2explore::Scraper.new(**args).perform
-      rescue Ok2explore::Errors::TooManyResults
-        puts 'Too many results, skipping.'
-        record.update(is_too_many_records: true)
-        records = nil
-      end
-      next if records.nil?
-
-      puts "Found #{records.count} records."
-      records.each do |data|
-        ::Importers::Ok2Explore::Death.perform(data)
-      end
-      record.update(is_success: true)
-    end
+  task :death_records, [:record_limit] => [:environment] do |_t, args|
+    ::Importers::Ok2Explore::ScrapePendingJobs.perform(args.record_limit)
   end
 
   desc 'Populate desired scrapes for deaths'
-  task jobs: [:environment] do
-    (1980..2018).to_a.each do |year|
-      (1..12).to_a.each do |month|
-        ('a'..'z').to_a.each do |first_letter|
-          ('a'..'z').to_a.each do |last_letter|
-            Ok2Explore::ScrapeJob.create(
-              year: year,
-              month: month,
-              first_name: first_letter,
-              last_name: last_letter
-            )
-          end
+  task :jobs, [:year] => [:environment] do |_t, args|
+    (1..12).to_a.each do |month|
+      ('a'..'z').to_a.each do |first_letter|
+        ('a'..'z').to_a.each do |last_letter|
+          Ok2Explore::ScrapeJob.create(
+            year: args.year,
+            month: month,
+            first_name: first_letter,
+            last_name: last_letter
+          )
         end
       end
     end
   end
 end
-
-# rubocop:enable Metrics/BlockLength

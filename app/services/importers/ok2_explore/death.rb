@@ -27,7 +27,7 @@ module Importers
           name = county_name.gsub(/(?<=[a-z])(?=[A-Z])/, ' ')
           County.find_by!(name: name).id
         else
-          County.find_by!(name: county_name).id
+          County.find_by(name: county_name)&.id
         end
       end
     end
