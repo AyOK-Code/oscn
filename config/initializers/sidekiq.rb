@@ -39,4 +39,9 @@ Sidekiq::Throttled::Registry.add(:eviction_ocr, **{
   concurrency: { limit: 1 },
 })
 
+Sidekiq::Throttled::Registry.add(:crime_map_worker, **{
+  threshold: { limit: 1, period: 1.minute },
+  concurrency: { limit: 1 },
+})
+
 Sidekiq::Throttled.setup!
