@@ -1,6 +1,6 @@
 class CreateLexusNexusCrime < ActiveRecord::Migration[7.0]
   def change
-    create_table :lexus_nexus_crimes do |t|
+    create_table :community_crimes do |t|
       t.string :address
       t.string :agency
       t.string :crime_class
@@ -8,6 +8,7 @@ class CreateLexusNexusCrime < ActiveRecord::Migration[7.0]
       t.datetime :incident_at
       t.string :incident_number
       t.string :location_type
+      t.string :source_data
 
       t.timestamps
 

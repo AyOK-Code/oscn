@@ -1,7 +1,8 @@
-namespace :lexus_nexus do
+namespace :community do
   desc 'Import data from historic OKC PD pdfs (same data as crime map)'
   task import_from_crime_map: [:environment] do
-    Importers::CrimeMap.perform
+    raise 'Do not use until further notice'
+    # Importers::CrimeMap.perform
   end
 
   desc 'Import data from historic OKC PD pdfs (same data as crime map)'

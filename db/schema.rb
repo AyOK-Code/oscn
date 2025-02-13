@@ -112,6 +112,20 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_29_224136) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "community_crimes", force: :cascade do |t|
+    t.string "address"
+    t.string "agency"
+    t.string "crime_class"
+    t.string "crime"
+    t.datetime "incident_at"
+    t.string "incident_number"
+    t.string "location_type"
+    t.string "source_data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agency", "incident_number", "incident_at"], name: "index_ln_crimes_on_agency_and_inc_number_and_inc_at", unique: true
+  end
+
   create_table "counsel_parties", force: :cascade do |t|
     t.bigint "court_case_id", null: false
     t.bigint "party_id", null: false
@@ -454,19 +468,6 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_29_224136) do
     t.string "first_name"
     t.string "last_name"
     t.index ["county_id"], name: "index_judges_on_county_id"
-  end
-
-  create_table "lexus_nexus_crimes", force: :cascade do |t|
-    t.string "address"
-    t.string "agency"
-    t.string "crime_class"
-    t.string "crime"
-    t.datetime "incident_at"
-    t.string "incident_number"
-    t.string "location_type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["agency", "incident_number", "incident_at"], name: "index_ln_crimes_on_agency_and_inc_number_and_inc_at", unique: true
   end
 
   create_table "ocso_warrants", force: :cascade do |t|

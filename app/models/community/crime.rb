@@ -1,6 +1,7 @@
-class LexusNexus::Crime < ApplicationRecord
+class Community::Crime < ApplicationRecord
   UNIQUE_BY = [:agency, :incident_number, :incident_at]
   validates :incident_number, presence: true
+  validates :source_data, inclusion: { in: ['CrimeMap', 'Naock'], message: '%<value>s is not a valid option' }
 
   def self.unique(obj_hashes)
     obj_hashes

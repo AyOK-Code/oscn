@@ -30,12 +30,13 @@ module Importers
             incident_at: parse_datetime(remove_address(crime['Address'])),
             crime: crime['Offense'],
             crime_class: crime['Description'],
-            incident_number: crime['Case Number']
+            incident_number: crime['Case Number'],
+            source_data: 'Nacok'
           }
         end
-        ::LexusNexus::Crime.upsert_all(
-          ::LexusNexus::Crime.unique(crime_data),
-          unique_by: LexusNexus::Crime::UNIQUE_BY
+        ::Community::Crime.upsert_all(
+          ::Community::Crime.unique(crime_data),
+          unique_by: Community::Crime::UNIQUE_BY
         )
       end
 

@@ -11,6 +11,7 @@ module Importers
       super()
       @start_date = start_date
       @end_date = end_date
+      raise 'Do not use until further notice'
     end
 
     def init_zoom_okc_metro_params
@@ -51,13 +52,13 @@ module Importers
           incident_at: crime['DateTime'] ? DateTime.parse(crime['DateTime']) : nil,
           crime: crime['Crime'],
           crime_class: crime['Class'],
-          incident_number: crime['IRNumber']
+          incident_number: crime['IRNumber'],
+          source_data: 'CrimeMap'
         }
       end
-      binding.pry
-      ::LexusNexus::Crime.upsert_all(
-        ::LexusNexus::Crime.unique(crime_data),
-        unique_by: LexusNexus::Crime::UNIQUE_BY
+      ::Community::Crime.upsert_all(
+        ::Community::Crime.unique(crime_data),
+        unique_by: Community::Crime::UNIQUE_BY
       )
       puts "#{crime_data.length} crimes returned for #{start_date} - #{end_date}"
     end
