@@ -19,7 +19,7 @@ module Importers
           file = bucket.get_object(object['key'])
           next unless file.content_type == 'text/csv'
 
-          voters = CSV.parse(file.body.read, headers: true, encoding: 'Windows-1252:UTF-8')
+          voters = CSV.parse(file.body.read, headers: true, encoding: 'Windows-1252:UTF-8', liberal_parsing: true)
           bar = ProgressBar.new(voters.count)
           voter_data = []
 
@@ -33,18 +33,68 @@ module Importers
         end
       end
 
+      # def perform
+      #   objects = bucket.list_objects('ok_election/voter_registration')
+      #   objects['contents'].each_with_index do |object, _i|
+      #     puts "Processing #{object['key']}"
+      #     next unless object['key'].include?('CTY41_vr')
+      #     file = bucket.get_object(object['key'])
+      #     next unless file.content_type == 'text/csv'
+
+      #     # Read and clean CSV content
+      #     content = file.body.read
+
+      #     # Store cleaned voter data
+      #     voter_data = []
+
+      #     # Process CSV with liberal parsing
+      #     voters = CSV.parse(content, headers: true, encoding: 'Windows-1252:UTF-8', liberal_parsing: true)
+          
+      #     bar = ProgressBar.new(voters.count)
+
+      #     voters.each do |voter|
+      #       bar.increment!
+
+      #       # Ensure date fields are quoted correctly
+      #       # voter.each do |key, value|
+      #       #   if value && value.match(/^\d{1,2}\/\d{1,2}\/\d{4}$/)  # Matches MM/DD/YYYY format
+      #       #     voter[key] = value
+      #       #   end
+      #       # end
+
+      #       begin
+      #         voter_data << voter_data(voter)
+      #       rescue => e
+      #         puts "Error processing voter: #{e.message}"
+      #         ap voter
+      #         binding.pry
+      #       end
+
+
+      #       # Batch insert voters into the database
+      #       voter_data.each_slice(10_000) do |slice|
+      #         ::OkElection::Voter.upsert_all(slice, unique_by: :voter_id)
+      #       end
+      #     end
+      #   end
+      # end
+
       private
 
-      def parse_date(date)
+      def parse_date(date, voter)
         return nil if date.blank?
-
-        Date.strptime(date, '%m/%d/%Y')
+        begin
+          Date.strptime(date, '%m/%d/%Y')
+        rescue => e
+          puts "Error parsing date: #{date}"
+          binding.pry
+        end
       end
 
       def voter_data(voter)
         precinct_id = precincts[voter['Precinct'].to_i]
-        registration_date = parse_date(voter['OriginalRegistration'])
-        date_of_birth = parse_date(voter['DateOfBirth'])
+        registration_date = parse_date(voter['OriginalRegistration'], voter)
+        date_of_birth = parse_date(voter['DateOfBirth'], voter)
 
         {
           voter_id: voter['VoterID'],
