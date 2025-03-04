@@ -16,8 +16,6 @@ module Importers
       def perform
         objects = bucket.list_objects('ok_election/voter_history')
         objects['contents'].each do |object|
-          next unless object['key'] == 'ok_election/voter_history/CTY55_vh.csv'
-
           file = bucket.get_object(object['key'])
           next unless file.content_type == 'text/csv'
 
